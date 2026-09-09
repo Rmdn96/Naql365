@@ -1,0 +1,25 @@
+# Testing strategy
+
+## Commands and contracts
+
+| Command                  | Coverage                                                                      |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| npm run lint             | Next, React, TypeScript, accessibility and domain import boundaries           |
+| npm run typecheck        | Generated Next route types + strict TypeScript                                |
+| npm run test / test:unit | Vitest pure services and embedded PostgreSQL integration                      |
+| npm run test:db          | Same SQL security assertions on complete Supabase via pgTAP                   |
+| npm run test:e2e         | Built app in Chromium desktop/mobile, both locales, accessibility and routing |
+| npm run build            | Production Next build; requires APP_URL                                       |
+| npm run check:secrets    | Tracked environment and known credential-pattern scan                         |
+
+Unit tests cover fail-closed authorization, adapter failure, malformed tenant context, unsafe redirects, localized utilities/dictionary alignment, error redaction and environment validation. Database tests use real PostgreSQL via PGlite locally, with minimal auth/storage schema contracts; the CI job uses complete Supabase services and executes the exact same rollback SQL. The latter is authoritative for Supabase compatibility.
+
+Database assertions verify: automatic profile creation without metadata privileges; tenant/customer isolation; subordinate request records; private object visibility; customer denial to staff/finance/audit resources; tenant-scoped SUPER_ADMIN; explicit permission checks; denied direct mutations/escalation/audit forgery/upload; immediate suspension; anonymous denial; cross-tenant FK failure; versioned quote acceptance uniqueness. Test records use synthetic UUIDs and roll back entirely.
+
+E2E checks root Arabic routing, English switching, html direction/language, canonical URLs, CSP, mobile overflow, noindex on protected shells, invalid locale 404, callback redirect failure, native modal Escape/focus return and axe WCAG 2/2.1 AA checks for both locales. Run on a clean production build with no real credentials; authenticated provider sessions require a separate isolated staging smoke test.
+
+## CI
+
+GitHub Actions executes install, secret scan, lint, types, tests, production build and E2E in one job. A second job starts Supabase, resets the local database, runs RLS tests, generates SDK database types and typechecks adapters again. No continue-on-error, disabled compiler errors or ignored lint failures. Reports/types are uploaded as artifacts. Jobs are bounded and duplicate runs are cancelled for the same branch.
+
+Do not interpret workflow YAML as a passing workflow: inspect the actual run for the exact committed SHA. If a runner/service cannot start, report infrastructure failure separately from assertion failures, then resolve or document the blocker.
