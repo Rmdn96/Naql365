@@ -2,7 +2,9 @@ import { redirect } from 'next/navigation';
 import { dictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
 import { portalAccess } from '@/infrastructure/identity/access';
-import { Card, Alert, EmptyState } from '@/components/ui/primitives';
+import { Card, Alert, EmptyState, Button } from '@/components/ui/primitives';
+import { stagingAuthEnabled } from '@/infrastructure/config/deployment-env';
+import { smokeLogout } from '@/app/auth/actions';
 
 export async function ProtectedShell({
   locale,
@@ -30,6 +32,11 @@ export async function ProtectedShell({
           <h1>{t.unauthorized}</h1>
           <p>{t.unauthorizedBody}</p>
         </Alert>
+        {stagingAuthEnabled() && (
+          <form action={smokeLogout.bind(null, locale)}>
+            <Button variant="secondary">{t.logout}</Button>
+          </form>
+        )}
       </div>
     );
   return (
@@ -38,6 +45,11 @@ export async function ProtectedShell({
         <h1>{t[portal]}</h1>
         <p>{t.protectedBody}</p>
         <EmptyState title={t.empty}>{t.emptyBody}</EmptyState>
+        {stagingAuthEnabled() && (
+          <form action={smokeLogout.bind(null, locale)}>
+            <Button variant="secondary">{t.logout}</Button>
+          </form>
+        )}
       </Card>
     </div>
   );

@@ -28,6 +28,12 @@ const ar = {
   readyBody: 'دعم العربية والإنجليزية منذ البداية.',
   rights: 'نقل 365 · منصة تشغيل النقل',
   login: 'تسجيل الدخول',
+  logout: 'تسجيل الخروج',
+  email: 'البريد الإلكتروني',
+  password: 'كلمة المرور',
+  loginFailed: 'تعذر تسجيل الدخول. تحقق من بيانات حساب الاختبار وحاول مجددًا.',
+  stagingAuthNotice:
+    'دخول تقني لبيئة الاختبار فقط. لا تتوفر عمليات تسجيل العملاء أو خدمات الأعمال.',
   authBody: 'يجري تجهيز واجهة الدخول. حسابات الموظفين والسائقين تُدار عبر الدعوات.',
   unavailable: 'الخدمة غير مهيأة بعد',
   unavailableBody: 'لم يكتمل إعداد اتصال هذه البيئة بخدمة الهوية.',
@@ -89,6 +95,12 @@ const en: Dictionary = {
   readyBody: 'Arabic and English support from the beginning.',
   rights: 'Naql365 · Transportation Operating Platform',
   login: 'Sign in',
+  logout: 'Sign out',
+  email: 'Email address',
+  password: 'Password',
+  loginFailed: 'Sign-in failed. Check the test account credentials and try again.',
+  stagingAuthNotice:
+    'Technical staging access only. Customer registration and business operations are unavailable.',
   authBody:
     'The sign-in interface is being prepared. Staff and driver accounts are managed through invitations.',
   unavailable: 'Service not configured yet',

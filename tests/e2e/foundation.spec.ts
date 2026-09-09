@@ -58,6 +58,17 @@ test('unknown locale is not accepted', async ({ page }) => {
   const response = await page.goto('/fr');
   expect(response?.status()).toBe(404);
 });
+test('local and staging surfaces prevent indexing and keep technical endpoints disabled by default', async ({
+  request,
+}) => {
+  const home = await request.get('/ar');
+  expect(home.headers()['x-robots-tag']).toContain('noindex');
+  expect(await (await request.get('/robots.txt')).text()).toContain('Disallow: /');
+  expect(await (await request.get('/sitemap.xml')).text()).not.toContain('<loc>');
+  expect((await request.get('/api/staging/session')).status()).toBe(404);
+  const login = await request.get('/login', { maxRedirects: 0 });
+  expect(login.headers().location).toContain('/ar/login');
+});
 test('callback rejects external destinations when no valid code is present', async ({
   request,
 }) => {

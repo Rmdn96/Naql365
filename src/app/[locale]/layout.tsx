@@ -5,6 +5,7 @@ import { dictionary } from '@/i18n/dictionaries';
 import { Header, Footer } from '@/components/shell/public-shell';
 import { appUrl } from '@/infrastructure/config/server-env';
 import { headers } from 'next/headers';
+import { preventIndexing } from '@/infrastructure/config/deployment-env';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -22,6 +23,7 @@ export async function generateMetadata({
     metadataBase: appUrl(),
     title: { default: `${t.brand} | ${t.positioning}`, template: `%s | ${t.brand}` },
     description: t.description,
+    ...(preventIndexing() ? { robots: { index: false, follow: false } } : {}),
   };
 }
 export default async function LocaleLayout({
