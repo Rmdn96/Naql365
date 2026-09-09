@@ -56,16 +56,14 @@ test('customer persists a bilingual request through private image, review, submi
   await page.getByRole('button', { name: t.addItem, exact: true }).click();
   await page.locator('#item-1').fill('Desk');
   await expect(page.locator('.save-status')).toHaveText(t.saved);
-  await page
-    .locator('#attachment')
-    .setInputFiles({
-      name: 'fixture.png',
-      mimeType: 'image/png',
-      buffer: Buffer.from(
-        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jQmQAAAAASUVORK5CYII=',
-        'base64',
-      ),
-    });
+  await page.locator('#attachment').setInputFiles({
+    name: 'fixture.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jQmQAAAAASUVORK5CYII=',
+      'base64',
+    ),
+  });
   await expect(page.locator('.wizard-fields')).toBeEnabled();
   await expect(page.locator('.wizard-fields li')).toHaveCount(1);
   await expect(page.locator('.wizard-fields li')).toContainText(t.saved);
