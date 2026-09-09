@@ -7,6 +7,29 @@ import { stagingAuthEnabled } from '@/infrastructure/config/deployment-env';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { assertSameOrigin, smokeSignIn } from '@/application/identity/smoke-auth';
+import { signInInput } from '@/domain/shared/validation';
+
+export async function smokePkceLogin(
+  locale: string,
+  _previous: { submitted: boolean },
+  form: FormData,
+): Promise<{ submitted: boolean }> {
+  if (!isLocale(locale) || !stagingAuthEnabled() || !getPublicEnv()) return { submitted: false };
+  assertSameOrigin((await headers()).get('origin'), appUrl().origin);
+  const email = signInInput.shape.email.safeParse(form.get('email'));
+  if (!email.success) return { submitted: false };
+  const client = await createSupabaseServerClient(true);
+  // SSR persists the PKCE verifier; only existing, controlled Staging identities can sign in.
+  await client.auth.signInWithOtp({
+    email: email.data,
+    options: {
+      shouldCreateUser: false,
+      emailRedirectTo: new URL(`/auth/callback?locale=${locale}`, appUrl()).href,
+    },
+  });
+  // Do not disclose account existence or provider errors.
+  return { submitted: true };
+}
 
 export async function smokeLogin(
   locale: string,
