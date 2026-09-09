@@ -206,6 +206,13 @@ try {
       check(!(await admin.auth.admin.deleteUser(user.id)).error, 'Synthetic Auth user cleanup');
   } catch {
     console.error('Fixture cleanup failed; investigate scoped fixture records before another run');
+    console.error(
+      JSON.stringify({
+        organizationIds: [orgA, orgB],
+        profileIds: users.map((user) => user.id),
+        fileId,
+      }),
+    );
     process.exitCode = 1;
   }
 }

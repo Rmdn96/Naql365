@@ -1,0 +1,54 @@
+# Staging architecture and reconstruction
+
+Phase 0.5 verifies the Phase 0 foundation. No customer registration workflow, transport workflow, pricing, dispatch, payment or other Phase 1 feature is enabled.
+
+## Environment inventory
+
+| Environment | Application                                         | Database                                                     |
+| ----------- | --------------------------------------------------- | ------------------------------------------------------------ |
+| Local       | Next.js on loopback, APP_ENV=local                  | Supabase local PostgreSQL 17                                 |
+| Staging     | Vercel project naql365-staging, Preview target only | Supabase naql365-staging, zuvyfeflkzlciuaauxba, eu-central-1 |
+| Production  | Outside this phase                                  | Never connected or migrated                                  |
+
+The staging Supabase organization is hjfxhwznfgjgywsdsqzn. The existing project named Naql365 was inspected only and was not reused. Project identifiers are public configuration, not credentials. A pre-existing shell access token belonged to another account: it was removed from task subprocess environments before authenticating the correct CLI account. No unrelated project was changed.
+
+## Application variables
+
+`.env.example` contains names only. Keep local values in ignored `.env.local`; Vercel Preview values live in Vercel Environment Variables. Do not pull cloud values over the local configuration.
+
+| Name                                 | Scope  | Staging value/source                                                  |
+| ------------------------------------ | ------ | --------------------------------------------------------------------- |
+| APP_ENV                              | Server | staging                                                               |
+| STAGING_AUTH_SMOKE_ENABLED           | Server | true during the gate; disabled by default                             |
+| NEXT_PUBLIC_SUPABASE_URL             | Public | Staging project's HTTPS API origin                                    |
+| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Public | Staging publishable key, never a secret/service-role key              |
+| APP_URL                              | Server | Verified deployment origin; omit to derive from VERCEL_URL in staging |
+
+The application rejects a Preview target without APP_ENV=staging, and rejects non-production configuration on the Vercel Production target before compilation. Local defaults remain non-indexable. Never set APP_ENV=production to bypass the staging restriction.
+
+Privileged operator commands use a correctly authenticated Supabase CLI, or SUPABASE_ACCESS_TOKEN in an approved process environment. SUPABASE_DB_PASSWORD is only needed for linking/pushing migrations. Neither credential belongs in Vercel or browser configuration. Test commands require STAGING_SUPABASE_PROJECT_REF and STAGING_SUPABASE_ORG_ID and verify project name, organization and health before accessing it.
+
+## Reconstructing a fresh staging project
+
+1. Use the correct Supabase organization and create a **new empty** project named naql365-staging with PostgreSQL 17. Generate a unique database password in a password manager or process memory. Check project reference and organization before linking. Never reset an existing populated or production database.
+2. Run `supabase link --project-ref <verified-staging-ref>` with the database password supplied securely. Then `supabase db push --linked` applies repository migrations in filename order. Do not use migration repair or manually create missing schema to pass the gate.
+3. Set the two staging guard variables above, then run `npm run test:staging:db`. It compares remote migration history with the repository, runs the shared RLS assertions in a rollback transaction, and generates public TypeScript definitions from hosted PostgreSQL. Run `npm run typecheck` immediately afterwards and review the generated diff.
+4. The shared SQL suite requires an empty business/identity dataset: run it before persistent smoke fixtures. It creates no committed fixture rows. It verifies RLS, cross-tenant FKs, customer/role integrity, quote version/order uniqueness, trip relationships and private storage policies.
+5. Compare `supabase config diff --workdir config/staging --project-ref <verified-staging-ref>` before using `config push` with the same arguments. This file declares only hosted Auth security settings; undeclared settings stay unchanged. **Never push the local supabase/config.toml to Staging.**
+6. Run `npm run test:staging:services`. This creates three synthetic identities, two fixture organizations and one non-sensitive private object, tests real Auth/REST/Storage and removes the fixtures. The trusted cleanup deletes only this run's generated UUIDs, including its synthetic audit records. These operator privileges are not granted to application clients.
+
+The first reconstruction on 2026-09-09 used all three unchanged Phase 0 migrations and created 37 public tables, all with RLS. Migration hashes and execution evidence are recorded in the phase report. No seed or manual schema patch was used.
+
+## Auth URLs and outstanding hosted verification
+
+Self-signup is disabled in Staging; admin-created controlled test identities can sign in with email/password. Minimum password length is 12; confirmations, secure password change and refresh rotation are configured. This is a gate fixture facility, not a customer registration feature.
+
+Once a real Preview origin is available, set Supabase Site URL to that exact HTTPS origin and Redirect URLs to its exact `/auth/callback` path. Remove obsolete origins; do not use broad wildcards. APP_URL, browser origin and Supabase URLs must agree. Arabic and English login routes are `/ar/login` and `/en/login`; `/login` redirects to Arabic. The existing callback uses PKCE `exchangeCodeForSession` and allowlisted internal destinations.
+
+There is currently no accepted Preview deployment. Site URL still has the provider's loopback default and redirects are empty; these settings are **not** counted as a passing hosted Auth configuration. Real password API/refresh/logout tests do not prove a browser SSR or PKCE exchange. Complete those separate gates after resolving Vercel provisioning.
+
+## References
+
+- [Supabase CLI configuration](https://supabase.com/docs/reference/cli/supabase-config)
+- [Supabase SSR advanced guide](https://supabase.com/docs/guides/auth/server-side/advanced-guide)
+- [Supabase sessions](https://supabase.com/docs/guides/auth/sessions)

@@ -36,6 +36,18 @@ Local Supabase settings are not automatically synchronized to hosted Supabase. B
 
 These operational steps are not silently assumed to have been completed. No production database migration or Vercel deployment is required to review the foundation branch.
 
+## Phase 0.5 additions
+
+The optional technical login/logout surface is disabled by default and unavailable in APP_ENV=production. Login/logout Server Actions retain Next.js checks and also compare Origin with the configured canonical origin. Zod validates credentials; failures use generic translated messages. Supabase clients remain user-scoped and never derive privileges from email or user metadata. Logout is available even on the forbidden shell so suspended test users can end their session.
+
+Staging session/file probes are gated, read-only, no-store and noindex. They return only authorization status or a short RLS-authorized file redirect. No administrative mutation endpoint was added. Production/Preview environment mismatches fail before compilation. All non-production pages are excluded from indexing.
+
+SSR cookies explicitly use Secure on HTTPS, SameSite=Lax and path `/`. HttpOnly is not forced because Supabase's shared browser/SSR session design requires browser access when the browser client is used; see the [official advanced guide](https://supabase.com/docs/guides/auth/server-side/advanced-guide). Hosted cookie, CSP and callback behavior still require real browser verification; source-level settings alone are not passing evidence. Logout revokes refresh capability; existing access JWTs may live until expiry, while database membership checks revoke protected tenant access immediately.
+
+Hosted Staging was reconstructed from unchanged migrations. Real customer JWTs verified tenant/customer isolation, denied membership escalation and audit forgery, suspended access, private downloads/signing and signed URL expiry. Scripts isolate admin credentials in operator memory, never application bundles. Synthetic cleanup is restricted to generated fixture UUIDs. See [staging smoke protocol](staging-smoke-test.md) and the [phase report](reports/Naql365-Phase-0-5-Report.md) for executed versus blocked checks.
+
+Both main/develop now require reviewed PRs and both CI jobs, with admin enforcement and no force pushes. Vercel's unexpected first-deployment Production classification was removed and remains an external provisioning blocker; no production database was connected or modified.
+
 ## Deferred security work at feature boundaries
 
 Uploads need server-verified content type, content scanning, lifecycle/registry transactions and abuse limits. MIME metadata alone is not malware protection. Payment webhooks require raw-body signature verification and unique event processing; no gateway is active. Driver visibility must depend on assignment. New writes require authorization, validation, idempotency where applicable, audit coverage and negative RLS tests. Published quote immutability requires a lifecycle rule before quote writes are opened.
