@@ -47,6 +47,8 @@ Once a real Preview origin is available, set Supabase Site URL to that exact HTT
 
 There is currently no accepted Preview deployment. Site URL still has the provider's loopback default and redirects are empty; these settings are **not** counted as a passing hosted Auth configuration. Real password API/refresh/logout tests do not prove a browser SSR or PKCE exchange. Complete those separate gates after resolving Vercel provisioning.
 
+The closeout read-back confirmed the project is still healthy, the same three migration versions are present, and there are zero outstanding updates to declared hosted Auth settings. No database/auth configuration was changed during that audit. Keep one reviewed deployment origin active for a smoke-test run; after a new genuine Preview is READY, replace the exact Site URL/callback entry with that origin and retire the previous entry. This explicit per-deployment allowlist is the chosen initial strategy; it requires a small deployment step but avoids team-wide or unrestricted wildcard redirects. It has not been applied because no genuine Preview origin exists yet.
+
 ## References
 
 - [Supabase CLI configuration](https://supabase.com/docs/reference/cli/supabase-config)
