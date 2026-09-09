@@ -2,7 +2,7 @@
 
 ## Migrations
 
-`20260909000100_identity_and_domain.sql`: identity, organization membership, RBAC, audit triggers and relational domain tables. Seeds only the role/permission catalogue; no organization or operational sample records. `20260909000200_private_storage.sql`: three private buckets and registry-based access policy. Apply in order via Supabase CLI to a fresh isolated environment first. Never edit an applied production migration; future changes require new migration files.
+`20260909000100_identity_and_domain.sql`: identity, organization membership, RBAC, audit triggers and relational domain tables. Seeds only the role/permission catalogue; no organization or operational sample records. `20260909000200_private_storage.sql`: three private buckets and registry-based access policy. `20260909000300_role_integrity_indexes.sql`: reverse relationship indexes and customer/driver membership-type integrity. Apply in order via Supabase CLI to a fresh isolated environment first. Never edit an applied production migration; future changes require new migration files.
 
 Public tables (37): organizations, branches, profiles, organization_memberships, roles, permissions, user_roles, role_permissions, audit_logs; customers, drivers, vehicles, teams, services, service_areas; requests, request_items, file_objects, request_attachments; quotes, quote_versions, quote_items; orders, jobs, trips, trip_stops, trip_events, assignments; payments, payment_transactions, invoices; notification_templates, notifications; reviews, quality_alerts, issues, support_notes.
 
