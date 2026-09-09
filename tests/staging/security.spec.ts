@@ -144,12 +144,10 @@ test('hosted customer isolation, private file capability and suspended routing',
       },
       { url: supabaseOrigin, publicKey: key, token: session.access_token, org: organization },
     );
-    test
-      .info()
-      .annotations.push({
-        type: 'safe-security-probe',
-        description: JSON.stringify(suspendedProbe),
-      });
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: JSON.stringify(suspendedProbe),
+    });
     expect(suspendedProbe.identityStatus).toBe(200);
     expect(suspendedProbe.permissionDenied).toBe(true);
     await page.goto('/ar/account');
