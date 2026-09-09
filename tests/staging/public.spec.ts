@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { test, expect } from './fixtures';
+import { hasSourceMapDirective } from '../helpers/source-map';
 
 for (const locale of ['ar', 'en']) {
   test(`${locale} hosted public metadata, accessibility and responsive layout`, async ({
@@ -93,7 +94,7 @@ test('hosted browser assets contain no privileged test secrets or source maps', 
         asset.ok &&
         privileged.every((secret) => !asset.body.includes(secret)) &&
         !asset.body.includes('sb_secret_') &&
-        !/(?:\/\/[#@]|\/\*[#@])\s*sourceMappingURL=/.test(asset.body),
+        !hasSourceMapDirective(asset.body),
     ),
   ).toBe(true);
 });
