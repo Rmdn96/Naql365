@@ -1,12 +1,14 @@
 import { randomBytes, randomUUID } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
 import { stagingProject, supabase, query } from './supabase.mjs';
+import { acquireHostedRun } from './exclusive-run.mjs';
 
 const users = [];
 const orgA = randomUUID();
 const orgB = randomUUID();
 const fileId = randomUUID();
 let ref, admin, path;
+const release = acquireHostedRun();
 function check(condition, label) {
   if (!condition) throw new Error(`FAIL: ${label}`);
   console.log(`PASS: ${label}`);
@@ -214,5 +216,7 @@ try {
       }),
     );
     process.exitCode = 1;
+  } finally {
+    release();
   }
 }

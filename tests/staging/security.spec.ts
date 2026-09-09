@@ -124,6 +124,34 @@ test('hosted customer isolation, private file capability and suspended routing',
       .eq('organization_id', organization)
       .eq('profile_id', profile);
     expect(!suspended.error).toBe(true);
+    const suspendedProbe = await page.evaluate(
+      async ({ url, publicKey, token, org }) => {
+        const headers = {
+          apikey: publicKey,
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        };
+        const identity = await fetch(`${url}/auth/v1/user`, { headers });
+        const permission = await fetch(`${url}/rest/v1/rpc/has_permission`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ organization_id: org, permission_code: 'account.access' }),
+        });
+        return {
+          identityStatus: identity.status,
+          permissionDenied: (await permission.json()) === false,
+        };
+      },
+      { url: supabaseOrigin, publicKey: key, token: session.access_token, org: organization },
+    );
+    test
+      .info()
+      .annotations.push({
+        type: 'safe-security-probe',
+        description: JSON.stringify(suspendedProbe),
+      });
+    expect(suspendedProbe.identityStatus).toBe(200);
+    expect(suspendedProbe.permissionDenied).toBe(true);
     await page.goto('/ar/account');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('لا تملك صلاحية الوصول');
     expect((await page.goto('/api/staging/session'))?.status()).toBe(403);

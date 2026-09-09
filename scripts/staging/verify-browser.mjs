@@ -3,6 +3,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
 import { stagingProject, supabase, query } from './supabase.mjs';
+import { acquireHostedRun } from './exclusive-run.mjs';
 const origin = process.env.STAGING_BASE_URL;
 if (
   !origin ||
@@ -16,6 +17,7 @@ const org = randomUUID(),
   fileId = randomUUID(),
   peerFileId = randomUUID();
 let ref, admin, user, peer, path, peerPath;
+const release = acquireHostedRun();
 try {
   ref = stagingProject();
   const keys = JSON.parse(
@@ -98,5 +100,7 @@ try {
   } catch {
     console.error('Hosted browser cleanup failed');
     process.exitCode = 1;
+  } finally {
+    release();
   }
 }
