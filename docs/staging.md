@@ -39,15 +39,17 @@ Privileged operator commands use a correctly authenticated Supabase CLI, or SUPA
 
 The first reconstruction on 2026-09-09 used all three unchanged Phase 0 migrations and created 37 public tables, all with RLS. Migration hashes and execution evidence are recorded in the phase report. No seed or manual schema patch was used.
 
-## Auth URLs and outstanding hosted verification
+## Auth URLs and hosted verification
 
 Self-signup is disabled in Staging; admin-created controlled test identities can sign in with email/password. Minimum password length is 12; confirmations, secure password change and refresh rotation are configured. This is a gate fixture facility, not a customer registration feature.
 
-Once a real Preview origin is available, set Supabase Site URL to that exact HTTPS origin and Redirect URLs to its exact `/auth/callback` path. Remove obsolete origins; do not use broad wildcards. APP_URL, browser origin and Supabase URLs must agree. Arabic and English login routes are `/ar/login` and `/en/login`; `/login` redirects to Arabic. The existing callback uses PKCE `exchangeCodeForSession` and allowlisted internal destinations.
+The accepted origin is https://naql365-staging-lc8qnrb3y-naql365.vercel.app. Supabase Site URL is this exact HTTPS origin. Redirect URLs contain only this origin's `/auth/callback?locale=ar` and `/auth/callback?locale=en`. APP_URL derives from VERCEL_URL. Arabic and English login routes are `/ar/login` and `/en/login`; `/login` redirects to Arabic. The callback uses PKCE `exchangeCodeForSession` and allowlisted internal destinations.
 
-There is currently no accepted Preview deployment. Site URL still has the provider's loopback default and redirects are empty; these settings are **not** counted as a passing hosted Auth configuration. Real password API/refresh/logout tests do not prove a browser SSR or PKCE exchange. Complete those separate gates after resolving Vercel provisioning.
+The gated technical form now initiates a Supabase email-link flow with `shouldCreateUser: false`. The SSR client stores the PKCE verifier in the browser cookie. Only the configured callback is sent to Supabase; client redirect fields are ignored. The response does not reveal account existence. This adds no customer registration or password recovery workflow and is disabled in Production.
 
-The closeout read-back confirmed the project is still healthy, the same three migration versions are present, and there are zero outstanding updates to declared hosted Auth settings. No database/auth configuration was changed during that audit. Keep one reviewed deployment origin active for a smoke-test run; after a new genuine Preview is READY, replace the exact Site URL/callback entry with that origin and retire the previous entry. This explicit per-deployment allowlist is the chosen initial strategy; it requires a small deployment step but avoids team-wide or unrestricted wildcard redirects. It has not been applied because no genuine Preview origin exists yet.
+Real Arabic and English email links were followed in the same Chrome profile as initiation. Both reached the localized protected account, survived refresh, signed out and denied account access afterwards. A scoped database read observed an S256 flow before verification and its consumption plus a new session afterwards, without selecting any code/token. The controlled mailbox identity was removed after verification. Password/API tests remain separate evidence.
+
+Keep one reviewed deployment origin active for acceptance. After a replacement Preview is independently READY, update this exact allowlist and retire the previous origin. This explicit rotation is a small operator step that avoids accepting unrelated branches or team-wide wildcard redirects. Never apply the local Auth config to hosted Staging.
 
 ## References
 

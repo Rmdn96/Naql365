@@ -1,36 +1,44 @@
 # Staging smoke test protocol
 
-Result vocabulary: PASS requires captured execution evidence; PARTIAL covers executed subsets; BLOCKED means the required environment/setup is unavailable. Any unexpected Auth/RLS/Storage result stops the gate. Never treat missing configuration as a passing skipped test.
-
-Closeout status: no hosted browser test was executed because Vercel has no accepted Preview deployment. Do not rerun against localhost and relabel it as hosted evidence. Previously completed SQL/service checks remain historical evidence; the unchanged foundation and current migration history were verified during closeout. Real Arabic/English PKCE is still an independent required gate: the current password-login smoke form does not itself initiate PKCE.
+PASS requires real execution evidence. PARTIAL and BLOCKED must never be relabeled as PASS. Localhost is regression evidence only. Use the genuine Preview recorded in the canonical Phase 0.5 report.
 
 ## Executable checks
 
-| Command                       | Coverage                                                                                                               | Preconditions                                                             |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| npm run test:staging:db       | Hosted migration history, transactional RLS/relational assertions, generated types                                     | Correct authenticated CLI, explicit staging ref/org, empty fixture tables |
-| npm run test:staging:services | Real Auth API, refresh/revocation, customer/tenant permissions, private storage, 60-second URL expiry, live suspension | Same guard variables; creates and cleans synthetic fixtures               |
-| npm run test:staging:browser  | Actual HTTPS app on desktop/mobile, AR/EN, SEO/headers/axe, customer login, account, staff denial, logout              | Verified Preview origin and controlled customer membership                |
+| Command                         | Coverage                                                                              | Preconditions                                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| npm run test:staging:db         | Hosted history, transactional RLS/integrity assertions, generated types               | Correct CLI login, explicit staging ref/org, no persistent fixtures                           |
+| npm run test:staging:services   | Real Auth/refresh/revocation, tenant/customer permissions, private storage and expiry | Same guard variables; creates and cleans its own fixtures                                     |
+| npm run test:staging:acceptance | Full hosted desktop/mobile browser suite with ephemeral customer/file fixtures        | Verified Preview origin, project-scoped automation credential, correct CLI and staging guards |
+| npm run test:staging:browser    | Low-level browser runner                                                              | Fixtures already provisioned by the acceptance harness                                        |
 
-Hosted browser variables: STAGING_BASE_URL, STAGING_TEST_USER_EMAIL, STAGING_TEST_USER_PASSWORD and, when protection requires it, VERCEL_AUTOMATION_BYPASS_SECRET. Never put values in Git, command arguments, reports or CI artifacts. Missing credentials fail the relevant tests. No browser server is started by the staging config. Traces, screenshots and videos are off; the reporter omits error objects, attachments and filled-input diagnostics.
+Run the database suite before provisioning browser fixtures. Hosted tests do not start a local server. The acceptance harness creates random-password synthetic identities with reserved example.test addresses, two organizations and harmless PDF objects. It confirms project name/organization/health, keeps admin credentials only in the Node test process, sends only customer credentials/JWTs to the application, and cleans exact generated UUIDs in finally. No email is sent by synthetic tests.
 
-For synthetic identities use reserved `example.test` emails with admin confirmation, so no email is sent. Passwords are generated in memory. A real PKCE email journey requires a controlled test mailbox owned by the operator; do not use another person's email or a public inbox.
+Run hosted database, service and browser suites sequentially, including across operator terminals. A checkout-local exclusive lock prevents overlap and is released after cleanup. If a process is interrupted, inspect the recorded PID in `supabase/.temp/hosted-verification.lock`; remove that one stale file only after confirming the process has stopped. Never change provider rate limits or accept a login redirect as proof of the expected suspended-member state. The test explicitly requires a still-valid Auth identity, denied database permission and the server's forbidden state.
 
-## Remaining browser acceptance checks
+Operator inputs: STAGING_BASE_URL, STAGING_SUPABASE_PROJECT_REF, STAGING_SUPABASE_ORG_ID, VERCEL_AUTOMATION_BYPASS_SECRET and the correct Supabase CLI login. The harness generates STAGING_TEST_USER_EMAIL, STAGING_TEST_USER_PASSWORD, STAGING_TEST_PROFILE_ID, STAGING_TEST_ORG_ID, STAGING_TEST_FILE_ID, STAGING_TEST_PEER_FILE_ID, STAGING_TEST_ADMIN_KEY and STAGING_TEST_PUBLIC_KEY in memory for its child test process. Never store their values in Git or reports. Clear unrelated inherited CLI credentials before selecting the correct account.
 
-After all executable tests pass, record these on the same reviewed deployment:
+Traces/screenshots/videos are off. The reporter emits test names/status and a sanitized diagnostic category/line only, never raw errors, filled inputs, attachments or signed URLs. All actual test failures remain failures.
 
-1. Arabic and English homepages: language switching, RTL/LTR, keyboard navigation, visible focus, semantic landmarks, mobile overflow, contrast and axe results.
-2. Login and authorized account: input labels/autocomplete, keyboard submit, visible errors and focus, mobile layout and axe. Check Arabic login as well as English.
-3. Authenticate through the actual PKCE callback with the browser's matching verifier cookie and exact redirect allowlist. Verify fresh server session and refresh cookies; invalid/foreign callbacks must fail closed. Password sign-in is separate evidence.
-4. Sign in as the controlled customer; suspend its membership through trusted database administration; reload account and call `/api/staging/session` with the existing session. Both must deny protected access. Confirm data and file policies deny access; restore/remove the fixture using its exact UUID.
-5. Exercise `/api/staging/files/<fixture-id>` as owner, peer customer, another tenant and suspended member. Never print the returned Location header because it contains the signed capability. Confirm existing links expire, and newly requested links are immediately denied after suspension.
-6. Inspect application request/response headers, Supabase cookie Secure/SameSite flags, no-store behavior and sanitized runtime logs. Check client bundles for secret/service-role formats without outputting matches. Record only presence/absence.
-7. Verify titles/canonicals/hreflang against the tested HTTPS origin. Staging must return X-Robots-Tag noindex/nofollow/noarchive, robots Disallow `/`, an empty sitemap and noindex on internal pages.
-8. Sign out, revisit protected routes and verify access is denied. Remove synthetic identities, organizations and objects. Record cleanup counts, not credentials.
+## Hosted coverage
 
-The SQL and services suites cover database and storage security directly. They do not substitute for the outstanding hosted browser, PKCE, cookie and application-route checks.
+The automated suite covers AR/EN homepages, login/root routing, robots/sitemap, titles/canonicals/hreflang/JSON-LD/noindex, headers/CSP, responsive overflow, keyboard focus, axe on public/login/protected pages, real password login, refresh, customer/staff separation, logout and protected denial.
+
+It also uses the real browser customer's JWT to verify organization/customer isolation, denied membership promotion and audit tampering. The hosted file route must allow its owner, deny another customer's file and anonymous access, produce a valid signed URL, reject it after 60 seconds, and deny newly requested links when membership is suspended. Existing-session account and session endpoint must deny suspension immediately. Tests restore/remove only their own fixture rows.
+
+Browser asset inspection discovers scripts from the actual DOM, downloads every discovered script and compares against privileged fixture values only inside Node. Provider-injected Vercel tooling is fetched without the app's protection credential. This avoids mistaking CSP's correct refusal of a third-party browser fetch for a bundle leak. CSP is unchanged; no script or security assertion is skipped.
+
+## Real email / PKCE protocol
+
+1. Obtain a mailbox explicitly controlled by the operator. Create only a temporary Staging customer identity and scoped membership. Do not place the address, password, link, code or cookie in the report or repository.
+2. Open the protected Preview through authorized Vercel access. Verify the account route first redirects to localized login.
+3. Submit the technical email-link form. Confirm the SSR verifier exists through the genuine flow, without printing it. No user creation is allowed by this form.
+4. Open only the test email. Validate the verification host is the independent Staging Supabase project and the callback is the exact allowed Preview URL. Follow the link in the same browser profile. Never copy it to chat or logs.
+5. Observe the real `/auth/callback` exchange reaching the localized account. A trusted scoped SQL aggregate may confirm S256 flow consumption/session creation; never select auth_code, verifier, token or cookie values.
+6. Reload, verify the account remains authorized, sign out, then revisit account and verify localized login. Repeat for the other locale.
+7. Delete the temporary identity/membership/organization; preserve required role/permission catalogues. Keep only sanitized outcomes and timestamps as evidence.
+
+This protocol was executed in Chrome in Arabic and English on the accepted Preview during closeout. Email delivery is operator-assisted and deliberately not a fake generated link or mocked PKCE test.
 
 ## Signed URL semantics
 
-RLS is checked when issuing a signed URL. A previously issued URL is a bearer capability until its short expiry; membership suspension blocks new signing and authenticated reads immediately, but cannot retrospectively revoke that existing URL. The gate uses a 60-second TTL matching the foundation service and verifies expiry. Do not cache or log signed URLs.
+RLS is checked when a signed URL is issued. A prior URL remains a bearer capability until its short expiry. Suspension blocks new signing and authenticated reads immediately; it does not retrospectively revoke an already issued URL. The service uses a 60-second TTL and tests rejection after 65 seconds. Do not cache or log signed URLs.
