@@ -58,6 +58,7 @@ test('hosted routing, crawler policy and callback rejection', async ({ page, bas
 
 test('hosted browser assets contain no privileged test secrets or source maps', async ({
   page,
+  baseURL,
 }) => {
   const privileged = [
     process.env.STAGING_TEST_ADMIN_KEY,
@@ -73,15 +74,18 @@ test('hosted browser assets contain no privileged test secrets or source maps', 
       nodes.map((node) => node.getAttribute('src')).filter((value): value is string => !!value),
     );
   expect(scripts.length > 0).toBe(true);
-  const assets = await page.evaluate(async (sources) => {
-    const assets: { ok: boolean; body: string }[] = [];
-    for (const source of sources) {
-      const asset = await fetch(source);
-      const body = await asset.text();
-      assets.push({ ok: asset.ok, body });
-    }
-    return assets;
-  }, scripts);
+  const assets: { ok: boolean; body: string }[] = [];
+  // Inspect every DOM-observed script, including provider-injected tooling. Fetching the
+  // latter inside the page is correctly denied by connect-src; keep CSP unchanged.
+  for (const source of scripts) {
+    const url = new URL(source, baseURL);
+    expect([baseURL, 'https://vercel.live'].includes(url.origin)).toBe(true);
+    const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+    const headers =
+      url.origin === baseURL && bypass ? { 'x-vercel-protection-bypass': bypass } : undefined;
+    const asset = await fetch(url, headers ? { headers } : {});
+    assets.push({ ok: asset.ok, body: await asset.text() });
+  }
   // Compare only in the Node test process; privileged values never enter the browser.
   expect(
     assets.every(
@@ -89,7 +93,7 @@ test('hosted browser assets contain no privileged test secrets or source maps', 
         asset.ok &&
         privileged.every((secret) => !asset.body.includes(secret)) &&
         !asset.body.includes('sb_secret_') &&
-        !/sourceMappingURL=/.test(asset.body),
+        !/(?:\/\/[#@]|\/\*[#@])\s*sourceMappingURL=/.test(asset.body),
     ),
   ).toBe(true);
 });
