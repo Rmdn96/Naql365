@@ -1,7 +1,9 @@
 # Hosted Staging security settings only. Never push the LOCAL supabase/config.toml.
-# Site URL and exact callback URLs require a verified Preview origin; see docs/staging.md.
+# Verified Preview origin; rotate these exact URLs together for the next accepted deployment.
 project_id = "naql365-staging"
 [auth]
+site_url = "https://naql365-staging-l982yw64j-naql365.vercel.app"
+additional_redirect_urls = ["https://naql365-staging-l982yw64j-naql365.vercel.app/auth/callback?locale=ar", "https://naql365-staging-l982yw64j-naql365.vercel.app/auth/callback?locale=en"]
 enable_signup = false
 enable_anonymous_sign_ins = false
 minimum_password_length = 12
