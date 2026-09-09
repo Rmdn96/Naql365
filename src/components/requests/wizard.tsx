@@ -174,6 +174,35 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
     return () => clearTimeout(timer);
   }, [draft, save]);
   useEffect(() => {
+    function protectNavigation(event: MouseEvent) {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        event.altKey
+      )
+        return;
+      const anchor = event.target instanceof Element ? event.target.closest('a') : null;
+      if (
+        !anchor ||
+        anchor.target === '_blank' ||
+        new URL(anchor.href).origin !== window.location.origin ||
+        saved.current === JSON.stringify(draftRef.current)
+      )
+        return;
+      event.preventDefault();
+      event.stopPropagation();
+      void save().then((ok) => {
+        if (ok) router.push(anchor.href);
+        else setError(t.saveFailed);
+      });
+    }
+    document.addEventListener('click', protectNavigation, true);
+    return () => document.removeEventListener('click', protectNavigation, true);
+  }, [save, router, t.saveFailed]);
+  useEffect(() => {
     function warn(event: BeforeUnloadEvent) {
       if (saved.current !== JSON.stringify(draftRef.current)) {
         event.preventDefault();
@@ -226,7 +255,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
         return;
       }
     }
-    if (!(await save())) {
+    if (operation === 'submit' && !(await save())) {
       setError(t.saveFailed);
       return;
     }

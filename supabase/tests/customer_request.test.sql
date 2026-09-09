@@ -71,6 +71,11 @@ insert into storage.objects(bucket_id,name,metadata) select 'attachments',value-
 set local role authenticated;
 select public.request_file_command('finalize',(select (value->>'id')::uuid from intake_state where key='draft'),'e0000000-0000-4000-8000-000000000001');
 select public.intake_assert((select count(*)=1 from storage.objects),'ready private file read');
+reset role;
+-- Storage completes uploads using its privileged connection but retains the end-user identity.
+-- Even that completion cannot replace a finalized image after a competing upload wins.
+select public.intake_reject($q$update storage.objects set metadata='{"size":8,"mimetype":"image/png"}' where bucket_id='attachments'$q$,'42501');
+set local role authenticated;
 update intake_state set value=public.request_command('submit',(value->>'id')::uuid,3,gen_random_uuid()) where key='draft';
 select public.intake_assert((select value->>'status'='SUBMITTED' and value->>'reference' ~ '^N365-[0-9]{6}-[0-9]{6,}$' from intake_state where key='draft'),'reference and state');
 select public.intake_assert(public.request_command('submit',(select (value->>'id')::uuid from intake_state where key='draft'),0,gen_random_uuid())=(select value from intake_state where key='draft'),'submit retry stable');

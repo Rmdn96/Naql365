@@ -41,12 +41,7 @@ test('customer persists a bilingual request through private image, review, submi
   }
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.reload();
-  await page
-    .getByRole('button', { name: `2${t.route}`, exact: false })
-    .click()
-    .catch(async () => {
-      await page.locator('.wizard-progress button').nth(1).click();
-    });
+  await page.locator('.wizard-progress button').nth(1).click();
   await expect(page.locator('#pickup-city')).toHaveValue('Riyadh');
   await page.getByRole('button', { name: t.next, exact: true }).click();
   await page.locator('#description').fill('Harmless staging furniture request');
