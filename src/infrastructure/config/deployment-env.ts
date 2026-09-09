@@ -7,6 +7,9 @@ export function deploymentEnvironment() {
   if (process.env.VERCEL_ENV === 'preview' && environment !== 'staging') {
     throw new Error('Vercel Preview requires APP_ENV=staging');
   }
+  if (process.env.VERCEL_ENV === 'production' && environment !== 'production') {
+    throw new Error('Refusing a non-production application on the Vercel Production target');
+  }
   return environment;
 }
 

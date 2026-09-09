@@ -1,0 +1,15 @@
+# Hosted Staging security settings only. Never push the LOCAL supabase/config.toml.
+# Site URL and exact callback URLs require a verified Preview origin; see docs/staging.md.
+project_id = "naql365-staging"
+[auth]
+enable_signup = false
+enable_anonymous_sign_ins = false
+minimum_password_length = 12
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+[auth.email]
+double_confirm_changes = true
+enable_confirmations = true
+secure_password_change = true
+max_frequency = "1m"
