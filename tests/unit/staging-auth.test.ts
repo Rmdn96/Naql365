@@ -28,6 +28,11 @@ describe('staging environment safety', () => {
     vi.stubEnv('APP_ENV', 'stagin');
     expect(() => deploymentEnvironment()).toThrow();
   });
+  it.each(['local', 'staging'])('rejects Vercel Production for %s', (environment) => {
+    vi.stubEnv('VERCEL_ENV', 'production');
+    vi.stubEnv('APP_ENV', environment);
+    expect(() => deploymentEnvironment()).toThrow('Refusing a non-production application');
+  });
 });
 describe('technical authentication boundary', () => {
   it.each([null, 'https://evil.example', 'https://staging.example.evil.test'])(

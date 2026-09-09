@@ -1,4 +1,8 @@
 import type { NextConfig } from 'next';
+import { preventIndexing } from './src/infrastructure/config/deployment-env';
+
+// Validate before compilation so a platform target mismatch cannot serve the app.
+const noIndex = preventIndexing();
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -8,9 +12,7 @@ const nextConfig: NextConfig = {
       {
         source: '/:path*',
         headers: [
-          ...(process.env.APP_ENV !== 'production'
-            ? [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }]
-            : []),
+          ...(noIndex ? [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }] : []),
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'X-Frame-Options', value: 'DENY' },
