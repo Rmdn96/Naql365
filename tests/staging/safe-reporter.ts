@@ -5,6 +5,18 @@ import type { Reporter, TestCase, TestResult, FullResult } from '@playwright/tes
 export default class SafeReporter implements Reporter {
   onTestEnd(test: TestCase, result: TestResult) {
     process.stdout.write(`${result.status}: ${test.titlePath().slice(1).join(' > ')}\n`);
+    if (result.status !== 'passed') {
+      for (const error of result.errors) {
+        const kind = error.message?.includes('Failed to fetch')
+          ? 'browser-fetch-failed'
+          : error.message?.includes('Timeout')
+            ? 'timeout'
+            : 'assertion-or-runtime';
+        process.stdout.write(
+          `Diagnostic category: ${kind}; source line: ${error.location?.line ?? 'unavailable'}\n`,
+        );
+      }
+    }
   }
   onError() {
     process.stderr.write(
