@@ -45,12 +45,12 @@ for (const [table, columns] of tables) {
   output += `${table}: { Row: {\n${columns.map((row) => `${row.column_name}: ${type(row)};`).join('\n')}\n}; Insert: {\n${columns.map((row) => `${row.column_name}${row.column_default !== null || row.is_nullable === 'YES' || row.is_generated === 'ALWAYS' ? '?' : ''}: ${row.is_generated === 'ALWAYS' ? 'never' : type(row)};`).join('\n')}\n}; Update: {\n${columns.map((row) => `${row.column_name}?: ${row.is_generated === 'ALWAYS' ? 'never' : type(row)};`).join('\n')}\n}; Relationships: ${JSON.stringify(relationships)} };\n`;
 }
 const { rows: functions } = await db.query(
-  `select p.proname, p.proargnames, array(select t.typname from unnest(p.proargtypes) with ordinality a(oid,n) join pg_type t on t.oid=a.oid order by a.n) as argtypes, r.typname as result from pg_proc p join pg_namespace n on n.oid=p.pronamespace join pg_type r on r.oid=p.prorettype where n.nspname='public' order by p.proname`,
+  `select p.proname, p.proargnames, p.pronargdefaults, array(select t.typname from unnest(p.proargtypes) with ordinality a(oid,n) join pg_type t on t.oid=a.oid order by a.n) as argtypes, r.typname as result from pg_proc p join pg_namespace n on n.oid=p.pronamespace join pg_type r on r.oid=p.prorettype where n.nspname='public' order by p.proname`,
 );
 const functionTypes = functions
   .map(
     (f) =>
-      `${f.proname}: { Args: { ${(f.proargnames ?? []).map((name, index) => `${name}: ${type({ udt_name: f.argtypes[index], is_nullable: 'NO' })}`).join('; ')} }; Returns: ${type({ udt_name: f.result, is_nullable: 'NO' })} }`,
+      `${f.proname}: { Args: { ${(f.proargnames ?? []).map((name, index) => `${name}${index >= f.argtypes.length - f.pronargdefaults ? '?' : ''}: ${type({ udt_name: f.argtypes[index], is_nullable: 'NO' })}`).join('; ') || '[_ in never]: never'} }; Returns: ${type({ udt_name: f.result, is_nullable: 'NO' })} }`,
   )
   .join(';');
 output += `}; Views: { [_ in never]: never }; Functions: { ${functionTypes} }; Enums: { [_ in never]: never }; CompositeTypes: { [_ in never]: never } } };\n`;

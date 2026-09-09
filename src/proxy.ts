@@ -25,9 +25,10 @@ export async function proxy(request: NextRequest) {
   headers.set('x-nonce', nonce);
   headers.set('Content-Security-Policy', csp);
   let response = NextResponse.next({ request: { headers } });
-  const protectedRoute = /^\/(ar|en)\/(account|portal|driver|login)(\/|$)/.test(
-    request.nextUrl.pathname,
-  );
+  const protectedRoute =
+    /^\/(ar|en)\/(account|portal|driver|login|register|recover|password|request)(\/|$)/.test(
+      request.nextUrl.pathname,
+    );
   if (env && protectedRoute) {
     const client = createServerClient(env.url, env.publishableKey, {
       cookieOptions: { secure: request.nextUrl.protocol === 'https:', sameSite: 'lax', path: '/' },
