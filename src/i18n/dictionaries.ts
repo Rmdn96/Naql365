@@ -1,0 +1,39 @@
+import type { Locale } from './config';
+const ar = {
+  brand: 'نقل 365', positioning: 'منصة تشغيل النقل', message: 'من الطلب إلى التسليم... كل شيء تحت السيطرة.',
+  description: 'أساس موحّد لإدارة عمليات النقل، بوضوح وثقة.', home: 'الرئيسية', account: 'حساب العميل', portal: 'بوابة العمليات', driver: 'بوابة السائق',
+  language: 'English', skip: 'انتقل إلى المحتوى', foundation: 'المرحلة التأسيسية', intro: 'نبني أساسًا متينًا لرحلة نقل متكاملة.',
+  introBody: 'مساحة واحدة تربط الطلبات والفرق والعمليات. يجري تجهيز المنصة لإطلاق خدماتها على مراحل.',
+  journey: 'رحلة العملية', request: 'الطلب', quote: 'عرض السعر', order: 'الأمر', job: 'المهمة', trip: 'الرحلة',
+  clarity: 'وضوح في كل خطوة', clarityBody: 'بنية مترابطة تجعل متابعة العمل أكثر وضوحًا.',
+  control: 'صلاحيات محددة', controlBody: 'مساحات منفصلة للعميل وفريق العمليات والسائق.',
+  ready: 'أساس قابل للتوسع', readyBody: 'دعم العربية والإنجليزية منذ البداية.',
+  rights: 'نقل 365 · منصة تشغيل النقل', login: 'تسجيل الدخول', authBody: 'يجري تجهيز واجهة الدخول. حسابات الموظفين والسائقين تُدار عبر الدعوات.',
+  unavailable: 'الخدمة غير مهيأة بعد', unavailableBody: 'لم يكتمل إعداد اتصال هذه البيئة بخدمة الهوية.',
+  unauthorized: 'لا تملك صلاحية الوصول', unauthorizedBody: 'تحتاج إلى عضوية فعالة والصلاحية المناسبة لهذه المساحة.',
+  protectedBody: 'تم التحقق من هويتك وصلاحية الوصول إلى هذه المساحة.', empty: 'لا توجد عناصر بعد', emptyBody: 'ستظهر هنا عناصر العمل عند إتاحة المرحلة التالية.',
+  loading: 'جارٍ التحميل…', error: 'تعذر إكمال العملية', errorBody: 'حاول مرة أخرى بعد قليل.', retry: 'حاول مجددًا', notFound: 'الصفحة غير موجودة', back: 'العودة للرئيسية',
+  showcase: 'نظام التصميم', components: 'مكونات الواجهة الأساسية', name: 'الاسم', region: 'المنطقة', choose: 'اختر', sample: 'مثال',
+  primary: 'إجراء أساسي', secondary: 'إجراء ثانوي', status: 'الحالة', active: 'نشط', notice: 'هذه أمثلة عرض فقط ولا تمثل بيانات تشغيلية.',
+  modal: 'عرض الحوار', modalTitle: 'حوار توضيحي', modalBody: 'يدعم لوحة المفاتيح وإدارة التركيز والإغلاق بمفتاح Escape.', close: 'إغلاق', success: 'تم التحقق بنجاح',
+} as const;
+type Dictionary = { [K in keyof typeof ar]: string };
+const en: Dictionary = {
+  brand: 'Naql365', positioning: 'Transportation Operating Platform', message: 'From request to delivery... everything under control.',
+  description: 'A unified foundation for clear, confident transportation operations.', home: 'Home', account: 'Customer account', portal: 'Operations portal', driver: 'Driver portal',
+  language: 'العربية', skip: 'Skip to content', foundation: 'Foundation phase', intro: 'A strong foundation for the entire journey.',
+  introBody: 'One space connecting requests, teams and operations. The platform is being prepared for a phased launch.',
+  journey: 'The operation journey', request: 'Request', quote: 'Quote', order: 'Order', job: 'Job', trip: 'Trip',
+  clarity: 'Clarity at every step', clarityBody: 'Connected architecture makes work easier to follow.',
+  control: 'Defined access', controlBody: 'Dedicated spaces for customers, operations and drivers.',
+  ready: 'Built to grow', readyBody: 'Arabic and English support from the beginning.',
+  rights: 'Naql365 · Transportation Operating Platform', login: 'Sign in', authBody: 'The sign-in interface is being prepared. Staff and driver accounts are managed through invitations.',
+  unavailable: 'Service not configured yet', unavailableBody: 'Identity service configuration is incomplete for this environment.',
+  unauthorized: 'Access denied', unauthorizedBody: 'An active membership and the appropriate permission are required for this space.',
+  protectedBody: 'Your identity and access permission have been verified.', empty: 'No items yet', emptyBody: 'Work items will appear here when the next phase becomes available.',
+  loading: 'Loading…', error: 'Unable to complete the operation', errorBody: 'Please try again shortly.', retry: 'Try again', notFound: 'Page not found', back: 'Back to home',
+  showcase: 'Design system', components: 'Core interface components', name: 'Name', region: 'Region', choose: 'Select', sample: 'Example',
+  primary: 'Primary action', secondary: 'Secondary action', status: 'Status', active: 'Active', notice: 'These are display examples only, not operational records.',
+  modal: 'Open dialog', modalTitle: 'Example dialog', modalBody: 'Supports keyboard navigation, focus management and closing with Escape.', close: 'Close', success: 'Successfully verified',
+};
+export function dictionary(locale: Locale): Dictionary { return locale === 'ar' ? ar : en; }
