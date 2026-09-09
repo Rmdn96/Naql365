@@ -1,37 +1,36 @@
 # Staging deployment
 
-The Vercel project is **naql365-staging**, project ID prj_QYnu3qbPjQWyAcgNDYoDmpH6sN8z, in team naql365. Framework: Next.js. Runtime: Node 24. Install: `npm ci`. Build: `npm run build`. No dependency versions were upgraded for Phase 0.5.
+Project: **naql365-staging** (`prj_QYnu3qbPjQWyAcgNDYoDmpH6sN8z`), team naql365. Next.js, Node 24, `npm ci`, `npm run build`. Dependencies remain pinned.
 
-APP_ENV, STAGING_AUTH_SMOKE_ENABLED and both public Supabase variables are configured for **Preview only**. No service-role, database password or Supabase management token is configured in Vercel. `.vercel` and all local environment files are ignored. Deployment protection remains enabled; do not disable it to run tests.
+## Verified first-deployment behavior and one-time bootstrap
 
-## First-deployment blocker
+Vercel CLI 59.13.1 accepts Preview but removes that target before serializing the creation request (`postDeployment`). Vercel classifies the first deployment of a new project as Production. The original Preview-only attempt was removed; repeating it did not provide a supported solution.
 
-Closeout audit (2026-09-09) confirmed the exact client behavior in the installed Vercel CLI 59.13.1. In `postDeployment`, `deploymentOptions.target === "preview"` causes `deploymentOptions.target = undefined` before the JSON creation request. Thus the CLI flag is not an explicit Preview constraint in the API request. Vercel then applies its documented first-deployment Production behavior to this new project. The project currently has no Git link, no targets and zero deployments; `autoAssignCustomDomains` is true. These are observed settings, not evidence that changing the Git link or domain assignment would prevent the provider's first-deployment classification.
+The owner subsequently explicitly authorized one infrastructure-only bootstrap. The supported command was `vercel deploy --prebuilt --prod --skip-domain --yes --scope naql365`, run from an isolated Build Output API directory outside the application repository. It contained a 372-byte static 404/noindex payload, no functions, environment variables, application or database connection. It was not a Naql365 production release.
 
-The API documentation describes omitted target as Preview but the domain documentation explicitly describes first deployment as Production. No supported setting or first-deployment procedure was found that guarantees Preview for this project. The API's `target: null` response denotes a genuine Preview; a renamed environment, an unaliased Production deployment or a manually changed label does not qualify. No new creation attempt was made during closeout because the same known fallback could recreate Production. No project setting was changed speculatively.
+Bootstrap ID: dpl_A9tbFm4qjbwJbRR8CmzK6oXcvWqY. Classification: Production, READY. `--skip-domain` prevented normal production domain promotion but Vercel still assigned the derived alias naql365-staging-naql365.vercel.app. Deployment Protection remained enabled. Record actual aliases; do not claim this flag guarantees zero aliases. The canonical report records final cleanup.
 
-Read-back through the individual environment-variable API verified the Preview Supabase URL and an exact match between its publishable key and the independent Staging project's key, without logging values. The list endpoint returns encrypted payloads even when passed a decrypt query; comparing those ciphertexts to plaintext is not a valid isolation test. Development and Production contain zero Naql365 variables. APP_ENV and STAGING_AUTH_SMOKE_ENABLED remain server-only, Preview-scoped sensitive records; their stored values cannot be read back, so runtime validation remains pending.
+The following application deployment was independently verified READY with `target: null` (Preview). The bootstrap is never acceptance evidence. See [official staged deployments](https://vercel.com/docs/cli/deploying-from-cli), [Build Output API](https://vercel.com/docs/build-output-api/configuration), and [API target semantics](https://vercel.com/docs/rest-api/deployments/create-a-new-deployment).
 
-For reproducibility, the inspected CLI package contains `dist/chunks/chunk-N6HP5BLI.js`, function `postDeployment`, around line 11434; `parseTarget` first accepts the supplied flag, and the client subsequently removes Preview before serialization. References: [creation API target semantics](https://vercel.com/docs/rest-api/deployments/create-a-new-deployment), [individual variable read-back](https://vercel.com/docs/rest-api/projects/retrieve-the-decrypted-value-of-an-environment-variable-of-a-project-by-id), and the first-deployment documentation below.
+## Accepted Preview procedure
 
-On 2026-09-09, Vercel CLI 59.13.1 received `deploy --target preview --yes --scope naql365` but returned `target: production` for the new project's first deployment. The build succeeded. Deployment dpl_2LdRGd4cmXDbVqd9HmJwoV9r2GTS was immediately removed; the project subsequently had zero deployments. It had no Supabase credentials or business data. This attempt is not accepted as Staging evidence, and the report does not claim that no Production-classified deployment occurred.
+1. Fetch GitHub and verify a clean reviewed feature/develop commit. Never deploy the application with `--prod` for Staging.
+2. Use the linked staging project and `vercel deploy --target preview --yes --scope naql365`. Independently read the deployment API: READY, target null, expected project, branch and commit. CLI deployment from the GitHub branch is the current operator-controlled workflow; automatic Git deployment is not connected.
+3. Keep all four application variables in Preview only: APP_ENV, STAGING_AUTH_SMOKE_ENABLED, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY. Development and Production have no Naql365 variables. No service-role/management/database credential is installed in Vercel.
+4. Derive APP_URL from VERCEL_URL in Staging. Rotate the exact Site URL and Arabic/English callback entries in `config/staging/supabase/config.toml` to the verified deployment origin, then diff/push only that config. Retire the previous origin; never allow arbitrary preview hosts.
+5. Run the guarded hosted acceptance harness with secure process configuration and Deployment Protection enabled. The automation bypass is scoped to the exact application origin, never forwarded to Supabase or third-party scripts.
+6. Record the deployment source SHA separately from later documentation/test-only commits. No promotion or merge is implied by successful acceptance.
 
-Vercel's [domain documentation](https://vercel.com/docs/domains/working-with-domains/deploying-and-redirecting) states that a new project's first deployment is Production. This conflicts with this phase's explicit Preview-only restriction. Do not repeatedly retry, retain a placeholder Production deployment, promote a branch or change APP_ENV to work around the restriction. The application now rejects this target/configuration mismatch before compilation.
+Current accepted application origin: https://naql365-staging-lc8qnrb3y-naql365.vercel.app. Deployment dpl_F1v9VXeVjoZswHi6deeU7p6Uu3y1, source d3c834b6be4b048a98e3739dbfdf5f6a883e1b75.
 
-The owner must obtain a Vercel-supported Preview-only provisioning path for this team/project (or explicitly revise the environment restriction in a separate instruction). No such revision is assumed. No support message was sent on the user's behalf. The project is provisioned but the deployment gate is BLOCKED.
+## Provider tooling and security
 
-## After the provisioning blocker is resolved
+Deployment Protection remains `all_except_custom_domains`; no custom public production domain is configured for this application. Preview feedback was disabled at the project level using the supported `enablePreviewFeedback: false` setting. An already-created deployment can still inject Vercel's toolbar script. Existing CSP correctly denies its cross-origin fetches. Asset inspection downloads every DOM-observed script in the Node test process and never relaxes CSP or omits scripts. Provider script requests receive no protection credential.
 
-1. Verify the exact team/project and independent Supabase reference. Preserve Preview-only environment scopes and protection.
-2. Deploy the reviewed feature commit through the supported Preview path. Check the API's actual target, READY status and git SHA; a successful build alone is insufficient.
-3. Use the deployment's generated URL as APP_URL, or allow the server to derive it from VERCEL_URL. Configure exact Supabase Site URL and callback allowlist before Auth testing. If using a stable preview alias, explicitly configure APP_URL to that alias and test that origin.
-4. Run `npm run test:staging:browser` with the verified STAGING_BASE_URL and a controlled test identity in secure process variables. Keep protection enabled; use a project-scoped VERCEL_AUTOMATION_BYPASS_SECRET only for automation. The browser fixture sends it only to the exact app origin, never to Supabase or another redirect target.
-5. Record deployment ID, source SHA, target, checks and timestamps without credentials. Never print raw project environment payloads or debug CLI output.
+[Toolbar settings](https://vercel.com/docs/vercel-toolbar/managing-toolbar) and [project API](https://vercel.com/docs/rest-api/projects/update-an-existing-project) document the supported controls. Do not add third-party CSP permissions merely for toolbar convenience.
 
 ## Git and CI
 
-Baseline: 184ac2374a7e9611b4b265efc7dac21b57b7a2b1. Workflow: feature/* → develop → main. Phase 0.5 was branched from develop at that baseline. main and develop were created at the existing baseline because they did not previously exist; no merge was performed.
+Workflow: feature/* → develop → main. Both protected branches require a PR, an approving review, resolved conversations and strict current checks named `Lint, types, tests and production build` and `Supabase migrations and RLS`. Rules apply to admins; force pushes/deletion are disabled. No merge was performed. The existing repository default branch remains unchanged.
 
-Both branches require a PR, an approving review, resolved conversations and current successful checks named `Lint, types, tests and production build` and `Supabase migrations and RLS`. Rules apply to admins; force pushes and branch deletion are disabled. A separate reviewer is needed; the author cannot approve their own PR. GitHub repository default branch was left unchanged.
-
-CI installs the lockfile, checks formatting/secrets/lint/types, runs unit and embedded integration tests, builds, runs desktop/mobile E2E, reconstructs a separate local Supabase database on the Linux runner, runs SQL security tests, regenerates types and typechecks. Cloud staging commands are operator-controlled and never silently run against a shared database on ordinary PRs.
+CI installs the lockfile, checks formatting/secrets/lint/types, runs unit/integration, production build, desktop/mobile E2E, reconstructs a fresh local Supabase instance on Linux, runs SQL security tests, regenerates types and typechecks. Hosted database commands are operator-controlled and never run against a shared project from untrusted PRs.

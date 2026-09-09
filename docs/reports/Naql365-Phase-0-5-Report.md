@@ -1,140 +1,204 @@
-# Naql365 — Phase 0.5 Staging Gate Closeout
+# Naql365 — Phase 0.5 Final Closeout Report
 
-Date: 2026-09-09. Canonical report. Phase 1 remains locked.
+Date: 2026-09-09. Canonical report. This final closeout supersedes the earlier GO WITH CONDITIONS assessment preserved in Git at 563baeb. Phase 1 implementation has not started.
 
-## A. Previous State
+## A. Starting State
 
-Previous decision: GO WITH CONDITIONS. Closeout began with a fetch and a clean working tree on `feature/phase-0-5-staging-gate` at the expected commit `9f9b5a84ac4713be79cd990a5cf33adb402fcc2a`. Remote: [Rmdn96/Naql365](https://github.com/Rmdn96/Naql365). [Baseline CI](https://github.com/Rmdn96/Naql365/actions/runs/34362179559) was read back as completed/success for that exact SHA.
+Fetched origin before changes. Branch was `feature/phase-0-5-staging-gate`, HEAD `563baeb00bbb927fffcdf5a5397dde601b47fb8b`, working tree clean. Remote: [Rmdn96/Naql365](https://github.com/Rmdn96/Naql365). The expected baseline and its [successful CI](https://github.com/Rmdn96/Naql365/actions/runs/34366815108) were verified. Supabase/migrations/RLS/storage and branch protection already had accepted foundation evidence; genuine Preview and hosted acceptance were outstanding.
 
-Previously accepted gates were Repository, Branch, Staging Supabase, fresh migrations, generated types, RLS, Storage, CI and branch protection. Vercel was blocked; hosted Auth, authorization, browser, accessibility, SEO and security remained incomplete. These prior service/local tests are not represented as new hosted-browser evidence.
+## B. Verified Vercel Root Cause
 
-## B. Root Cause of Vercel Misclassification
+Installed Vercel CLI 59.13.1 accepts `--target preview` but `postDeployment` removes that target before serializing the creation request. The new project's first deployment was then classified Production by Vercel. This matches the provider's documented first-deployment rule; no private backend mechanism is guessed. Changing labels or retaining the failed first app deployment was not used as Preview proof.
 
-The audit found a concrete client-side mechanism in the installed Vercel CLI 59.13.1: `parseTarget` accepts `--target preview`, but `postDeployment` subsequently assigns `undefined` to that target before serializing the deployment creation request. The API therefore does not receive an explicit Preview constraint from this CLI flag.
+The owner explicitly revised the restriction for one minimum infrastructure bootstrap. The original failed deployment loop was not repeated.
 
-The original creation response classified the first deployment as `production`. Vercel's [official domain documentation](https://vercel.com/docs/domains/working-with-domains/deploying-and-redirecting) states that a new project's first deployment is Production. The observed response is consistent with that provider rule after the client omits the target. Private backend implementation was not available; no unverified internal condition is asserted.
+## C. Supported Bootstrap Method Used
 
-Current API read-back: project naql365-staging (`prj_QYnu3qbPjQWyAcgNDYoDmpH6sN8z`), team naql365, no Git link, no targets, zero deployments, autoAssignCustomDomains enabled, deployment protection enabled. No evidence establishes that merely connecting Git or disabling domain aliases changes first-deployment target classification. Those settings were not changed speculatively.
+Used the official staged-production command `vercel deploy --prebuilt --prod --skip-domain --yes --scope naql365` from an isolated directory outside the application repository. Its Build Output API package was 372 bytes: static 404/noindex/no-store content, restrictive CSP, no functions, no Next.js app, no credentials and no database connection. No application guard was weakened and no Production-scoped variable was added.
 
-The [creation API documentation](https://vercel.com/docs/rest-api/deployments/create-a-new-deployment) describes an omitted target as Preview and a `null` response target as Preview; its first-deployment exception is documented separately. No supported route guaranteeing a genuine first Preview deployment for this project was found. A custom label or unaliased Production deployment would not satisfy the task.
+References: [staged deployments](https://vercel.com/docs/cli/deploying-from-cli), [Build Output API](https://vercel.com/docs/build-output-api/configuration), [deployment target semantics](https://vercel.com/docs/rest-api/deployments/create-a-new-deployment).
 
-Reproduction: inspect Vercel CLI 59.13.1 `dist/chunks/chunk-N6HP5BLI.js`, `postDeployment`, around line 11434, and `dist/chunks/chunk-RN6V5ODW.js`, `parseTarget`. No new deployment was attempted during closeout after identifying this known fallback.
+## D. Bootstrap Deployment Result
 
-## C. Changes Made
+One bootstrap was created: `dpl_A9tbFm4qjbwJbRR8CmzK6oXcvWqY`, READY, classified Production. It was infrastructure bootstrap only, never a Naql365 release or Staging acceptance evidence. Vercel assigned the derived alias `naql365-staging-naql365.vercel.app` despite `--skip-domain`; no custom production domain was attached. Unauthenticated requests encountered Deployment Protection.
 
-Documentation only: clarified the verified target-omission mechanism, current cloud configuration, exact environment-isolation checks, secure Auth allowlist strategy and unresolved acceptance requirements. The canonical report was updated rather than creating a competing report. No application, dependency, migration, RLS, permission or cloud configuration changes were made during closeout.
+After two genuine Preview deployments existed and the project had a Preview target, the bootstrap was removed through Vercel CLI. API read-back showed only the two READY Preview deployments. No Production database, business data, payment or messaging resource was introduced or modified. No intended production traffic was directed to it.
 
-## D. Final Preview Deployment
+## E. Genuine Preview Evidence
 
-**BLOCKED.** There is no accepted Preview deployment and no Preview URL to report. The previously removed deployment `dpl_2LdRGd4cmXDbVqd9HmJwoV9r2GTS` is not reused or counted as evidence. No new Production deployment, promotion, fake Preview label or bootstrap Production workaround was created.
+Accepted Preview: [naql365-staging-lc8qnrb3y-naql365.vercel.app](https://naql365-staging-lc8qnrb3y-naql365.vercel.app).
 
-Required architecture remains: reviewed GitHub feature/develop commit → actual Vercel Preview → Preview environment variables → independent Supabase Staging. The Git integration is not yet connected because automatic creation must not reintroduce the known first-deployment fallback.
+- Project: naql365-staging, `prj_QYnu3qbPjQWyAcgNDYoDmpH6sN8z`, team naql365.
+- Deployment: `dpl_F1v9VXeVjoZswHi6deeU7p6Uu3y1`.
+- Independent API classification: `target: null` (Preview), `readyState: READY`.
+- Git metadata: `feature/phase-0-5-staging-gate`, `d3c834b6be4b048a98e3739dbfdf5f6a883e1b75`.
+- Later changes concern test tooling, hosted Auth URL configuration and documentation; deployed application source/dependencies are unchanged.
 
-## E. Environment Isolation
+The preceding genuine Preview `dpl_Hfa3XwqPUJ2P9dBu6adRHM21yUfd` proved the bootstrap path worked. Final hosted evidence below uses the accepted origin above. The workflow is an operator-controlled CLI deployment of the GitHub branch; automatic Git deployment is not connected. No promotion or merge was performed.
 
-Current environment inventory was read from Vercel. Development and Production contain zero Naql365 variables. These four records are scoped only to Preview:
+## F. Environment Isolation
 
-| Variable name                        | Exposure    | Environment  | Verification                                                             |
-| ------------------------------------ | ----------- | ------------ | ------------------------------------------------------------------------ |
-| NEXT_PUBLIC_SUPABASE_URL             | Public      | Preview only | Individual decrypted read-back matches independent Staging origin        |
-| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Public      | Preview only | Exact in-memory comparison with Staging project's publishable key passed |
-| APP_ENV                              | Server-only | Preview only | Sensitive record exists; stored value is not returned by API             |
-| STAGING_AUTH_SMOKE_ENABLED           | Server-only | Preview only | Sensitive record exists; stored value is not returned by API             |
+Fresh API read-back verified the Preview URL points to independent Supabase Staging, and its publishable key exactly matches that project's key in memory. No secret values are recorded.
 
-No values are included here. The list API returned ciphertext for encrypted entries; verification used the [individual variable API](https://vercel.com/docs/rest-api/projects/retrieve-the-decrypted-value-of-an-environment-variable-of-a-project-by-id), with comparisons in memory only. No service-role key, management token or database password is configured in the application. Runtime flag verification awaits Preview.
+| Variable                             | Exposure                                    | Scope                                                           |
+| ------------------------------------ | ------------------------------------------- | --------------------------------------------------------------- |
+| NEXT_PUBLIC_SUPABASE_URL             | Public                                      | Preview only                                                    |
+| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Public                                      | Preview only                                                    |
+| APP_ENV                              | Server-only                                 | Preview only                                                    |
+| STAGING_AUTH_SMOKE_ENABLED           | Server-only                                 | Preview only                                                    |
+| APP_URL                              | Server-only                                 | Derived from VERCEL_URL in Staging; no stored override          |
+| VERCEL_AUTOMATION_BYPASS_SECRET      | Privileged test-process/platform credential | Controlled automation only; never a public application variable |
 
-## F. Supabase Auth Configuration
+Development and Production have zero Naql365 application variables. No service-role key, database password or Supabase management token is installed in the app. The independent Staging project is `zuvyfeflkzlciuaauxba`, in the Naql365 organization, ACTIVE_HEALTHY. The existing other Naql365 project was not reused.
 
-The independent Staging project `zuvyfeflkzlciuaauxba` remains ACTIVE_HEALTHY, PostgreSQL 17, in the correct Naql365 organization. The pre-existing project was not modified. Hosted config diff reports zero pending changes for declared security settings. Site URL still has the provider's localhost default and redirect allowlist is empty; these are not a valid completed hosted configuration.
+## G. Supabase Auth URLs
 
-Chosen strategy: for each accepted Preview deployment, verify its HTTPS origin and use exactly that origin as APP_URL/Site URL plus its exact `/auth/callback` entry. Retire the previous allowlist entry when replacing the active staging deployment. No team-wide or unrestricted wildcard is needed. This controlled per-deployment rotation is maintainable for the gate and avoids accepting unrelated deployments. It cannot be applied until a genuine Preview origin exists.
+Site URL is the exact accepted Preview origin. Redirect allowlist contains only its `/auth/callback?locale=ar` and `/auth/callback?locale=en` entries. The previous origin was removed. Server callbacks derive from the trusted deployment origin and use the internal redirect allowlist; no unrestricted wildcard or client-selected external destination is allowed.
 
-## G. Hosted PKCE Evidence
+The maintainable initial strategy is explicit per-deployment rotation: verify READY/Preview, update the small hosted config, diff/push, then test that exact origin. Hosted config diff returned zero pending updates to declared settings. Nine provider-only defaults remained unchanged. Local Supabase config was never pushed to hosted Staging.
 
-**BLOCKED.** No hosted browser → PKCE callback → session → account journey was executed. The current password-login smoke form does not initiate PKCE; prior password API success is not PKCE proof. Real Arabic and English callback, matching verifier, refresh persistence, logout and denial after logout remain required. No localhost run was substituted.
+## H. Hosted PKCE
 
-## H. Hosted Authorization Evidence
+PASS. The technical email-link action uses the SSR client and `shouldCreateUser: false`; it stores the verifier and selects the locale callback on the server. It is gated off in Production and does not reveal account existence.
 
-**PARTIAL.** Previously accepted real customer JWT/REST/RPC tests proved customer/staff separation, no role from metadata, denied self-promotion, tenant/customer isolation and immediate suspension effects. Foundation source is unchanged at closeout. The hosted protected account shell, suspended-user navigation and server-authoritative route probes still lack a genuine Preview origin and were not retested locally as a substitute.
+A mailbox explicitly designated by the operator was used for a temporary Staging customer identity. Real Supabase emails were opened in the same Chrome profile that initiated the flow. Verification links were checked in memory for the exact Staging host/callback and followed without printing their values.
 
-## I. Hosted RLS Evidence
+Arabic reached `/ar/account`; English reached `/en/account`. Both displayed the protected customer shell and retained it after reload. A scoped SQL aggregate observed one S256 flow, zero sessions and no prior sign-in before the first link; after completion it observed zero pending S256 flows and one signed-in session. No code/token was selected for evidence. These were actual `exchangeCodeForSession` callbacks, not mocked responses or password-login substitutes.
 
-**PASS retained for the database gate.** The three hosted migration versions were read back during closeout and match the repository: 20260909000100, 20260909000200 and 20260909000300. No SQL or policy changes occurred. Prior hosted shared SQL and real JWT checks covered organization/customer isolation, membership integrity, audit tampering, storage isolation and suspension. The requested unchanged passing tests were not unnecessarily reconstructed again against the shared hosted project. Fresh Linux CI still verifies migrations/RLS/types for the final branch.
+## I. Hosted Authentication
 
-## J. Hosted Storage Evidence
+PASS. Automated real password login works on Preview. Actual AR/EN PKCE, session establishment, page refresh, logout and denial after logout were separately observed. The session probe returns authorized only for a valid permitted user. Secure/SameSite=Lax cookies were verified over HTTPS. Service tests verified refresh and rejection of a signed-out refresh token.
 
-**PASS retained for the Storage service; application path BLOCKED.** Prior real service checks verified owner access, peer/other-tenant denial, no public exposure, authorized signing, denial of new signing after suspension, and rejection after 60-second expiry. The complete service run finished with successful fixture cleanup. Neither policies nor application code changed. The hosted application file-redirect route must still be tested from genuine Preview; this report does not equate the prior service check with that missing path.
+## J. Hosted Authorization
 
-## K. Browser Smoke Results
+PASS. The browser's real customer JWT cannot gain staff access, edit its membership type, read another organization or customer, or forge audit records. Synthetic SUPER_ADMIN user metadata grants no role. The mailbox address does not assign permissions; membership and role rows do.
 
-**BLOCKED for closeout hosted evidence.** No accepted URL exists for AR/EN public routes, login, PKCE, session, protected shell, logout, suspended membership, storage, desktop or mobile. The existing hosted harness/protocol is prepared but its existence is not PASS. Earlier 18 local E2E passes remain regression evidence only.
+In the final serialized desktop and mobile runs, the suspension probe explicitly returned Auth identity HTTP 200 and database permission denied. The account rendered the forbidden shell, the session endpoint returned 403, and new private-file access failed. Restoring/removing only the fixture completed normally. No client-only permission check or weakened policy was introduced.
 
-## L. Accessibility Results
+## K. RLS and Migration Reconstruction
 
-**PARTIAL.** Earlier local axe, keyboard, focus and viewport checks remain recorded regression evidence. Hosted `/ar`, `/en`, Arabic/English login and authenticated account labels, landmarks, contrast and keyboard/RTL/LTR checks are outstanding. No new hosted axe result is claimed.
+PASS. The three unchanged repository migrations match hosted history and hashes:
 
-## M. SEO Results
+| Migration                                 | SHA-256                                                          |
+| ----------------------------------------- | ---------------------------------------------------------------- |
+| 20260909000100_identity_and_domain.sql    | 2d56c2730a089a92bf604414833a580a1ad9fd7b65dc8c7526484a677bd2e9fe |
+| 20260909000200_private_storage.sql        | 430c5f82d25ee8a4380cc7cd8250940bbf3387d074bfa334294d6bd1cc45f97c |
+| 20260909000300_role_integrity_indexes.sql | 3caa0956772206ffb8e9ff407eae77d83d7beae186b80bee0cfebc7c0b5a5848 |
 
-**PARTIAL.** The unchanged foundation includes locale-aware titles/metadata, canonical/hreflang, structured data and non-production noindex/robots/empty-sitemap protections. Real HTTPS output and structured data have not been verified on Preview. Local output is not accepted as hosted evidence.
+Hosted shared SQL assertions passed again after browser acceptance. All 37 public tables have RLS. Generated hosted types typecheck and produce no schema diff. The earlier fresh hosted reconstruction remains valid; final Linux CI also reconstructs from an empty Supabase instance, verifies RLS and regenerates types. No migration repair, manual schema patch or permissive policy was used.
 
-## N. Security Results
+## L. Storage
 
-**PARTIAL.** Closeout verified Preview-only environment scopes and exact Staging public-key/origin isolation without reporting values. App/migration/dependency/security source is unchanged. Deployment protection remains enabled, and the existing guard rejects non-production app configuration on Vercel Production before compilation. No production data or configuration was modified.
+PASS. Harmless private PDF fixtures verified owner download, same-tenant peer denial, cross-tenant denial, no direct public exposure, authorized signing, unauthorized signing denial and expiry. The real hosted application file route was tested from the browser. Its 60-second signed URL worked initially and failed after 65 seconds. Suspension immediately denied authenticated reads and new signing. All uploaded fixtures were removed.
 
-Hosted CSP, security headers, cookie/refresh behavior, browser assets/source exposure, callback redirects, private-file application access and runtime logs remain unverified. No secret exposure or failed RLS result was observed during this read-only closeout; absence of a hosted application prevents a complete security PASS.
+Existing signed URLs are bounded bearer capabilities until expiry; suspension does not revoke a previously issued URL before that expiry. This is documented service behavior, not an RLS bypass.
 
-## O. Regression Test Results
+## M. Hosted Browser Tests
 
-No code or infrastructure fix was applied, so the previously accepted 52 unit/integration tests, 18 E2E tests, build, generated types and hosted service assertions were not repeated merely to substitute for hosted evidence. After the documentation changes, the branch CI runs the complete existing quality gate: install, formatting, secret scan, lint, typecheck, unit/integration, build, E2E, full Supabase migration reconstruction/RLS and generated types. No check is skipped or changed to continue-on-error.
+PASS: **12/12** in the final complete serialized run, six each on desktop and mobile Chromium. Coverage: AR/EN pages, login/root routing, robots/sitemap, real password session, refresh, account/staff denial, logout, post-logout denial, live suspension, private storage, browser assets and responsive behavior. Real email PKCE was additionally executed in Chrome in both locales on this same deployment.
 
-## P. CI Result
+Earlier diagnostic runs were not accepted: a browser fetch of provider-injected Vercel tooling was correctly denied by CSP; a vendor string literal caused a naive source-map check to report a false positive. The harness now inspects every DOM-observed script in Node and lexically checks actual comment directives, with regression tests. No assets or security assertions are skipped.
 
-The exact starting SHA's CI is PASS: [34362179559](https://github.com/Rmdn96/Naql365/actions/runs/34362179559). Final documentation commit CI is verified before delivery; the final delivery records its exact SHA and run URL. No prior green run will be described as the new commit's result.
+One overlapping run redirected a suspended customer to login instead of the expected forbidden shell. It granted no protected access but was not accepted. Provider throttling is a possible explanation, not a verified root cause. Hosted suites now hold an exclusive checkout lock and run sequentially. The final single run retained a valid Auth identity and passed every original authorization assertion on both viewports. No provider rate limit was relaxed.
 
-## Q. Test Data Cleanup
+## N. Accessibility
 
-Closeout created no users, organizations, files or business data and required no fixture deletion. The last completed service run removed its identities/objects/organizations; required catalogues/schema were retained. No Production data was touched.
+PASS. Hosted axe checks found no WCAG A/AA violations on AR/EN homepages, login and protected account shells across desktop/mobile. Semantic landmarks/headings, input labels, keyboard focus and RTL/LTR were checked. Page reloads and localized login/logout were exercised in the real browser.
 
-## R. Files Changed
+## O. SEO
 
-- docs/deployment.md
-- docs/staging.md
-- docs/staging-smoke-test.md
-- docs/reports/Naql365-Phase-0-5-Report.md
+PASS. Hosted titles, locale metadata, canonical and Arabic/English alternates match the accepted origin. JSON-LD foundation is present. Non-production responses carry noindex protection, robots disallows all paths, and sitemap has no indexed URLs. Internal shells remain non-indexable. Staging is not presented as a production search property.
 
-No source, migration, dependency, workflow, environment-example or security-policy files changed during closeout.
+## P. Security
 
-## S. Commits
+PASS for the requested smoke scope. CSP, headers, private/no-store boundaries, safe redirects, cookie flags and server-authoritative access were verified. Application assets and provider-injected scripts were inspected without sending privileged test values into the browser or forwarding the protection credential to third parties. No privileged fixture credential or actual source-map directive was found.
 
-Continue on `feature/phase-0-5-staging-gate` from `9f9b5a84ac4713be79cd990a5cf33adb402fcc2a`. Closeout documentation is committed and pushed on this branch. Final HEAD/CI and clean working-tree state are supplied with delivery. No merge to develop/main was performed.
+A bounded 1,000-record Vercel Preview log audit found zero error-level records, no secret/session-token patterns and no Auth query values; it included 18 callback records. Application code does not log provider responses, credentials or signed URLs. The tracked-file secret scan and diff review passed. These are bounded verification results, not an exhaustive penetration-test claim.
+
+Preview toolbar was disabled using the supported project setting. Existing deployment injection may remain; CSP was not widened. Deployment Protection remains enabled. No Production data was accessed or changed.
+
+## Q. Regression Tests
+
+PASS: formatting, secret scan, lint, strict typecheck, **60 Unit/Integration tests**, production build and **18 local E2E tests**. Hosted migration/RLS/type verification and real Auth/Storage service tests passed again after browser acceptance. CI reconstructs fresh Supabase and runs both mandatory jobs without ignored failures.
+
+An intermediate CI run failed formatting of a test method chain. The formatting was corrected and the subsequent full CI passed. No dependency, lint rule, TypeScript rule, RLS policy or required CI check was disabled to pass.
+
+## R. CI and Branch Protection
+
+Verified full code/test revision: `8746b1d579907930e61ba71eee4143f8818c701c`, [CI run 34373158208](https://github.com/Rmdn96/Naql365/actions/runs/34373158208), completed/success for both required jobs. The final documentation commit's exact HEAD and CI run are checked and supplied in delivery; this report's enclosing commit can be resolved with Git without embedding a recursive self-hash.
+
+Fresh GitHub API read-back confirmed main/develop require PR review, strict current CI, administrator enforcement and disabled force pushes. No merge occurred. No permissions/setup blocker remains.
+
+## S. Cleanup
+
+The controlled mailbox identity, synthetic Auth users, profiles, organizations, customers, file registry rows and storage objects were removed. Read-back showed zero rows in each of those fixture categories. Required catalogues remain: 8 roles, 17 permissions and 63 catalogue audit records. Schema and private buckets remain intact.
+
+The single bootstrap deployment was removed only after two READY Previews existed. Both Preview deployments remain; the accepted Preview was never removed. Temporary project automation bypass credentials are revoked after acceptance; subsequent automation must obtain a new authorized credential securely. No credentials appear in this report or Git.
 
 ## T. Final Acceptance Matrix
 
-Previously passing foundation/service gates are retained only where the closeout confirmed unchanged source/state. Hosted closeout requirements remain explicit; no PARTIAL/BLOCKED entry is relabeled PASS to close the gate.
+| Gate              | Result | Evidence                                                                 |
+| ----------------- | ------ | ------------------------------------------------------------------------ |
+| Repository        | PASS   | Fetched expected remote/baseline; reviewed scoped diff                   |
+| Branch            | PASS   | Continued feature/phase-0-5-staging-gate; logical commits, no merge      |
+| Staging Vercel    | PASS   | Independent READY/target null API result; actual Preview URL             |
+| Staging Supabase  | PASS   | Independent healthy staging project, isolated configuration              |
+| Fresh migrations  | PASS   | Fresh hosted baseline; current history/hash verification; fresh Linux CI |
+| Generated types   | PASS   | Regenerated from hosted schema, no diff, strict typecheck                |
+| Auth              | PASS   | Real AR/EN email PKCE, password login, refresh, logout                   |
+| Authorization     | PASS   | Valid identity plus denied suspended permission/routes; no escalation    |
+| RLS               | PASS   | 37/37 tables; shared SQL and real browser/JWT isolation                  |
+| Storage           | PASS   | Hosted owner/peer/public/expiry/suspension tests and cleanup             |
+| Browser smoke     | PASS   | Final complete 12/12 desktop/mobile plus real Chrome PKCE                |
+| Accessibility     | PASS   | Hosted axe, labels/landmarks/focus, RTL/LTR                              |
+| SEO               | PASS   | Hosted metadata/canonical/hreflang/JSON-LD/noindex/robots/sitemap        |
+| Security          | PASS   | Environment isolation, CSP/cookies/redirects/assets/log audit            |
+| CI                | PASS   | Both mandatory jobs successful; final delivery verifies exact HEAD       |
+| Branch protection | PASS   | Fresh API read-back on main/develop                                      |
 
-| Gate              | Result  | Evidence                                                                                |
-| ----------------- | ------- | --------------------------------------------------------------------------------------- |
-| Repository        | PASS    | Fetch, correct baseline/remote, clean initial tree                                      |
-| Branch            | PASS    | Correct feature branch, safe continuation                                               |
-| Staging Vercel    | BLOCKED | Live API: zero deployments; confirmed first-deployment target mechanism                 |
-| Staging Supabase  | PASS    | Correct independent project, ACTIVE_HEALTHY, no config drift                            |
-| Fresh migrations  | PASS    | Matching hosted migration history; unchanged SQL; prior fresh reconstruction retained   |
-| Generated types   | PASS    | Unchanged generated types; exact baseline CI passed; final CI checks regeneration       |
-| Auth              | PARTIAL | Prior API verification retained; hosted PKCE/session/URL gates blocked                  |
-| Authorization     | PARTIAL | Prior real JWT/RLS checks retained; hosted shells blocked                               |
-| RLS               | PASS    | Unchanged verified policies/migrations; prior hosted assertions retained                |
-| Storage           | PASS    | Prior real service isolation/expiry retained; hosted application route outstanding      |
-| Browser smoke     | BLOCKED | No genuine Preview URL; no localhost substitution                                       |
-| Accessibility     | PARTIAL | Prior local evidence only; hosted checks outstanding                                    |
-| SEO               | PARTIAL | Source foundation unchanged; hosted output outstanding                                  |
-| Security          | PARTIAL | Current environment isolation verified; hosted runtime/bundle/cookie checks outstanding |
-| CI                | PASS    | Verified baseline; final closeout run recorded at delivery                              |
-| Branch protection | PASS    | Fresh API read-back: PR/checks/admin enforcement, no force pushes on main/develop       |
+## U. Files Changed
 
-## U. Final Decision
+- config/staging/supabase/config.toml
+- docs/deployment.md
+- docs/staging.md
+- docs/staging-smoke-test.md
+- docs/security.md
+- docs/reports/Naql365-Phase-0-5-Report.md
+- package.json
+- scripts/staging/exclusive-run.mjs
+- scripts/staging/verify-browser.mjs
+- scripts/staging/verify-database.mjs
+- scripts/staging/verify-services.mjs
+- src/app/auth/actions.ts
+- src/components/auth/smoke-login-form.tsx
+- src/i18n/dictionaries.ts
+- tests/helpers/source-map.ts
+- tests/staging/auth.spec.ts
+- tests/staging/public.spec.ts
+- tests/staging/safe-reporter.ts
+- tests/staging/security.spec.ts
+- tests/unit/source-map.test.ts
+- tests/unit/staging-pkce.test.ts
 
-**GO WITH CONDITIONS**
+No migration, business workflow, production resource, dependency version or lockfile was changed.
 
-Phase 0.5 is **not closed** and Phase 1 remains locked. The unresolved external prerequisite is a Vercel-supported first deployment that is genuinely Preview, without any Production bootstrap or label workaround. Once that path is available, configure the exact Auth URLs and execute every hosted gate above. No Phase 1 implementation was started.
+## V. Commits and Operational Limits
 
-Owner action: obtain confirmation from Vercel for project naql365-staging that a first deployment can be provisioned as Preview (API response target null / dashboard Preview) without creating Production. Provide the original removed deployment ID and explain that the installed CLI strips the Preview target. No support message was sent without authorization. The current prohibition on Production remains unchanged.
+| Commit  | Change                                                                           |
+| ------- | -------------------------------------------------------------------------------- |
+| d50bcc6 | Gated Staging PKCE initiation and boundary tests                                 |
+| d3c834b | Disposable hosted acceptance fixtures and security coverage; deployed app source |
+| a8d064c | Inspect provider assets without relaxing CSP                                     |
+| b8e42cf | Distinguish actual source-map directives from string literals                    |
+| 2ee6c67 | Serialize hosted suites and record safe suspension probes                        |
+| 8746b1d | Normalize test formatting; full CI successful                                    |
+
+Final branch: `feature/phase-0-5-staging-gate`. Final documentation commit SHA, its CI run and clean working-tree confirmation are included with delivery. Changes are pushed; develop/main are not merged.
+
+Operational limits: Preview requires authorized Vercel access; deployment/allowlist rotation is currently manual; real email PKCE depends on a controlled mailbox/provider email quota; hosted suites must be serialized. Automatic Git deployment and production operational readiness are outside this closeout. These do not replace or weaken any passed gate.
+
+## W. Final Decision
+
+**GO FOR PHASE 1**
+
+Phase 0.5 hosted acceptance is complete with zero BLOCKED and zero PARTIAL critical gates. This is permission to propose the next phase, not to begin it automatically. No Phase 1 business feature was implemented. Stop here and wait for the owner's explicit Phase 1 approval.
