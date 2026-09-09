@@ -30,6 +30,7 @@ export async function proxy(request: NextRequest) {
   );
   if (env && protectedRoute) {
     const client = createServerClient(env.url, env.publishableKey, {
+      cookieOptions: { secure: request.nextUrl.protocol === 'https:', sameSite: 'lax', path: '/' },
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll(values) {

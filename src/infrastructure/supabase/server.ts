@@ -3,12 +3,14 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import type { Database } from './database.types';
+import { appUrl } from '@/infrastructure/config/server-env';
 
 export async function createSupabaseServerClient(writableCookies = false) {
   const env = getPublicEnv();
   if (!env) throw new Error('Supabase environment is not configured');
   const store = await cookies();
   return createServerClient<Database>(env.url, env.publishableKey, {
+    cookieOptions: { secure: appUrl().protocol === 'https:', sameSite: 'lax', path: '/' },
     cookies: {
       getAll() {
         return store.getAll();

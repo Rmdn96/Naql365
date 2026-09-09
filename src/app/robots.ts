@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next';
 import { appUrl } from '@/infrastructure/config/server-env';
+import { preventIndexing } from '@/infrastructure/config/deployment-env';
 export default function robots(): MetadataRoute.Robots {
+  if (preventIndexing()) return { rules: { userAgent: '*', disallow: '/' } };
   return {
     rules: {
       userAgent: '*',
