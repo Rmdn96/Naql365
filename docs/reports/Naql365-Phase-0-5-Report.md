@@ -103,7 +103,9 @@ Live hosted browser bundle, cookie, CSP and runtime-log verification remains pen
 
 ## P. CI
 
-Local formatting, lint, typecheck, unit/integration tests (52), production build and E2E (18) passed after fixes. Both CI jobs are required by branch protection. The initial Phase 0.5 CI run `34361114506` passed Supabase reconstruction/RLS/types but failed formatting because nested CLI cache JSON had been accidentally tracked. Those non-secret cache files were removed from Git and the ignore rule broadened. No error was ignored. Final rerun evidence is recorded below after completion.
+**PASS.** [CI run 34361752493](https://github.com/Rmdn96/Naql365/actions/runs/34361752493) completed successfully for `975f950c3c48f8c1625491d781bbead2434d1ae0`. Both required jobs passed: `Lint, types, tests and production build` and `Supabase migrations and RLS`. This includes install, formatting, secret checks, lint, typecheck, 52 unit/integration tests, production build, 18 desktop/mobile E2E tests, full Supabase reconstruction/RLS, generated types and subsequent typechecking.
+
+The initial Phase 0.5 CI run `34361114506` passed its database job but failed formatting because nested CLI cache JSON had been accidentally tracked. The job log identified `config/staging/supabase/.temp/linked-project.json`. Those non-secret cache files were removed from Git and the ignore rule broadened. No error was ignored. Local checks also passed; historical secret-pattern scanning covered 12 commits with no findings. An actual negative build check confirmed the Vercel Production/Staging mismatch aborts before compilation. Hosted services were rerun after final Auth settings, with exit 0 and successful cleanup. The subsequent report-only commit does not change the validated implementation; its own CI is checked in the final delivery.
 
 ## Q. Branch Protection
 
@@ -144,5 +146,5 @@ Local formatting, lint, typecheck, unit/integration tests (52), production build
 | Accessibility     | PARTIAL | Local AR/EN axe/keyboard passed; hosted login/account pending                                 |
 | SEO               | PARTIAL | Local metadata/robots/noindex passed; real origin pending                                     |
 | Security          | PARTIAL | DB/API/storage review passed; hosted bundle/cookie/CSP/log checks pending                     |
-| CI                | PARTIAL | Initial database job passed; formatting corrected; final rerun pending                        |
+| CI                | PASS    | Run 34361752493 on 975f950: both required jobs passed                                         |
 | Branch protection | PASS    | main/develop protections configured and read back                                             |
