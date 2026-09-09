@@ -2,6 +2,8 @@
 
 Result vocabulary: PASS requires captured execution evidence; PARTIAL covers executed subsets; BLOCKED means the required environment/setup is unavailable. Any unexpected Auth/RLS/Storage result stops the gate. Never treat missing configuration as a passing skipped test.
 
+Closeout status: no hosted browser test was executed because Vercel has no accepted Preview deployment. Do not rerun against localhost and relabel it as hosted evidence. Previously completed SQL/service checks remain historical evidence; the unchanged foundation and current migration history were verified during closeout. Real Arabic/English PKCE is still an independent required gate: the current password-login smoke form does not itself initiate PKCE.
+
 ## Executable checks
 
 | Command                       | Coverage                                                                                                               | Preconditions                                                             |
