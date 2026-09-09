@@ -31,11 +31,15 @@ try {
   const temp = mkdtempSync(join(tmpdir(), 'naql365-rls-'));
   const file = join(temp, 'assertions.sql');
   try {
-    writeFileSync(
-      file,
-      readFileSync('supabase/tests/foundation.test.sql', 'utf8').split('-- Supabase TAP report')[0],
-    );
-    supabase(['db', 'query', '--linked', '--project-ref', ref, '--file', file]);
+    for (const test of readdirSync('supabase/tests')
+      .filter((name) => name.endsWith('.test.sql'))
+      .sort()) {
+      writeFileSync(
+        file,
+        readFileSync(`supabase/tests/${test}`, 'utf8').split('-- Supabase TAP report')[0],
+      );
+      supabase(['db', 'query', '--linked', '--project-ref', ref, '--file', file]);
+    }
   } finally {
     unlinkSync(file);
     rmdirSync(temp);

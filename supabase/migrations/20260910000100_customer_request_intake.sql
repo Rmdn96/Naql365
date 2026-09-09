@@ -105,11 +105,24 @@ end $$;
 revoke all on function public.onboard_customer(text,text,text) from public,anon;
 grant execute on function public.onboard_customer(text,text,text) to authenticated;
 
+create function public.customer_enrollment_state() returns text language sql stable security definer set search_path='' as $$
+ select case when auth.uid() is null then 'unavailable'
+ when exists(select 1 from public.customers c where c.profile_id=auth.uid() and private.has_permission(c.organization_id,'account.access')) then 'active'
+ when exists(select 1 from public.organization_memberships where profile_id=auth.uid()) then 'unavailable'
+ else 'new' end
+$$;
+revoke all on function public.customer_enrollment_state() from public,anon;
+grant execute on function public.customer_enrollment_state() to authenticated;
+
 -- All input envelopes are strictly allowlisted at the database boundary too.
 create function private.only_keys(value jsonb, keys text[]) returns boolean language sql immutable set search_path='' as $$
  select jsonb_typeof(value)='object' and not exists(select 1 from jsonb_object_keys(value) k where not k=any(keys))
 $$;
 revoke all on function private.only_keys(jsonb,text[]) from public,anon,authenticated;
+create function private.text_fields(value jsonb, keys text[]) returns boolean language sql immutable set search_path='' as $$
+ select not exists(select 1 from jsonb_each(value) p where p.key=any(keys) and jsonb_typeof(p.value)<>'string')
+$$;
+revoke all on function private.text_fields(jsonb,text[]) from public,anon,authenticated;
 create function private.request_result(r public.requests) returns jsonb language sql stable set search_path='' as $$
  select jsonb_build_object('id',r.id,'revision',r.revision,'status',r.status,'reference',r.reference)
 $$;
@@ -150,6 +163,7 @@ begin
  if p_revision is null or r.revision<>p_revision then raise exception 'Draft changed; reload before saving' using errcode='40001'; end if;
  if p_operation='save' then
   if not private.only_keys(p_payload,array['service_id','description','notes','pickup','delivery','items','additional_service_ids','preferred_date','time_window','contact_name','contact_phone','contact_email','contact_notes'])
+   or not private.text_fields(p_payload,array['service_id','description','notes','preferred_date','time_window','contact_name','contact_phone','contact_email','contact_notes'])
    or jsonb_typeof(p_payload->'items') is distinct from 'array' or jsonb_array_length(p_payload->'items')>50
    or jsonb_typeof(p_payload->'additional_service_ids') is distinct from 'array' or jsonb_array_length(p_payload->'additional_service_ids')>10
   then raise exception 'Invalid draft fields' using errcode='22023'; end if;
@@ -165,6 +179,9 @@ begin
   foreach month_key in array array['pickup','delivery'] loop
    location=p_payload->month_key;
    if location is null or not private.only_keys(location,array['city','district','address','notes','floor','elevator','access_notes'])
+    or not private.text_fields(location,array['city','district','address','notes','access_notes'])
+    or (location->'floor' is not null and jsonb_typeof(location->'floor') not in ('number','null'))
+    or (location->'elevator' is not null and jsonb_typeof(location->'elevator') not in ('boolean','null'))
    then raise exception 'Invalid location' using errcode='22023'; end if;
    if not coalesce(property,false) and (nullif(location->>'floor','') is not null or location->>'elevator' is not null or coalesce(location->>'access_notes','')<>'')
    then raise exception 'Property fields not applicable' using errcode='22023'; end if;
@@ -174,7 +191,7 @@ begin
   end loop;
   delete from public.request_items where request_id=r.id;
   for item in select * from jsonb_array_elements(p_payload->'items') loop
-   if not private.only_keys(item,array['description','quantity','notes']) or item->>'quantity' is null or item->>'description' is null then raise exception 'Invalid item' using errcode='22023'; end if;
+   if not private.only_keys(item,array['description','quantity','notes']) or not private.text_fields(item,array['description','notes']) or jsonb_typeof(item->'quantity') is distinct from 'number' or item->>'description' is null then raise exception 'Invalid item' using errcode='22023'; end if;
    insert into public.request_items(organization_id,request_id,description,quantity,notes,position)
     values(r.organization_id,r.id,item->>'description',(item->>'quantity')::integer,coalesce(item->>'notes',''),i); i=i+1;
   end loop;
@@ -212,6 +229,12 @@ end $$;
 revoke all on function public.request_command(text,uuid,integer,uuid,jsonb) from public,anon;
 grant execute on function public.request_command(text,uuid,integer,uuid,jsonb) to authenticated;
 
+create function public.create_customer_request(p_key uuid) returns jsonb language sql security invoker set search_path='' as $$
+ select public.request_command('create',null,0,p_key,'{}'::jsonb)
+$$;
+revoke all on function public.create_customer_request(uuid) from public,anon;
+grant execute on function public.create_customer_request(uuid) to authenticated;
+
 create function public.request_file_command(p_operation text,p_request_id uuid,p_file_id uuid,p_mime text default null,p_size integer default null) returns jsonb
 language plpgsql security definer set search_path='' as $$
 declare r public.requests; f public.file_objects;
@@ -224,7 +247,7 @@ begin
  if p_operation='reserve' then
   select f0.* into f from public.file_objects f0 join public.request_attachments a on a.file_id=f0.id where a.request_id=r.id and f0.id=p_file_id;
   if found then
-   if f.owner_profile_id<>auth.uid() or f.mime_type is distinct from p_mime or f.size_bytes is distinct from p_size or f.upload_state<>'pending' then raise exception 'File retry mismatch' using errcode='22023'; end if;
+   if f.owner_profile_id<>auth.uid() or f.mime_type is distinct from p_mime or f.size_bytes is distinct from p_size or f.upload_state not in ('pending','ready') then raise exception 'File retry mismatch' using errcode='22023'; end if;
    return jsonb_build_object('id',f.id,'path',f.object_name,'state',f.upload_state);
   end if;
   if p_mime is null or p_mime not in ('image/jpeg','image/png','image/webp') or p_size is null or p_size not between 1 and 3145728 then raise exception 'Invalid image' using errcode='22023'; end if;
@@ -267,8 +290,9 @@ alter table public.request_locations enable row level security;
 alter table public.request_additional_services enable row level security;
 revoke all on public.additional_services,public.request_locations,public.request_additional_services from public,anon,authenticated;
 grant select on public.additional_services,public.request_locations,public.request_additional_services to authenticated;
-create policy additional_services_read on public.additional_services for select to authenticated using(private.is_member(organization_id) and active);
+create policy additional_services_read on public.additional_services for select to authenticated using(private.is_member(organization_id) and (active or exists(select 1 from public.request_additional_services a where a.additional_service_id=additional_services.id and private.owns_request(a.organization_id,a.request_id))));
 create policy services_customer_read on public.services for select to authenticated using(active and private.has_permission(organization_id,'account.access'));
+create policy services_request_history_read on public.services for select to authenticated using(exists(select 1 from public.requests r where r.service_id=services.id and private.owns_customer(r.organization_id,r.customer_id)));
 create policy request_locations_read on public.request_locations for select to authenticated using(private.owns_request(organization_id,request_id) or private.has_permission(organization_id,'requests.read'));
 create policy request_additional_read on public.request_additional_services for select to authenticated using(private.owns_request(organization_id,request_id) or private.has_permission(organization_id,'requests.read'));
 
@@ -277,12 +301,22 @@ create policy registered_private_files_read on storage.objects for select to aut
  bucket_id in ('attachments','pod-files','documents') and exists(select 1 from public.file_objects f where f.bucket_id=storage.objects.bucket_id and f.object_name=storage.objects.name and f.upload_state='ready'
  and ((f.owner_profile_id=auth.uid() and private.is_member(f.organization_id)) or private.has_permission(f.organization_id,'files.read')))
 );
-create policy request_images_insert on storage.objects for insert to authenticated with check(
- bucket_id='attachments' and exists(select 1 from public.file_objects f join public.request_attachments a on a.file_id=f.id join public.requests r on r.id=a.request_id
- where f.bucket_id=storage.objects.bucket_id and f.object_name=storage.objects.name and f.owner_profile_id=auth.uid() and f.upload_state='pending'
- and f.mime_type in ('image/jpeg','image/png','image/webp') and f.size_bytes between 1 and 3145728 and f.created_at>now()-interval '20 minutes'
- and r.status='DRAFT' and private.owns_customer(r.organization_id,r.customer_id) and private.has_permission(r.organization_id,'account.access'))
-);
+create function private.can_upload_request_image(bucket text,path text,object_metadata jsonb) returns boolean
+language plpgsql security definer set search_path='' as $$
+declare r public.requests; f public.file_objects;
+begin
+ if bucket<>'attachments' or not storage.allow_only_operation('object.upload') then return false; end if;
+ select request.* into r from public.requests request join public.request_attachments a on a.request_id=request.id
+ join public.file_objects file on file.id=a.file_id where file.bucket_id=bucket and file.object_name=path for update of request;
+ if not found or r.status<>'DRAFT' or not private.owns_customer(r.organization_id,r.customer_id) or not private.has_permission(r.organization_id,'account.access') then return false; end if;
+ select * into f from public.file_objects where bucket_id=bucket and object_name=path for update;
+ return f.owner_profile_id=auth.uid() and f.upload_state='pending' and f.created_at>now()-interval '20 minutes'
+ and f.mime_type in ('image/jpeg','image/png','image/webp') and f.size_bytes between 1 and 3145728
+ and object_metadata->>'mimetype'=f.mime_type and (object_metadata->>'size')::bigint=f.size_bytes;
+end $$;
+revoke all on function private.can_upload_request_image(text,text,jsonb) from public,anon;
+grant execute on function private.can_upload_request_image(text,text,jsonb) to authenticated;
+create policy request_images_insert on storage.objects for insert to authenticated with check(private.can_upload_request_image(bucket_id,name,metadata));
 -- Official operation-aware SELECT supports deletion without permitting download/signing.
 create policy request_images_delete_lookup on storage.objects for select to authenticated using(
  storage.allow_only_operation('object.delete_many') and bucket_id='attachments' and exists(

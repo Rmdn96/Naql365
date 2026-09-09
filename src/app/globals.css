@@ -521,3 +521,191 @@ dialog::backdrop {
     transition: none !important;
   }
 }
+/* Customer intake extends the existing logical-direction design tokens. */
+.stack {
+  display: grid;
+  gap: 1rem;
+}
+.customer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-block: 1.5rem;
+}
+.wizard {
+  max-width: 64rem;
+  margin-inline: auto;
+}
+.wizard-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.wizard-progress {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+.wizard-progress button {
+  width: 100%;
+  min-height: 4rem;
+  border: 1px solid #c3cfdb;
+  background: white;
+  color: #0b1f33;
+  padding: 0.65rem;
+  text-align: start;
+  cursor: pointer;
+  font: inherit;
+}
+.wizard-progress button span {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-inline-end: 0.5rem;
+  background: #e5ebf2;
+}
+.wizard-progress button[aria-current] {
+  border-color: #075cc9;
+  border-block-end: 3px solid #075cc9;
+  font-weight: 700;
+}
+.wizard-progress button[aria-current] span {
+  background: #075cc9;
+  color: white;
+}
+.wizard-fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: 1rem;
+}
+.wizard-fields:disabled {
+  opacity: 0.7;
+}
+.wizard-actions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 1rem;
+  margin-block: 1.5rem;
+  border-block-start: 1px solid #c3cfdb;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  z-index: 2;
+}
+.form-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.form-columns section {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+.item-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr auto;
+  align-items: end;
+  gap: 1rem;
+  padding-block: 1rem;
+  border-block-end: 1px solid #c3cfdb;
+}
+.item-row h3 {
+  grid-column: 1/-1;
+  margin: 0;
+}
+.choice {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0.75rem;
+  border: 1px solid #c3cfdb;
+  cursor: pointer;
+}
+.choice input {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.request-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-block: 2rem;
+}
+.request-summary section {
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #d7dfe8;
+  overflow-wrap: anywhere;
+}
+.request-summary dl {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0.75rem;
+}
+.request-summary dd {
+  margin: 0;
+  white-space: pre-wrap;
+}
+.request-summary p {
+  white-space: pre-wrap;
+}
+.request-reference {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.request-list {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1rem;
+}
+.request-list > li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid #d7dfe8;
+}
+.save-status {
+  margin-block: 1rem;
+  font-weight: 600;
+  min-height: 1.5rem;
+}
+.field input[type='file'] {
+  width: 100%;
+  max-width: 100%;
+}
+@media (max-width: 640px) {
+  .wizard-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .form-columns,
+  .request-summary,
+  .item-row {
+    grid-template-columns: 1fr;
+  }
+  .request-reference {
+    font-size: 1.25rem;
+  }
+  .request-summary section {
+    padding: 1rem;
+  }
+  .wizard-actions {
+    margin-inline: -0.5rem;
+  }
+}

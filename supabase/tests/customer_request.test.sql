@@ -11,7 +11,7 @@ begin
  raise exception 'Command unexpectedly accepted';
 end $$;
 insert into public.organizations(id,name) values('a0000000-0000-4000-8000-000000000001','Intake fixture A'),('a0000000-0000-4000-8000-000000000002','Intake fixture B');
-insert into private.customer_enrollment values(true,'a0000000-0000-4000-8000-000000000001');
+insert into private.customer_enrollment values(true,'a0000000-0000-4000-8000-000000000001') on conflict(singleton) do update set organization_id=excluded.organization_id;
 insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data) values
  ('b0000000-0000-4000-8000-000000000001','intake-a@example.test',now(),'{"role":"SUPER_ADMIN"}'),
  ('b0000000-0000-4000-8000-000000000002','intake-b@example.test',now(),'{}'),
@@ -72,13 +72,13 @@ set local role authenticated;
 select public.request_file_command('finalize',(select (value->>'id')::uuid from intake_state where key='draft'),'e0000000-0000-4000-8000-000000000001');
 select public.intake_assert((select count(*)=1 from storage.objects),'ready private file read');
 update intake_state set value=public.request_command('submit',(value->>'id')::uuid,3,gen_random_uuid()) where key='draft';
-select public.intake_assert((select value->>'status'='SUBMITTED' and value->>'reference' ~ '^N365-[0-9]{6}-000001$' from intake_state where key='draft'),'reference and state');
+select public.intake_assert((select value->>'status'='SUBMITTED' and value->>'reference' ~ '^N365-[0-9]{6}-[0-9]{6,}$' from intake_state where key='draft'),'reference and state');
 select public.intake_assert(public.request_command('submit',(select (value->>'id')::uuid from intake_state where key='draft'),0,gen_random_uuid())=(select value from intake_state where key='draft'),'submit retry stable');
 select public.intake_reject(format('select public.request_command(''save'',%L,4,gen_random_uuid(),%L)',(select value->>'id' from intake_state where key='draft'),(select value from intake_state where key='payload')),'55000');
 select public.intake_reject(format('select public.request_command(''cancel'',%L,4,gen_random_uuid())',(select value->>'id' from intake_state where key='draft')),'55000');
 select public.intake_reject(format('select public.request_file_command(''remove'',%L,''e0000000-0000-4000-8000-000000000001'')',(select value->>'id' from intake_state where key='draft')),'55000');
 reset role;
-select public.intake_assert((select count(*)=1 from public.audit_logs where action='request.submitted'),'one submission audit');
+select public.intake_assert((select count(*)=1 from public.audit_logs where action='request.submitted' and entity_id=(select (value->>'id')::uuid from intake_state where key='draft')),'one submission audit');
 select set_config('request.jwt.claim.sub','b0000000-0000-4000-8000-000000000002',true);
 set local role authenticated;
 select public.onboard_customer('Fixture B','+966500000002','en');

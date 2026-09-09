@@ -1,10 +1,9 @@
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
-import { CustomerAccount } from '@/components/requests/account';
-export const dynamic = 'force-dynamic';
+import { IdentityPage } from '@/components/auth/identity-page';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <CustomerAccount locale={locale} />;
+  return <IdentityPage locale={locale} mode="recover" />;
 }

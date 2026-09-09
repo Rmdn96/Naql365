@@ -12,11 +12,13 @@ export async function signedFileUrl(input: unknown): Promise<string> {
   // Caller supplies an identifier, never an arbitrary bucket or path. Both lookups are RLS-scoped.
   const { data: file, error } = await client
     .from('file_objects')
-    .select('bucket_id,object_name')
+    .select('bucket_id,object_name,upload_state')
     .eq('id', parsed.data.fileId)
     .maybeSingle();
   if (error) throw new AppError('internal', 'File lookup failed');
   if (!file) throw new AppError('not_found', 'File unavailable');
+  if (file.upload_state && file.upload_state !== 'ready')
+    throw new AppError('not_found', 'File unavailable');
   const { data, error: signingError } = await client.storage
     .from(file.bucket_id)
     .createSignedUrl(file.object_name, 60, { download: true });
