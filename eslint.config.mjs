@@ -8,7 +8,18 @@ export default defineConfig([
   { rules: { '@typescript-eslint/no-explicit-any': 'error' } },
   {
     files: ['src/domain/**/*.ts'],
-    rules: { 'no-restricted-imports': ['error', { patterns: ['next', 'next/*', 'react', '@supabase/*', '@/infrastructure/*', '@/app/*'] }] },
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        { patterns: ['next', 'next/*', 'react', '@supabase/*', '@/infrastructure/*', '@/app/*'] },
+      ],
+    },
   },
-  globalIgnores(['.next/**', 'coverage/**', 'playwright-report/**', 'test-results/**', 'next-env.d.ts']),
+  globalIgnores([
+    '.next/**',
+    'coverage/**',
+    'playwright-report/**',
+    'test-results/**',
+    'next-env.d.ts',
+  ]),
 ]);

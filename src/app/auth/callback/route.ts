@@ -12,7 +12,9 @@ export async function GET(request: NextRequest) {
     const client = await createSupabaseServerClient(true);
     const { error } = await client.auth.exchangeCodeForSession(code);
     if (!error) {
-      const response = NextResponse.redirect(new URL(safeRedirect(request.nextUrl.searchParams.get('next'), locale), origin));
+      const response = NextResponse.redirect(
+        new URL(safeRedirect(request.nextUrl.searchParams.get('next'), locale), origin),
+      );
       response.headers.set('Cache-Control', 'private, no-store');
       return response;
     }

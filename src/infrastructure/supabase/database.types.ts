@@ -28,7 +28,7 @@ vehicle_id?: string | null;
 team_id?: string | null;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"assignments_organization_id_driver_id_fkey","columns":["organization_id","driver_id"],"referencedRelation":"drivers","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"assignments_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"assignments_organization_id_team_id_fkey","columns":["organization_id","team_id"],"referencedRelation":"teams","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"assignments_organization_id_trip_id_fkey","columns":["organization_id","trip_id"],"referencedRelation":"trips","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"assignments_organization_id_vehicle_id_fkey","columns":["organization_id","vehicle_id"],"referencedRelation":"vehicles","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 audit_logs: { Row: {
 id: string;
 organization_id: string | null;
@@ -62,7 +62,7 @@ occurred_at?: string;
 metadata?: Json;
 before_data?: Json | null;
 after_data?: Json | null;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"audit_logs_actor_id_fkey","columns":["actor_id"],"referencedRelation":"profiles","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"audit_logs_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false}] };
 branches: { Row: {
 id: string;
 organization_id: string;
@@ -81,7 +81,7 @@ organization_id?: string;
 name?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"branches_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false}] };
 customers: { Row: {
 id: string;
 organization_id: string;
@@ -100,7 +100,7 @@ organization_id?: string;
 profile_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"customers_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"customers_organization_id_profile_id_fkey","columns":["organization_id","profile_id"],"referencedRelation":"organization_memberships","referencedColumns":["organization_id","profile_id"],"isOneToOne":true}] };
 drivers: { Row: {
 id: string;
 organization_id: string;
@@ -119,7 +119,7 @@ organization_id?: string;
 profile_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"drivers_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"drivers_organization_id_profile_id_fkey","columns":["organization_id","profile_id"],"referencedRelation":"organization_memberships","referencedColumns":["organization_id","profile_id"],"isOneToOne":true}] };
 file_objects: { Row: {
 id: string;
 organization_id: string;
@@ -144,7 +144,7 @@ bucket_id?: string;
 object_name?: never;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"file_objects_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"file_objects_organization_id_owner_profile_id_fkey","columns":["organization_id","owner_profile_id"],"referencedRelation":"organization_memberships","referencedColumns":["organization_id","profile_id"],"isOneToOne":false}] };
 invoices: { Row: {
 id: string;
 organization_id: string;
@@ -163,7 +163,7 @@ organization_id?: string;
 order_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"invoices_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"invoices_organization_id_order_id_fkey","columns":["organization_id","order_id"],"referencedRelation":"orders","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 issues: { Row: {
 id: string;
 organization_id: string;
@@ -182,7 +182,7 @@ organization_id?: string;
 request_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"issues_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"issues_organization_id_request_id_fkey","columns":["organization_id","request_id"],"referencedRelation":"requests","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 jobs: { Row: {
 id: string;
 organization_id: string;
@@ -201,7 +201,7 @@ organization_id?: string;
 order_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"jobs_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"jobs_organization_id_order_id_fkey","columns":["organization_id","order_id"],"referencedRelation":"orders","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 notification_templates: { Row: {
 id: string;
 organization_id: string;
@@ -226,7 +226,7 @@ locale?: string;
 channel?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"notification_templates_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false}] };
 notifications: { Row: {
 id: string;
 organization_id: string;
@@ -251,7 +251,7 @@ template_id?: string | null;
 idempotency_key?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"notifications_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"notifications_organization_id_recipient_profile_id_fkey","columns":["organization_id","recipient_profile_id"],"referencedRelation":"organization_memberships","referencedColumns":["organization_id","profile_id"],"isOneToOne":false},{"foreignKeyName":"notifications_organization_id_template_id_fkey","columns":["organization_id","template_id"],"referencedRelation":"notification_templates","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 orders: { Row: {
 id: string;
 organization_id: string;
@@ -276,7 +276,7 @@ accepted_quote_version_id?: string;
 idempotency_key?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"orders_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"orders_organization_id_quote_id_accepted_quote_version_id_fkey","columns":["organization_id","quote_id","accepted_quote_version_id"],"referencedRelation":"quote_versions","referencedColumns":["organization_id","quote_id","id"],"isOneToOne":false}] };
 organization_memberships: { Row: {
 organization_id: string;
 profile_id: string;
@@ -301,7 +301,7 @@ member_type?: string;
 status?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"organization_memberships_organization_id_branch_id_fkey","columns":["organization_id","branch_id"],"referencedRelation":"branches","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"organization_memberships_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"organization_memberships_profile_id_fkey","columns":["profile_id"],"referencedRelation":"profiles","referencedColumns":["id"],"isOneToOne":false}] };
 organizations: { Row: {
 id: string;
 name: string;
@@ -342,7 +342,7 @@ provider?: string;
 provider_event_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"payment_transactions_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"payment_transactions_organization_id_payment_id_fkey","columns":["organization_id","payment_id"],"referencedRelation":"payments","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 payments: { Row: {
 id: string;
 organization_id: string;
@@ -361,7 +361,7 @@ organization_id?: string;
 order_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"payments_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"payments_organization_id_order_id_fkey","columns":["organization_id","order_id"],"referencedRelation":"orders","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 permissions: { Row: {
 id: string;
 code: string;
@@ -390,7 +390,7 @@ display_name?: string | null;
 locale?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"profiles_id_fkey","columns":["id"],"referencedRelation":"users","referencedColumns":["id"],"isOneToOne":true}] };
 quality_alerts: { Row: {
 id: string;
 organization_id: string;
@@ -409,7 +409,7 @@ organization_id?: string;
 trip_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"quality_alerts_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"quality_alerts_organization_id_trip_id_fkey","columns":["organization_id","trip_id"],"referencedRelation":"trips","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 quote_items: { Row: {
 id: string;
 organization_id: string;
@@ -428,7 +428,7 @@ organization_id?: string;
 quote_version_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"quote_items_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"quote_items_organization_id_quote_version_id_fkey","columns":["organization_id","quote_version_id"],"referencedRelation":"quote_versions","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 quote_versions: { Row: {
 id: string;
 organization_id: string;
@@ -450,7 +450,7 @@ quote_id?: string;
 version?: number;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"quote_versions_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"quote_versions_organization_id_quote_id_fkey","columns":["organization_id","quote_id"],"referencedRelation":"quotes","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 quotes: { Row: {
 id: string;
 organization_id: string;
@@ -469,7 +469,7 @@ organization_id?: string;
 request_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"quotes_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"quotes_organization_id_request_id_fkey","columns":["organization_id","request_id"],"referencedRelation":"requests","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 request_attachments: { Row: {
 id: string;
 organization_id: string;
@@ -491,7 +491,7 @@ request_id?: string;
 file_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"request_attachments_organization_id_file_id_fkey","columns":["organization_id","file_id"],"referencedRelation":"file_objects","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"request_attachments_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"request_attachments_organization_id_request_id_fkey","columns":["organization_id","request_id"],"referencedRelation":"requests","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 request_items: { Row: {
 id: string;
 organization_id: string;
@@ -510,7 +510,7 @@ organization_id?: string;
 request_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"request_items_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"request_items_organization_id_request_id_fkey","columns":["organization_id","request_id"],"referencedRelation":"requests","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 requests: { Row: {
 id: string;
 organization_id: string;
@@ -529,7 +529,7 @@ organization_id?: string;
 customer_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"requests_organization_id_customer_id_fkey","columns":["organization_id","customer_id"],"referencedRelation":"customers","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"requests_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false}] };
 reviews: { Row: {
 id: string;
 organization_id: string;
@@ -551,7 +551,7 @@ order_id?: string;
 customer_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"reviews_organization_id_customer_id_fkey","columns":["organization_id","customer_id"],"referencedRelation":"customers","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"reviews_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"reviews_organization_id_order_id_fkey","columns":["organization_id","order_id"],"referencedRelation":"orders","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 role_permissions: { Row: {
 role_id: string;
 permission_id: string;
@@ -561,7 +561,7 @@ permission_id: string;
 }; Update: {
 role_id?: string;
 permission_id?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"role_permissions_permission_id_fkey","columns":["permission_id"],"referencedRelation":"permissions","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"role_permissions_role_id_fkey","columns":["role_id"],"referencedRelation":"roles","referencedColumns":["id"],"isOneToOne":false}] };
 roles: { Row: {
 id: string;
 code: string;
@@ -593,7 +593,7 @@ organization_id?: string;
 service_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"service_areas_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"service_areas_organization_id_service_id_fkey","columns":["organization_id","service_id"],"referencedRelation":"services","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 services: { Row: {
 id: string;
 organization_id: string;
@@ -612,7 +612,7 @@ organization_id?: string;
 code?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"services_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false}] };
 support_notes: { Row: {
 id: string;
 organization_id: string;
@@ -634,7 +634,7 @@ issue_id?: string;
 author_profile_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"support_notes_organization_id_author_profile_id_fkey","columns":["organization_id","author_profile_id"],"referencedRelation":"organization_memberships","referencedColumns":["organization_id","profile_id"],"isOneToOne":false},{"foreignKeyName":"support_notes_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"support_notes_organization_id_issue_id_fkey","columns":["organization_id","issue_id"],"referencedRelation":"issues","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 teams: { Row: {
 id: string;
 organization_id: string;
@@ -653,7 +653,7 @@ organization_id?: string;
 branch_id?: string | null;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"teams_organization_id_branch_id_fkey","columns":["organization_id","branch_id"],"referencedRelation":"branches","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"teams_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false}] };
 trip_events: { Row: {
 id: string;
 organization_id: string;
@@ -681,7 +681,7 @@ event_type?: string;
 occurred_at?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"trip_events_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"trip_events_organization_id_trip_id_fkey","columns":["organization_id","trip_id"],"referencedRelation":"trips","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"trip_events_stop_fk","columns":["organization_id","trip_id","stop_id"],"referencedRelation":"trip_stops","referencedColumns":["organization_id","trip_id","id"],"isOneToOne":false}] };
 trip_stops: { Row: {
 id: string;
 organization_id: string;
@@ -703,7 +703,7 @@ trip_id?: string;
 position?: number;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"trip_stops_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"trip_stops_organization_id_trip_id_fkey","columns":["organization_id","trip_id"],"referencedRelation":"trips","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 trips: { Row: {
 id: string;
 organization_id: string;
@@ -722,7 +722,7 @@ organization_id?: string;
 job_id?: string;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"trips_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false},{"foreignKeyName":"trips_organization_id_job_id_fkey","columns":["organization_id","job_id"],"referencedRelation":"jobs","referencedColumns":["organization_id","id"],"isOneToOne":false}] };
 user_roles: { Row: {
 organization_id: string;
 profile_id: string;
@@ -738,7 +738,7 @@ organization_id?: string;
 profile_id?: string;
 role_id?: string;
 created_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"user_roles_organization_id_profile_id_fkey","columns":["organization_id","profile_id"],"referencedRelation":"organization_memberships","referencedColumns":["organization_id","profile_id"],"isOneToOne":false},{"foreignKeyName":"user_roles_role_id_fkey","columns":["role_id"],"referencedRelation":"roles","referencedColumns":["id"],"isOneToOne":false}] };
 vehicles: { Row: {
 id: string;
 organization_id: string;
@@ -757,5 +757,5 @@ organization_id?: string;
 branch_id?: string | null;
 created_at?: string;
 updated_at?: string;
-}; Relationships: [] };
+}; Relationships: [{"foreignKeyName":"vehicles_organization_id_branch_id_fkey","columns":["organization_id","branch_id"],"referencedRelation":"branches","referencedColumns":["organization_id","id"],"isOneToOne":false},{"foreignKeyName":"vehicles_organization_id_fkey","columns":["organization_id"],"referencedRelation":"organizations","referencedColumns":["id"],"isOneToOne":false}] };
 }; Views: { [_ in never]: never }; Functions: { has_permission: { Args: { organization_id: string; permission_code: string }; Returns: boolean } }; Enums: { [_ in never]: never }; CompositeTypes: { [_ in never]: never } } };

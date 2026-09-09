@@ -1,6 +1,16 @@
-export type ErrorCode = 'validation' | 'unauthenticated' | 'forbidden' | 'not_found' | 'conflict' | 'network' | 'internal';
+export type ErrorCode =
+  | 'validation'
+  | 'unauthenticated'
+  | 'forbidden'
+  | 'not_found'
+  | 'conflict'
+  | 'network'
+  | 'internal';
 export class AppError extends Error {
-  constructor(public readonly code: ErrorCode, message: string) {
+  constructor(
+    public readonly code: ErrorCode,
+    message: string,
+  ) {
     super(message);
     this.name = 'AppError';
   }

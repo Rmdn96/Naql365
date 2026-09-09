@@ -7,16 +7,42 @@ import { appUrl } from '@/infrastructure/config/server-env';
 import { headers } from 'next/headers';
 import '../globals.css';
 
-export function generateStaticParams() { return locales.map(locale => ({ locale })); }
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = dictionary(locale);
-  return { metadataBase: appUrl(), title: { default: `${t.brand} | ${t.positioning}`, template: `%s | ${t.brand}` }, description: t.description };
+  return {
+    metadataBase: appUrl(),
+    title: { default: `${t.brand} | ${t.positioning}`, template: `%s | ${t.brand}` },
+    description: t.description,
+  };
 }
-export default async function LocaleLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
+export default async function LocaleLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
   await headers(); // Per-request CSP nonces require dynamic rendering.
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <html lang={locale} dir={direction(locale)}><body><Header locale={locale} /><main id="main" tabIndex={-1}>{children}</main><Footer locale={locale} /></body></html>;
+  return (
+    <html lang={locale} dir={direction(locale)}>
+      <body>
+        <Header locale={locale} />
+        <main id="main" tabIndex={-1}>
+          {children}
+        </main>
+        <Footer locale={locale} />
+      </body>
+    </html>
+  );
 }

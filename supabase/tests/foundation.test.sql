@@ -35,10 +35,21 @@ insert into public.quotes(id,organization_id,request_id) select id,organization_
 insert into public.quote_versions(id,organization_id,quote_id,version) select id,organization_id,id,1 from public.quotes;
 insert into public.quote_versions(id,organization_id,quote_id,version) values ('40000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001',2);
 insert into public.orders(organization_id,quote_id,accepted_quote_version_id,idempotency_key) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','test-acceptance');
+insert into public.jobs(id,organization_id,order_id) select '50000000-0000-4000-8000-000000000001',organization_id,id from public.orders;
+insert into public.trips(id,organization_id,job_id) values
+ ('60000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','50000000-0000-4000-8000-000000000001'),
+ ('60000000-0000-4000-8000-000000000002','20000000-0000-4000-8000-000000000001','50000000-0000-4000-8000-000000000001');
+insert into public.trip_stops(id,organization_id,trip_id,position) values
+ ('70000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','60000000-0000-4000-8000-000000000001',0),
+ ('70000000-0000-4000-8000-000000000002','20000000-0000-4000-8000-000000000001','60000000-0000-4000-8000-000000000001',1);
 
 select public.test_assert((select bool_and(relrowsecurity) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r'),'RLS on every application table');
 select public.test_assert((select bool_and(not public) from storage.buckets where id in ('attachments','pod-files','documents')),'buckets are private');
 do $$ begin
+ begin insert into public.trip_events(organization_id,trip_id,stop_id,event_type) values ('20000000-0000-4000-8000-000000000001','60000000-0000-4000-8000-000000000002','70000000-0000-4000-8000-000000000001','test'); raise exception 'event linked to another trip stop'; exception when foreign_key_violation then null; end;
+ begin insert into public.trip_stops(organization_id,trip_id,position) values ('20000000-0000-4000-8000-000000000001','60000000-0000-4000-8000-000000000001',1); raise exception 'duplicate stop position accepted'; exception when unique_violation then null; end;
+ begin insert into public.drivers(organization_id,profile_id) values ('20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001'); raise exception 'customer linked as driver'; exception when check_violation then null; end;
+ begin update public.organization_memberships set member_type='staff' where profile_id='10000000-0000-4000-8000-000000000001'; raise exception 'incompatible membership change accepted'; exception when check_violation then null; end;
  begin insert into public.requests(organization_id,customer_id) values ('20000000-0000-4000-8000-000000000002','30000000-0000-4000-8000-000000000001'); raise exception 'cross-tenant FK accepted'; exception when foreign_key_violation then null; end;
  begin insert into public.orders(organization_id,quote_id,accepted_quote_version_id,idempotency_key) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','40000000-0000-4000-8000-000000000001','repeated-acceptance'); raise exception 'duplicate quote order accepted'; exception when unique_violation then null; end;
  begin insert into public.user_roles(organization_id,profile_id,role_id) select '20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001',id from public.roles where code='SUPER_ADMIN'; raise exception 'customer assigned staff role'; exception when check_violation then null; end;
@@ -64,6 +75,8 @@ do $$ begin
  begin insert into public.requests(organization_id,customer_id) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001'); raise exception 'unimplemented write succeeded'; exception when insufficient_privilege then null; end;
  begin insert into storage.objects(bucket_id,name) values ('attachments','20000000-0000-4000-8000-000000000002/forged'); raise exception 'storage upload bypass'; exception when insufficient_privilege then null; end;
  begin insert into public.audit_logs(action,entity_type) values ('forged','roles'); raise exception 'audit forgery succeeded'; exception when insufficient_privilege then null; end;
+ begin update public.audit_logs set action='forged'; raise exception 'audit update succeeded'; exception when insufficient_privilege then null; end;
+ begin delete from public.audit_logs; raise exception 'audit deletion succeeded'; exception when insufficient_privilege then null; end;
 end $$;
 
 select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000004',true);

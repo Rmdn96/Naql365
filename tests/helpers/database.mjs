@@ -18,6 +18,9 @@ export async function foundationDatabase() {
     grant select,insert,update,delete on storage.objects to authenticated;
   `);
   const root = new URL('../../supabase/migrations/', import.meta.url);
-  for (const file of readdirSync(root).filter(file => file.endsWith('.sql')).sort()) await db.exec(readFileSync(new URL(file, root), 'utf8'));
+  for (const file of readdirSync(root)
+    .filter((file) => file.endsWith('.sql'))
+    .sort())
+    await db.exec(readFileSync(new URL(file, root), 'utf8'));
   return db;
 }

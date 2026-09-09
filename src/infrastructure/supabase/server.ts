@@ -10,10 +10,13 @@ export async function createSupabaseServerClient(writableCookies = false) {
   const store = await cookies();
   return createServerClient<Database>(env.url, env.publishableKey, {
     cookies: {
-      getAll() { return store.getAll(); },
+      getAll() {
+        return store.getAll();
+      },
       setAll(values) {
         // Server Components are read-only. Proxy owns refresh; handlers explicitly opt in.
-        if (writableCookies) for (const { name, value, options } of values) store.set(name, value, options);
+        if (writableCookies)
+          for (const { name, value, options } of values) store.set(name, value, options);
       },
     },
   });
