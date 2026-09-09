@@ -25,10 +25,9 @@ export async function CustomerAccount({ locale }: { locale: Locale }) {
   return (
     <div className="container page narrow">
       <Card>
-        <h1>{t.account}</h1>
+        <h1>{!permitted && !onboarding ? t.forbidden : t.account}</h1>
         {!permitted && !onboarding ? (
           <Alert tone="error">
-            <h2>{t.forbidden}</h2>
             <p>{t.forbiddenBody}</p>
           </Alert>
         ) : (
