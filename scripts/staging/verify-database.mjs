@@ -10,7 +10,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { stagingProject, supabase, query } from './supabase.mjs';
+import { acquireHostedRun } from './exclusive-run.mjs';
 
+const release = acquireHostedRun();
 try {
   const ref = stagingProject();
   const migrations = readdirSync('supabase/migrations')
@@ -66,4 +68,6 @@ try {
 } catch (error) {
   console.error(error.message);
   process.exitCode = 1;
+} finally {
+  release();
 }

@@ -5,6 +5,11 @@ import type { Reporter, TestCase, TestResult, FullResult } from '@playwright/tes
 export default class SafeReporter implements Reporter {
   onTestEnd(test: TestCase, result: TestResult) {
     process.stdout.write(`${result.status}: ${test.titlePath().slice(1).join(' > ')}\n`);
+    for (const annotation of test.annotations.filter(
+      (item) => item.type === 'safe-security-probe',
+    )) {
+      process.stdout.write(`Suspension probe: ${annotation.description}\n`);
+    }
     if (result.status !== 'passed') {
       for (const error of result.errors) {
         const kind = error.message?.includes('Failed to fetch')
