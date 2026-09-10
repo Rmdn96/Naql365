@@ -21,7 +21,7 @@ The following application deployment was independently verified READY with `targ
 5. Run the guarded hosted acceptance harness with secure process configuration and Deployment Protection enabled. The automation bypass is scoped to the exact application origin, never forwarded to Supabase or third-party scripts.
 6. Record the deployment source SHA separately from later documentation/test-only commits. No promotion or merge is implied by successful acceptance.
 
-Current accepted application origin: https://naql365-staging-lc8qnrb3y-naql365.vercel.app. Deployment dpl_F1v9VXeVjoZswHi6deeU7p6Uu3y1, source d3c834b6be4b048a98e3739dbfdf5f6a883e1b75.
+The Phase 0.5 accepted origin is recorded in its canonical report. The Phase 1 candidate is https://naql365-staging-9lts8hz0n-naql365.vercel.app, deployment dpl_DfhtxhZaLvJjzSTdeYE7c5qSJZpo, application source 54f6f3220d5f371fa87ac12ef414512069e7c9c1. Its final acceptance is recorded separately in the Phase 1 report. Phase 1 Auth rotation includes four exact callback entries: AR/EN account and AR/EN password recovery. Confirmation remains required when customer registration is enabled.
 
 ## Provider tooling and security
 
@@ -31,6 +31,6 @@ Deployment Protection remains `all_except_custom_domains`; no custom public prod
 
 ## Git and CI
 
-Workflow: feature/* → develop → main. Both protected branches require a PR, an approving review, resolved conversations and strict current checks named `Lint, types, tests and production build` and `Supabase migrations and RLS`. Rules apply to admins; force pushes/deletion are disabled. No merge was performed. The existing repository default branch remains unchanged.
+Workflow: feature/* → develop → main. Both protected branches require a PR, an approving review, resolved conversations and strict current checks named `Lint, types, tests and production build` and `Supabase migrations and RLS`. Rules apply to admins; force pushes/deletion are disabled. PR #1 was integrated into develop only after the required independent approval and passing checks; Phase 1 starts from that remote develop. No Phase 1 merge or main merge is authorized. The existing repository default branch remains unchanged.
 
 CI installs the lockfile, checks formatting/secrets/lint/types, runs unit/integration, production build, desktop/mobile E2E, reconstructs a fresh local Supabase instance on Linux, runs SQL security tests, regenerates types and typechecks. Hosted database commands are operator-controlled and never run against a shared project from untrusted PRs.

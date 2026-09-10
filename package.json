@@ -19,6 +19,8 @@
     "test:staging:services": "node scripts/staging/verify-services.mjs",
     "test:staging:browser": "playwright test --config playwright.staging.config.ts",
     "test:staging:acceptance": "node scripts/staging/verify-browser.mjs",
+    "test:staging:intake": "node scripts/staging/verify-intake.mjs",
+    "staging:configure-intake": "node scripts/staging/configure-intake.mjs --apply",
     "test:db": "supabase test db",
     "db:start": "node scripts/start-supabase.mjs",
     "db:reset": "supabase db reset",

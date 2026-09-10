@@ -6,11 +6,11 @@ Repository audit; compatible stack and strict typing; modular server/domain/data
 
 No operational feature is complete or presented as available. Tables and interfaces establish relationships and extension points only.
 
-## Exact next phase: Phase 1 — Customer identity and request intake MVP
+## Current phase: Phase 1 — Customer identity and request intake MVP
 
-Start only after explicit Phase 0 review and staging configuration. Implement customer registration/sign-in/recovery and verified enrollment into an organization; then a bounded request intake and customer request list/detail. Agree on request schema, ownership, allowed transitions and validation before adding write policies. Add transactional audit events, tenant-scoped permissions, negative RLS tests and authenticated E2E coverage for each operation. If attachments are included, implement secure upload/scanning and registry lifecycle first.
+The owner authorized Phase 1 after accepted Staging closeout and the independent approval required to integrate PR #1 into develop. The implementation adds customer registration/sign-in/recovery, confirmed onboarding, persisted draft intake, private images, atomic submission and customer list/detail. Schema-gap decisions preceded migrations. Final acceptance depends on the Phase 1 report's evidence; implementation alone does not establish PASS. Malware scanning remains an explicit limitation, not a claimed feature.
 
-This recommendation does not authorize implementation now.
+Phase 2 remains locked pending explicit review and a separate approved scope. No quotation, pricing or dispatch work begins automatically after this report.
 
 ## Deliberately deferred
 

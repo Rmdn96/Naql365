@@ -4,7 +4,9 @@
 
 `20260909000100_identity_and_domain.sql`: identity, organization membership, RBAC, audit triggers and relational domain tables. Seeds only the role/permission catalogue; no organization or operational sample records. `20260909000200_private_storage.sql`: three private buckets and registry-based access policy. `20260909000300_role_integrity_indexes.sql`: reverse relationship indexes and customer/driver membership-type integrity. Apply in order via Supabase CLI to a fresh isolated environment first. Never edit an applied production migration; future changes require new migration files.
 
-Public tables (37): organizations, branches, profiles, organization_memberships, roles, permissions, user_roles, role_permissions, audit_logs; customers, drivers, vehicles, teams, services, service_areas; requests, request_items, file_objects, request_attachments; quotes, quote_versions, quote_items; orders, jobs, trips, trip_stops, trip_events, assignments; payments, payment_transactions, invoices; notification_templates, notifications; reviews, quality_alerts, issues, support_notes.
+Foundation public tables (37): organizations, branches, profiles, organization_memberships, roles, permissions, user_roles, role_permissions, audit_logs; customers, drivers, vehicles, teams, services, service_areas; requests, request_items, file_objects, request_attachments; quotes, quote_versions, quote_items; orders, jobs, trips, trip_stops, trip_events, assignments; payments, payment_transactions, invoices; notification_templates, notifications; reviews, quality_alerts, issues, support_notes.
+
+Phase 1 migration `20260910000100_customer_request_intake.sql` adds request_locations, additional_services and request_additional_services (40 public tables, all RLS), private enrollment/reference-counter tables, validated onboarding/request/file commands and normalized intake columns. `20260910000200_storage_upload_completion_guard.sql` aligns Storage preflight contentLength with final size and serializes completion against draft/reservation state. Applied migrations remain immutable. See [intake decisions](customer-request-intake.md) for the prior schema-gap inspection and state machine.
 
 Each operational table has UUID primary key, organization reference, tenant-composite unique key, created_at and updated_at. Join catalogues use natural composite primary keys. Audit events use occurred_at. Tenant FKs and composite relationship indexes support referential checks and scoped queries. No blanket soft deletion; suspension is a membership state. No business status enumeration is invented before workflow design.
 
@@ -29,7 +31,8 @@ Payment transaction provider event identifiers are unique per organization/provi
 | Operational/finance/support tables   | Denied pending workflows                | Specific read permission + tenant | Denied          |
 | Notifications                        | Own recipient + membership              | Own recipient + membership        | Denied          |
 | Audit logs                           | Denied                                  | audit.read + tenant               | Denied          |
-| Application writes                   | Denied                                  | Denied                            | Denied          |
+| Direct application table writes      | Denied                                  | Denied                            | Denied          |
+| Customer intake RPCs                 | Own active customer; validated commands | No implicit customer ownership    | Denied          |
 
 Drivers can enter only their protected shell with driver.access; dispatch/job reads await assignment-based policies. Function owners can bypass RLS to resolve membership without recursion; these narrowly scoped functions use a fixed empty search_path, derive identity from auth.uid(), have PUBLIC execution revoked and authenticated execution explicitly granted. The private schema is not exposed through the Data API. Global catalogue policies are intentionally read-only; they contain no tenants or credentials.
 
@@ -43,4 +46,4 @@ file_objects is an authorization registry. Object names are database-generated `
 
 `npm run db:types` generates complete Supabase TypeScript definitions against a running local stack. The Docker-free generator reads actual PostgreSQL metadata after applying migrations for local bootstrap. CI generates the full SDK types and typechecks all adapters against them, exporting an artifact. Never hand-edit generated types.
 
-Shared tests use rollback-only records from supabase/tests/foundation.test.sql. They check isolation, privileges, storage, metadata escalation, suspended membership, audit visibility, duplicate acceptance and cross-tenant FKs. Full Supabase CI remains required even if embedded PostgreSQL passes; embedded auth/storage schemas emulate only the contracts used by these migrations.
+Shared tests use rollback-only records from supabase/tests/foundation.test.sql and customer_request.test.sql. They check isolation, privileges, storage, metadata escalation, suspended membership, audit visibility, duplicate acceptance, cross-tenant FKs, onboarding, draft revisions, immutable submission and private upload completion. Full Supabase CI remains required even if embedded PostgreSQL passes; embedded auth/storage schemas emulate only the contracts used by these migrations.

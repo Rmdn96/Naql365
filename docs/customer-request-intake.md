@@ -32,6 +32,22 @@ Phase 1 uploads accept JPEG/PNG/WebP images only, at most 3 MiB each and 8 files
 
 Phase 2+ remains excluded: pricing, quotes, orders, dispatch, driver workflows, GPS, payments, messaging automation, AI, marketplace and billing.
 
+## Implemented customer lifecycle
+
+`/[locale]/register` uses Supabase email/password registration with confirmation and an exact PKCE callback. Confirmation establishes a session; it does not grant staff access. `account` displays onboarding for a confirmed new identity, an editable customer profile for an active enrolled customer, or an unavailable/forbidden state for suspended/ineligible participation. Password recovery uses the same origin's locale-specific `/password` callback target. All identity forms use generic localized errors and server-selected redirects.
+
+`/[locale]/request/[id]` presents eight steps: service, route, shipment/items/images, property, extras, schedule, contact and review. The API creates persisted drafts; no customer/organization identifiers are accepted from the browser. Saves debounce for 750 ms, serialize in-flight changes, retain a mutation identifier for network retries and return a visible conflict on stale revision. Internal navigation flushes pending changes; browser unload warns when unsaved. Refresh resumes persisted content, not client-local authoritative data. Successful submit navigates to the immutable detail page. My Requests paginates twenty rows and includes resumable drafts and submitted/cancelled records.
+
+Customers may cancel a draft. Attachments enter removing state and the UI supports retrying byte/registry cleanup. A cancelled request cannot be edited or submitted. An already-issued download remains a bearer capability until its sixty-second expiry; suspension blocks new access immediately. The download handler is authenticated and does not expose public bucket URLs.
+
+## Reproduction and operational configuration
+
+Apply repository migrations in order, regenerate types, then run `npm run staging:configure-intake` with the explicit guarded Staging project/organization identifiers and authenticated Supabase CLI. This idempotent operator command establishes the operating organization, private enrollment setting and small active AR/EN service/extra catalogues. These are configuration, not fabricated customer transactions. End users cannot select the enrollment organization. Production setup is outside this phase.
+
+Use the exact deployed Preview origin in the Staging Auth Site URL and four explicit redirect entries: `/auth/callback?locale=ar`, `/auth/callback?locale=en` and each locale with `&next=/{locale}/password`. Rotate these together with a new Preview; never wildcard arbitrary destinations. Preview receives only the independent Staging Supabase public URL/key; no app admin key is used.
+
+Run `npm run test:staging:intake` after configuration with the protected Preview origin and operator-only bypass credential. The harness generates disposable identities in memory, exercises AR desktop/EN mobile, tests direct HTTP authorization and removes only its own generated data. Run it sequentially with the foundation hosted suites. The report records executed results; the procedure itself is not evidence of PASS.
+
 ## Provider references
 
 - [Supabase password/SSR authentication](https://supabase.com/docs/guides/auth/passwords)

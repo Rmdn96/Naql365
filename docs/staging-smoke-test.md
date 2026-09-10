@@ -1,6 +1,6 @@
 # Staging smoke test protocol
 
-PASS requires real execution evidence. PARTIAL and BLOCKED must never be relabeled as PASS. Localhost is regression evidence only. Use the genuine Preview recorded in the canonical Phase 0.5 report.
+PASS requires real execution evidence. PARTIAL and BLOCKED must never be relabeled as PASS. Localhost is regression evidence only. Use the genuine Preview recorded in the report for the phase being verified; Phase 0.5 evidence remains historical.
 
 ## Executable checks
 
@@ -10,6 +10,7 @@ PASS requires real execution evidence. PARTIAL and BLOCKED must never be relabel
 | npm run test:staging:services   | Real Auth/refresh/revocation, tenant/customer permissions, private storage and expiry | Same guard variables; creates and cleans its own fixtures                                     |
 | npm run test:staging:acceptance | Full hosted desktop/mobile browser suite with ephemeral customer/file fixtures        | Verified Preview origin, project-scoped automation credential, correct CLI and staging guards |
 | npm run test:staging:browser    | Low-level browser runner                                                              | Fixtures already provisioned by the acceptance harness                                        |
+| npm run test:staging:intake     | Phase 1 persisted customer request journey and negative API tests                     | Guarded intake configuration plus verified protected Preview and CLI access                   |
 
 Run the database suite before provisioning browser fixtures. Hosted tests do not start a local server. The acceptance harness creates random-password synthetic identities with reserved example.test addresses, two organizations and harmless PDF objects. It confirms project name/organization/health, keeps admin credentials only in the Node test process, sends only customer credentials/JWTs to the application, and cleans exact generated UUIDs in finally. No email is sent by synthetic tests.
 
