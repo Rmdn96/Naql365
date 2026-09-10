@@ -1,6 +1,6 @@
 # Naql365 · نقل 365
 
-Transportation Operating Platform. **Phase 0: foundation only.**
+Transportation Operating Platform. **Phase 1: customer identity and request intake MVP.** Staging acceptance and review status are recorded in the phase report; this is not a Production release.
 
 Independent implementation for Naql365. No source, branding, credentials or data from another product is used.
 
@@ -59,5 +59,6 @@ docs/                       Architecture, operations and decision records
 - [Development and deployment](docs/development.md)
 - [Testing](docs/testing.md)
 - [Phase roadmap](docs/roadmap.md)
+- [Customer identity and request intake](docs/customer-request-intake.md)
 
-Workflow: `feature/* → develop → main`. This repository began empty: Phase 0 is developed on `feature/phase-0-foundation`; integration and release branches are established from the reviewed baseline, without automatic production deployment.
+Workflow: `feature/* → develop → main`. Phase 1 uses `feature/phase-1-customer-request-intake` from the protected integration of the accepted Phase 0/0.5 baseline into develop. No automatic Production release is configured.

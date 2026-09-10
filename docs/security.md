@@ -6,11 +6,11 @@
 - User-scoped Supabase clients, server-only markers, getUser identity verification and database permission checks.
 - RLS on every application table; cross-tenant composite FKs; no client write privileges for unimplemented workflows.
 - Profile-only registration trigger; no permissions from email, metadata or hardcoded identities.
-- Private storage buckets, registered object paths, 10 MiB limits, constrained MIME types, short signed downloads and no upload policy.
+- Private storage buckets, registered object paths, constrained MIME types and short signed downloads. Foundation files retain their bucket limits; Phase 1 request images have the stricter limits below.
 - CSP nonces for scripts, no framing, no objects, self-only forms/base, nosniff, restrictive permissions policy, HTTPS HSTS and limited referrer disclosure.
 - React text escaping; controlled JSON-LD serialization escapes `<`; no user HTML rendering.
 - Same-origin allowlisted PKCE callback redirects. No mutable GET endpoint except the required one-time Auth code exchange.
-- No business mutation API yet. Future Server Actions retain framework Origin/Host checks; future cookie-authenticated route handlers need explicit origin/CSRF checks, not CORS as a substitute.
+- Customer intake mutations enforce explicit Origin checks and bounded JSON/multipart bodies in addition to server identity, ownership and database authorization. Server Actions retain framework Origin/Host checks.
 - Error boundaries expose translated generic messages, never raw stack traces, database details or credentials.
 - No password, session, URL token, uploaded content or API response logging in application code.
 - SQL is migration-based, static and parameterized through the SDK. Narrow SECURITY DEFINER functions have empty search_path and revoked PUBLIC execution.
@@ -54,4 +54,8 @@ Preview toolbar is disabled in project configuration. Existing deployments may r
 
 ## Deferred security work at feature boundaries
 
-Uploads need server-verified content type, content scanning, lifecycle/registry transactions and abuse limits. MIME metadata alone is not malware protection. Payment webhooks require raw-body signature verification and unique event processing; no gateway is active. Driver visibility must depend on assignment. New writes require authorization, validation, idempotency where applicable, audit coverage and negative RLS tests. Published quote immutability requires a lifecycle rule before quote writes are opened.
+Phase 1 request images validate signature/type, limit each image to 3 MiB, cap attachments at eight and cap open drafts at twenty per customer. Private reservations expire for upload after twenty minutes. A completion trigger serializes Storage insert/update with the request state and checks reserved size/type again; finalized objects cannot be overwritten. Pending/removing objects cannot be signed or submitted. Removal first revokes visibility, then deletes bytes, then finalizes registry cleanup. Content scanning is not implemented or claimed; signature checks are not malware protection.
+
+Profile onboarding requires confirmed Auth identity and a trusted private enrollment configuration. Editable email/metadata never grant roles. The transaction creates only CUSTOMER participation, serializes duplicate enrollment and cannot reactivate suspension. Request commands reject unknown fields, enforce ownership/active membership, compare revisions, allocate references atomically and protect submitted payloads. Raw table write privileges remain closed to customer clients. Application credentials remain user-scoped; operator admin credentials exist only in guarded test processes.
+
+Payment webhooks require raw-body signature verification and unique event processing; no gateway is active. Driver visibility must depend on assignment. New writes require authorization, validation, idempotency where applicable, audit coverage and negative RLS tests. Published quote immutability requires a lifecycle rule before quote writes are opened.

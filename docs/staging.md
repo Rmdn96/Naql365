@@ -1,6 +1,6 @@
 # Staging architecture and reconstruction
 
-Phase 0.5 verifies the Phase 0 foundation. No customer registration workflow, transport workflow, pricing, dispatch, payment or other Phase 1 feature is enabled.
+Phase 0.5 verified the foundation; Phase 1 extends the same isolated Staging environment with customer identity and request intake. Pricing, dispatch, payment and all Phase 2+ workflows remain excluded. Historical foundation evidence stays in the Phase 0.5 report; current intake acceptance belongs to the Phase 1 report.
 
 ## Environment inventory
 
@@ -41,11 +41,11 @@ The first reconstruction on 2026-09-09 used all three unchanged Phase 0 migratio
 
 ## Auth URLs and hosted verification
 
-Self-signup is disabled in Staging; admin-created controlled test identities can sign in with email/password. Minimum password length is 12; confirmations, secure password change and refresh rotation are configured. This is a gate fixture facility, not a customer registration feature.
+Phase 1 enables customer self-signup in Staging with confirmation, a twelve-character minimum, secure password change and refresh rotation. Confirmed registration creates no staff privilege; customer membership requires the guarded onboarding transaction. Administrative synthetic identities are used only by the acceptance harness and cleaned afterwards.
 
-The accepted origin is https://naql365-staging-lc8qnrb3y-naql365.vercel.app. Supabase Site URL is this exact HTTPS origin. Redirect URLs contain only this origin's `/auth/callback?locale=ar` and `/auth/callback?locale=en`. APP_URL derives from VERCEL_URL. Arabic and English login routes are `/ar/login` and `/en/login`; `/login` redirects to Arabic. The callback uses PKCE `exchangeCodeForSession` and allowlisted internal destinations.
+The active candidate origin and deployment SHA are recorded in [deployment](deployment.md) and `config/staging/supabase/config.toml`. Supabase Site URL is that exact HTTPS origin. Redirect URLs contain only its AR/EN callbacks and the two locale-specific password recovery destinations. APP_URL derives from VERCEL_URL. Arabic and English login routes are `/ar/login` and `/en/login`; `/login` redirects to Arabic. The callback uses PKCE `exchangeCodeForSession` and allowlisted internal destinations.
 
-The gated technical form now initiates a Supabase email-link flow with `shouldCreateUser: false`. The SSR client stores the PKCE verifier in the browser cookie. Only the configured callback is sent to Supabase; client redirect fields are ignored. The response does not reveal account existence. This adds no customer registration or password recovery workflow and is disabled in Production.
+The foundation technical email-link action remains gated with `shouldCreateUser: false` and disabled in Production. Phase 1 customer registration/recovery are separate actions. The SSR client stores the PKCE verifier in the browser cookie. Only the configured callback is sent to Supabase; client redirect fields are ignored. Responses do not reveal account existence.
 
 Real Arabic and English email links were followed in the same Chrome profile as initiation. Both reached the localized protected account, survived refresh, signed out and denied account access afterwards. A scoped database read observed an S256 flow before verification and its consumption plus a new session afterwards, without selecting any code/token. The controlled mailbox identity was removed after verification. Password/API tests remain separate evidence.
 

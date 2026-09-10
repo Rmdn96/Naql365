@@ -41,3 +41,9 @@ Registry checked during implementation: Next 16.3.4, React 19.2.8, Supabase SSR 
 TypeScript 7 and ESLint 10 were available, but the current typescript-eslint peer contract requires TypeScript <6.1 and Next's React/accessibility lint plugins require ESLint 9. Pin TypeScript 6.0.3 and ESLint 9.39.5 for compatibility; npm reports ESLint 9 as unsupported, which is a known tooling limitation requiring a coordinated plugin upgrade. Do not force incompatible peers or disable lint rules to silence this. npm audit reported no advisories during initial installation.
 
 Official references checked: [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Supabase SSR](https://supabase.com/docs/guides/auth/server-side/creating-a-client), [Supabase session verification](https://supabase.com/docs/guides/auth/server-side/advanced-guide).
+
+## ADR-009 — Phase 1 customer intake
+
+Phase 1 adds confirmed customer onboarding and request intake to the foundation described above. The wizard is an interactive client component; list/detail pages remain server rendered. Shared Zod schemas and pure request utilities live in domain/requests. User-scoped infrastructure services validate identity, call transactional PostgreSQL commands and orchestrate private Storage. Route handlers enforce same-origin writes and bounded payloads. React never decides tenant membership, role assignment, request ownership or reference allocation.
+
+The private enrollment setting selects one operating organization for self-registration. The database assigns only CUSTOMER and preserves suspension. Requests use normalized locations/items/options and a revision-checked draft command. DRAFT transitions only to SUBMITTED or CANCELLED; there is no downstream quotation/order behavior. See [schema-gap analysis and decisions](customer-request-intake.md) for the inspected baseline, migration rationale, autosave and attachment lifecycle.
