@@ -5,6 +5,8 @@ import { portalAccess } from '@/infrastructure/identity/access';
 import { Card, Alert, EmptyState, Button } from '@/components/ui/primitives';
 import { stagingAuthEnabled } from '@/infrastructure/config/deployment-env';
 import { smokeLogout } from '@/app/auth/actions';
+import Link from 'next/link';
+import { quotesDictionary } from '@/i18n/quotes';
 
 export async function ProtectedShell({
   locale,
@@ -14,7 +16,9 @@ export async function ProtectedShell({
   portal: 'account' | 'portal' | 'driver';
 }) {
   const t = dictionary(locale);
+  const qt = quotesDictionary(locale);
   const result = await portalAccess(`${portal}.access`);
+  const pricingAccess = portal === 'portal' ? await portalAccess('pricing.calculate') : null;
   if (result.status === 'unauthenticated') redirect(`/${locale}/login`);
   if (result.status === 'unconfigured')
     return (
@@ -44,6 +48,13 @@ export async function ProtectedShell({
       <Card>
         <h1>{t[portal]}</h1>
         <p>{t.protectedBody}</p>
+        {pricingAccess?.status === 'authorized' && (
+          <p>
+            <Link className="button button--primary" href={`/${locale}/portal/quotes`}>
+              {qt.salesQuotes}
+            </Link>
+          </p>
+        )}
         <EmptyState title={t.empty}>{t.emptyBody}</EmptyState>
         {stagingAuthEnabled() && (
           <form action={smokeLogout.bind(null, locale)}>

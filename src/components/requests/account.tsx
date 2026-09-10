@@ -9,9 +9,11 @@ import { CustomerProfileForm } from '@/components/auth/customer-form';
 import { customerLogout } from '@/app/auth/customer-actions';
 import { Card, Button, Alert } from '@/components/ui/primitives';
 import { StartRequest } from './wizard';
+import { quotesDictionary } from '@/i18n/quotes';
 export async function CustomerAccount({ locale }: { locale: Locale }) {
   if (!getPublicEnv()) return <ProtectedShell locale={locale} portal="account" />;
   const t = customerDictionary(locale),
+    qt = quotesDictionary(locale),
     client = await createSupabaseServerClient();
   const { data, error } = await client.auth.getUser();
   if (error || !data.user) redirect(`/${locale}/login`);
@@ -35,6 +37,7 @@ export async function CustomerAccount({ locale }: { locale: Locale }) {
             {permitted && (
               <nav className="customer-links" aria-label={t.account}>
                 <Link href={`/${locale}/account/requests`}>{t.myRequests}</Link>
+                <Link href={`/${locale}/account/quotes`}>{qt.myQuotes}</Link>
                 <StartRequest locale={locale} />
               </nav>
             )}
