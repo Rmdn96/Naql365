@@ -26,8 +26,7 @@ test('customer persists a bilingual request through private image, review, submi
   await page.getByRole('button', { name: t.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const draftUrl = page.url();
-  const service = await page.locator('#service option').allTextContents();
-  expect(service.length).toBeGreaterThan(1);
+  await expect(page.locator('#service option')).toHaveCount(6);
   await page
     .locator('#service')
     .selectOption({ label: locale === 'ar' ? 'نقل الأثاث' : 'Furniture moving' });
@@ -233,6 +232,10 @@ test('customer direct APIs reject IDOR, mass assignment, stale writes and suspen
     },
     { draft, peer },
   );
+  testInfo.annotations.push({
+    type: 'safe-security-probe',
+    description: `Request status codes: ${JSON.stringify(results)}`,
+  });
   expect(results).toEqual({ mass: 400, first: 200, stale: 409, incomplete: 400 });
   const suspended = await admin
     .from('organization_memberships')

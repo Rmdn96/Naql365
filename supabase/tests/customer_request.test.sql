@@ -58,7 +58,7 @@ select public.intake_reject(format('select public.request_command(''save'',%L,0,
 update intake_state set value=public.request_command('save',(value->>'id')::uuid,0,'d0000000-0000-4000-8000-000000000002',(select value from intake_state where key='payload')) where key='draft';
 select public.intake_assert((select (value->>'revision')::int=1 from intake_state where key='draft'),'save revision');
 select public.intake_assert((select count(*)=2 from public.request_items),'items persisted');
-select public.intake_reject(format('select public.request_command(''save'',%L,0,gen_random_uuid(),%L)',(select value->>'id' from intake_state where key='draft'),(select value from intake_state where key='payload')),'40001');
+select public.intake_reject(format('select public.request_command(''save'',%L,0,gen_random_uuid(),%L)',(select value->>'id' from intake_state where key='draft'),(select value from intake_state where key='payload')),'PT409');
 select public.intake_assert(public.request_command('save',(select (value->>'id')::uuid from intake_state where key='draft'),0,'d0000000-0000-4000-8000-000000000002',(select value from intake_state where key='payload'))=(select value from intake_state where key='draft'),'save retry stable');
 select public.intake_reject('update public.requests set organization_id=''a0000000-0000-4000-8000-000000000002''','42501');
 select public.intake_reject('update public.requests set customer_id=gen_random_uuid()','42501');
