@@ -21,7 +21,7 @@ The following application deployment was independently verified READY with `targ
 5. Run the guarded hosted acceptance harness with secure process configuration and Deployment Protection enabled. The automation bypass is scoped to the exact application origin, never forwarded to Supabase or third-party scripts.
 6. Record the deployment source SHA separately from later documentation/test-only commits. No promotion or merge is implied by successful acceptance.
 
-The Phase 0.5 accepted origin is recorded in its canonical report. The Phase 1 candidate is https://naql365-staging-9lts8hz0n-naql365.vercel.app, deployment dpl_DfhtxhZaLvJjzSTdeYE7c5qSJZpo, application source 54f6f3220d5f371fa87ac12ef414512069e7c9c1. Its final acceptance is recorded separately in the Phase 1 report. Phase 1 Auth rotation includes four exact callback entries: AR/EN account and AR/EN password recovery. Confirmation remains required when customer registration is enabled.
+The Phase 0.5 accepted origin is recorded in its canonical report. The Phase 1 candidate is https://naql365-staging-iiyfses3k-naql365.vercel.app, deployment dpl_6eRYjg9oJE82xqjTmzcQ6TvDEuAg, application source ebd2a63a156a022953c6625701889630c59c2016. Its final acceptance is recorded separately in the Phase 1 report. Phase 1 Auth rotation includes four exact callback entries: AR/EN account and AR/EN password recovery. Confirmation remains required when customer registration is enabled.
 
 ## Provider tooling and security
 

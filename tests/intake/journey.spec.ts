@@ -61,6 +61,15 @@ test('customer persists a bilingual request through private image, review, submi
   await expect(page.locator('.wizard-fields')).toBeEnabled();
   await expect(page.locator('.wizard-fields li')).toHaveCount(1);
   await expect(page.locator('.wizard-fields li')).toContainText(t.saved);
+  const privateImage = await page.evaluate(async () => {
+    const id = location.pathname.split('/').at(-1);
+    const details = await fetch(`/api/customer/requests/${id}`).then((r) => r.json());
+    const file = details.attachments[0].id;
+    const response = await fetch(`/api/customer/files/${file}`, { cache: 'no-store' });
+    return { file, status: response.status, type: response.headers.get('content-type') };
+  });
+  expect(privateImage.status).toBe(200);
+  expect(privateImage.type).toContain('image/png');
   await page.getByRole('button', { name: t.next, exact: true }).click();
   await page.locator('#pickup-floor').fill('2');
   await page.locator('#pickup-elevator').selectOption('true');
@@ -138,6 +147,13 @@ test('customer persists a bilingual request through private image, review, submi
   await expect(page).toHaveURL(new RegExp(`/account/requests/${requestId}$`));
   await page.goto(`/${locale}/account`);
   await page.getByRole('button', { name: t.logout, exact: true }).click();
+  await expect(page).toHaveURL(`${baseURL}/${locale}/login`);
+  expect(
+    await page.evaluate(
+      async (id) => (await fetch(`/api/customer/files/${id}`)).ok,
+      privateImage.file,
+    ),
+  ).toBe(false);
   await page.goto(draftUrl);
   await expect(page).toHaveURL(`${baseURL}/${locale}/login`);
 });
@@ -260,6 +276,79 @@ test('customer direct APIs reject IDOR, mass assignment, stale writes and suspen
       .eq('profile_id', profile);
     expect(restored.error === null).toBe(true);
   }
+  await page.goto(`/${locale}/account`);
+  await page.getByRole('button', { name: t.logout, exact: true }).click();
+});
+
+test('draft cancellation removes private images and prevents further edits', async ({
+  page,
+  baseURL,
+}, testInfo) => {
+  const locale = testInfo.project.name === 'mobile' ? 'en' : 'ar';
+  const t = customerDictionary(locale),
+    identity = testIdentity();
+  await page.goto(`/${locale}/login`);
+  await page.locator('#email').fill(identity.email);
+  await page.locator('#password').fill(identity.password);
+  await page.getByRole('button', { name: t.login, exact: true }).click();
+  await expect(page).toHaveURL(`${baseURL}/${locale}/account`);
+  await page.getByRole('button', { name: t.start, exact: true }).click();
+  await expect(page.locator('#service')).toBeVisible();
+  const result = await page.evaluate(async () => {
+    const id = location.pathname.split('/').at(-1)!;
+    const fileId = crypto.randomUUID();
+    const form = new FormData();
+    const bytes = Uint8Array.from(
+      atob(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jQmQAAAAASUVORK5CYII=',
+      ),
+      (c) => c.charCodeAt(0),
+    );
+    form.set('fileId', fileId);
+    form.set('file', new File([bytes], 'fixture.png', { type: 'image/png' }));
+    const upload = await fetch(`/api/customer/requests/${id}/files`, {
+      method: 'POST',
+      body: form,
+    });
+    const details = await fetch(`/api/customer/requests/${id}`).then((r) => r.json());
+    const cancel = await fetch(`/api/customer/requests/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        operation: 'cancel',
+        revision: details.request.revision,
+        mutationId: crypto.randomUUID(),
+      }),
+    });
+    const hidden = await fetch(`/api/customer/files/${fileId}`);
+    const remove = await fetch(`/api/customer/requests/${id}/files`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fileId }),
+    });
+    const after = await fetch(`/api/customer/requests/${id}`).then((r) => r.json());
+    return {
+      id,
+      upload: upload.status,
+      cancel: cancel.status,
+      hidden: hidden.ok,
+      remove: remove.status,
+      status: after.request.status,
+      remaining: after.attachments.length,
+    };
+  });
+  expect({ ...result, id: undefined }).toEqual({
+    id: undefined,
+    upload: 200,
+    cancel: 200,
+    hidden: false,
+    remove: 200,
+    status: 'CANCELLED',
+    remaining: 0,
+  });
+  await page.goto(`/${locale}/request/${result.id}`);
+  await expect(page).toHaveURL(`${baseURL}/${locale}/account/requests/${result.id}`);
+  await expect(page.locator('.wizard-progress')).toHaveCount(0);
   await page.goto(`/${locale}/account`);
   await page.getByRole('button', { name: t.logout, exact: true }).click();
 });
