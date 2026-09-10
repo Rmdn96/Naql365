@@ -21,7 +21,6 @@
     "test:staging:acceptance": "node scripts/staging/verify-browser.mjs",
     "test:staging:intake": "node scripts/staging/verify-intake.mjs",
     "test:staging:phase2": "node scripts/staging/verify-phase2.mjs",
-    "test:staging:phase2": "node scripts/staging/verify-phase2.mjs",
     "staging:configure-intake": "node scripts/staging/configure-intake.mjs --apply",
     "staging:configure-pricing": "node scripts/staging/configure-pricing.mjs --apply",
     "test:db": "supabase test db",

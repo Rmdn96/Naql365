@@ -161,5 +161,12 @@ export async function respondToQuote(quoteVersionId: string, input: unknown) {
     p_reason: command.reason,
   });
   if (error) pricingError(error.code);
+  if (
+    data &&
+    typeof data === 'object' &&
+    !Array.isArray(data) &&
+    data.error_code === 'QUOTE_EXPIRED'
+  )
+    throw new AppError('validation', 'Quote expired');
   return data;
 }

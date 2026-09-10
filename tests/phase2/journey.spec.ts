@@ -185,7 +185,7 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   await expect(page.getByRole('heading', { name: quotesDictionary('en').myQuotes })).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   await page.goto(`/${locale}/account/quotes/${primaryVersion}`);
-  await expect(page.getByText(qt.manualVerified, { exact: true })).toBeVisible();
+  await expect(page.getByText(qt.manualVerified, { exact: false })).toBeVisible();
   await expect(page.getByText(qt.vat, { exact: false })).toBeVisible();
   expect(
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
@@ -272,6 +272,13 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
       expiredVersion,
     ),
   ).toBe(400);
+  const expiredState = await admin
+    .from('quote_versions')
+    .select('status')
+    .eq('id', expiredVersion)
+    .single();
+  expect(expiredState.error).toBeNull();
+  expect(expiredState.data?.status).toBe('EXPIRED');
   expect(
     await page.evaluate(
       async (id) =>

@@ -118,10 +118,9 @@ select public.create_quote_draft((select id from public.pricing_evaluations wher
 select public.send_quote('71000000-0000-4000-8000-000000000012');
 select pg_sleep(1.05);
 select set_config('request.jwt.claim.sub','11000000-0000-4000-8000-000000000003',true);
-do $$ begin
- begin perform public.respond_to_quote('71000000-0000-4000-8000-000000000012','accept','expired-accept',null); raise exception 'expired quote accepted'; exception when object_not_in_prerequisite_state then null; end;
-end $$;
+select public.phase2_assert((public.respond_to_quote('71000000-0000-4000-8000-000000000012','accept','expired-accept',null)->>'error_code')='QUOTE_EXPIRED','expired response is rejected');
 select public.phase2_assert((select count(*)=0 from public.orders where accepted_quote_version_id='71000000-0000-4000-8000-000000000012'),'expired quote creates no order');
+select public.phase2_assert((select status='EXPIRED' from public.quote_versions where id='71000000-0000-4000-8000-000000000012'),'expired quote state is durable');
 
 select set_config('request.jwt.claim.sub','11000000-0000-4000-8000-000000000001',true);
 select public.calculate_preliminary_price('51000000-0000-4000-8000-000000000003',22.000,null,'61000000-0000-4000-8000-000000000001',2,'69000000-0000-4000-8000-000000000013');
