@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { createClient } from '@supabase/supabase-js';
-import { test, expect, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { dictionary } from '../../src/i18n/dictionaries';
