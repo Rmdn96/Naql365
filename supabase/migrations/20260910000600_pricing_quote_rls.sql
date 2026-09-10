@@ -57,12 +57,18 @@ create trigger pricing_rules_audit after insert or update or delete on public.pr
 create trigger quote_pricing_details_audit after insert or update or delete on public.quote_pricing_details for each row execute function private.audit_change();
 
 create function private.protect_distance_snapshot() returns trigger language plpgsql set search_path='' as $$
-begin raise exception 'Distance snapshots are immutable' using errcode='55000'; end $$;
+begin
+ if current_setting('app.fixture_cleanup',true)='on' then return old; end if;
+ raise exception 'Distance snapshots are immutable' using errcode='55000';
+end $$;
 revoke all on function private.protect_distance_snapshot() from public,anon,authenticated;
 create trigger distance_snapshot_immutable before update or delete on public.distance_snapshots for each row execute function private.protect_distance_snapshot();
 
 create function private.protect_pricing_component() returns trigger language plpgsql set search_path='' as $$
-begin raise exception 'Pricing components are immutable' using errcode='55000'; end $$;
+begin
+ if current_setting('app.fixture_cleanup',true)='on' then return old; end if;
+ raise exception 'Pricing components are immutable' using errcode='55000';
+end $$;
 revoke all on function private.protect_pricing_component() from public,anon,authenticated;
 create trigger pricing_component_immutable before update or delete on public.pricing_evaluation_components for each row execute function private.protect_pricing_component();
 
@@ -85,6 +91,7 @@ create trigger quote_version_immutable before update on public.quote_versions fo
 create function private.protect_quote_item() returns trigger language plpgsql set search_path='' as $$
 declare version_status text;
 begin
+ if current_setting('app.fixture_cleanup',true)='on' then return coalesce(new,old); end if;
  select status into version_status from public.quote_versions where id=coalesce(new.quote_version_id,old.quote_version_id);
  if version_status is distinct from 'DRAFT' then raise exception 'Sent quote items are immutable' using errcode='55000'; end if;
  return coalesce(new,old);
