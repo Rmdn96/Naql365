@@ -108,6 +108,10 @@ begin
  values(v.id,v.organization_id,e.id,e.calculated_subtotal_minor,p_adjustment_minor,case when p_adjustment_minor=0 then null else btrim(p_adjustment_reason) end,uid);
  insert into public.quote_items(organization_id,quote_version_id,component_code,label_ar,label_en,quantity,unit_amount_minor,total_amount_minor,position)
  select organization_id,v.id,component_code,label_ar,label_en,quantity,unit_amount_minor,total_amount_minor,position from public.pricing_evaluation_components where evaluation_id=e.id order by position;
+ if p_adjustment_minor<>0 then
+  insert into public.quote_items(organization_id,quote_version_id,component_code,label_ar,label_en,quantity,unit_amount_minor,total_amount_minor,position)
+  select v.organization_id,v.id,'COMMERCIAL_ADJUSTMENT','تسوية تجارية','Commercial adjustment',1,p_adjustment_minor,p_adjustment_minor,coalesce(max(position),-1)+1 from public.quote_items where quote_version_id=v.id;
+ end if;
  update public.pricing_evaluations set status='QUOTED' where id=e.id;
  perform private.commercial_event(e.organization_id,'quote.created','quote_versions',v.id,jsonb_build_object('version',v.version,'manual_adjustment',p_adjustment_minor<>0));
  if p_adjustment_minor<>0 then perform private.commercial_event(e.organization_id,'quote.adjusted','quote_versions',v.id,jsonb_build_object('version',v.version)); end if;

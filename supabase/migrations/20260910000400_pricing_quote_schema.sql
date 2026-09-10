@@ -93,7 +93,8 @@ alter table public.quote_versions
  add column accepted_at timestamptz, add column rejected_at timestamptz,
  add column rejection_reason text check(rejection_reason is null or length(rejection_reason)<=500),
  add constraint quote_amount_equation check(vat_amount_minor=((final_subtotal_minor*vat_rate_bps+5000)/10000) and total_minor=final_subtotal_minor+vat_amount_minor),
- add constraint quote_timeline_consistency check((status='DRAFT' and sent_at is null and expires_at is null) or (status<>'DRAFT' and sent_at is not null and expires_at is not null));
+ add constraint quote_timeline_consistency check((status='DRAFT' and sent_at is null and expires_at is null) or (status<>'DRAFT' and sent_at is not null and expires_at is not null)),
+ add constraint quote_distance_consistency check(status='DRAFT' or (distance_km is not null and distance_source is not null and distance_verified_at is not null));
 create index quote_versions_status_idx on public.quote_versions(organization_id,status,updated_at desc);
 create unique index quote_versions_open_draft_idx on public.quote_versions(organization_id,quote_id) where status='DRAFT';
 
@@ -114,8 +115,8 @@ alter table public.quote_items
  add column component_code text not null default 'LEGACY',
  add column label_ar text not null default 'بند', add column label_en text not null default 'Item',
  add column quantity numeric(12,3) not null default 1 check(quantity>0),
- add column unit_amount_minor bigint not null default 0 check(unit_amount_minor>=0),
- add column total_amount_minor bigint not null default 0 check(total_amount_minor>=0),
+ add column unit_amount_minor bigint not null default 0,
+ add column total_amount_minor bigint not null default 0,
  add column position integer not null default 0 check(position between 0 and 99),
  add constraint quote_items_position_unique unique(organization_id,quote_version_id,position);
 
@@ -130,7 +131,8 @@ alter table public.orders
  add column total_minor bigint not null default 0 check(total_minor>=0),
  add column accepted_at timestamptz,
  add constraint orders_request_fk foreign key(organization_id,request_id) references public.requests(organization_id,id),
- add constraint orders_customer_fk foreign key(organization_id,customer_id) references public.customers(organization_id,id);
+ add constraint orders_customer_fk foreign key(organization_id,customer_id) references public.customers(organization_id,id),
+ add constraint order_commercial_consistency check(accepted_at is null or (reference is not null and request_id is not null and customer_id is not null and distance_km is not null and distance_source is not null));
 create index orders_customer_idx on public.orders(organization_id,customer_id,created_at desc);
 create index orders_request_idx on public.orders(organization_id,request_id);
 

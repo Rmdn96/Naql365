@@ -80,6 +80,7 @@ select public.phase2_assert((select calculated_subtotal_minor=22825 from public.
 select public.phase2_assert((select source_type='MANUAL_VERIFIED' and distance_km=12.500 and verified_by='11000000-0000-4000-8000-000000000001' from public.distance_snapshots where request_id='51000000-0000-4000-8000-000000000001'),'distance provenance');
 select public.create_quote_draft((select id from public.pricing_evaluations where mutation_id='69000000-0000-4000-8000-000000000005'),175,'Approved commercial adjustment',172800,'71000000-0000-4000-8000-000000000001');
 select public.phase2_assert((select d.calculated_subtotal_minor=22825 and d.manual_adjustment_minor=175 and v.final_subtotal_minor=23000 and v.vat_amount_minor=3450 and v.total_minor=26450 from public.quote_versions v join public.quote_pricing_details d on d.quote_version_id=v.id where v.id='71000000-0000-4000-8000-000000000001'),'adjustment VAT and total snapshots');
+select public.phase2_assert((select sum(total_amount_minor)=23000 from public.quote_items where quote_version_id='71000000-0000-4000-8000-000000000001'),'customer commercial lines reconcile to subtotal');
 select public.calculate_preliminary_price('51000000-0000-4000-8000-000000000001',15.000,'corrected road route','61000000-0000-4000-8000-000000000001',2,'69000000-0000-4000-8000-000000000006');
 do $$ begin
  begin perform public.send_quote('71000000-0000-4000-8000-000000000001'); raise exception 'stale draft sent'; exception when object_not_in_prerequisite_state then null; end;

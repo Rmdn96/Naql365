@@ -32,8 +32,8 @@ insert into public.request_items(organization_id,request_id) select organization
 insert into public.file_objects(id,organization_id,owner_profile_id,bucket_id) select id,organization_id,profile_id,'attachments' from public.customers;
 insert into storage.objects(bucket_id,name) select bucket_id,object_name from public.file_objects;
 insert into public.quotes(id,organization_id,request_id) select id,organization_id,id from public.requests;
-insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,accepted_at)
- select id,organization_id,id,1,'ACCEPTED',now(),now()+interval '1 day',now() from public.quotes;
+insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,accepted_at,distance_km,distance_source,distance_verified_at)
+ select id,organization_id,id,1,'ACCEPTED',now(),now()+interval '1 day',now(),1,'MANUAL_VERIFIED',now() from public.quotes;
 insert into public.quote_versions(id,organization_id,quote_id,version) values ('40000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001',2);
 insert into public.orders(organization_id,quote_id,accepted_quote_version_id,idempotency_key) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','test-acceptance');
 insert into public.jobs(id,organization_id,order_id) select '50000000-0000-4000-8000-000000000001',organization_id,id from public.orders;
