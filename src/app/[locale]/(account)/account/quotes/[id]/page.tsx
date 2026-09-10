@@ -4,7 +4,7 @@ import { isLocale } from '@/i18n/config';
 import { quotesDictionary } from '@/i18n/quotes';
 import { customerQuoteDetails } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
-import { Badge, Table } from '@/components/ui/primitives';
+import { Alert, Badge, Table } from '@/components/ui/primitives';
 import { formatSar } from '@/domain/pricing/model';
 import { QuoteActions } from '@/components/pricing/quote-actions';
 export const dynamic = 'force-dynamic';
@@ -40,6 +40,11 @@ export default async function Page({
       <p>
         {t.relatedRequest}: <bdi>{request?.reference}</bdi>
       </p>
+      {quote.status === 'ACCEPTED' && quote.orders[0]?.reference && (
+        <Alert tone="success">
+          {t.accepted} {t.orderCreated}: <bdi>{quote.orders[0].reference}</bdi>
+        </Alert>
+      )}
       <p>{request?.request_locations.map((l) => l.city).join(' → ')}</p>
       <p>
         {t.distanceKm}: <bdi>{quote.distance_km} km</bdi> · {t.manualVerified}
