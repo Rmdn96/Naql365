@@ -230,7 +230,14 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
       },
       { requestId, distanceKm, validitySeconds, vehicleClassId },
     );
-  const rejectedVersion = await commercial(requestIds[1]!, 20);
+  const rejectedVersion = await commercial(requestIds[1]!, 1.001);
+  const verifiedPrecision = await admin
+    .from('quote_versions')
+    .select('distance_km')
+    .eq('id', rejectedVersion)
+    .single();
+  expect(verifiedPrecision.error).toBeNull();
+  expect(verifiedPrecision.data?.distance_km).toBe(1.001);
   const expiredVersion = await commercial(requestIds[2]!, 25, 1);
   const supersededV1 = await commercial(requestIds[3]!, 30);
   const supersededV2 = await commercial(requestIds[3]!, 32);
