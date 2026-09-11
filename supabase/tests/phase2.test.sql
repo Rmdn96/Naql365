@@ -70,8 +70,15 @@ select set_config('request.jwt.claim.sub','11000000-0000-4000-8000-000000000004'
 do $$ begin
  begin perform public.calculate_preliminary_price('51000000-0000-4000-8000-000000000001',12.5,null,'61000000-0000-4000-8000-000000000001',2,'69000000-0000-4000-8000-000000000002'); raise exception 'unauthorized staff set distance'; exception when insufficient_privilege then null; end;
 end $$;
+select set_config('request.jwt.claim.sub','11000000-0000-4000-8000-000000000005',true);
+do $$ begin
+ begin perform public.calculate_preliminary_price('51000000-0000-4000-8000-000000000001',12.5,null,'61000000-0000-4000-8000-000000000001',2,gen_random_uuid()); raise exception 'cross-tenant staff set distance'; exception when insufficient_privilege then null; end;
+end $$;
 select set_config('request.jwt.claim.sub','11000000-0000-4000-8000-000000000001',true);
 do $$ begin
+ begin perform public.calculate_preliminary_price('51000000-0000-4000-8000-000000000001',-1,null,'61000000-0000-4000-8000-000000000001',2,gen_random_uuid()); raise exception 'invalid distance accepted'; exception when invalid_parameter_value then null; end;
+ begin perform public.calculate_preliminary_price('51000000-0000-4000-8000-000000000001',5001,null,'61000000-0000-4000-8000-000000000001',2,gen_random_uuid()); raise exception 'invalid distance accepted'; exception when invalid_parameter_value then null; end;
+ begin perform public.calculate_preliminary_price('51000000-0000-4000-8000-000000000001',12.3456,null,'61000000-0000-4000-8000-000000000001',2,gen_random_uuid()); raise exception 'invalid distance accepted'; exception when invalid_parameter_value then null; end;
  begin perform public.calculate_preliminary_price('51000000-0000-4000-8000-000000000001',0,null,'61000000-0000-4000-8000-000000000001',2,'69000000-0000-4000-8000-000000000003'); raise exception 'zero distance'; exception when invalid_parameter_value then null; end;
  begin perform public.calculate_preliminary_price('51000000-0000-4000-8000-000000000001',12.5,null,'61000000-0000-4000-8000-000000000002',2,'69000000-0000-4000-8000-000000000004'); raise exception 'cross-tenant vehicle'; exception when invalid_parameter_value then null; end;
 end $$;
@@ -105,7 +112,7 @@ select public.view_customer_quote('71000000-0000-4000-8000-000000000002');
 select public.respond_to_quote('71000000-0000-4000-8000-000000000002','accept','accept-once',null);
 select public.respond_to_quote('71000000-0000-4000-8000-000000000002','accept','accept-replay',null);
 select public.phase2_assert((select count(*)=1 from public.orders where accepted_quote_version_id='71000000-0000-4000-8000-000000000002'),'replayed acceptance creates one order');
-select public.phase2_assert((select o.total_minor=v.total_minor and o.request_id=q.request_id and o.customer_id=r.customer_id from public.orders o join public.quote_versions v on v.id=o.accepted_quote_version_id join public.quotes q on q.id=v.quote_id join public.requests r on r.id=q.request_id),'order inherits accepted snapshot');
+select public.phase2_assert((select o.total_minor=v.total_minor and o.distance_km=v.distance_km and o.distance_source=v.distance_source and o.request_id=q.request_id and o.customer_id=r.customer_id from public.orders o join public.quote_versions v on v.id=o.accepted_quote_version_id join public.quotes q on q.id=v.quote_id join public.requests r on r.id=q.request_id),'order inherits accepted snapshot');
 do $$ begin
  begin update public.quote_versions set total_minor=2; raise exception 'customer changed price'; exception when insufficient_privilege then null; end;
  begin insert into public.orders(organization_id,quote_id,accepted_quote_version_id,idempotency_key) values('21000000-0000-4000-8000-000000000001','71000000-0000-4000-8000-000000000002','71000000-0000-4000-8000-000000000002','forged'); raise exception 'customer created order'; exception when insufficient_privilege then null; end;
@@ -160,3 +167,4 @@ select plan(1);
 select pass('Phase 2 pricing, distance, quote lifecycle, order and negative authorization assertions completed');
 select * from finish();
 rollback;
+

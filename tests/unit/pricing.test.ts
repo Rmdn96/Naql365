@@ -23,6 +23,8 @@ describe('Phase 2 pricing values', () => {
       mutationId: '69000000-0000-4000-8000-000000000001',
     };
     expect(calculatePriceInput.safeParse({ ...base, distanceKm: 12.345 }).success).toBe(true);
+    expect(calculatePriceInput.safeParse({ ...base, distanceKm: 1.001 }).success).toBe(true);
+    expect(calculatePriceInput.safeParse({ ...base, distanceKm: -1 }).success).toBe(false);
     expect(calculatePriceInput.safeParse({ ...base, distanceKm: 0 }).success).toBe(false);
     expect(calculatePriceInput.safeParse({ ...base, distanceKm: 12.3456 }).success).toBe(false);
     expect(calculatePriceInput.safeParse({ ...base, distanceKm: 5001 }).success).toBe(false);

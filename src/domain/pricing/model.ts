@@ -10,7 +10,7 @@ export const calculatePriceInput = z
       .number()
       .positive()
       .max(5000)
-      .refine((value) => Number.isInteger(value * 1000), 'Use at most three decimals'),
+      .refine((value) => /^\d+(?:\.\d{1,3})?$/.test(String(value)), 'Use at most three decimals'),
     sourceNote: z.string().trim().max(300).optional().default(''),
     vehicleClassId: z.uuid(),
     workerCount: z.number().int().min(1).max(50),
