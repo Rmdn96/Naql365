@@ -16,7 +16,7 @@ if (
 
 const release = acquireHostedRun();
 const users = [];
-const requestIds = [randomUUID(), randomUUID(), randomUUID()];
+const requestIds = [randomUUID(), randomUUID(), randomUUID(), randomUUID()];
 let ref, admin, org;
 try {
   ref = stagingProject();
@@ -65,7 +65,9 @@ try {
    insert into public.requests(id,organization_id,customer_id,status,revision,service_id,reference,submitted_at,contact_name,contact_phone,contact_email)
     select fixture.id,'${org}',c.id,'SUBMITTED',1,'${service}',fixture.reference,now(),'Phase 2 fixture','+966500000001','fixture@example.invalid' from public.customers c cross join (values ${fixtureValues}) fixture(id,reference) where c.profile_id='${users[0]}';
    insert into public.request_locations(request_id,organization_id,kind,city,district,address) select id,'${org}','pickup','Riyadh','Fixture','Harmless pickup' from public.requests where id in (${requestList});
-   insert into public.request_locations(request_id,organization_id,kind,city,district,address) select id,'${org}','delivery','Riyadh','Fixture','Harmless delivery' from public.requests where id in (${requestList}); commit;`,
+   insert into public.request_locations(request_id,organization_id,kind,city,district,address) select id,'${org}','delivery','Riyadh','Fixture','Harmless delivery' from public.requests where id in (${requestList});
+   insert into public.request_items(request_id,organization_id,description,quantity) select id,'${org}','Harmless box',2 from public.requests where id in (${requestList});
+   insert into public.request_additional_services(request_id,organization_id,additional_service_id) select r.id,'${org}',s.id from public.requests r cross join public.additional_services s where r.id in (${requestList}) and s.organization_id='${org}' and s.code='packing'; commit;`,
   );
   const env = {
     ...process.env,
@@ -75,6 +77,7 @@ try {
     STAGING_PHASE2_SALES_EMAIL: identities[1].email,
     STAGING_PHASE2_SALES_PASSWORD: identities[1].password,
     STAGING_PHASE2_PEER_EMAIL: identities[2].email,
+    STAGING_PHASE2_PEER_ID: users[2],
     STAGING_PHASE2_PEER_PASSWORD: identities[2].password,
     STAGING_PHASE2_REQUEST_IDS: JSON.stringify(requestIds),
     STAGING_TEST_API_URL: url,

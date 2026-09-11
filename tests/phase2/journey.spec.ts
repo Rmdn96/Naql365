@@ -1,3 +1,4 @@
+import { riyadhDate } from '../../src/domain/requests/intake';
 import AxeBuilder from '@axe-core/playwright';
 import { createClient } from '@supabase/supabase-js';
 import type { Page } from '@playwright/test';
@@ -5,7 +6,6 @@ import { test, expect } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { dictionary } from '../../src/i18n/dictionaries';
-import { riyadhDate } from '../../src/domain/requests/intake';
 
 const required = (name: string) => {
   const value = process.env[name];
@@ -49,6 +49,16 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   const locale = 'ar',
     ct = customerDictionary(locale),
     qt = quotesDictionary(locale);
+  const clientErrorKinds: string[] = [];
+  page.on('pageerror', (error) => {
+    clientErrorKinds.push(
+      error.message.includes('Cannot read properties')
+        ? 'type-error'
+        : error.message.includes('Server Components render')
+          ? 'server-components'
+          : error.name || 'unknown',
+    );
+  });
   await page.goto(`/${locale}`);
   expect(
     await page.evaluate(
@@ -89,6 +99,7 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
     ),
   ).toBe(403);
   await page.getByRole('button', { name: ct.start, exact: true }).click();
+  await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const primaryRequestId = new URL(page.url()).pathname.split('/').at(-1)!;
   await page.locator('#service').selectOption({ label: 'نقل الأثاث' });
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
@@ -129,11 +140,12 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   await expect(page).toHaveURL(/account\/requests/);
   await logout(page);
   await login(page, sales);
+  const pricedRequestId = primaryRequestId;
   await page.goto(`/${locale}/portal/quotes`);
-  await expect(page.locator(`a[href$="/${primaryRequestId}"]`)).toBeVisible();
-  const pricingPage = await page.goto(`/${locale}/portal/quotes/${primaryRequestId}`);
+  await expect(page.locator(`a[href$="/${pricedRequestId}"]`)).toBeVisible();
+  const pricingPage = await page.goto(`/${locale}/portal/quotes/${pricedRequestId}`);
   expect(pricingPage?.status()).toBe(200);
-  await expect(page).toHaveURL(new RegExp(`/portal/quotes/${primaryRequestId}$`));
+  await expect(page).toHaveURL(new RegExp(`/portal/quotes/${pricedRequestId}$`));
   const expectedPricing = await page.getByRole('heading', { name: /التسعير الأولي/ }).count();
   if (!expectedPricing) {
     const heading = await page.locator('h1').first().textContent();
@@ -151,6 +163,11 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
                 ? 'other'
                 : 'none';
     testInfo.annotations.push({ type: 'safe-security-probe', description: `pricing-page-${kind}` });
+    if (clientErrorKinds.length)
+      testInfo.annotations.push({
+        type: 'safe-security-probe',
+        description: `pricing-client-${[...new Set(clientErrorKinds)].join('-')}`,
+      });
   }
   await expect(page.getByRole('heading', { name: /التسعير الأولي/ })).toBeVisible();
   expect(
@@ -160,6 +177,7 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   await page.locator('#distance').fill('18.750');
   await page.locator('#source-note').fill('Controlled staging route verification');
   await page.locator('#vehicle').selectOption({ label: 'شاحنة صغيرة' });
+  const vehicleClassId = await page.locator('#vehicle').inputValue();
   await page.locator('#workers').fill('2');
   await page.getByRole('button', { name: qt.calculate, exact: true }).click();
   await expect(page.getByRole('heading', { name: qt.calculated, exact: true })).toBeVisible();
@@ -168,17 +186,19 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   await page.locator('#validity').fill('48');
   await page.getByRole('button', { name: qt.createDraft, exact: true }).click();
   await expect(page.getByRole('button', { name: qt.sendQuote, exact: true })).toBeVisible();
-  await page.getByRole('button', { name: qt.sendQuote, exact: true }).click();
+  const sendButton = page.getByRole('button', { name: qt.sendQuote, exact: true });
+  await sendButton.click();
+  await expect(sendButton).toBeHidden();
   const primary = await admin
     .from('quotes')
     .select('quote_versions(id,status)')
-    .eq('request_id', primaryRequestId)
+    .eq('request_id', pricedRequestId)
     .single();
   expect(primary.error).toBeNull();
   const primaryVersion = primary.data!.quote_versions.find((v) => v.status === 'SENT')!.id;
   const commercial = async (requestId: string, distanceKm: number, validitySeconds = 172800) =>
     page.evaluate(
-      async ({ requestId, distanceKm, validitySeconds }) => {
+      async ({ requestId, distanceKm, validitySeconds, vehicleClassId }) => {
         const post = async (url: string, body: unknown) => {
           const r = await fetch(url, {
             method: 'POST',
@@ -191,7 +211,7 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
           requestId,
           distanceKm,
           sourceNote: 'Hosted controlled verification',
-          vehicleClassId: (document.querySelector('#vehicle') as HTMLSelectElement).value,
+          vehicleClassId,
           workerCount: 2,
           mutationId: crypto.randomUUID(),
         });
@@ -208,14 +228,36 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
         if (sent.status !== 200) throw new Error('send failed');
         return draft.data.id as string;
       },
-      { requestId, distanceKm, validitySeconds },
+      { requestId, distanceKm, validitySeconds, vehicleClassId },
     );
-  const rejectedVersion = await commercial(requestIds[0]!, 20);
-  const expiredVersion = await commercial(requestIds[1]!, 25, 1);
-  const supersededV1 = await commercial(requestIds[2]!, 30);
-  const supersededV2 = await commercial(requestIds[2]!, 32);
+  const rejectedVersion = await commercial(requestIds[1]!, 20);
+  const expiredVersion = await commercial(requestIds[2]!, 25, 1);
+  const supersededV1 = await commercial(requestIds[3]!, 30);
+  const supersededV2 = await commercial(requestIds[3]!, 32);
   await logout(page);
+  testInfo.annotations.push({
+    type: 'safe-security-probe',
+    description: 'step-quote-customer-login',
+  });
   await login(page, customer);
+  expect(
+    await page.evaluate(
+      async () =>
+        (
+          await fetch('/api/sales/pricing', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              requestId: crypto.randomUUID(),
+              distanceKm: 1,
+              vehicleClassId: crypto.randomUUID(),
+              workerCount: 1,
+              mutationId: crypto.randomUUID(),
+            }),
+          })
+        ).status,
+    ),
+  ).toBe(403);
   await page.goto('/en/account/quotes');
   await expect(page.getByRole('heading', { name: quotesDictionary('en').myQuotes })).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
@@ -358,6 +400,7 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   expect(internal.error).toBeNull();
   expect(internal.data).toEqual([]);
   await logout(page);
+  testInfo.annotations.push({ type: 'safe-security-probe', description: 'step-peer-login' });
   await login(page, peer);
   await page.goto(`/${locale}/account/quotes/${primaryVersion}`);
   expect(page.url()).toBe(`${baseURL}/${locale}/account/quotes/${primaryVersion}`);
@@ -365,20 +408,22 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   const suspended = await admin
     .from('organization_memberships')
     .update({ status: 'suspended' })
-    .eq('profile_id', required('STAGING_PHASE2_CUSTOMER_ID'));
+    .eq('profile_id', required('STAGING_PHASE2_PEER_ID'));
   expect(suspended.error).toBeNull();
   try {
-    await logout(page);
-    await login(page, customer);
+    await page.goto(`/${locale}/account`);
+    await expect(
+      page.getByRole('heading', { name: dictionary(locale).unauthorized }),
+    ).toBeVisible();
     await page.goto(`/${locale}/account/quotes/${primaryVersion}`);
-    await expect(page).toHaveURL(`${baseURL}/${locale}/account`);
+    await expect(page.getByRole('heading', { name: dictionary(locale).notFound })).toBeVisible();
   } finally {
     expect(
       (
         await admin
           .from('organization_memberships')
           .update({ status: 'active' })
-          .eq('profile_id', required('STAGING_PHASE2_CUSTOMER_ID'))
+          .eq('profile_id', required('STAGING_PHASE2_PEER_ID'))
       ).error,
     ).toBeNull();
   }
