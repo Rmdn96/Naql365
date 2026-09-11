@@ -6,9 +6,11 @@ Repository audit; compatible stack and strict typing; modular server/domain/data
 
 No operational feature is complete or presented as available. Tables and interfaces establish relationships and extension points only.
 
-## Current phase: Phase 1 — Customer identity and request intake MVP
+## Accepted baseline: Phase 1 — Customer identity and request intake MVP
 
 The owner authorized Phase 1 after accepted Staging closeout and the independent approval required to integrate PR #1 into develop. The implementation adds customer registration/sign-in/recovery, confirmed onboarding, persisted draft intake, private images, atomic submission and customer list/detail. Schema-gap decisions preceded migrations. Final acceptance depends on the Phase 1 report's evidence; implementation alone does not establish PASS. Malware scanning remains an explicit limitation, not a claimed feature.
+
+## Current phase: Phase 2 — Smart Quote and pricing foundation
 
 Phase 2 was separately authorized from accepted develop `4d3b25730e3b604882a860ade414f98fd888766b`. It adds server-authoritative pricing, owner-approved MANUAL_VERIFIED distance, Sales review, immutable quote versions and exactly-one Order acceptance. Final acceptance is recorded in the Phase 2 report. Phase 3 remains locked.
 

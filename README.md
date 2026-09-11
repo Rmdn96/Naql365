@@ -1,6 +1,6 @@
 # Naql365 · نقل 365
 
-Transportation Operating Platform. **Phase 2: Smart Quote and pricing foundation (awaiting final acceptance).** Staging acceptance and review status are recorded in the phase report; this is not a Production release.
+Transportation Operating Platform. **Phase 2: Smart Quote and pricing foundation (ready for owner review).** Staging acceptance and review status are recorded in the phase report; this is not a Production release.
 
 Independent implementation for Naql365. No source, branding, credentials or data from another product is used.
 
