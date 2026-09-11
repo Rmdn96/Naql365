@@ -23,7 +23,9 @@ it('enforces Phase 2 pricing, distance, quote and order invariants in PostgreSQL
   const db = await foundationDatabase();
   try {
     await db.exec(
-      readFileSync(new URL('../../supabase/tests/phase2.test.sql', import.meta.url), 'utf8'),
+      readFileSync(new URL('../../supabase/tests/phase2.test.sql', import.meta.url), 'utf8').split(
+        '-- Supabase TAP report',
+      )[0]!,
     );
     const { rows } = await db.query<{ count: number }>(
       'select count(*)::int as count from public.pricing_evaluations',

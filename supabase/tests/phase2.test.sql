@@ -153,3 +153,10 @@ set local role authenticated;
 select public.phase2_assert((select count(*)=0 from public.quote_versions),'suspended customer loses quote access');
 reset role;
 rollback;
+
+-- Supabase TAP report
+begin;
+select plan(1);
+select pass('Phase 2 pricing, distance, quote lifecycle, order and negative authorization assertions completed');
+select * from finish();
+rollback;
