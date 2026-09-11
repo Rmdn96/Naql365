@@ -1,6 +1,6 @@
 # Staging architecture and reconstruction
 
-Phase 0.5 verified the foundation; Phase 1 extends the same isolated Staging environment with customer identity and request intake. Pricing, dispatch, payment and all Phase 2+ workflows remain excluded. Historical foundation evidence stays in the Phase 0.5 report; current intake acceptance belongs to the Phase 1 report.
+Phase 0.5 verified the foundation; Phase 1 extends the same isolated Staging environment with customer identity and request intake. Phase 2 adds isolated pricing and quote acceptance verification. Dispatch, payment and Phase 3+ workflows remain excluded. Historical foundation evidence stays in the Phase 0.5 report; current intake acceptance belongs to the Phase 1 report.
 
 ## Environment inventory
 
