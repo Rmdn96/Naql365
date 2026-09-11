@@ -56,3 +56,7 @@ Keep one reviewed deployment origin active for acceptance. After a replacement P
 - [Supabase CLI configuration](https://supabase.com/docs/reference/cli/supabase-config)
 - [Supabase SSR advanced guide](https://supabase.com/docs/guides/auth/server-side/advanced-guide)
 - [Supabase sessions](https://supabase.com/docs/guides/auth/sessions)
+
+## Phase 2 verification
+
+Use the canonical Phase 2 report for the accepted application source and Preview origin. The operator runs guarded Phase 2, intake and Foundation browser suites sequentially against that same origin, followed by repository migration/RLS verification and regenerated types. Test catalogues are synthetic Staging configuration; they do not approve Production tariffs. Preserve required role/permission/catalogue data during scoped fixture cleanup. Revoke the temporary automation-bypass credential only after all hosted tests finish.

@@ -60,5 +60,7 @@ docs/                       Architecture, operations and decision records
 - [Testing](docs/testing.md)
 - [Phase roadmap](docs/roadmap.md)
 - [Customer identity and request intake](docs/customer-request-intake.md)
+- [Pricing and quote architecture](docs/pricing-and-quotes.md)
+- [Phase 2 acceptance report](docs/reports/Naql365-Phase-2-Report.md)
 
 Workflow: `feature/* → develop → main`. Phase 2 uses `feature/phase-2-smart-quote-pricing` from accepted develop `4d3b25730e3b604882a860ade414f98fd888766b`. Phase 3 remains locked. No automatic Production release is configured.

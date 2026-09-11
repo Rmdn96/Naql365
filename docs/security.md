@@ -9,7 +9,7 @@
 - Private storage buckets, registered object paths, constrained MIME types and short signed downloads. Foundation files retain their bucket limits; Phase 1 request images have the stricter limits below.
 - CSP nonces for scripts, no framing, no objects, self-only forms/base, nosniff, restrictive permissions policy, HTTPS HSTS and limited referrer disclosure.
 - React text escaping; controlled JSON-LD serialization escapes `<`; no user HTML rendering.
-- Same-origin allowlisted PKCE callback redirects. No mutable GET endpoint except the required one-time Auth code exchange.
+- Same-origin allowlisted PKCE callback redirects. Quote detail reads record idempotent view/expiry metadata for the authenticated owner; commercial acceptance/rejection and pricing changes use protected POST commands. The Auth callback performs the required one-time code exchange.
 - Customer intake mutations enforce explicit Origin checks and bounded JSON/multipart bodies in addition to server identity, ownership and database authorization. Server Actions retain framework Origin/Host checks.
 - Error boundaries expose translated generic messages, never raw stack traces, database details or credentials.
 - No password, session, URL token, uploaded content or API response logging in application code.
