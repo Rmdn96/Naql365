@@ -5,6 +5,7 @@ const ar = {
   awaiting: 'طلبات بانتظار التسعير',
   noRequests: 'لا توجد طلبات بانتظار المراجعة.',
   request: 'الطلب',
+  service: 'الخدمة',
   customer: 'العميل',
   route: 'المسار',
   submitted: 'أُرسل',
@@ -58,6 +59,7 @@ const en: QuotesDictionary = {
   awaiting: 'Requests awaiting pricing',
   noRequests: 'No requests await commercial review.',
   request: 'Request',
+  service: 'Service',
   customer: 'Customer',
   route: 'Route',
   submitted: 'Submitted',
@@ -108,4 +110,20 @@ const en: QuotesDictionary = {
 };
 export function quotesDictionary(locale: Locale): QuotesDictionary {
   return locale === 'ar' ? ar : en;
+}
+
+const quoteStatuses = {
+  DRAFT: { ar: 'مسودة', en: 'Draft' },
+  SENT: { ar: 'مرسل', en: 'Sent' },
+  VIEWED: { ar: 'تم الاطلاع', en: 'Viewed' },
+  ACCEPTED: { ar: 'مقبول', en: 'Accepted' },
+  REJECTED: { ar: 'مرفوض', en: 'Rejected' },
+  EXPIRED: { ar: 'منتهي الصلاحية', en: 'Expired' },
+  SUPERSEDED: { ar: 'مستبدل بإصدار أحدث', en: 'Superseded' },
+  SUBMITTED: { ar: 'طلب مرسل', en: 'Submitted request' },
+} as const;
+export function quoteStatusLabel(status: string, locale: Locale): string {
+  return Object.hasOwn(quoteStatuses, status)
+    ? quoteStatuses[status as keyof typeof quoteStatuses][locale]
+    : '—';
 }

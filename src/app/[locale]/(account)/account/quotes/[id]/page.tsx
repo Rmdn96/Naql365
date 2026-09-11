@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
-import { quotesDictionary } from '@/i18n/quotes';
+import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { customerQuoteDetails } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
 import { Alert, Badge, Table } from '@/components/ui/primitives';
@@ -32,7 +32,7 @@ export default async function Page({
       <Link href={`/${locale}/account/quotes`}>{t.back}</Link>
       <div className="wizard-top">
         <h1>{t.quoteDetails}</h1>
-        <Badge>{quote.status}</Badge>
+        <Badge>{quoteStatusLabel(quote.status, locale)}</Badge>
       </div>
       <p className="request-reference" dir="ltr">
         {quote.quotes?.reference}
@@ -45,7 +45,18 @@ export default async function Page({
           {t.accepted} {t.orderCreated}: <bdi>{quote.orders[0].reference}</bdi>
         </Alert>
       )}
-      <p>{request?.request_locations.map((l) => l.city).join(' → ')}</p>
+      <p>
+        {t.service}: {locale === 'ar' ? request?.services?.name_ar : request?.services?.name_en}
+      </p>
+      <p>
+        {t.route}:{' '}
+        {['pickup', 'delivery']
+          .map(
+            (kind) =>
+              request?.request_locations.find((location) => location.kind === kind)?.city ?? '—',
+          )
+          .join(' → ')}
+      </p>
       <p>
         {t.distanceKm}: <bdi>{quote.distance_km} km</bdi> · {t.manualVerified}
       </p>

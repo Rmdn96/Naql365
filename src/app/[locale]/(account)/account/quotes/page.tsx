@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
-import { quotesDictionary } from '@/i18n/quotes';
+import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { customerQuotes } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
 import { Badge, EmptyState } from '@/components/ui/primitives';
@@ -33,7 +33,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           {versions.map(({ q, v }) => (
             <li key={v.id}>
               <div>
-                <Badge>{v.status}</Badge>
+                <Badge>{quoteStatusLabel(v.status, locale)}</Badge>
                 <h2>
                   <Link href={`/${locale}/account/quotes/${v.id}`}>
                     <bdi>{q.reference}</bdi> · {t.version} {v.version}

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
-import { quotesDictionary } from '@/i18n/quotes';
+import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { salesQueue } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
 import { Badge, EmptyState } from '@/components/ui/primitives';
@@ -30,7 +30,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           {data.map((r) => (
             <li key={r.id}>
               <div>
-                <Badge>{r.quotes?.quote_versions.at(-1)?.status ?? r.status}</Badge>
+                <Badge>
+                  {quoteStatusLabel(r.quotes?.quote_versions.at(-1)?.status ?? r.status, locale)}
+                </Badge>
                 <h2>
                   <bdi>{r.reference}</bdi>
                 </h2>
