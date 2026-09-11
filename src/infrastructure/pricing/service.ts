@@ -71,8 +71,15 @@ export async function salesRequestDetails(requestId: string) {
       .order('calculated_at', { ascending: false })
       .limit(10),
   ]);
-  for (const result of [request, vehicles, evaluations])
-    if (result.error) pricingError(result.error.code);
+  for (const [operation, result] of [
+    ['request', request],
+    ['vehicles', vehicles],
+    ['evaluations', evaluations],
+  ] as const)
+    if (result.error) {
+      console.error('sales pricing query failed', { operation, code: result.error.code });
+      pricingError(result.error.code);
+    }
   if (!request.data) throw new AppError('not_found', 'Submitted request unavailable');
   return {
     request: request.data,

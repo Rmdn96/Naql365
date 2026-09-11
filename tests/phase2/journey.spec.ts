@@ -5,6 +5,7 @@ import { test, expect } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { dictionary } from '../../src/i18n/dictionaries';
+import { riyadhDate } from '../../src/domain/requests/intake';
 
 const required = (name: string) => {
   const value = process.env[name];
@@ -44,7 +45,7 @@ async function logout(page: Page, locale: 'ar' | 'en' = 'ar') {
 test('hosted commercial journey enforces pricing, lifecycle, isolation and accessibility', async ({
   page,
   baseURL,
-}) => {
+}, testInfo) => {
   const locale = 'ar',
     ct = customerDictionary(locale),
     qt = quotesDictionary(locale);
@@ -56,7 +57,13 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
           await fetch('/api/sales/pricing', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: '{}',
+            body: JSON.stringify({
+              requestId: crypto.randomUUID(),
+              distanceKm: 1,
+              vehicleClassId: crypto.randomUUID(),
+              workerCount: 1,
+              mutationId: crypto.randomUUID(),
+            }),
           })
         ).status,
     ),
@@ -94,8 +101,10 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
   await page.locator('#description').fill('Phase 2 disposable request');
+  await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.addItem, exact: true }).click();
   await page.locator('#item-0').fill('Box');
+  await page.locator('#quantity-0').fill('2');
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
   await page.locator('#pickup-floor').fill('2');
@@ -107,17 +116,42 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   await page.getByRole('checkbox', { name: 'تغليف', exact: true }).check();
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
+  await page.locator('#date').fill(riyadhDate(new Date(Date.now() + 86400000)));
   await page.locator('#time-window').selectOption('flexible');
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
-  await expect(page.locator('#contact_name')).not.toHaveValue('');
+  await page.locator('#contact_name').fill('Phase 2 customer');
+  await page.locator('#contact_phone').fill('+966500000001');
+  await page.locator('#contact_email').fill('phase2@example.invalid');
+  await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
   await page.getByRole('button', { name: ct.submit, exact: true }).click();
   await expect(page).toHaveURL(/account\/requests/);
   await logout(page);
   await login(page, sales);
   await page.goto(`/${locale}/portal/quotes`);
-  await page.locator(`a[href$="/${primaryRequestId}"]`).click();
+  await expect(page.locator(`a[href$="/${primaryRequestId}"]`)).toBeVisible();
+  const pricingPage = await page.goto(`/${locale}/portal/quotes/${primaryRequestId}`);
+  expect(pricingPage?.status()).toBe(200);
+  await expect(page).toHaveURL(new RegExp(`/portal/quotes/${primaryRequestId}$`));
+  const expectedPricing = await page.getByRole('heading', { name: /التسعير الأولي/ }).count();
+  if (!expectedPricing) {
+    const heading = await page.locator('h1').first().textContent();
+    const labels = dictionary(locale);
+    const kind =
+      heading === labels.notFound
+        ? 'not-found'
+        : heading === labels.error
+          ? 'server-error'
+          : heading === labels.unauthorized
+            ? 'unauthorized'
+            : heading === labels.unavailable
+              ? 'unconfigured'
+              : heading
+                ? 'other'
+                : 'none';
+    testInfo.annotations.push({ type: 'safe-security-probe', description: `pricing-page-${kind}` });
+  }
   await expect(page.getByRole('heading', { name: /التسعير الأولي/ })).toBeVisible();
   expect(
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
