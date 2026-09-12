@@ -20,7 +20,7 @@ Localized server-rendered pages, validated user-scoped adapters and explicit dat
 
 ## E. Migrations
 
-Three additive migrations: `20260912000100_operations_schema`, `20260912000200_operations_commands`, `20260912000300_pod_and_tracking`. Thirteen migrations reconstruct in embedded PostgreSQL. The schema commit passed complete Supabase reconstruction/RLS in CI. Cloud application and final generated-type comparison remain pending. Current types were generated from embedded PostgreSQL metadata and pass strict typecheck; final Supabase CLI types are still required.
+Three unchanged additive Phase 3 migrations: `20260912000100_operations_schema`, `20260912000200_operations_commands`, `20260912000300_pod_and_tracking`. All thirteen reconstruct in complete Supabase CI. After successful CI they were applied to allowlisted Supabase Staging `zuvyfeflkzlciuaauxba`; repository history matches all thirteen and all 49 public tables have RLS. Shared rollback SQL suites passed on hosted Staging. Types were regenerated with the authoritative Supabase workflow in CI and from hosted Staging, then typechecked. The hosted-only PostgREST 14.5 metadata is committed; no relational schema drift remains.
 
 ## F. Order → Job
 
@@ -56,7 +56,7 @@ Current assignment uniqueness and historical closed rows; SQL history assertions
 
 ## N. Conflict Protection
 
-Active execution partial unique indexes for Driver and Vehicle. Planning is nonexclusive and carries an explicit UI warning. Independent connection concurrency harness exists but has not run successfully yet.
+Active execution partial unique indexes for Driver and Vehicle. Planning is nonexclusive and carries an explicit UI warning. Independent-connection races passed in complete Supabase CI, including competing Driver and Vehicle execution claims. Hosted application acceptance remains pending.
 
 ## O. Emergency Reassignment
 
@@ -112,7 +112,7 @@ Commands record staff actor, action, entity and bounded facts. Aggregate complet
 
 ## AB. Concurrency
 
-Independent PostgreSQL connection harness covers Job creation, Trip revision/reference, assignment, Driver/Vehicle conflict, reassignment, Stop/POD and aggregate completion. It is wired into CI but remains UNVERIFIED until an actual successful run. Local Docker Desktop crashes during Inference-manager initialization; no reset/destructive Docker repair was performed.
+Independent PostgreSQL connections executed successfully in CI runs 34691256784, 34691413101 and 34691681645. Assertions cover one Job per Order, Trip revision/reference allocation, assignment, Driver/Vehicle conflict, emergency reassignment, Stop transitions, POD reservation/finalization, retries and final aggregate completion. Concurrent duplicate completion of the same Trip plus completion of the other Trip yields exactly two successful transitions and one aggregate completion event. Rejected revision races require SQLSTATE 40001/23505. The initial checkpoint run passed assertions but failed cleanup because Supabase disallows direct storage.objects deletion; commit 0061e4f uses the guarded LOCAL Storage API and successful runs include cleanup. Local Docker Desktop remains unavailable due Inference-manager initialization failure; actual PostgreSQL concurrency evidence comes from CI, not an embedded substitute.
 
 ## AC. Security
 
@@ -120,7 +120,7 @@ Server-only Supabase adapters, current tenant permission checks, origin validati
 
 ## AD. Accessibility
 
-Native confirmation dialog, labeled inputs, focusable actions and responsive structure implemented. Foundation desktop/mobile test cases reported success. Phase 3 authenticated axe/keyboard/mobile evidence is pending.
+Authenticated Operations, emergency dialog and mobile POD WCAG axe checks executed without violations on the initial Phase 3 Preview. Hosted tracking verification exposed nested `main` elements: the locale layout owns the page landmark but four Phase 3 pages added another. These pages now use normal containers, with an explicit single-main assertion in hosted tests. A replacement Preview and complete acceptance rerun are required before accessibility is PASS.
 
 ## AE. AR/EN
 
@@ -128,15 +128,15 @@ Centralized Arabic/English dictionaries and locale routes implemented. Hosted bi
 
 ## AF. Tests
 
-Local: 99 tests passed across 15 unit/integration files; strict typecheck, lint, formatting and secret scan passed. Production build succeeded. All 18 foundation browser cases reported success, but the local runner process did not return its final exit summary at this checkpoint, so complete runner cleanup is not claimed. New hosted harness is typechecked but unexecuted. No failed checks were disabled.
+Local: 99 tests passed across 15 unit/integration files; strict typecheck, lint, formatting and secret scan passed. Full required CI including build/E2E and independent Supabase concurrency passed at `50d8a2a32343a86c5d520ff9595853a53f65a137`, run [34693106214](https://github.com/Rmdn96/Naql365/actions/runs/34693106214). The latest hosted journey completed two Trips, private POD/access/expiry, completion aggregation, commercial immutability, suspended-staff denial and English Operations accessibility, then failed at a strict locator on nested main landmarks in customer tracking. This is not a full hosted PASS. The test harness also now closes SDK probe sessions locally rather than revoking the browser's session globally. No failed checks were disabled.
 
 ## AG. Hosted Staging
 
-No Phase 3 migrations, Preview or fixture runs have been applied to cloud resources yet. Accepted Phase 2 Staging is preserved. The new harness is preparation only, and does not yet cover every required hosted negative/concurrency/storage-expiry scenario. Expand and execute it before declaring PASS.
+Protected READY Preview: https://naql365-staging-5dgwpqqi9-naql365.vercel.app; deployment `dpl_DD7e5XuRu8yXRxSocPnpn5hQZEZb`; source `677f62fc53c589d277bfa85a250408a45830eb8f`. Independent Vercel API confirms Preview (`target: null`), expected project and branch. All four application variables remain Preview-only; no service-role credential is installed. Exact Supabase Auth Site URL and four callback/recovery entries were rotated to this origin. Phase 3 hosted acceptance is currently in progress. Initial harness failures exposed a nonawaited onboarding check and a nonawaited Quote-send transition; test synchronization was corrected without changing application authorization or migrations.
 
 ## AH. Cleanup
 
-Embedded SQL fixtures roll back. No new Phase 3 hosted identities/files or automation bypass credentials were created. Hosted cleanup is therefore not acceptance evidence yet. The prepared runner scopes cleanup to its own identities/records and retains catalogues.
+SQL fixtures roll back. Hosted fixtures use five disposable identities and one isolated organization, with private Storage cleanup through the API. The first run removed identities/business records but retained an organization because its creation audit had no fixture actor. Cleanup now deletes audit rows for that exact disposable organization; the orphan was safely removed. Subsequent failed runs completed scoped cleanup. Required catalogues remain intact. Final successful-run cleanup and temporary Vercel automation-bypass revocation remain pending.
 
 ## AI. Files Changed
 
@@ -144,14 +144,11 @@ Operations architecture; three migrations; generated database types; SQL/integra
 
 ## AJ. Commits/CI
 
-- Gap analysis: `7ea1388e44eb6ed4f35119d1b35ae5be60868777` (pushed).
-- Schema/commands: `5c13c70fad0d071adf985d91137d7c3e69bc2f1f` (pushed). [CI 34684587640](https://github.com/Rmdn96/Naql365/actions/runs/34684587640) passed both required jobs.
-- UI/concurrency: `da659a03bd262d39b3349e3dfd9c2521ba0564c1` saved locally. Push failed after the execution environment changed: Windows Schannel `SEC_E_NO_CREDENTIALS`; the alternative verified-TLS backend did not complete a push, and Git Credential Manager cannot retrieve the repository credential in this environment.
-- Subsequent harness/report changes are recorded in the next local checkpoint commit. Final-HEAD remote CI is pending; do not reuse schema-commit CI as final evidence.
+Existing Phase 3 commits through checkpoint `f0e5719b870ddeaa1828bf6dfb0644dcb32a56f0` were verified pushed. Continuation commits: `0061e4ff8e9ee76e411a9bd3550c675778291a8b` concurrency cleanup/assertions; `1a910f5` hosted negative coverage; `a4856eece1c897a90df78c9a8c6dfe2ddfa2bfca` authoritative generated types; `677f62fc53c589d277bfa85a250408a45830eb8f` hosted PostgREST metadata. Both required jobs passed for deployment HEAD: [CI 34691681645](https://github.com/Rmdn96/Naql365/actions/runs/34691681645). Final closeout changes still require their own committed-HEAD CI.
 
 ## AK. Known Limitations
 
-GitHub credential access is blocking push/CI continuation. Local Docker is unavailable. Hosted test coverage and execution, final concurrency evidence, Supabase-generated types, accessibility/security review and final cleanup are unfinished. Planned overlap is a warning; active execution conflicts are authoritative. Partial fulfilment/refunds and post-start route changes are excluded, not silently resolved.
+Local Docker is unavailable; complete Supabase CI provides reconstruction and independent-connection evidence. Hosted application acceptance, regression, accessibility/security review and final cleanup remain unfinished. Planned overlap is a warning; active execution conflicts are authoritative. Partial fulfilment/refunds and post-start route changes remain excluded.
 
 ## AL. Deferred Items
 
@@ -159,47 +156,47 @@ Driver Portal/login, GPS/maps/automatic ETA, route optimization, AI, messaging a
 
 ## AM. Acceptance Matrix
 
-| Gate                         | Result  | Evidence                                                       |
-| ---------------------------- | ------- | -------------------------------------------------------------- |
-| Git baseline                 | PASS    | Accepted develop verified before branch creation               |
-| Gap analysis                 | PASS    | Separate prerequisite commit                                   |
-| Schema/migrations            | PARTIAL | Reconstruction/SQL CI pass; hosted pending                     |
-| Order → Job                  | PARTIAL | SQL pass; hosted pending                                       |
-| Multi-Trip                   | PARTIAL | SQL pass; hosted pending                                       |
-| Multi-Stop                   | PARTIAL | SQL pass; hosted pending                                       |
-| Stop dependencies            | PARTIAL | SQL pass; hosted pending                                       |
-| Internal Driver              | PARTIAL | Implemented/SQL; hosted pending                                |
-| External Driver              | PARTIAL | No-profile SQL assertion; hosted pending                       |
-| Vehicle independence         | PARTIAL | SQL; hosted pending                                            |
-| Assignment                   | PARTIAL | SQL; hosted pending                                            |
-| Resource conflicts           | PARTIAL | Sequential SQL; real races pending                             |
-| Emergency reassignment       | PARTIAL | SQL; hosted pending                                            |
-| Assignment history           | PARTIAL | SQL; hosted pending                                            |
-| Trip state machine           | PARTIAL | SQL; hosted pending                                            |
-| Stop state machine           | PARTIAL | SQL; hosted pending                                            |
-| Trip Events                  | PARTIAL | SQL; hosted pending                                            |
-| Operations workspace         | PARTIAL | Build/typecheck; hosted pending                                |
-| Dispatch Board               | PARTIAL | Build/typecheck; hosted pending                                |
-| Customer tracking            | PARTIAL | Projection SQL; hosted pending                                 |
-| POD                          | PARTIAL | Decode/SQL; hosted Storage pending                             |
-| Trip completion              | PARTIAL | SQL; hosted pending                                            |
-| Job completion               | PARTIAL | SQL; real races/hosted pending                                 |
-| Order operational completion | PARTIAL | SQL; hosted pending                                            |
-| RLS                          | PARTIAL | Schema CI; final hosted negative coverage pending              |
-| Tenant isolation             | PARTIAL | SQL; full hosted coverage pending                              |
-| Customer isolation           | PARTIAL | SQL; hosted pending                                            |
-| Concurrency                  | BLOCKED | New CI harness awaiting push/run                               |
-| Security                     | PARTIAL | Local checks; hosted review pending                            |
-| Accessibility                | PARTIAL | Foundation only; operations pending                            |
-| AR/EN                        | PARTIAL | Implemented; hosted pending                                    |
-| Regression                   | PARTIAL | Local tests/build; final hosted regressions pending            |
-| CI                           | BLOCKED | Final implementation not pushed                                |
-| Hosted Staging               | BLOCKED | Awaiting full predeployment gates                              |
-| Cleanup                      | PARTIAL | No Phase 3 hosted fixtures created; acceptance cleanup pending |
-| Scope compliance             | PASS    | No merge/Production/Phase 4 actions                            |
+| Gate                         | Result  | Evidence                                                                  |
+| ---------------------------- | ------- | ------------------------------------------------------------------------- |
+| Git baseline                 | PASS    | Accepted develop verified before branch creation                          |
+| Gap analysis                 | PASS    | Separate prerequisite commit                                              |
+| Schema/migrations            | PASS    | Thirteen migrations, hosted rollback SQL and authoritative types verified |
+| Order → Job                  | PARTIAL | SQL pass; hosted pending                                                  |
+| Multi-Trip                   | PARTIAL | SQL pass; hosted pending                                                  |
+| Multi-Stop                   | PARTIAL | SQL pass; hosted pending                                                  |
+| Stop dependencies            | PARTIAL | SQL pass; hosted pending                                                  |
+| Internal Driver              | PARTIAL | Implemented/SQL; hosted pending                                           |
+| External Driver              | PARTIAL | No-profile SQL assertion; hosted pending                                  |
+| Vehicle independence         | PARTIAL | SQL; hosted pending                                                       |
+| Assignment                   | PARTIAL | SQL; hosted pending                                                       |
+| Resource conflicts           | PARTIAL | Sequential SQL; real races pending                                        |
+| Emergency reassignment       | PARTIAL | SQL; hosted pending                                                       |
+| Assignment history           | PARTIAL | SQL; hosted pending                                                       |
+| Trip state machine           | PARTIAL | SQL; hosted pending                                                       |
+| Stop state machine           | PARTIAL | SQL; hosted pending                                                       |
+| Trip Events                  | PARTIAL | SQL; hosted pending                                                       |
+| Operations workspace         | PARTIAL | Build/typecheck; hosted pending                                           |
+| Dispatch Board               | PARTIAL | Build/typecheck; hosted pending                                           |
+| Customer tracking            | PARTIAL | Projection SQL; hosted pending                                            |
+| POD                          | PARTIAL | Decode/SQL; hosted Storage pending                                        |
+| Trip completion              | PARTIAL | SQL; hosted pending                                                       |
+| Job completion               | PARTIAL | SQL; real races/hosted pending                                            |
+| Order operational completion | PARTIAL | SQL; hosted pending                                                       |
+| RLS                          | PARTIAL | Schema CI; final hosted negative coverage pending                         |
+| Tenant isolation             | PARTIAL | SQL; full hosted coverage pending                                         |
+| Customer isolation           | PARTIAL | SQL; hosted pending                                                       |
+| Concurrency                  | PASS    | Independent connections and cleanup passed in deployment-HEAD CI          |
+| Security                     | PARTIAL | Local checks; hosted review pending                                       |
+| Accessibility                | PARTIAL | Foundation only; operations pending                                       |
+| AR/EN                        | PARTIAL | Implemented; hosted pending                                               |
+| Regression                   | PARTIAL | Local tests/build; final hosted regressions pending                       |
+| CI                           | PARTIAL | Deployment HEAD passes both jobs; final closeout HEAD pending             |
+| Hosted Staging               | PARTIAL | Genuine protected Preview READY; hosted acceptance in progress            |
+| Cleanup                      | PARTIAL | No Phase 3 hosted fixtures created; acceptance cleanup pending            |
+| Scope compliance             | PASS    | No merge/Production/Phase 4 actions                                       |
 
 ## AN. Final Decision
 
 PHASE 3 PARTIAL — NOT READY
 
-Continue this report after secure GitHub access is restored. Push the existing branch, verify exact-HEAD CI including real concurrency, complete remaining hosted test coverage, then apply/deploy/test Staging using established protections. Do not merge or start Phase 4.
+Continue hosted acceptance and same-Preview Phase 0–2 regression, verify security and cleanup, then commit/push final evidence and verify exact-HEAD CI. Do not merge, deploy Production or start Phase 4.
