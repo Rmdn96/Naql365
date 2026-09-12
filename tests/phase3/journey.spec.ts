@@ -4,6 +4,7 @@ import sharp from 'sharp';
 import { randomUUID } from 'node:crypto';
 import { test, expect } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
+import { dictionary } from '../../src/i18n/dictionaries';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { operationsDictionary, operationLabel } from '../../src/i18n/operations';
 import { riyadhDate } from '../../src/domain/requests/intake';
@@ -452,5 +453,16 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
   await expect(page.locator('main')).not.toContainText('Phase 3 external fixture');
   await logout(page, 'en');
   await login(page, 'peer', 'en');
-  expect((await page.goto(`/en/account/orders/${orderId}`))?.status()).toBe(404);
+  const deniedPage = await page.goto(`/en/account/orders/${orderId}`);
+  // Next.js notFound uses HTTP 200 once streaming has begun; assert denial content and RLS.
+  expect([200, 404]).toContain(deniedPage?.status());
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(dictionary('en').notFound);
+  await expect(page.locator('main')).not.toContainText(order.data!.reference!);
+  const deniedHtml = await deniedPage!.text();
+  expect(deniedHtml.includes(order.data!.reference!)).toBe(false);
+  const peerClient = await principal('peer');
+  const deniedProgress = await peerClient.rpc('customer_order_progress', { p_order_id: orderId });
+  expect(deniedProgress.error?.code).toBe('42501');
+  expect((await peerClient.from('orders').select('id').eq('id', orderId)).data).toEqual([]);
+  expect((await peerClient.auth.signOut({ scope: 'local' })).error).toBeNull();
 });
