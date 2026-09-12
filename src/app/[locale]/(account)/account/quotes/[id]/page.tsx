@@ -7,6 +7,7 @@ import { AppError } from '@/domain/shared/errors';
 import { Alert, Badge, Table } from '@/components/ui/primitives';
 import { formatSar } from '@/domain/pricing/model';
 import { QuoteActions } from '@/components/pricing/quote-actions';
+import { operationsDictionary } from '@/i18n/operations';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({
@@ -37,6 +38,13 @@ export default async function Page({
       <p className="request-reference" dir="ltr">
         {quote.quotes?.reference}
       </p>
+      {quote.status === 'ACCEPTED' && quote.orders[0]?.id && (
+        <p>
+          <Link href={`/${locale}/account/orders/${quote.orders[0].id}`}>
+            {operationsDictionary(locale).tracking}
+          </Link>
+        </p>
+      )}
       <p>
         {t.relatedRequest}: <bdi>{request?.reference}</bdi>
       </p>
