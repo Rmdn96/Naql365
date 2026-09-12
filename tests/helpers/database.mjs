@@ -1,6 +1,6 @@
 import { PGlite } from '@electric-sql/pglite';
 import { readFileSync, readdirSync } from 'node:fs';
-export async function foundationDatabase() {
+export async function foundationDatabase(migrationLimit = Number.POSITIVE_INFINITY) {
   const db = new PGlite();
   await db.exec(`
     create role anon nologin;
@@ -24,7 +24,8 @@ export async function foundationDatabase() {
   const root = new URL('../../supabase/migrations/', import.meta.url);
   for (const file of readdirSync(root)
     .filter((file) => file.endsWith('.sql'))
-    .sort())
+    .sort()
+    .slice(0, migrationLimit))
     await db.exec(readFileSync(new URL(file, root), 'utf8'));
   return db;
 }
