@@ -32,6 +32,8 @@ Do not interpret workflow YAML as a passing workflow: inspect the actual run for
 
 The default Phase 3 run includes the complete operational journey and authenticated bundle inspection. `--assets-only` runs just the supplemental bundle check and cannot establish operational acceptance. SDK probe sessions use local sign-out so they do not revoke the independently authenticated browser session. Hosted network assertions have bounded deadlines; no failed assertions are retried automatically or suppressed. The cleanup removes the isolated fixture organization's creation audit as well as actor-scoped records before deleting that organization.
 
+Cross-customer tracking tests assert the localized not-found content, absence of the Order reference in HTML, a denied customer-progress RPC and empty direct RLS reads. They accept either HTTP 404 or the documented HTTP 200 used after streaming begins; status alone never establishes authorization. See [Next.js not-found response semantics](https://nextjs.org/docs/app/api-reference/file-conventions/not-found).
+
 ## Phase 2 acceptance
 
 `npm run test:staging:phase2` requires an explicitly verified protected Preview and the allowlisted healthy Supabase Staging project. It creates disposable customer, Sales and peer identities, verifies the commercial journey and negative access, and cleans its scoped records in finally. Never run hosted suites concurrently. The shared SQL assertions execute against PGlite, complete Supabase in CI and hosted Staging. A separate TAP footer reports completed assertions to the Supabase runner; embedded/hosted SQL runners omit only that reporter footer, not security assertions. Phase 1 and Foundation hosted regression must target the same Phase 2 Preview.

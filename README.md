@@ -1,6 +1,6 @@
 # Naql365 · نقل 365
 
-Transportation Operating Platform. **Phase 2: Smart Quote and pricing foundation (ready for owner review).** Staging acceptance and review status are recorded in the phase report; this is not a Production release.
+Transportation Operating Platform. **Phase 3: Operations, multi-Trip dispatch and POD foundation.** Staging acceptance and review status are recorded in the canonical Phase 3 report; this is not a Production release.
 
 Independent implementation for Naql365. No source, branding, credentials or data from another product is used.
 
@@ -62,5 +62,7 @@ docs/                       Architecture, operations and decision records
 - [Customer identity and request intake](docs/customer-request-intake.md)
 - [Pricing and quote architecture](docs/pricing-and-quotes.md)
 - [Phase 2 acceptance report](docs/reports/Naql365-Phase-2-Report.md)
+- [Operations architecture and schema analysis](docs/operations-dispatch-pod.md)
+- [Phase 3 acceptance report](docs/reports/Naql365-Phase-3-Report.md)
 
-Workflow: `feature/* → develop → main`. Phase 2 uses `feature/phase-2-smart-quote-pricing` from accepted develop `4d3b25730e3b604882a860ade414f98fd888766b`. Phase 3 remains locked. No automatic Production release is configured.
+Workflow: `feature/* → develop → main`. Phase 3 uses `feature/phase-3-operations-dispatch-pod` from accepted develop `86ba612a5f6f7f4afd7a5c0650d5b4d3848f2b6f`. Phase 4 remains locked. Phase 3 merging requires separate owner authorization and the protected review workflow. No automatic Production release is configured.

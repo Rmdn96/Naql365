@@ -40,3 +40,9 @@ CI installs the lockfile, checks formatting/secrets/lint/types, runs unit/integr
 Phase 1 PR #2 was subsequently merged with the required independent review; Phase 2 starts from accepted develop 4d3b25730e3b604882a860ade414f98fd888766b. Phase 2 remains on its feature branch and must not be merged or promoted by this closeout. The canonical Phase 2 report records the current Preview and separate documentation commits. No Production environment variables or application deployment are introduced.
 
 Phase 2 application source: `00e5b33bb91a139afa64130c519417c970a2f4ee`; Preview deployment `dpl_49bf9y8Z1rDeYrDQ3zztCBLCB9Xm` at https://naql365-staging-hxbh6u7bq-naql365.vercel.app. Later closeout commits contain tests/documentation and the exact Auth origin configuration. This deployment is Preview, not a Production release.
+
+## Phase 3 candidate
+
+Phase 2 was merged through protected PR #3 into accepted develop `86ba612a5f6f7f4afd7a5c0650d5b4d3848f2b6f`. Phase 3 continues exclusively on `feature/phase-3-operations-dispatch-pod`; no merge is authorized. Application source `99776ae3074b3c3bef8ed9a3061986023454b004` passed both jobs in CI 34693416324 before deployment.
+
+The current protected Preview is https://naql365-staging-86o99g35f-naql365.vercel.app, deployment `dpl_HzMuLzKaFQVFmaUehYbT7bmKkJ6C`, independently READY with Preview target. It replaces the first Phase 3 candidate after correction of nested main landmarks. The exact Supabase Auth allowlist was rotated to this origin with no wildcards. All acceptance and Phase 0–2 regression must use this candidate. Consult the canonical Phase 3 report for the final decision; a READY deployment alone is not acceptance.

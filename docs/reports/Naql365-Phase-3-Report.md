@@ -1,6 +1,6 @@
 # Naql365 — Phase 3 Report
 
-Progress checkpoint, 2026-09-12. This is the canonical report to update during continuation, not an acceptance certificate. Phase 3 is incomplete. No merge, Production deployment or Phase 4 is authorized.
+Progress checkpoint, 2026-09-12. This is the canonical report to update during continuation, not an acceptance certificate. Primary hosted operations acceptance passed; final regression and security closeout remain in progress. No merge, Production deployment or Phase 4 is authorized.
 
 ## A. Starting State
 
@@ -24,91 +24,91 @@ Three unchanged additive Phase 3 migrations: `20260912000100_operations_schema`,
 
 ## F. Order → Job
 
-Unique primary Job per Order; accepted Order requirement, permission checks and retry identity. SQL assertions pass.
+PASS. Hosted customer intake → Sales pricing/Quote → acceptance created the commercial Order. Operations created its Job through the UI; a second authoritative create request returned the same Job and a database assertion confirmed exactly one row. Independent-connection CI races also pass.
 
 ## G. Multi-Trip
 
-Multiple Trips per Job; database-issued references; SQL two-Trip scenario passes.
+PASS. One hosted Job produced two distinct Trips. Both executed against the same accepted Order and retained their own references, Stops, assignments and POD.
 
 ## H. Multi-Stop
 
-Ordered Pickup/Delivery Stops with per-Stop state, address and operational notes. SQL scenario uses two Pickups and two Deliveries per Trip. Planner UI exists; hosted usability remains unverified.
+PASS. Each hosted Trip used two Pickup and two Delivery Stops with explicit positions. Both four-Stop sequences executed through authenticated hosted commands. Planner implementation is server-validated; no optimization or GPS is claimed.
 
 ## I. Stop Dependencies
 
-Explicit earlier Pickup dependencies and ordered execution. Invalid delivery completion is rejected. Item-level load allocation is not claimed.
+PASS. Delivery completion before required Pickup completion was rejected. All Stops executed in order; stale transition races pass in CI. Changing a started Trip plan was rejected. Item-level load allocation remains excluded.
 
 ## J. Drivers
 
-Unified INTERNAL/EXTERNAL operational records, active status and optional internal profile. Existing customer membership guard retained.
+PASS. Hosted INTERNAL and EXTERNAL operational records were created and used independently of Vehicles. Roles and membership remain authoritative; no Driver login workflow was introduced.
 
 ## K. External Drivers
 
-No Auth profile or login required. Authenticated staff remains the event actor. SQL verifies the distinction.
+PASS. The hosted External Driver has profile_id null. Trip events and finalized POD record the authenticated Dispatcher as actor, not the external resource.
 
 ## L. Vehicles
 
-Independent active resource with identifier and type; no permanent Driver relationship.
+PASS. Hosted free Vehicle/busy Driver and free Driver/busy Vehicle combinations were separately rejected at dispatch, proving independent resource constraints. Assignment changes preserve the distinct resource identifiers.
 
 ## M. Assignments
 
-Current assignment uniqueness and historical closed rows; SQL history assertions pass.
+PASS. Hosted planned assignments, authoritative dispatch conflicts and emergency replacement executed. Historical assignment rows remained; exactly one current assignment was asserted for the reassigned Trip.
 
 ## N. Conflict Protection
 
-Active execution partial unique indexes for Driver and Vehicle. Planning is nonexclusive and carries an explicit UI warning. Independent-connection races passed in complete Supabase CI, including competing Driver and Vehicle execution claims. Hosted application acceptance remains pending.
+PASS. Hosted Driver-only and Vehicle-only active execution conflicts returned 409; independent-connection CI races also pass. Planning is deliberately nonexclusive with a visible warning. No sophisticated schedule optimization is claimed.
 
 ## O. Emergency Reassignment
 
-Started Trips require confirmed action and reason; prior assignment retained and event/audit recorded. SQL checks pass; hosted dialog execution remains pending.
+PASS. Started-Trip reassignment without a reason was rejected. The real Arabic confirmation dialog changed Driver and Vehicle with a bounded reason; history and actor remained intact. Cross-tenant resources were rejected. Quote/Order commercial facts remained unchanged.
 
 ## P. Trip State Machine
 
-Allowlisted readiness, dispatch, arrival, service, departure, completion and exception commands. No generic set-status endpoint. Terminal mutation denied.
+PASS. Hosted readiness, dispatch, stop progression and completion commands executed. Premature completion and post-start plan mutation were rejected. SQL and concurrency tests verify stale revisions and terminal behavior; there is no arbitrary status-write API.
 
 ## Q. Stop State Machine
 
-PENDING → EN_ROUTE → ARRIVED → IN_PROGRESS → COMPLETED. Revision checks reject stale transitions. No skipping or route-history rewriting after dispatch.
+PASS. Both hosted Trips executed four ordered Stops through EN_ROUTE, ARRIVED, IN_PROGRESS and COMPLETED. Delivery-before-Pickup was rejected; independent-connection stale/retry transitions pass in CI.
 
 ## R. Trip Events
 
-Append-oriented authenticated events and bounded facts. SQL denies customer forgery and visibility of staff-only events.
+PASS. Hosted events consistently identify the authenticated operations staff actor, including execution by an External Driver resource. Customer/cross-tenant event and assignment reads return no rows; direct mutation remains revoked.
 
 ## S. Dispatch Board
 
-Grouped/filterable Trip list and resource assignment summaries implemented. Hosted review and accessibility not yet accepted.
+PASS. The hosted Operations board rendered in AR/EN and desktop/mobile layouts. Active conflict and state behavior were exercised through the hosted commands. Automated accessibility found no WCAG violations on the inspected operational views.
 
 ## T. Operations Workspace
 
-Accepted Orders, Jobs, Trip planning/execution, resources and exceptions implemented. Bounded operational Job-summary RPC avoids giving Dispatcher unrestricted customer Request reads.
+PASS. Authenticated Dispatcher opened the actual workspace and created the Job through its UI. Trip execution, the emergency dialog and private POD capture ran in the browser. A suspended membership lost the protected route and mutation permission.
 
 ## U. Customer Tracking
 
-Own-Order fixed projection, per-Trip progress and POD-captured boolean. No Driver details, signatures, internal notes or emergency reasons. No GPS claims. Linked from accepted Quote detail. Hosted evidence pending.
+PASS. The owning customer viewed completed multi-Trip progress in English and Arabic/mobile. Internal Driver details and emergency reason were absent. A peer customer saw localized not-found content, no Order reference in returned HTML, RPC denial 42501 and empty direct RLS reads. Next.js may use HTTP 200 after streaming begins; denial is verified by content and database enforcement, not status alone. [Next.js semantics](https://nextjs.org/docs/app/api-reference/file-conventions/not-found). No GPS or automatic ETA is claimed.
 
 ## V. POD
 
-One final Trip POD with recipient, staff actor, timestamp and private signature. Pending reservation cleanup supported. Server uses pinned Sharp 0.35.4 (already present through Next.js, now a direct dependency) to decode/re-encode images and strip unnecessary metadata; malformed magic-only input is rejected. SQL reservation/type/size/finalization guards exist. Storage expiry and hosted negative access still require verification; no malware scanning claim.
+PASS. Each hosted Trip finalized exactly one POD with recipient, authenticated actor and a harmless PNG signature. Duplicate reservation was denied. Authorized staff download and signed access passed; Customer, Sales and cross-tenant download/signing were denied. Direct public access failed; a two-second signed capability worked and was rejected after expiry. Private objects were deleted during scoped cleanup. Sharp decodes/re-encodes images and strips metadata; malware scanning is not claimed.
 
 ## W. Trip Completion
 
-All Stops and final POD required; SQL denial-before-POD and successful completion pass.
+PASS. Hosted completion was denied with incomplete Stops and again after Stops but before POD. Final POD allowed completion. The same-Trip concurrent completion/retry race passed in CI.
 
 ## X. Job Completion
 
-All required Trips must complete. First-Trip completion does not complete the Job; failed/cancelled Trips remain exceptions.
+PASS. Completing Trip 1 left the two-Trip Job IN_PROGRESS. Completing Trip 2 derived COMPLETED. Independent-connection aggregate completion emitted exactly one completion event. Failed/cancelled Trips remain explicit exceptions rather than fabricated fulfilment.
 
 ## Y. Order Operational Completion
 
-Separate operational status and completion timestamp; commercial snapshot unchanged in SQL scenario. No repricing.
+PASS. Hosted Order operational_status derived COMPLETED only after the final required Trip. Accepted Quote Version, distance, subtotal, VAT and total remained identical to the original commercial snapshot.
 
 ## Z. RLS/Authorization
 
-Anonymous, Customer, unauthorized Sales, cross-tenant Job creation and suspended access tested; raw operational writes remain revoked. Full hosted resource/Stop/POD isolation and complete negative-case coverage are outstanding.
+PASS. Thirteen-migration hosted SQL verification and 49/49 RLS tables are confirmed. Hosted Customer, unauthorized Sales and cross-tenant staff could not mutate operations or use another tenant's resources; raw status writes were denied. Peer customer progress/Order reads were denied. Suspended staff lost both hosted API permission and protected routing. Untrusted role metadata never granted staff permission.
 
 ## AA. Audit
 
-Commands record staff actor, action, entity and bounded facts. Aggregate completion emits dedicated audit. Hosted audit review outstanding.
+PASS. Commands preserve actor, organization, entity and bounded facts; assignments and events retain the staff identity. CI verifies single aggregate completion auditing under concurrent requests. Disposable fixture audit rows are removed only with their own scoped data; catalogue/schema auditing is retained.
 
 ## AB. Concurrency
 
@@ -120,23 +120,25 @@ Server-only Supabase adapters, current tenant permission checks, origin validati
 
 ## AD. Accessibility
 
-Authenticated Operations, emergency dialog and mobile POD WCAG axe checks executed without violations on the initial Phase 3 Preview. Hosted tracking verification exposed nested `main` elements: the locale layout owns the page landmark but four Phase 3 pages added another. These pages now use normal containers, with an explicit single-main assertion in hosted tests. A replacement Preview and complete acceptance rerun are required before accessibility is PASS.
+PASS for the automated hosted smoke scope. Operations workspace, Arabic emergency dialog, mobile Trip/POD views, English keyboard focus and AR/EN customer tracking passed WCAG 2/2.1 AA axe checks with no violations. Each inspected page has exactly one main landmark. The initial nested-main defect was fixed in four Phase 3 pages before this replacement Preview. This is not a claim of a complete manual WCAG certification.
 
 ## AE. AR/EN
 
-Centralized Arabic/English dictionaries and locale routes implemented. Hosted bilingual operational acceptance remains pending.
+PASS. Hosted Arabic intake/Operations and English Operations/customer tracking execute; Arabic customer tracking was checked on a mobile viewport. HTML direction and localized content are asserted. No operational business logic is encoded in translations.
 
 ## AF. Tests
+
+Current regression blocker: Phase 2's hosted customer-pricing denial expected 403 but received 500. A separate controlled diagnostic confirmed one visible customer membership, pricing permission false and a subsequent pricing response 403; its preceding session probe returned 500. Nested Vercel logs identify `Unable to read membership`. Safe database error-code logging was added to the identity adapter to determine the cause without recording identities, credentials or tokens. No authorization expectation has been weakened. Phase 0–2 regression is not PASS.
 
 Local: 99 tests passed across 15 unit/integration files; strict typecheck, lint, formatting and secret scan passed. Full required CI including build/E2E and independent Supabase concurrency passed at `50d8a2a32343a86c5d520ff9595853a53f65a137`, run [34693106214](https://github.com/Rmdn96/Naql365/actions/runs/34693106214). The latest hosted journey completed two Trips, private POD/access/expiry, completion aggregation, commercial immutability, suspended-staff denial and English Operations accessibility, then failed at a strict locator on nested main landmarks in customer tracking. This is not a full hosted PASS. The test harness also now closes SDK probe sessions locally rather than revoking the browser's session globally. No failed checks were disabled.
 
 ## AG. Hosted Staging
 
-Protected READY Preview: https://naql365-staging-5dgwpqqi9-naql365.vercel.app; deployment `dpl_DD7e5XuRu8yXRxSocPnpn5hQZEZb`; source `677f62fc53c589d277bfa85a250408a45830eb8f`. Independent Vercel API confirms Preview (`target: null`), expected project and branch. All four application variables remain Preview-only; no service-role credential is installed. Exact Supabase Auth Site URL and four callback/recovery entries were rotated to this origin. Phase 3 hosted acceptance is currently in progress. Initial harness failures exposed a nonawaited onboarding check and a nonawaited Quote-send transition; test synchronization was corrected without changing application authorization or migrations.
+Primary Phase 3 acceptance PASS on https://naql365-staging-86o99g35f-naql365.vercel.app; deployment `dpl_HzMuLzKaFQVFmaUehYbT7bmKkJ6C`; source `99776ae3074b3c3bef8ed9a3061986023454b004`. Independent API verification: protected Preview, target null, READY, expected project/branch. Two hosted tests passed: authenticated bundle boundaries and the complete customer-to-multi-Trip operational journey. Exact Supabase Auth origin/four redirects use no wildcards. Phase 0–2 regression and final log/cleanup review are still in progress.
 
 ## AH. Cleanup
 
-SQL fixtures roll back. Hosted fixtures use five disposable identities and one isolated organization, with private Storage cleanup through the API. The first run removed identities/business records but retained an organization because its creation audit had no fixture actor. Cleanup now deletes audit rows for that exact disposable organization; the orphan was safely removed. Subsequent failed runs completed scoped cleanup. Required catalogues remain intact. Final successful-run cleanup and temporary Vercel automation-bypass revocation remain pending.
+Phase 3 hosted cleanup PASS: synthetic identities, their Requests/Quotes/Orders/Jobs/Trips/resources/POD and private objects were removed, retaining required catalogues. Cleanup was corrected for the disposable organization's actorless creation audit; earlier orphan was removed. SDK probes sign out locally, leaving the independent browser session intact until browser logout/fixture deletion. Final regression cleanup and temporary Vercel bypass revocation remain pending.
 
 ## AI. Files Changed
 
@@ -148,7 +150,7 @@ Existing Phase 3 commits through checkpoint `f0e5719b870ddeaa1828bf6dfb0644dcb32
 
 ## AK. Known Limitations
 
-Local Docker is unavailable; complete Supabase CI provides reconstruction and independent-connection evidence. Hosted application acceptance, regression, accessibility/security review and final cleanup remain unfinished. Planned overlap is a warning; active execution conflicts are authoritative. Partial fulfilment/refunds and post-start route changes remain excluded.
+Local Docker Desktop is unavailable; complete Supabase CI supplies fresh reconstruction and real independent PostgreSQL connections. Planned overlap is a warning; active execution conflicts are authoritative. Signing URLs are short-lived bearer capabilities, not permanent public links. POD image normalization is not antivirus or identity verification. Failed/cancelled/partial fulfilment, refunds and post-start route edits are not silently resolved. Final regression/security closeout is still pending.
 
 ## AL. Deferred Items
 
