@@ -20,6 +20,12 @@ function databaseError(code: string): never {
 export async function customerClient(writable = false) {
   const client = await createSupabaseServerClient(writable);
   const { data, error } = await client.auth.getUser();
+  if (error && error.name !== 'AuthSessionMissingError') {
+    console.error('Customer session verification failed', {
+      code: error.code ?? error.name,
+      status: error.status,
+    });
+  }
   if (error || !data.user) throw new AppError('unauthenticated', 'Sign in required');
   const { data: customers, error: lookup } = await client
     .from('customers')
