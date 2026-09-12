@@ -18,7 +18,10 @@ export async function portalAccess(permission: string, organizationId?: string) 
   const { data: memberships, error: membershipError } = await (organizationId
     ? membershipQuery.eq('organization_id', organizationId)
     : membershipQuery);
-  if (membershipError) throw new AppError('internal', 'Unable to read membership');
+  if (membershipError) {
+    console.error('Identity membership query failed', { code: membershipError.code });
+    throw new AppError('internal', 'Unable to read membership');
+  }
   const port: AuthorizationPort = {
     async hasPermission(principal, permissionCode) {
       if (principal.userId !== data.user.id) return false;
@@ -26,7 +29,10 @@ export async function portalAccess(permission: string, organizationId?: string) 
         organization_id: principal.organizationId,
         permission_code: permissionCode,
       });
-      if (permissionError) throw new AppError('internal', 'Unable to verify permission');
+      if (permissionError) {
+        console.error('Identity permission query failed', { code: permissionError.code });
+        throw new AppError('internal', 'Unable to verify permission');
+      }
       return allowed === true;
     },
   };
