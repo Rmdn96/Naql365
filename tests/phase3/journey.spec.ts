@@ -19,15 +19,31 @@ const identities = JSON.parse(required('STAGING_PHASE3_IDENTITIES')) as Record<
   string,
   { email: string; password: string; id: string }
 >;
+const boundedFetch: typeof fetch = (input, init) =>
+  fetch(input, {
+    ...init,
+    signal: init?.signal
+      ? AbortSignal.any([init.signal, AbortSignal.timeout(30000)])
+      : AbortSignal.timeout(30000),
+  });
 const admin = createClient(required('STAGING_TEST_API_URL'), required('STAGING_TEST_ADMIN_KEY'), {
   auth: { persistSession: false, autoRefreshToken: false },
+  global: { fetch: boundedFetch },
 });
 async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar') {
   await page.goto(`/${locale}/login`);
   await page.locator('#email').fill(identities[role]!.email);
   await page.locator('#password').fill(identities[role]!.password);
   await page.getByRole('button', { name: customerDictionary(locale).login, exact: true }).click();
-  await expect(page).toHaveURL(new RegExp(`/${locale}/(account|portal)$`));
+  try {
+    await expect(page).toHaveURL(new RegExp(`/${locale}/(account|portal)$`));
+  } catch (error) {
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: `login-error-visible=${await page.getByText(customerDictionary(locale).authError, { exact: true }).isVisible()}; login-route=${new URL(page.url()).pathname === `/${locale}/login`}`,
+    });
+    throw error;
+  }
 }
 async function logout(page: Page, locale: 'ar' | 'en' = 'ar') {
   await page.goto(`/${locale}/account`);
@@ -44,7 +60,7 @@ async function principal(role: string) {
   const client = createClient(
     required('STAGING_TEST_API_URL'),
     required('STAGING_TEST_PUBLIC_KEY'),
-    { auth: { persistSession: false, autoRefreshToken: false } },
+    { auth: { persistSession: false, autoRefreshToken: false }, global: { fetch: boundedFetch } },
   );
   const signed = await client.auth.signInWithPassword(identities[role]!);
   expect(signed.error).toBeNull();
@@ -87,11 +103,10 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
     qt = quotesDictionary('ar'),
     ot = operationsDictionary('ar');
   await login(page, 'customer');
-  if (await page.locator('#name').count()) {
-    await page.locator('#name').fill('Phase 3 controlled customer');
-    await page.locator('#phone').fill('+966500000001');
-    await page.getByRole('button', { name: ct.saveProfile, exact: true }).click();
-  }
+  // The runner always creates a fresh customer. Await onboarding hydration before continuing.
+  await page.locator('#name').fill('Phase 3 controlled customer');
+  await page.locator('#phone').fill('+966500000001');
+  await page.getByRole('button', { name: ct.saveProfile, exact: true }).click();
   await page.getByRole('button', { name: ct.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const requestId = page.url().split('/').at(-1)!;
@@ -139,6 +154,7 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
   await expect(page.getByRole('heading', { name: qt.calculated, exact: true })).toBeVisible();
   await page.getByRole('button', { name: qt.createDraft, exact: true }).click();
   await page.getByRole('button', { name: qt.sendQuote, exact: true }).click();
+  await expect(page.getByRole('button', { name: qt.sendQuote, exact: true })).toBeHidden();
   const version = await admin
     .from('quotes')
     .select('quote_versions(id,status)')
@@ -174,6 +190,8 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
     .click();
   await expect(page).toHaveURL(/operations\/jobs\//);
   const jobId = page.url().split('/').at(-1)!;
+  expect(await op(page, 'create_job', orderId)).toBe(jobId);
+  expect((await admin.from('jobs').select('id').eq('order_id', orderId)).data).toHaveLength(1);
   const trip1 = await op(page, 'create_trip', jobId);
   const trip2 = await op(page, 'create_trip', jobId);
   const d1 = await op(page, 'create_driver', jobId, {
@@ -209,6 +227,15 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
   }
   await op(page, 'dispatch', trip1);
   await op(page, 'dispatch', trip2, {}, 409);
+  // Isolate each conflict: a free vehicle cannot overcome a busy driver, or vice versa.
+  await op(page, 'assign', trip2, { driverId: d1, vehicleId: v2 });
+  await op(page, 'ready', trip2);
+  await op(page, 'dispatch', trip2, {}, 409);
+  await op(page, 'assign', trip2, { driverId: d2, vehicleId: v1 });
+  await op(page, 'ready', trip2);
+  await op(page, 'dispatch', trip2, {}, 409);
+  await op(page, 'assign', trip2, { driverId: d1, vehicleId: v1 });
+  await op(page, 'ready', trip2);
   const other = await principal('other'),
     customerClient = await principal('customer'),
     salesClient = await principal('sales');
@@ -334,16 +361,16 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
         (await client.storage.from('pod-files').createSignedUrl(pod.data!.object_name, 60)).error,
       ).not.toBeNull();
     }
-    const publicResponse = await fetch(
+    const publicResponse = await boundedFetch(
       `${required('STAGING_TEST_API_URL')}/storage/v1/object/public/pod-files/${pod.data!.object_name}`,
     );
     expect(publicResponse.ok).toBe(false);
     const signed = await staff.storage.from('pod-files').createSignedUrl(pod.data!.object_name, 2);
     expect(signed.error).toBeNull();
-    expect((await fetch(signed.data!.signedUrl)).ok).toBe(true);
+    expect((await boundedFetch(signed.data!.signedUrl)).ok).toBe(true);
     await new Promise((resolve) => setTimeout(resolve, 4000));
     expect(
-      (await fetch(signed.data!.signedUrl, { headers: { 'Cache-Control': 'no-cache' } })).ok,
+      (await boundedFetch(signed.data!.signedUrl, { headers: { 'Cache-Control': 'no-cache' } })).ok,
     ).toBe(false);
     expect(
       (
@@ -357,7 +384,8 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
         })
       ).error,
     ).not.toBeNull();
-    await staff.auth.signOut();
+    // End only this SDK probe session; global sign-out would revoke the live browser session.
+    expect((await staff.auth.signOut({ scope: 'local' })).error).toBeNull();
     await page
       .getByRole('button', { name: operationLabel('complete_trip', 'ar'), exact: true })
       .click();
@@ -404,14 +432,20 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
     .eq('profile_id', identities.operations!.id)
     .eq('organization_id', org);
   await Promise.all([
-    other.auth.signOut(),
-    customerClient.auth.signOut(),
-    salesClient.auth.signOut(),
+    other.auth.signOut({ scope: 'local' }),
+    customerClient.auth.signOut({ scope: 'local' }),
+    salesClient.auth.signOut({ scope: 'local' }),
   ]);
   await logout(page);
   await login(page, 'customer', 'en');
   await page.goto(`/en/account/orders/${orderId}`);
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  await axe(page);
+  await expect(page.locator('main')).not.toContainText('Controlled emergency replacement');
+  await expect(page.locator('main')).not.toContainText('Phase 3 external fixture');
+  await page.goto(`/ar/account/orders/${orderId}`);
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await page.setViewportSize({ width: 390, height: 844 });
   await axe(page);
   await expect(page.locator('main')).not.toContainText('Controlled emergency replacement');
   await expect(page.locator('main')).not.toContainText('Phase 3 external fixture');

@@ -123,7 +123,10 @@ try {
         if ((await admin.auth.admin.deleteUser(id)).error)
           throw new Error('Fixture identity cleanup failed');
       }
-      query(ref, `delete from public.organizations where id='${otherOrg}'`);
+      query(
+        ref,
+        `begin;delete from public.audit_logs where organization_id='${otherOrg}';delete from public.organizations where id='${otherOrg}';commit;`,
+      );
       const remaining = query(
         ref,
         `select count(*)::integer as count from auth.users where id in (${ids})`,

@@ -9,7 +9,15 @@ export default defineConfig({
   forbidOnly: true,
   retries: 0,
   timeout: 600000,
+  expect: { timeout: 20000 },
   reporter: './tests/staging/safe-reporter.ts',
-  use: { baseURL: origin, trace: 'off', screenshot: 'off', video: 'off' },
+  use: {
+    baseURL: origin,
+    trace: 'off',
+    screenshot: 'off',
+    video: 'off',
+    navigationTimeout: 45000,
+    actionTimeout: 20000,
+  },
   projects: [{ name: 'hosted-phase3', use: { ...devices['Desktop Chrome'] } }],
 });
