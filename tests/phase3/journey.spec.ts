@@ -40,6 +40,16 @@ async function axe(page: Page) {
   ).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 }
+async function principal(role: string) {
+  const client = createClient(
+    required('STAGING_TEST_API_URL'),
+    required('STAGING_TEST_PUBLIC_KEY'),
+    { auth: { persistSession: false, autoRefreshToken: false } },
+  );
+  const signed = await client.auth.signInWithPassword(identities[role]!);
+  expect(signed.error).toBeNull();
+  return client;
+}
 async function op(
   page: Page,
   action: OperationAction,
@@ -199,6 +209,69 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
   }
   await op(page, 'dispatch', trip1);
   await op(page, 'dispatch', trip2, {}, 409);
+  const other = await principal('other'),
+    customerClient = await principal('customer'),
+    salesClient = await principal('sales');
+  for (const client of [other, customerClient, salesClient]) {
+    const denied = await client.rpc('operations_command', {
+      p_organization_id: org,
+      p_action: 'reassign',
+      p_entity_id: trip1,
+      p_revision: 0,
+      p_mutation_id: randomUUID(),
+      p_payload: { driverId: d2, vehicleId: v2, reason: 'Not authorized', confirmed: true },
+    });
+    expect(denied.error?.code).toBe('42501');
+    expect(
+      (await client.from('trips').update({ status: 'COMPLETED' }).eq('id', trip1)).error?.code,
+    ).toBe('42501');
+  }
+  for (const client of [other, customerClient]) {
+    expect((await client.from('trip_events').select('id').eq('trip_id', trip1)).data).toEqual([]);
+    expect((await client.from('assignments').select('id').eq('trip_id', trip1)).data).toEqual([]);
+  }
+  const otherOrg = required('STAGING_PHASE3_OTHER_ORG');
+  const otherDriver = await other.rpc('operations_command', {
+    p_organization_id: otherOrg,
+    p_action: 'create_driver',
+    p_entity_id: otherOrg,
+    p_revision: 0,
+    p_mutation_id: randomUUID(),
+    p_payload: { type: 'EXTERNAL', name: 'Isolated fixture' },
+  });
+  expect(otherDriver.error).toBeNull();
+  const otherVehicle = await other.rpc('operations_command', {
+    p_organization_id: otherOrg,
+    p_action: 'create_vehicle',
+    p_entity_id: otherOrg,
+    p_revision: 0,
+    p_mutation_id: randomUUID(),
+    p_payload: { type: 'Truck', identifier: 'Isolated fixture' },
+  });
+  expect(otherVehicle.error).toBeNull();
+  await op(
+    page,
+    'reassign',
+    trip1,
+    { driverId: otherDriver.data.id, vehicleId: v2, reason: 'Cross tenant', confirmed: true },
+    403,
+  );
+  await op(
+    page,
+    'reassign',
+    trip1,
+    { driverId: d2, vehicleId: otherVehicle.data.id, reason: 'Cross tenant', confirmed: true },
+    403,
+  );
+  await op(
+    page,
+    'reassign',
+    trip1,
+    { driverId: d2, vehicleId: v2, reason: '', confirmed: true },
+    400,
+  );
+  await op(page, 'plan', trip1, plan, 400);
+  await op(page, 'complete_trip', trip1, {}, 400);
   await page.goto(`/ar/portal/operations/trips/${trip1}`);
   await page.getByRole('button', { name: ot.emergency, exact: true }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
@@ -208,6 +281,13 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
   await page.locator('#emergency-reason').fill('Controlled emergency replacement');
   await page.getByRole('button', { name: ot.confirm, exact: true }).click();
   await expect(page.getByRole('dialog')).not.toBeVisible();
+  const history = await admin
+    .from('assignments')
+    .select('id,ended_at,assigned_by')
+    .eq('trip_id', trip1);
+  expect(history.data).toHaveLength(2);
+  expect(history.data!.filter((a) => a.ended_at === null)).toHaveLength(1);
+  expect(history.data!.every((a) => a.assigned_by === identities.operations!.id)).toBe(true);
   await op(page, 'dispatch', trip2);
   for (const trip of [trip1, trip2]) {
     const stops = await admin
@@ -238,6 +318,46 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
       .setInputFiles({ name: 'signature.png', mimeType: 'image/png', buffer: signature });
     await page.getByRole('button', { name: ot.capture, exact: true }).click();
     await expect(page.getByRole('button', { name: ot.viewSignature, exact: true })).toBeVisible();
+    const pod = await admin.from('trip_pods').select('*').eq('trip_id', trip).single();
+    expect(pod.error).toBeNull();
+    expect(pod.data?.actor_id).toBe(identities.operations!.id);
+    expect(pod.data?.state).toBe('FINAL');
+    const staff = await principal('operations');
+    expect(
+      (await staff.storage.from('pod-files').download(pod.data!.object_name)).error,
+    ).toBeNull();
+    for (const client of [customerClient, other, salesClient]) {
+      expect(
+        (await client.storage.from('pod-files').download(pod.data!.object_name)).error,
+      ).not.toBeNull();
+      expect(
+        (await client.storage.from('pod-files').createSignedUrl(pod.data!.object_name, 60)).error,
+      ).not.toBeNull();
+    }
+    const publicResponse = await fetch(
+      `${required('STAGING_TEST_API_URL')}/storage/v1/object/public/pod-files/${pod.data!.object_name}`,
+    );
+    expect(publicResponse.ok).toBe(false);
+    const signed = await staff.storage.from('pod-files').createSignedUrl(pod.data!.object_name, 2);
+    expect(signed.error).toBeNull();
+    expect((await fetch(signed.data!.signedUrl)).ok).toBe(true);
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+    expect(
+      (await fetch(signed.data!.signedUrl, { headers: { 'Cache-Control': 'no-cache' } })).ok,
+    ).toBe(false);
+    expect(
+      (
+        await staff.rpc('trip_pod_command', {
+          p_trip_id: trip,
+          p_file_id: randomUUID(),
+          p_action: 'reserve',
+          p_recipient: 'Duplicate',
+          p_mime: 'image/png',
+          p_size: 8,
+        })
+      ).error,
+    ).not.toBeNull();
+    await staff.auth.signOut();
     await page
       .getByRole('button', { name: operationLabel('complete_trip', 'ar'), exact: true })
       .click();
@@ -257,6 +377,37 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
   ] as const)
     expect(final.data?.[key]).toBe(order.data?.[key]);
   expect(final.data?.operational_status).toBe('COMPLETED');
+  const external = await admin
+    .from('drivers')
+    .select('profile_id,driver_type')
+    .eq('id', d2)
+    .single();
+  expect(external.data).toEqual({ profile_id: null, driver_type: 'EXTERNAL' });
+  const events = await admin.from('trip_events').select('actor_id').in('trip_id', [trip1, trip2]);
+  expect(events.data!.every((e) => e.actor_id === identities.operations!.id)).toBe(true);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/en/portal/operations');
+  await axe(page);
+  await page.keyboard.press('Tab');
+  expect(await page.evaluate(() => document.activeElement?.tagName)).not.toBe('BODY');
+  await admin
+    .from('organization_memberships')
+    .update({ status: 'suspended' })
+    .eq('profile_id', identities.operations!.id)
+    .eq('organization_id', org);
+  await op(page, 'create_job', orderId, {}, 403);
+  await page.goto('/en/portal/operations');
+  await expect(page).toHaveURL(/\/en\/portal$/);
+  await admin
+    .from('organization_memberships')
+    .update({ status: 'active' })
+    .eq('profile_id', identities.operations!.id)
+    .eq('organization_id', org);
+  await Promise.all([
+    other.auth.signOut(),
+    customerClient.auth.signOut(),
+    salesClient.auth.signOut(),
+  ]);
   await logout(page);
   await login(page, 'customer', 'en');
   await page.goto(`/en/account/orders/${orderId}`);

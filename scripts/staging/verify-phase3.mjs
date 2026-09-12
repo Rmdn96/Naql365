@@ -14,6 +14,7 @@ if (
   throw new Error('Verified protected Phase 3 Preview required');
 const release = acquireHostedRun();
 const users = [];
+const otherOrg = randomUUID();
 let ref, admin, org;
 try {
   ref = stagingProject();
@@ -28,8 +29,12 @@ try {
   if (!adminKey || !publicKey) throw new Error('Staging keys unavailable');
   const url = `https://${ref}.supabase.co`;
   admin = createClient(url, adminKey, { auth: { persistSession: false, autoRefreshToken: false } });
+  query(
+    ref,
+    `insert into public.organizations(id,name) values('${otherOrg}','Phase 3 isolation fixture')`,
+  );
   const identities = {};
-  for (const label of ['customer', 'sales', 'operations', 'peer']) {
+  for (const label of ['customer', 'sales', 'operations', 'peer', 'other']) {
     const email = `naql365-phase3-${label}-${randomUUID()}@example.test`,
       password = randomBytes(32).toString('base64url');
     const created = await admin.auth.admin.createUser({
@@ -43,11 +48,12 @@ try {
     users.push(id);
     identities[label] = { email, password, id };
     if (label !== 'customer') {
+      const tenant = label === 'other' ? otherOrg : org;
       const type = label === 'peer' ? 'customer' : 'staff',
         role = label === 'peer' ? 'CUSTOMER' : label === 'sales' ? 'SALES' : 'DISPATCHER';
       query(
         ref,
-        `begin;insert into public.organization_memberships(organization_id,profile_id,member_type) values('${org}','${id}','${type}');insert into public.user_roles(organization_id,profile_id,role_id) select '${org}','${id}',id from public.roles where code='${role}';${label === 'peer' ? `insert into public.customers(organization_id,profile_id) values('${org}','${id}');` : ''}commit;`,
+        `begin;insert into public.organization_memberships(organization_id,profile_id,member_type) values('${tenant}','${id}','${type}');insert into public.user_roles(organization_id,profile_id,role_id) select '${tenant}','${id}',id from public.roles where code='${role}';${label === 'peer' ? `insert into public.customers(organization_id,profile_id) values('${org}','${id}');` : ''}commit;`,
       );
     }
   }
@@ -59,6 +65,7 @@ try {
         env: {
           ...process.env,
           STAGING_PHASE3_ORG: org,
+          STAGING_PHASE3_OTHER_ORG: otherOrg,
           STAGING_PHASE3_IDENTITIES: JSON.stringify(identities),
           STAGING_TEST_API_URL: url,
           STAGING_TEST_PUBLIC_KEY: publicKey,
@@ -116,6 +123,7 @@ try {
         if ((await admin.auth.admin.deleteUser(id)).error)
           throw new Error('Fixture identity cleanup failed');
       }
+      query(ref, `delete from public.organizations where id='${otherOrg}'`);
       const remaining = query(
         ref,
         `select count(*)::integer as count from auth.users where id in (${ids})`,
