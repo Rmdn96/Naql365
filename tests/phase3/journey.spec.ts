@@ -50,6 +50,7 @@ async function logout(page: Page, locale: 'ar' | 'en' = 'ar') {
   await page.getByRole('button', { name: customerDictionary(locale).logout, exact: true }).click();
 }
 async function axe(page: Page) {
+  await expect(page.getByRole('main')).toHaveCount(1);
   expect(
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
       .violations,

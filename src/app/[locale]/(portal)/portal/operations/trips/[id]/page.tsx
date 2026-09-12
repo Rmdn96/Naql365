@@ -27,7 +27,7 @@ export default async function Page({
     throw error;
   }
   return (
-    <main className="container page operations">
+    <div className="container page operations">
       <Link href={`/${locale}/portal/operations/jobs/${data.trip.job_id}`}>{t.job}</Link>
       <h1>
         <bdi>{data.trip.reference}</bdi>
@@ -75,6 +75,6 @@ export default async function Page({
           })}
         </ol>
       </section>
-    </main>
+    </div>
   );
 }

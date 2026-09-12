@@ -19,9 +19,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     throw error;
   }
   return (
-    <main className="container page operations">
+    <div className="container page operations">
       <h1>{t.title}</h1>
       <Workspace locale={locale} data={data} />
-    </main>
+    </div>
   );
 }

@@ -5,6 +5,10 @@ import { createClient } from '@supabase/supabase-js';
 import { stagingProject, supabase, query } from './supabase.mjs';
 import { acquireHostedRun } from './exclusive-run.mjs';
 process.chdir(fileURLToPath(new URL('../../', import.meta.url)));
+const args = process.argv.slice(2);
+if (args.some((arg) => arg !== '--assets-only')) throw new Error('Unknown verification option');
+// Supplemental bundle inspection is useful after a completed journey; it is not full acceptance.
+const selectedTests = args.includes('--assets-only') ? ['tests/phase3/assets.spec.ts'] : [];
 const origin = process.env.STAGING_BASE_URL;
 if (
   !origin ||
@@ -60,7 +64,13 @@ try {
   const code = await new Promise((resolve) => {
     const child = spawn(
       process.execPath,
-      ['node_modules/@playwright/test/cli.js', 'test', '--config', 'playwright.phase3.config.ts'],
+      [
+        'node_modules/@playwright/test/cli.js',
+        'test',
+        ...selectedTests,
+        '--config',
+        'playwright.phase3.config.ts',
+      ],
       {
         env: {
           ...process.env,

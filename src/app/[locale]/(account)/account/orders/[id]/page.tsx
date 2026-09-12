@@ -23,7 +23,7 @@ export default async function Page({
     throw error;
   }
   return (
-    <main className="container page">
+    <div className="container page">
       <h1>{t.tracking}</h1>
       <p>
         <bdi>{data.reference}</bdi>
@@ -50,6 +50,6 @@ export default async function Page({
       ) : (
         <EmptyState title={t.trips}>{t.empty}</EmptyState>
       )}
-    </main>
+    </div>
   );
 }

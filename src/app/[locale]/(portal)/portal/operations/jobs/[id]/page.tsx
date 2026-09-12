@@ -26,7 +26,7 @@ export default async function Page({
   }
   const route = data.route;
   return (
-    <main className="container page operations">
+    <div className="container page operations">
       <Link href={`/${locale}/portal/operations`}>{t.back}</Link>
       <h1>
         {t.job} <bdi>{data.job.reference}</bdi>
@@ -68,6 +68,6 @@ export default async function Page({
           ))}
         </ul>
       </section>
-    </main>
+    </div>
   );
 }
