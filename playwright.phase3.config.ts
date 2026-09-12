@@ -1,0 +1,15 @@
+import { defineConfig, devices } from '@playwright/test';
+const origin = process.env.STAGING_BASE_URL;
+if (!origin || !/^https:\/\/naql365-staging-[a-z0-9-]+\.vercel\.app$/.test(origin))
+  throw new Error('Verified Phase 3 Preview origin required');
+export default defineConfig({
+  testDir: './tests/phase3',
+  fullyParallel: false,
+  workers: 1,
+  forbidOnly: true,
+  retries: 0,
+  timeout: 600000,
+  reporter: './tests/staging/safe-reporter.ts',
+  use: { baseURL: origin, trace: 'off', screenshot: 'off', video: 'off' },
+  projects: [{ name: 'hosted-phase3', use: { ...devices['Desktop Chrome'] } }],
+});

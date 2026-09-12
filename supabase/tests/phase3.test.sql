@@ -106,6 +106,14 @@ select public.phase3_assert((public.customer_order_progress('83000000-0000-4000-
 select public.phase3_assert((select count(*)=0 from public.trip_pods),'Customer cannot read POD');
 select public.phase3_assert((select count(*)=0 from public.trip_events),'Customer cannot read internal events');
 select public.phase3_assert((select count(*)=0 from storage.objects where bucket_id='pod-files'),'Customer cannot read signature');
+do $$ declare trip uuid;
+begin
+ -- The known synthetic Trip ID is retrieved through the safe progress boundary only
+ -- in other probes; here an arbitrary ID must still fail before any POD mutation.
+ trip=gen_random_uuid();
+ begin perform public.trip_pod_command(trip,gen_random_uuid(),'reserve','Forged','image/png',8); raise exception 'Customer forged POD'; exception when insufficient_privilege then null; end;
+ begin insert into storage.objects(bucket_id,name,metadata) values('pod-files','unreserved','{"mimetype":"image/png","size":8}'); raise exception 'Customer uploaded unreserved POD'; exception when insufficient_privilege then null; end;
+end $$;
 select set_config('request.jwt.claim.sub','13000000-0000-4000-8000-000000000005',true);
 do $$ begin begin perform public.customer_order_progress('83000000-0000-4000-8000-000000000001'); raise exception 'Cross-customer progress'; exception when insufficient_privilege then null; end; end $$;
 reset role;
@@ -113,6 +121,12 @@ update public.organization_memberships set status='suspended' where profile_id='
 set local role authenticated;
 select set_config('request.jwt.claim.sub','13000000-0000-4000-8000-000000000001',true);
 do $$ begin begin perform public.phase3_command('create_job','83000000-0000-4000-8000-000000000001'); raise exception 'Suspended access'; exception when insufficient_privilege then null; end; end $$;
+select public.phase3_assert((select count(*)=0 from public.trip_pods),'Suspended staff loses POD reads');
+select public.phase3_assert((select count(*)=0 from public.trips),'Suspended staff loses Trip reads');
+reset role;
+select set_config('request.jwt.claim.sub','',true);
+set local role anon;
+do $$ begin begin perform public.operations_command('23000000-0000-4000-8000-000000000001','create_job','83000000-0000-4000-8000-000000000001',0,gen_random_uuid()); raise exception 'Anonymous operations'; exception when insufficient_privilege then null; end; end $$;
 rollback;
 -- Supabase TAP report
 begin;

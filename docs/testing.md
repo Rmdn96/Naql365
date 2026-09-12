@@ -26,4 +26,10 @@ Do not interpret workflow YAML as a passing workflow: inspect the actual run for
 
 ## Phase 2 acceptance
 
+## Phase 3 verification (in progress)
+
+`supabase/tests/phase3.test.sql` exercises multi-Trip execution, assignment history, active resource conflicts, required pickup order, POD, aggregate completion and negative authorization. `scripts/test-operations-concurrency.mjs` requires the named disposable LOCAL Supabase container and uses independent PostgreSQL connections; it is included in CI after pgTAP. It must not be pointed at Staging or Production. An unexecuted concurrency harness is not PASS evidence.
+
+`node scripts/staging/verify-phase3.mjs` creates controlled identities and runs `playwright.phase3.config.ts` against an explicitly verified protected Preview. It uses the existing secret-redacting reporter with screenshots, traces and video disabled. The harness includes a real customer wizard, Sales Quote and customer acceptance before operations. All fixture cleanup is scoped to its created identities and their records. The canonical Phase 3 report records remaining coverage and execution gaps; do not infer acceptance from the presence of test code.
+
 `npm run test:staging:phase2` requires an explicitly verified protected Preview and the allowlisted healthy Supabase Staging project. It creates disposable customer, Sales and peer identities, verifies the commercial journey and negative access, and cleans its scoped records in finally. Never run hosted suites concurrently. The shared SQL assertions execute against PGlite, complete Supabase in CI and hosted Staging. A separate TAP footer reports completed assertions to the Supabase runner; embedded/hosted SQL runners omit only that reporter footer, not security assertions. Phase 1 and Foundation hosted regression must target the same Phase 2 Preview.
