@@ -407,7 +407,7 @@ begin
   return prior.result;
  end if;
  if p_action in ('create_driver','create_vehicle') then
-  if not exists(select 1 from public.markets where id=(p_payload->>'marketId')::uuid and organization_id=p_organization_id and market_id=t.market_id and active) then raise exception 'Active resource market required' using errcode='22023'; end if;
+  if not exists(select 1 from public.markets where id=(p_payload->>'marketId')::uuid and organization_id=p_organization_id and active) then raise exception 'Active resource market required' using errcode='22023'; end if;
   new_id=gen_random_uuid();
   if p_action='create_driver' then
    if p_payload->>'type' is null or nullif(btrim(p_payload->>'name'),'') is null then raise exception 'Driver facts required' using errcode='22023'; end if;

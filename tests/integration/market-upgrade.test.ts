@@ -5,7 +5,11 @@ import { foundationDatabase } from '../helpers/database.mjs';
 const migration =
   readFileSync('supabase/migrations/20260913000100_market_foundation.sql', 'utf8') +
   '\n' +
-  readFileSync('supabase/migrations/20260913000200_market_commands.sql', 'utf8');
+  readFileSync('supabase/migrations/20260913000200_market_commands.sql', 'utf8') +
+  '\n' +
+  readFileSync('supabase/migrations/20260913000300_market_snapshot_guards.sql', 'utf8') +
+  '\n' +
+  readFileSync('supabase/migrations/20260913000400_market_relationship_metadata.sql', 'utf8');
 it('reconstructs the market schema from an empty accepted foundation', async () => {
   const db = await foundationDatabase(13);
   try {
@@ -20,7 +24,7 @@ it('reconstructs the market schema from an empty accepted foundation', async () 
 it('upgrades populated accepted commercial history without changing any prior field or trigger state', async () => {
   const db = await foundationDatabase(13);
   try {
-    const fixture = readFileSync('supabase/tests/phase2.test.sql', 'utf8')
+    const fixture = readFileSync('tests/fixtures/phase2-legacy.sql', 'utf8')
       .split('-- Supabase TAP report')[0]!
       .replace(/rollback;\s*$/, 'commit;');
     await db.exec(fixture);
