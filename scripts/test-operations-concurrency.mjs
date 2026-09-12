@@ -1,6 +1,7 @@
 // Actual independent PostgreSQL connections, restricted to the named LOCAL container.
 // Never accepts a remote URL, password or cloud project. Fixtures are removed in finally.
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
+import { createClient } from '@supabase/supabase-js';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 const org = '23000000-0000-4000-8000-000000000001';
@@ -60,6 +61,13 @@ function assert(value, label) {
 async function race(calls, successes, label) {
   const results = await Promise.allSettled(calls);
   assert(results.filter((r) => r.status === 'fulfilled').length === successes, label);
+  for (const result of results) {
+    if (result.status === 'rejected')
+      assert(
+        ['40001', '23505'].includes(result.reason?.sqlstate),
+        `${label}: expected conflict SQLSTATE`,
+      );
+  }
   return results;
 }
 let setup = false;
@@ -198,8 +206,14 @@ try {
     await race([sql(finalize, true), sql(finalize, true)], 2, 'POD finalization retry');
   }
   // Distinct final Trips race on one Job; exactly one aggregate completion event.
+  const finalRevision1 = await revision(t1),
+    finalRevision2 = await revision(t2);
   await race(
-    [command('complete_trip', t1), command('complete_trip', t2)],
+    [
+      command('complete_trip', t1, {}, finalRevision1),
+      command('complete_trip', t1, {}, finalRevision1),
+      command('complete_trip', t2, {}, finalRevision2),
+    ],
     2,
     'last Trip aggregate completion race',
   );
@@ -223,9 +237,34 @@ try {
     'PASS: independent PostgreSQL Job/reference/assignment/resource/reassignment/Stop/POD/aggregate races',
   );
 } finally {
-  if (setup)
+  if (setup) {
+    // Supabase Storage disallows direct object DELETE, including maintenance SQL.
+    // Use its supported LOCAL API; never print the CLI credential summary.
+    const local = JSON.parse(
+      execFileSync(
+        process.execPath,
+        ['node_modules/supabase/dist/supabase.js', 'status', '--output', 'json'],
+        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
+      ),
+    );
+    const endpoint = new URL(local.API_URL);
+    assert(
+      ['127.0.0.1', 'localhost'].includes(endpoint.hostname) && endpoint.port === '54321',
+      'local Storage cleanup endpoint',
+    );
+    const storage = createClient(endpoint.origin, local.SERVICE_ROLE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+    const paths = JSON.parse(
+      await sql(
+        `select coalesce(json_agg(object_name),'[]'::json) from public.trip_pods where organization_id='${org}'`,
+      ),
+    );
+    if (paths.length) {
+      const removed = await storage.storage.from('pod-files').remove(paths);
+      assert(!removed.error, 'Storage API fixture cleanup');
+    }
     await sql(`set local app.fixture_cleanup='on';
- delete from storage.objects where bucket_id='pod-files' and name like '${org}/%';
  delete from public.trip_pods where organization_id='${org}';delete from public.trip_events where organization_id='${org}';
  delete from public.trip_stop_dependencies where organization_id='${org}';delete from public.trip_stops where organization_id='${org}';
  delete from public.assignments where organization_id='${org}';delete from public.trips where organization_id='${org}';delete from public.jobs where organization_id='${org}';
@@ -235,4 +274,5 @@ try {
  delete from public.user_roles where profile_id::text like '13000000%';delete from public.organization_memberships where profile_id::text like '13000000%';
  delete from auth.users where id::text like '13000000%';delete from public.audit_logs where organization_id::text like '23000000%';delete from public.organizations where id::text like '23000000%';
  drop function public.phase3_command(text,uuid,jsonb);drop function public.phase3_assert(boolean,text)`);
+  }
 }
