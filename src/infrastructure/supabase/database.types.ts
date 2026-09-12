@@ -57,36 +57,55 @@ export type Database = {
       }
       assignments: {
         Row: {
+          assigned_by: string | null
           created_at: string
           driver_id: string | null
+          ended_at: string | null
+          execution_active: boolean
           id: string
           organization_id: string
+          reason: string
           team_id: string | null
           trip_id: string
           updated_at: string
           vehicle_id: string | null
         }
         Insert: {
+          assigned_by?: string | null
           created_at?: string
           driver_id?: string | null
+          ended_at?: string | null
+          execution_active?: boolean
           id?: string
           organization_id: string
+          reason?: string
           team_id?: string | null
           trip_id: string
           updated_at?: string
           vehicle_id?: string | null
         }
         Update: {
+          assigned_by?: string | null
           created_at?: string
           driver_id?: string | null
+          ended_at?: string | null
+          execution_active?: boolean
           id?: string
           organization_id?: string
+          reason?: string
           team_id?: string | null
           trip_id?: string
           updated_at?: string
           vehicle_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "assignments_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "assignments_organization_id_driver_id_fkey"
             columns: ["organization_id", "driver_id"]
@@ -315,24 +334,33 @@ export type Database = {
       }
       drivers: {
         Row: {
+          active: boolean
           created_at: string
+          display_name: string | null
+          driver_type: string
           id: string
           organization_id: string
-          profile_id: string
+          profile_id: string | null
           updated_at: string
         }
         Insert: {
+          active?: boolean
           created_at?: string
+          display_name?: string | null
+          driver_type?: string
           id?: string
           organization_id: string
-          profile_id: string
+          profile_id?: string | null
           updated_at?: string
         }
         Update: {
+          active?: boolean
           created_at?: string
+          display_name?: string | null
+          driver_type?: string
           id?: string
           organization_id?: string
-          profile_id?: string
+          profile_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -486,24 +514,36 @@ export type Database = {
       }
       jobs: {
         Row: {
+          completed_at: string | null
           created_at: string
           id: string
           order_id: string
           organization_id: string
+          reference: string | null
+          revision: number
+          status: string
           updated_at: string
         }
         Insert: {
+          completed_at?: string | null
           created_at?: string
           id?: string
           order_id: string
           organization_id: string
+          reference?: string | null
+          revision?: number
+          status?: string
           updated_at?: string
         }
         Update: {
+          completed_at?: string | null
           created_at?: string
           id?: string
           order_id?: string
           organization_id?: string
+          reference?: string | null
+          revision?: number
+          status?: string
           updated_at?: string
         }
         Relationships: [
@@ -517,7 +557,7 @@ export type Database = {
           {
             foreignKeyName: "jobs_organization_id_order_id_fkey"
             columns: ["organization_id", "order_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["organization_id", "id"]
           },
@@ -624,6 +664,8 @@ export type Database = {
           distance_source: string | null
           id: string
           idempotency_key: string
+          operational_completed_at: string | null
+          operational_status: string
           organization_id: string
           quote_id: string
           reference: string | null
@@ -643,6 +685,8 @@ export type Database = {
           distance_source?: string | null
           id?: string
           idempotency_key: string
+          operational_completed_at?: string | null
+          operational_status?: string
           organization_id: string
           quote_id: string
           reference?: string | null
@@ -662,6 +706,8 @@ export type Database = {
           distance_source?: string | null
           id?: string
           idempotency_key?: string
+          operational_completed_at?: string | null
+          operational_status?: string
           organization_id?: string
           quote_id?: string
           reference?: string | null
@@ -2003,9 +2049,11 @@ export type Database = {
       }
       trip_events: {
         Row: {
+          actor_id: string | null
           created_at: string
           event_type: string
           id: string
+          metadata: Json
           occurred_at: string
           organization_id: string
           stop_id: string | null
@@ -2013,9 +2061,11 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          actor_id?: string | null
           created_at?: string
           event_type: string
           id?: string
+          metadata?: Json
           occurred_at?: string
           organization_id: string
           stop_id?: string | null
@@ -2023,9 +2073,11 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          actor_id?: string | null
           created_at?: string
           event_type?: string
           id?: string
+          metadata?: Json
           occurred_at?: string
           organization_id?: string
           stop_id?: string | null
@@ -2033,6 +2085,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "trip_events_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "trip_events_organization_id_fkey"
             columns: ["organization_id"]
@@ -2056,28 +2115,142 @@ export type Database = {
           },
         ]
       }
-      trip_stops: {
+      trip_pods: {
         Row: {
+          actor_id: string
+          captured_at: string | null
           created_at: string
           id: string
+          mime_type: string
+          notes: string
+          object_name: string
+          organization_id: string
+          recipient_name: string
+          size_bytes: number
+          state: string
+          trip_id: string
+        }
+        Insert: {
+          actor_id: string
+          captured_at?: string | null
+          created_at?: string
+          id: string
+          mime_type: string
+          notes?: string
+          object_name: string
+          organization_id: string
+          recipient_name: string
+          size_bytes: number
+          state?: string
+          trip_id: string
+        }
+        Update: {
+          actor_id?: string
+          captured_at?: string | null
+          created_at?: string
+          id?: string
+          mime_type?: string
+          notes?: string
+          object_name?: string
+          organization_id?: string
+          recipient_name?: string
+          size_bytes?: number
+          state?: string
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_pods_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_pods_organization_id_trip_id_fkey"
+            columns: ["organization_id", "trip_id"]
+            isOneToOne: true
+            referencedRelation: "trips"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      trip_stop_dependencies: {
+        Row: {
+          delivery_stop_id: string
+          organization_id: string
+          pickup_stop_id: string
+          trip_id: string
+        }
+        Insert: {
+          delivery_stop_id: string
+          organization_id: string
+          pickup_stop_id: string
+          trip_id: string
+        }
+        Update: {
+          delivery_stop_id?: string
+          organization_id?: string
+          pickup_stop_id?: string
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_stop_dependencies_organization_id_trip_id_delivery_st_fkey"
+            columns: ["organization_id", "trip_id", "delivery_stop_id"]
+            isOneToOne: false
+            referencedRelation: "trip_stops"
+            referencedColumns: ["organization_id", "trip_id", "id"]
+          },
+          {
+            foreignKeyName: "trip_stop_dependencies_organization_id_trip_id_pickup_stop_fkey"
+            columns: ["organization_id", "trip_id", "pickup_stop_id"]
+            isOneToOne: false
+            referencedRelation: "trip_stops"
+            referencedColumns: ["organization_id", "trip_id", "id"]
+          },
+        ]
+      }
+      trip_stops: {
+        Row: {
+          address: string | null
+          arrived_at: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          kind: string | null
+          notes: string
           organization_id: string
           position: number
+          status: string
           trip_id: string
           updated_at: string
         }
         Insert: {
+          address?: string | null
+          arrived_at?: string | null
+          completed_at?: string | null
           created_at?: string
           id?: string
+          kind?: string | null
+          notes?: string
           organization_id: string
           position: number
+          status?: string
           trip_id: string
           updated_at?: string
         }
         Update: {
+          address?: string | null
+          arrived_at?: string | null
+          completed_at?: string | null
           created_at?: string
           id?: string
+          kind?: string | null
+          notes?: string
           organization_id?: string
           position?: number
+          status?: string
           trip_id?: string
           updated_at?: string
         }
@@ -2100,24 +2273,45 @@ export type Database = {
       }
       trips: {
         Row: {
+          completed_at: string | null
           created_at: string
           id: string
           job_id: string
           organization_id: string
+          planned_end: string | null
+          planned_start: string | null
+          reference: string | null
+          revision: number
+          started_at: string | null
+          status: string
           updated_at: string
         }
         Insert: {
+          completed_at?: string | null
           created_at?: string
           id?: string
           job_id: string
           organization_id: string
+          planned_end?: string | null
+          planned_start?: string | null
+          reference?: string | null
+          revision?: number
+          started_at?: string | null
+          status?: string
           updated_at?: string
         }
         Update: {
+          completed_at?: string | null
           created_at?: string
           id?: string
           job_id?: string
           organization_id?: string
+          planned_end?: string | null
+          planned_start?: string | null
+          reference?: string | null
+          revision?: number
+          started_at?: string | null
+          status?: string
           updated_at?: string
         }
         Relationships: [
@@ -2216,25 +2410,34 @@ export type Database = {
       }
       vehicles: {
         Row: {
+          active: boolean
           branch_id: string | null
           created_at: string
           id: string
+          identifier: string | null
           organization_id: string
           updated_at: string
+          vehicle_type: string | null
         }
         Insert: {
+          active?: boolean
           branch_id?: string | null
           created_at?: string
           id?: string
+          identifier?: string | null
           organization_id: string
           updated_at?: string
+          vehicle_type?: string | null
         }
         Update: {
+          active?: boolean
           branch_id?: string | null
           created_at?: string
           id?: string
+          identifier?: string | null
           organization_id?: string
           updated_at?: string
+          vehicle_type?: string | null
         }
         Relationships: [
           {
@@ -2281,6 +2484,7 @@ export type Database = {
         Returns: Json
       }
       customer_enrollment_state: { Args: never; Returns: string }
+      customer_order_progress: { Args: { p_order_id: string }; Returns: Json }
       has_permission: {
         Args: { organization_id: string; permission_code: string }
         Returns: boolean
@@ -2288,6 +2492,18 @@ export type Database = {
       onboard_customer: {
         Args: { p_locale: string; p_name: string; p_phone: string }
         Returns: string
+      }
+      operational_job_summary: { Args: { p_job_id: string }; Returns: Json }
+      operations_command: {
+        Args: {
+          p_action: string
+          p_entity_id: string
+          p_mutation_id: string
+          p_organization_id: string
+          p_payload?: Json
+          p_revision: number
+        }
+        Returns: Json
       }
       request_command: {
         Args: {
@@ -2319,6 +2535,18 @@ export type Database = {
         Returns: Json
       }
       send_quote: { Args: { p_quote_version_id: string }; Returns: Json }
+      trip_pod_command: {
+        Args: {
+          p_action: string
+          p_file_id: string
+          p_mime?: string
+          p_notes?: string
+          p_recipient?: string
+          p_size?: number
+          p_trip_id: string
+        }
+        Returns: Json
+      }
       view_customer_quote: {
         Args: { p_quote_version_id: string }
         Returns: Json

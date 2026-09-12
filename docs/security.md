@@ -63,3 +63,13 @@ Payment webhooks require raw-body signature verification and unique event proces
 ## Phase 2 commercial authorization
 
 Pricing and quote commands derive auth.uid(), active tenant membership and explicit permissions inside PostgreSQL. Customers cannot provide authoritative distance or money, read internal pricing details, modify sent snapshots, or promote their permissions. Distance corrections create a new evaluation and stale earlier drafts. Customer acceptance locks the sent version and creates one Order from its immutable commercial facts. Sent versions and their components reject direct mutation. Operator fixture cleanup is confined to guarded Staging scripts; authenticated clients cannot invoke the cleanup path. Safe query diagnostics contain only an operation label and database error code.
+
+## Phase 3 operational authorization and POD
+
+Operations commands enforce current tenant membership and separate operations, dispatch and fleet permissions in the server adapter and PostgreSQL. Customer and Sales roles have no operational mutation privilege. External Driver records require no Auth identity; the authenticated staff member remains the event/POD actor. Driver and Vehicle execution constraints are authoritative in the database, with revision and idempotency checks for retries. Started-Trip reassignment requires explicit confirmation and a bounded reason, retaining prior assignments.
+
+Customer tracking exposes a fixed own-Order projection and excludes signatures, Driver identity, internal notes and assignment reasons. Sent commercial facts remain immutable when operational completion changes. Raw operational history writes are revoked.
+
+POD signatures are private. Server image decoding/re-encoding strips metadata; database reservation/finalization guards and Storage policies apply independently of the UI. A signed URL is a short-lived bearer capability and must not be logged. Unauthorized Customer, Sales, cross-tenant and direct public access are covered by hosted tests, including expiry and duplicate final POD denial. This does not constitute malware scanning or legal signature verification.
+
+Identity/customer verification diagnostics record only operation labels, provider error codes and HTTP status; never tokens, cookies, email addresses or provider error messages. Hosted acceptance disables screenshots, traces and video. SDK probe sessions use local logout so they cannot revoke the separate browser session mid-test. The canonical Phase 3 report records prior failures, final evidence and cleanup; successful local tests alone are insufficient.

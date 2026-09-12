@@ -57,6 +57,10 @@ Keep one reviewed deployment origin active for acceptance. After a replacement P
 - [Supabase SSR advanced guide](https://supabase.com/docs/guides/auth/server-side/advanced-guide)
 - [Supabase sessions](https://supabase.com/docs/guides/auth/sessions)
 
+## Phase 3 rollout gate
+
+Phase 3 remains unaccepted until its canonical report records all required hosted evidence. The three additive repository migrations were applied after successful complete Supabase CI; Staging now contains thirteen migrations and 49 public tables with RLS. Authoritative hosted database types were regenerated and typechecked. The genuine protected Phase 3 Preview and exact Auth origin are recorded in the canonical report and operator configuration. Run the Phase 3, Phase 2, intake and foundation suites sequentially on that same Preview. Finish with scoped data/file/session cleanup and automation-bypass revocation. The accepted Phase 2 Preview is not Phase 3 evidence.
+
 ## Phase 2 verification
 
 Use the canonical Phase 2 report for the accepted application source and Preview origin. The operator runs guarded Phase 2, intake and Foundation browser suites sequentially against that same origin, followed by repository migration/RLS verification and regenerated types. Test catalogues are synthetic Staging configuration; they do not approve Production tariffs. Preserve required role/permission/catalogue data during scoped fixture cleanup. Revoke the temporary automation-bypass credential only after all hosted tests finish.

@@ -51,3 +51,9 @@ Shared tests use rollback-only records from supabase/tests/foundation.test.sql a
 ## Phase 2 additions
 
 Migrations 20260910000400 through 20260910000700 add the pricing schema, transactional commands, RLS and persisted expiry transition. The full migration chain contains ten files and 47 public tables with RLS. New relations are vehicle_pricing_classes, pricing_settings, pricing_rules, distance_snapshots, pricing_evaluations, pricing_evaluation_components and quote_pricing_details. Existing quote/version/item/order relations are extended rather than duplicated. Customer-safe commercial snapshots are separated from internal evaluations and adjustment reasons. Expiry returns a structured rejection after committing EXPIRED, avoiding rollback of the state transition. See pricing-and-quotes.md for invariants.
+
+## Phase 3 additions
+
+The three 20260912 migrations extend the existing Job/Trip/Stop/Driver/Vehicle/assignment/event relations and add trip_stop_dependencies and trip_pods. The complete chain now has thirteen migrations and 49 public tables, all with RLS. One primary Job per accepted Order, independent active Driver/Vehicle constraints, explicit Stop dependencies, immutable event/POD history and derived aggregate completion are enforced transactionally. Private operational mutation records provide idempotency; reference counters preserve monotonic allocation and are not reset by fixture cleanup.
+
+The authoritative Supabase CLI generated types were compared with complete Supabase CI and hosted Staging, including hosted PostgREST version metadata. Hosted rollback SQL and independent-connection CI concurrency tests complement application tests. See [operations decisions](operations-dispatch-pod.md) and the canonical Phase 3 report for exact evidence and migration hashes/history.
