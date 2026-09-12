@@ -1,6 +1,6 @@
 # Naql365 — Phase 3 Report
 
-Progress checkpoint, 2026-09-12. This is the canonical report to update during continuation, not an acceptance certificate. Primary hosted operations acceptance passed; final regression and security closeout remain in progress. No merge, Production deployment or Phase 4 is authorized.
+Final hosted acceptance, 2026-09-12. All critical gates below passed on the accepted protected Preview. No merge, Production deployment or Phase 4 was performed or authorized.
 
 ## A. Starting State
 
@@ -116,7 +116,7 @@ Independent PostgreSQL connections executed successfully in CI runs 34691256784,
 
 ## AC. Security
 
-Server-only Supabase adapters, current tenant permission checks, origin validation, bounded JSON/multipart, private Storage and sanitized errors. Secret-pattern scan passed after staging the implementation files. Final hosted headers/cookies/bundles/logs review and final diff review remain required.
+PASS. User-scoped server adapters, current tenant permission checks, origin validation, bounded input and private Storage remain enforced. Hosted suites verified CSP/security headers, session/logout behavior, unsafe redirect denial, private signed access/expiry and browser asset boundaries. No privileged key, test password or automation credential was found in inspected HTML/scripts. The final bounded runtime audit examined 1,000 records: zero error records (including nested logs), zero credential-pattern matches and no Auth query values observed. This is bounded evidence, not a claim to inspect every historical provider log. Final environment audit found four Preview-only variables and zero Production deployments; all temporary automation credentials are revoked. Secret scan and CI remain mandatory.
 
 ## AD. Accessibility
 
@@ -128,31 +128,104 @@ PASS. Hosted Arabic intake/Operations and English Operations/customer tracking e
 
 ## AF. Tests
 
-Intake regression on the replacement candidate passed all three desktop cases but failed the three mobile cases. The mobile journey timed out awaiting autosave; the direct-API case observed `{mass:400,first:401,stale:401,incomplete:409}` rather than the required result, and cancellation could not reach the draft form. Cleanup passed. There were no newly logged membership-query errors during this run. Safe customer session error-code/status logging was added to distinguish failed Auth verification from the earlier membership-query error. Mobile regression remains unresolved; no timeout, authorization assertion or security policy was relaxed.
+PASS on the same final Preview: Foundation 12/12, Phase 1 intake 6/6, Phase 2 commercial 1/1, Phase 3 operations/assets 2/2: **21/21 hosted tests**, with cleanup succeeding for every suite. No retries or skipped security assertions were used. Local unit/integration: 99 tests across 15 files; formatting, secrets, lint and strict types passed. Complete CI additionally passed production build, 18 E2E cases, fresh Supabase reconstruction, shared SQL/RLS assertions, independent-connection concurrency and authoritative generated types.
 
-Phase 2 regression initially observed an intermittent membership-read 500 on the earlier Preview, rather than the expected customer-pricing 403. Direct inspection confirmed pricing permission false. The original logs did not preserve the database error code, so its exact provider-level cause is not claimed. Safe error-code logging was added to the identity adapter. Replacement Preview `https://naql365-staging-mn7dp6ody-naql365.vercel.app`, source `70b1c14d3c9c317ad8fc3d00db23cb6f182afb4e`, passed the controlled session/pricing probe (200/403) and the complete Phase 2 regression with no changed authorization expectations. No membership-query error was recorded there during this verification. Phase 2 fixture cleanup passed; intake/Foundation regression and Phase 3 replay on this final candidate remain pending.
+Earlier candidates exposed a nested-main accessibility defect (fixed in four Phase 3 pages), fixture cleanup ordering and SDK probe global-signout interference (corrected in the harness). An earlier commercial membership-read 500 and intake 401 were not precisely attributable to a provider cause; safe operation/error-code logging was added without logging sessions or weakening authorization. Final full regressions did not reproduce them. The final intake form assertion needed bounded hosted deadlines (expect 20 seconds, action 20 seconds, navigation 45 seconds); no expected status or security assertion was relaxed. The successful final intake API probe remained 400/200/409/400 for mass assignment/first write/stale write/incomplete submit.
 
-Local: 99 tests passed across 15 unit/integration files; strict typecheck, lint, formatting and secret scan passed. Full required CI including build/E2E and independent Supabase concurrency passed at `50d8a2a32343a86c5d520ff9595853a53f65a137`, run [34693106214](https://github.com/Rmdn96/Naql365/actions/runs/34693106214). The latest hosted journey completed two Trips, private POD/access/expiry, completion aggregation, commercial immutability, suspended-staff denial and English Operations accessibility, then failed at a strict locator on nested main landmarks in customer tracking. This is not a full hosted PASS. The test harness also now closes SDK probe sessions locally rather than revoking the browser's session globally. No failed checks were disabled.
+Local Docker could not initialize. A local E2E runner reported its cases but did not terminate normally and was stopped; completed remote CI supplies the E2E and real Supabase evidence. These local infrastructure limitations are not represented as successful local runs.
 
 ## AG. Hosted Staging
 
-Primary Phase 3 acceptance PASS on https://naql365-staging-86o99g35f-naql365.vercel.app; deployment `dpl_HzMuLzKaFQVFmaUehYbT7bmKkJ6C`; source `99776ae3074b3c3bef8ed9a3061986023454b004`. Independent API verification: protected Preview, target null, READY, expected project/branch. Two hosted tests passed: authenticated bundle boundaries and the complete customer-to-multi-Trip operational journey. Exact Supabase Auth origin/four redirects use no wildcards. Phase 0–2 regression and final log/cleanup review are still in progress.
+PASS. Accepted Preview: https://naql365-staging-nuy9j66y2-naql365.vercel.app; deployment `dpl_267qYKS5siSkbk5kXHYBMKmDA4W1`; application source `3bff649ed8132accfce84f53a6df1517ff079268`. Independently verified READY, Preview target null, expected project/branch and Deployment Protection. All 21 tests in AF ran against this exact origin. Subsequent commits change tests/documentation/Auth origin only; application source and lockfile match the accepted deployment.
+
+Supabase Staging `zuvyfeflkzlciuaauxba` uses this exact Site URL and four exact AR/EN account/recovery callback entries, with no wildcard. Preview-only variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY (public configuration); APP_ENV and STAGING_AUTH_SMOKE_ENABLED (server/environment configuration). Development and Production contain no application variables. No management, database-password or service-role credential is installed in Vercel.
 
 ## AH. Cleanup
 
-Phase 3 hosted cleanup PASS: synthetic identities, their Requests/Quotes/Orders/Jobs/Trips/resources/POD and private objects were removed, retaining required catalogues. Cleanup was corrected for the disposable organization's actorless creation audit; earlier orphan was removed. SDK probes sign out locally, leaving the independent browser session intact until browser logout/fixture deletion. Final regression cleanup and temporary Vercel bypass revocation remain pending.
+PASS. Every hosted suite completed scoped cleanup. Final read-only counts: zero Auth identities, Requests, Orders, Trips, POD records, disposable isolation organizations and Storage objects. Required catalogue entries remain: eight roles and 23 permissions. Temporary Vercel automation credentials: zero remaining; Deployment Protection remains all_except_custom_domains. No accepted Preview was deleted or promoted. No Production deployment or Production-scoped application variable exists. Main/develop SHAs and required protections remain unchanged.
 
 ## AI. Files Changed
 
-Operations architecture; three migrations; generated database types; SQL/integration/unit tests; operations domain/server adapters; signature decoder; operations API and pages/components; AR/EN dictionary; customer tracking link; CSS; pinned Sharp dependency; CI concurrency step; local concurrency and guarded hosted harness/configuration; testing/Staging documentation. Use the feature diff for the exact inventory.
+Exact feature inventory relative to accepted develop (including this documentation closeout):
+
+```text
+.github/workflows/ci.yml
+README.md
+config/staging/supabase/config.toml
+docs/database.md
+docs/deployment.md
+docs/operations-dispatch-pod.md
+docs/reports/Naql365-Phase-3-Report.md
+docs/roadmap.md
+docs/security.md
+docs/staging.md
+docs/testing.md
+package-lock.json
+package.json
+playwright.intake.config.ts
+playwright.phase3.config.ts
+scripts/staging/verify-phase3.mjs
+scripts/test-operations-concurrency.mjs
+src/app/[locale]/(account)/account/orders/[id]/page.tsx
+src/app/[locale]/(account)/account/quotes/[id]/page.tsx
+src/app/[locale]/(portal)/portal/operations/jobs/[id]/page.tsx
+src/app/[locale]/(portal)/portal/operations/page.tsx
+src/app/[locale]/(portal)/portal/operations/trips/[id]/page.tsx
+src/app/api/operations/pod/route.ts
+src/app/api/operations/route.ts
+src/app/globals.css
+src/components/operations/command.tsx
+src/components/operations/planner.tsx
+src/components/operations/trip-controls.tsx
+src/components/operations/workspace.tsx
+src/components/shell/protected-shell.tsx
+src/domain/operations/model.ts
+src/i18n/operations.ts
+src/infrastructure/identity/access.ts
+src/infrastructure/operations/service.ts
+src/infrastructure/operations/signature.ts
+src/infrastructure/pricing/service.ts
+src/infrastructure/requests/service.ts
+src/infrastructure/supabase/database.types.ts
+supabase/migrations/20260912000100_operations_schema.sql
+supabase/migrations/20260912000200_operations_commands.sql
+supabase/migrations/20260912000300_pod_and_tracking.sql
+supabase/tests/phase3.test.sql
+tests/integration/database.test.ts
+tests/phase3/assets.spec.ts
+tests/phase3/journey.spec.ts
+tests/unit/operations-service.test.ts
+tests/unit/operations.test.ts
+tests/unit/signature.test.ts
+```
 
 ## AJ. Commits/CI
 
-Existing Phase 3 commits through checkpoint `f0e5719b870ddeaa1828bf6dfb0644dcb32a56f0` were verified pushed. Continuation commits: `0061e4ff8e9ee76e411a9bd3550c675778291a8b` concurrency cleanup/assertions; `1a910f5` hosted negative coverage; `a4856eece1c897a90df78c9a8c6dfe2ddfa2bfca` authoritative generated types; `677f62fc53c589d277bfa85a250408a45830eb8f` hosted PostgREST metadata. Both required jobs passed for deployment HEAD: [CI 34691681645](https://github.com/Rmdn96/Naql365/actions/runs/34691681645). Final closeout changes still require their own committed-HEAD CI.
+All original checkpoint commits were preserved and pushed. Both required jobs passed for the application source and the final test source. Latest tested source: `980f3e9a5ab15b65fd5036d3080a04c82a1dfe56`, [CI 34696040884](https://github.com/Rmdn96/Naql365/actions/runs/34696040884). The final documentation commit and its exact-HEAD CI are reported in the owner closeout after push; a commit cannot embed its own SHA. No merge is performed.
+
+```text
+7ea1388e44eb6ed4f35119d1b35ae5be60868777 docs: record Phase 3 operations schema gap and execution invariants
+5c13c70fad0d071adf985d91137d7c3e69bc2f1f feat: add transactional multi-trip operations and private POD schema
+da659a03bd262d39b3349e3dfd9c2521ba0564c1 feat: add bilingual operations workspace and private delivery evidence
+f0e5719b870ddeaa1828bf6dfb0644dcb32a56f0 test: prepare hosted Phase 3 acceptance and record outstanding gates
+0061e4ff8e9ee76e411a9bd3550c675778291a8b test: clean concurrency fixtures through the local Storage API
+1a910f5f69ba59bc127f6d4351176d4898f09f89 test: expand hosted operational isolation and private POD coverage
+a4856eece1c897a90df78c9a8c6dfe2ddfa2bfca chore: use authoritative Supabase CI database types
+677f62fc53c589d277bfa85a250408a45830eb8f chore: record hosted Supabase PostgREST type metadata
+50d8a2a32343a86c5d520ff9595853a53f65a137 test: harden hosted operations session isolation and cleanup
+99e09f9e5e4568bd96087aafa020e1fb65501411 fix: use the shared main landmark on operations pages
+99776ae3074b3c3bef8ed9a3061986023454b004 docs: record verified Phase 3 staging progress and acceptance findings
+f7da93c591bd8ad5a0a4f71aa21549fe82e8f493 test: verify streamed tracking denial through content and RLS
+6e692285e5ec6cb7d46695643aa1c264f6bc7017 fix: record safe identity query error codes for hosted diagnostics
+70b1c14d3c9c317ad8fc3d00db23cb6f182afb4e docs: record hosted operations pass and remaining regression blocker
+8baf7bdc909e298195fac308d9eb06beb41d6526 fix: record safe customer session verification failure codes
+3bff649ed8132accfce84f53a6df1517ff079268 docs: record intake regression evidence and active diagnostic preview
+980f3e9a5ab15b65fd5036d3080a04c82a1dfe56 test: bound hosted intake navigation and assertion deadlines
+```
 
 ## AK. Known Limitations
 
-Local Docker Desktop is unavailable; complete Supabase CI supplies fresh reconstruction and real independent PostgreSQL connections. Planned overlap is a warning; active execution conflicts are authoritative. Signing URLs are short-lived bearer capabilities, not permanent public links. POD image normalization is not antivirus or identity verification. Failed/cancelled/partial fulfilment, refunds and post-start route edits are not silently resolved. Final regression/security closeout is still pending.
+Local Docker Desktop is unavailable; completed Supabase CI supplies fresh reconstruction and real independent PostgreSQL connections. Planned overlap is a warning; active execution conflicts are authoritative. Signed URLs are short-lived bearer capabilities. POD normalization is not antivirus, legal signature validation or identity verification. Accessibility evidence is automated smoke coverage, not full manual WCAG certification. Earlier transient errors are documented in AF without an invented root cause. Failed/cancelled/partial fulfilment, refunds and post-start route edits are not silently resolved. The protected Preview requires authorized Vercel access after removal of temporary test bypass credentials.
 
 ## AL. Deferred Items
 
@@ -160,47 +233,47 @@ Driver Portal/login, GPS/maps/automatic ETA, route optimization, AI, messaging a
 
 ## AM. Acceptance Matrix
 
-| Gate                         | Result  | Evidence                                                                  |
-| ---------------------------- | ------- | ------------------------------------------------------------------------- |
-| Git baseline                 | PASS    | Accepted develop verified before branch creation                          |
-| Gap analysis                 | PASS    | Separate prerequisite commit                                              |
-| Schema/migrations            | PASS    | Thirteen migrations, hosted rollback SQL and authoritative types verified |
-| Order → Job                  | PARTIAL | SQL pass; hosted pending                                                  |
-| Multi-Trip                   | PARTIAL | SQL pass; hosted pending                                                  |
-| Multi-Stop                   | PARTIAL | SQL pass; hosted pending                                                  |
-| Stop dependencies            | PARTIAL | SQL pass; hosted pending                                                  |
-| Internal Driver              | PARTIAL | Implemented/SQL; hosted pending                                           |
-| External Driver              | PARTIAL | No-profile SQL assertion; hosted pending                                  |
-| Vehicle independence         | PARTIAL | SQL; hosted pending                                                       |
-| Assignment                   | PARTIAL | SQL; hosted pending                                                       |
-| Resource conflicts           | PARTIAL | Sequential SQL; real races pending                                        |
-| Emergency reassignment       | PARTIAL | SQL; hosted pending                                                       |
-| Assignment history           | PARTIAL | SQL; hosted pending                                                       |
-| Trip state machine           | PARTIAL | SQL; hosted pending                                                       |
-| Stop state machine           | PARTIAL | SQL; hosted pending                                                       |
-| Trip Events                  | PARTIAL | SQL; hosted pending                                                       |
-| Operations workspace         | PARTIAL | Build/typecheck; hosted pending                                           |
-| Dispatch Board               | PARTIAL | Build/typecheck; hosted pending                                           |
-| Customer tracking            | PARTIAL | Projection SQL; hosted pending                                            |
-| POD                          | PARTIAL | Decode/SQL; hosted Storage pending                                        |
-| Trip completion              | PARTIAL | SQL; hosted pending                                                       |
-| Job completion               | PARTIAL | SQL; real races/hosted pending                                            |
-| Order operational completion | PARTIAL | SQL; hosted pending                                                       |
-| RLS                          | PARTIAL | Schema CI; final hosted negative coverage pending                         |
-| Tenant isolation             | PARTIAL | SQL; full hosted coverage pending                                         |
-| Customer isolation           | PARTIAL | SQL; hosted pending                                                       |
-| Concurrency                  | PASS    | Independent connections and cleanup passed in deployment-HEAD CI          |
-| Security                     | PARTIAL | Local checks; hosted review pending                                       |
-| Accessibility                | PARTIAL | Foundation only; operations pending                                       |
-| AR/EN                        | PARTIAL | Implemented; hosted pending                                               |
-| Regression                   | PARTIAL | Local tests/build; final hosted regressions pending                       |
-| CI                           | PARTIAL | Deployment HEAD passes both jobs; final closeout HEAD pending             |
-| Hosted Staging               | PARTIAL | Genuine protected Preview READY; hosted acceptance in progress            |
-| Cleanup                      | PARTIAL | No Phase 3 hosted fixtures created; acceptance cleanup pending            |
-| Scope compliance             | PASS    | No merge/Production/Phase 4 actions                                       |
+| Gate                         | Result | Evidence                                                 |
+| ---------------------------- | ------ | -------------------------------------------------------- |
+| Git baseline                 | PASS   | B: unchanged protected branches                          |
+| Gap analysis                 | PASS   | C: preserved prerequisite commit                         |
+| Schema/migrations            | PASS   | E: 13 migrations; 49 RLS tables; no generated-type drift |
+| Order → Job                  | PASS   | F: hosted idempotency and independent race               |
+| Multi-Trip                   | PASS   | G: two hosted Trips                                      |
+| Multi-Stop                   | PASS   | H: four Stops per Trip                                   |
+| Stop dependencies            | PASS   | I/Q: ordering and denial                                 |
+| Internal Driver              | PASS   | J: hosted internal resource                              |
+| External Driver              | PASS   | K: no Auth account; staff actor                          |
+| Vehicle independence         | PASS   | L/N: independent resource conflicts                      |
+| Assignment                   | PASS   | M: hosted assignment commands                            |
+| Resource conflicts           | PASS   | N/AB: hosted 409 and real races                          |
+| Emergency reassignment       | PASS   | O: required reason and cross-tenant denial               |
+| Assignment history           | PASS   | M/O: retained history and one current row                |
+| Trip state machine           | PASS   | P/W: guarded transitions                                 |
+| Stop state machine           | PASS   | Q: ordered progression and races                         |
+| Trip Events                  | PASS   | R: staff actor and private reads                         |
+| Operations workspace         | PASS   | T: authenticated hosted workspace                        |
+| Dispatch Board               | PASS   | S: AR/EN desktop/mobile                                  |
+| Customer tracking            | PASS   | U: customer projection and peer denial                   |
+| POD                          | PASS   | V: private signature, expiry, one final POD              |
+| Trip completion              | PASS   | W: denied before POD; allowed afterward                  |
+| Job completion               | PASS   | X: first Trip does not complete Job                      |
+| Order operational completion | PASS   | Y: final aggregate; commercial facts unchanged           |
+| RLS                          | PASS   | Z: hosted SQL and API negatives                          |
+| Tenant isolation             | PASS   | Z: foreign resources and mutations denied                |
+| Customer isolation           | PASS   | U/Z: peer data denied                                    |
+| Concurrency                  | PASS   | AB: independent connections, retry/aggregate checks      |
+| Security                     | PASS   | AC: hosted assets/headers/log audit                      |
+| Accessibility                | PASS   | AD: authenticated axe and focus                          |
+| AR/EN                        | PASS   | AE: hosted RTL/LTR                                       |
+| Regression                   | PASS   | AF: 21 hosted; 99 unit/integration; 18 CI E2E            |
+| CI                           | PASS   | AJ: both exact-source jobs passed                        |
+| Hosted Staging               | PASS   | AG: genuine protected READY Preview                      |
+| Cleanup                      | PASS   | AH: zero fixtures, objects and bypass credentials        |
+| Scope compliance             | PASS   | AL: no merge, Production or Phase 4                      |
 
 ## AN. Final Decision
 
-PHASE 3 PARTIAL — NOT READY
+PHASE 3 PASS — READY FOR REVIEW
 
-Continue hosted acceptance and same-Preview Phase 0–2 regression, verify security and cleanup, then commit/push final evidence and verify exact-HEAD CI. Do not merge, deploy Production or start Phase 4.
+Stop for explicit owner review. Do not merge, deploy Production or start Phase 4.

@@ -24,11 +24,11 @@ GitHub Actions executes install, secret scan, lint, types, tests, production bui
 
 Do not interpret workflow YAML as a passing workflow: inspect the actual run for the exact committed SHA. If a runner/service cannot start, report infrastructure failure separately from assertion failures, then resolve or document the blocker.
 
-## Phase 3 verification (in progress)
+## Phase 3 verification
 
 `supabase/tests/phase3.test.sql` exercises multi-Trip execution, assignment history, active resource conflicts, required pickup order, POD, aggregate completion and negative authorization. `scripts/test-operations-concurrency.mjs` requires the named disposable LOCAL Supabase container and uses independent PostgreSQL connections; it is included in CI after pgTAP. It must not be pointed at Staging or Production. An unexecuted concurrency harness is not PASS evidence.
 
-`node scripts/staging/verify-phase3.mjs` creates controlled identities and runs `playwright.phase3.config.ts` against an explicitly verified protected Preview. It uses the existing secret-redacting reporter with screenshots, traces and video disabled. The harness includes a real customer wizard, Sales Quote and customer acceptance before operations. All fixture cleanup is scoped to its created identities and their records. The canonical Phase 3 report records remaining coverage and execution gaps; do not infer acceptance from the presence of test code.
+`node scripts/staging/verify-phase3.mjs` creates controlled identities and runs `playwright.phase3.config.ts` against an explicitly verified protected Preview. It uses the existing secret-redacting reporter with screenshots, traces and video disabled. The harness includes a real customer wizard, Sales Quote and customer acceptance before operations. All fixture cleanup is scoped to its created identities and their records. The canonical Phase 3 report records executed coverage, counts and limitations; do not infer acceptance from the presence of test code.
 
 The default Phase 3 run includes the complete operational journey and authenticated bundle inspection. `--assets-only` runs just the supplemental bundle check and cannot establish operational acceptance. SDK probe sessions use local sign-out so they do not revoke the independently authenticated browser session. Hosted network assertions have bounded deadlines; no failed assertions are retried automatically or suppressed. The cleanup removes the isolated fixture organization's creation audit as well as actor-scoped records before deleting that organization.
 
