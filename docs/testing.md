@@ -23,3 +23,7 @@ E2E checks root Arabic routing, English switching, html direction/language, cano
 GitHub Actions executes install, secret scan, lint, types, tests, production build and E2E in one job. A second job starts Supabase, resets the local database, runs RLS tests, generates SDK database types and typechecks adapters again. No continue-on-error, disabled compiler errors or ignored lint failures. Reports/types are uploaded as artifacts. Jobs are bounded and duplicate runs are cancelled for the same branch.
 
 Do not interpret workflow YAML as a passing workflow: inspect the actual run for the exact committed SHA. If a runner/service cannot start, report infrastructure failure separately from assertion failures, then resolve or document the blocker.
+
+## Phase 2 acceptance
+
+`npm run test:staging:phase2` requires an explicitly verified protected Preview and the allowlisted healthy Supabase Staging project. It creates disposable customer, Sales and peer identities, verifies the commercial journey and negative access, and cleans its scoped records in finally. Never run hosted suites concurrently. The shared SQL assertions execute against PGlite, complete Supabase in CI and hosted Staging. A separate TAP footer reports completed assertions to the Supabase runner; embedded/hosted SQL runners omit only that reporter footer, not security assertions. Phase 1 and Foundation hosted regression must target the same Phase 2 Preview.

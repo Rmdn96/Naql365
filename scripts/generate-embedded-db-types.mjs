@@ -28,6 +28,7 @@ const type = (row) =>
     date: 'string',
     int4: 'number',
     int8: 'number',
+    numeric: 'number',
     bool: 'boolean',
     jsonb: 'Json',
   })[row.udt_name] ??

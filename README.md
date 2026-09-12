@@ -1,6 +1,6 @@
 # Naql365 · نقل 365
 
-Transportation Operating Platform. **Phase 1: customer identity and request intake MVP.** Staging acceptance and review status are recorded in the phase report; this is not a Production release.
+Transportation Operating Platform. **Phase 2: Smart Quote and pricing foundation (ready for owner review).** Staging acceptance and review status are recorded in the phase report; this is not a Production release.
 
 Independent implementation for Naql365. No source, branding, credentials or data from another product is used.
 
@@ -60,5 +60,7 @@ docs/                       Architecture, operations and decision records
 - [Testing](docs/testing.md)
 - [Phase roadmap](docs/roadmap.md)
 - [Customer identity and request intake](docs/customer-request-intake.md)
+- [Pricing and quote architecture](docs/pricing-and-quotes.md)
+- [Phase 2 acceptance report](docs/reports/Naql365-Phase-2-Report.md)
 
-Workflow: `feature/* → develop → main`. Phase 1 uses `feature/phase-1-customer-request-intake` from the protected integration of the accepted Phase 0/0.5 baseline into develop. No automatic Production release is configured.
+Workflow: `feature/* → develop → main`. Phase 2 uses `feature/phase-2-smart-quote-pricing` from accepted develop `4d3b25730e3b604882a860ade414f98fd888766b`. Phase 3 remains locked. No automatic Production release is configured.

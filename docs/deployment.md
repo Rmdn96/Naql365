@@ -34,3 +34,9 @@ Deployment Protection remains `all_except_custom_domains`; no custom public prod
 Workflow: feature/* → develop → main. Both protected branches require a PR, an approving review, resolved conversations and strict current checks named `Lint, types, tests and production build` and `Supabase migrations and RLS`. Rules apply to admins; force pushes/deletion are disabled. PR #1 was integrated into develop only after the required independent approval and passing checks; Phase 1 starts from that remote develop. No Phase 1 merge or main merge is authorized. The existing repository default branch remains unchanged.
 
 CI installs the lockfile, checks formatting/secrets/lint/types, runs unit/integration, production build, desktop/mobile E2E, reconstructs a fresh local Supabase instance on Linux, runs SQL security tests, regenerates types and typechecks. Hosted database commands are operator-controlled and never run against a shared project from untrusted PRs.
+
+## Phase 2 closeout
+
+Phase 1 PR #2 was subsequently merged with the required independent review; Phase 2 starts from accepted develop 4d3b25730e3b604882a860ade414f98fd888766b. Phase 2 remains on its feature branch and must not be merged or promoted by this closeout. The canonical Phase 2 report records the current Preview and separate documentation commits. No Production environment variables or application deployment are introduced.
+
+Phase 2 application source: `00e5b33bb91a139afa64130c519417c970a2f4ee`; Preview deployment `dpl_49bf9y8Z1rDeYrDQ3zztCBLCB9Xm` at https://naql365-staging-hxbh6u7bq-naql365.vercel.app. Later closeout commits contain tests/documentation and the exact Auth origin configuration. This deployment is Preview, not a Production release.

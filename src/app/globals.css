@@ -521,6 +521,36 @@ dialog::backdrop {
     transition: none !important;
   }
 }
+
+.commercial-stack {
+  max-width: 72rem;
+  margin-inline: auto;
+}
+.commercial-total {
+  padding-block: 1rem;
+  border-block: 2px solid var(--blue);
+  font-size: 1.35rem;
+}
+.commercial-summary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem 2rem;
+  margin-block: 2rem;
+  padding: 1.5rem;
+  background: var(--white);
+  border-block-start: 3px solid var(--blue);
+}
+.commercial-summary dt,
+.commercial-summary dd {
+  margin: 0;
+}
+.commercial-summary dt:last-of-type,
+.commercial-summary dd:last-of-type {
+  padding-block-start: 0.75rem;
+  border-block-start: 1px solid var(--border);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
 /* Customer intake extends the existing logical-direction design tokens. */
 .stack {
   display: grid;

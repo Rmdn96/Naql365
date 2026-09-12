@@ -1,8 +1,19 @@
-import type { Reporter, TestCase, TestResult, FullResult } from '@playwright/test/reporter';
+import type {
+  Reporter,
+  TestCase,
+  TestResult,
+  FullResult,
+  TestStep,
+} from '@playwright/test/reporter';
 
 // Hosted auth failures can contain cookies, filled inputs or signed URLs. Never serialize
 // Playwright errors, steps, stdout, attachments or traces from this privileged test run.
 export default class SafeReporter implements Reporter {
+  onStepEnd(_test: TestCase, _result: TestResult, step: TestStep) {
+    if (step.error && step.location?.file.replaceAll('\\', '/').includes('/tests/')) {
+      process.stdout.write(`Failed test step source line: ${step.location.line}\n`);
+    }
+  }
   onTestEnd(test: TestCase, result: TestResult) {
     process.stdout.write(`${result.status}: ${test.titlePath().slice(1).join(' > ')}\n`);
     for (const annotation of test.annotations.filter(

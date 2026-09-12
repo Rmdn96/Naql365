@@ -1,6 +1,6 @@
 # Staging architecture and reconstruction
 
-Phase 0.5 verified the foundation; Phase 1 extends the same isolated Staging environment with customer identity and request intake. Pricing, dispatch, payment and all Phase 2+ workflows remain excluded. Historical foundation evidence stays in the Phase 0.5 report; current intake acceptance belongs to the Phase 1 report.
+Phase 0.5 verified the foundation; Phase 1 extends the same isolated Staging environment with customer identity and request intake. Phase 2 adds isolated pricing and quote acceptance verification. Dispatch, payment and Phase 3+ workflows remain excluded. Historical foundation evidence stays in the Phase 0.5 report; current intake acceptance belongs to the Phase 1 report.
 
 ## Environment inventory
 
@@ -56,3 +56,7 @@ Keep one reviewed deployment origin active for acceptance. After a replacement P
 - [Supabase CLI configuration](https://supabase.com/docs/reference/cli/supabase-config)
 - [Supabase SSR advanced guide](https://supabase.com/docs/guides/auth/server-side/advanced-guide)
 - [Supabase sessions](https://supabase.com/docs/guides/auth/sessions)
+
+## Phase 2 verification
+
+Use the canonical Phase 2 report for the accepted application source and Preview origin. The operator runs guarded Phase 2, intake and Foundation browser suites sequentially against that same origin, followed by repository migration/RLS verification and regenerated types. Test catalogues are synthetic Staging configuration; they do not approve Production tariffs. Preserve required role/permission/catalogue data during scoped fixture cleanup. Revoke the temporary automation-bypass credential only after all hosted tests finish.

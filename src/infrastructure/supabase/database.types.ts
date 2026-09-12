@@ -249,6 +249,70 @@ export type Database = {
           },
         ]
       }
+      distance_snapshots: {
+        Row: {
+          created_at: string
+          distance_km: number
+          id: string
+          organization_id: string
+          request_id: string
+          revision: number
+          source_note: string | null
+          source_type: string
+          unit: string
+          verified_at: string
+          verified_by: string
+        }
+        Insert: {
+          created_at?: string
+          distance_km: number
+          id?: string
+          organization_id: string
+          request_id: string
+          revision: number
+          source_note?: string | null
+          source_type: string
+          unit?: string
+          verified_at?: string
+          verified_by: string
+        }
+        Update: {
+          created_at?: string
+          distance_km?: number
+          id?: string
+          organization_id?: string
+          request_id?: string
+          revision?: number
+          source_note?: string | null
+          source_type?: string
+          unit?: string
+          verified_at?: string
+          verified_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "distance_snapshots_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "distance_snapshots_organization_id_request_id_fkey"
+            columns: ["organization_id", "request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "distance_snapshots_organization_id_verified_by_fkey"
+            columns: ["organization_id", "verified_by"]
+            isOneToOne: false
+            referencedRelation: "organization_memberships"
+            referencedColumns: ["organization_id", "profile_id"]
+          },
+        ]
+      }
       drivers: {
         Row: {
           created_at: string
@@ -551,33 +615,70 @@ export type Database = {
       }
       orders: {
         Row: {
+          accepted_at: string | null
           accepted_quote_version_id: string
           created_at: string
+          currency: string
+          customer_id: string | null
+          distance_km: number | null
+          distance_source: string | null
           id: string
           idempotency_key: string
           organization_id: string
           quote_id: string
+          reference: string | null
+          request_id: string | null
+          subtotal_minor: number
+          total_minor: number
           updated_at: string
+          vat_amount_minor: number
         }
         Insert: {
+          accepted_at?: string | null
           accepted_quote_version_id: string
           created_at?: string
+          currency?: string
+          customer_id?: string | null
+          distance_km?: number | null
+          distance_source?: string | null
           id?: string
           idempotency_key: string
           organization_id: string
           quote_id: string
+          reference?: string | null
+          request_id?: string | null
+          subtotal_minor?: number
+          total_minor?: number
           updated_at?: string
+          vat_amount_minor?: number
         }
         Update: {
+          accepted_at?: string | null
           accepted_quote_version_id?: string
           created_at?: string
+          currency?: string
+          customer_id?: string | null
+          distance_km?: number | null
+          distance_source?: string | null
           id?: string
           idempotency_key?: string
           organization_id?: string
           quote_id?: string
+          reference?: string | null
+          request_id?: string | null
+          subtotal_minor?: number
+          total_minor?: number
           updated_at?: string
+          vat_amount_minor?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "orders_customer_fk"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "orders_organization_id_fkey"
             columns: ["organization_id"]
@@ -595,6 +696,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "quote_versions"
             referencedColumns: ["organization_id", "quote_id", "id"]
+          },
+          {
+            foreignKeyName: "orders_request_fk"
+            columns: ["organization_id", "request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
@@ -770,6 +878,260 @@ export type Database = {
         }
         Relationships: []
       }
+      pricing_evaluation_components: {
+        Row: {
+          component_code: string
+          created_at: string
+          evaluation_id: string
+          id: string
+          label_ar: string
+          label_en: string
+          organization_id: string
+          position: number
+          pricing_rule_id: string
+          pricing_rule_version: number
+          quantity: number
+          total_amount_minor: number
+          unit_amount_minor: number
+        }
+        Insert: {
+          component_code: string
+          created_at?: string
+          evaluation_id: string
+          id?: string
+          label_ar: string
+          label_en: string
+          organization_id: string
+          position: number
+          pricing_rule_id: string
+          pricing_rule_version: number
+          quantity: number
+          total_amount_minor: number
+          unit_amount_minor: number
+        }
+        Update: {
+          component_code?: string
+          created_at?: string
+          evaluation_id?: string
+          id?: string
+          label_ar?: string
+          label_en?: string
+          organization_id?: string
+          position?: number
+          pricing_rule_id?: string
+          pricing_rule_version?: number
+          quantity?: number
+          total_amount_minor?: number
+          unit_amount_minor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pricing_evaluation_components_organization_id_evaluation_i_fkey"
+            columns: ["organization_id", "evaluation_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_evaluations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pricing_evaluation_components_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pricing_evaluation_components_organization_id_pricing_rule_fkey"
+            columns: ["organization_id", "pricing_rule_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_rules"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pricing_evaluations: {
+        Row: {
+          calculated_at: string
+          calculated_by: string
+          calculated_subtotal_minor: number
+          created_at: string
+          currency: string
+          distance_snapshot_id: string
+          id: string
+          mutation_id: string
+          organization_id: string
+          request_id: string
+          request_revision: number
+          route_scope: string
+          status: string
+          vehicle_class_id: string
+          worker_count: number
+        }
+        Insert: {
+          calculated_at?: string
+          calculated_by: string
+          calculated_subtotal_minor: number
+          created_at?: string
+          currency?: string
+          distance_snapshot_id: string
+          id?: string
+          mutation_id: string
+          organization_id: string
+          request_id: string
+          request_revision: number
+          route_scope: string
+          status?: string
+          vehicle_class_id: string
+          worker_count: number
+        }
+        Update: {
+          calculated_at?: string
+          calculated_by?: string
+          calculated_subtotal_minor?: number
+          created_at?: string
+          currency?: string
+          distance_snapshot_id?: string
+          id?: string
+          mutation_id?: string
+          organization_id?: string
+          request_id?: string
+          request_revision?: number
+          route_scope?: string
+          status?: string
+          vehicle_class_id?: string
+          worker_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pricing_evaluations_organization_id_calculated_by_fkey"
+            columns: ["organization_id", "calculated_by"]
+            isOneToOne: false
+            referencedRelation: "organization_memberships"
+            referencedColumns: ["organization_id", "profile_id"]
+          },
+          {
+            foreignKeyName: "pricing_evaluations_organization_id_distance_snapshot_id_fkey"
+            columns: ["organization_id", "distance_snapshot_id"]
+            isOneToOne: false
+            referencedRelation: "distance_snapshots"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pricing_evaluations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pricing_evaluations_organization_id_request_id_fkey"
+            columns: ["organization_id", "request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "pricing_evaluations_organization_id_vehicle_class_id_fkey"
+            columns: ["organization_id", "vehicle_class_id"]
+            isOneToOne: false
+            referencedRelation: "vehicle_pricing_classes"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      pricing_rules: {
+        Row: {
+          active: boolean
+          amount_minor: number
+          calculation_method: string
+          code: string
+          component_code: string
+          created_at: string
+          effective_from: string
+          effective_until: string | null
+          id: string
+          label_ar: string
+          label_en: string
+          organization_id: string
+          selector_code: string | null
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          active?: boolean
+          amount_minor: number
+          calculation_method: string
+          code: string
+          component_code: string
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          label_ar: string
+          label_en: string
+          organization_id: string
+          selector_code?: string | null
+          updated_at?: string
+          version: number
+        }
+        Update: {
+          active?: boolean
+          amount_minor?: number
+          calculation_method?: string
+          code?: string
+          component_code?: string
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          label_ar?: string
+          label_en?: string
+          organization_id?: string
+          selector_code?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pricing_rules_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pricing_settings: {
+        Row: {
+          created_at: string
+          currency: string
+          organization_id: string
+          updated_at: string
+          vat_rate_bps: number
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          organization_id: string
+          updated_at?: string
+          vat_rate_bps: number
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          organization_id?: string
+          updated_at?: string
+          vat_rate_bps?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pricing_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -838,24 +1200,45 @@ export type Database = {
       }
       quote_items: {
         Row: {
+          component_code: string
           created_at: string
           id: string
+          label_ar: string
+          label_en: string
           organization_id: string
+          position: number
+          quantity: number
           quote_version_id: string
+          total_amount_minor: number
+          unit_amount_minor: number
           updated_at: string
         }
         Insert: {
+          component_code?: string
           created_at?: string
           id?: string
+          label_ar?: string
+          label_en?: string
           organization_id: string
+          position?: number
+          quantity?: number
           quote_version_id: string
+          total_amount_minor?: number
+          unit_amount_minor?: number
           updated_at?: string
         }
         Update: {
+          component_code?: string
           created_at?: string
           id?: string
+          label_ar?: string
+          label_en?: string
           organization_id?: string
+          position?: number
+          quantity?: number
           quote_version_id?: string
+          total_amount_minor?: number
+          unit_amount_minor?: number
           updated_at?: string
         }
         Relationships: [
@@ -875,30 +1258,150 @@ export type Database = {
           },
         ]
       }
+      quote_pricing_details: {
+        Row: {
+          adjustment_reason: string | null
+          calculated_subtotal_minor: number
+          created_at: string
+          created_by: string
+          evaluation_id: string
+          manual_adjustment_minor: number
+          organization_id: string
+          quote_version_id: string
+          sent_by: string | null
+        }
+        Insert: {
+          adjustment_reason?: string | null
+          calculated_subtotal_minor: number
+          created_at?: string
+          created_by: string
+          evaluation_id: string
+          manual_adjustment_minor: number
+          organization_id: string
+          quote_version_id: string
+          sent_by?: string | null
+        }
+        Update: {
+          adjustment_reason?: string | null
+          calculated_subtotal_minor?: number
+          created_at?: string
+          created_by?: string
+          evaluation_id?: string
+          manual_adjustment_minor?: number
+          organization_id?: string
+          quote_version_id?: string
+          sent_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_pricing_details_organization_id_created_by_fkey"
+            columns: ["organization_id", "created_by"]
+            isOneToOne: false
+            referencedRelation: "organization_memberships"
+            referencedColumns: ["organization_id", "profile_id"]
+          },
+          {
+            foreignKeyName: "quote_pricing_details_organization_id_evaluation_id_fkey"
+            columns: ["organization_id", "evaluation_id"]
+            isOneToOne: true
+            referencedRelation: "pricing_evaluations"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "quote_pricing_details_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quote_pricing_details_organization_id_quote_version_id_fkey"
+            columns: ["organization_id", "quote_version_id"]
+            isOneToOne: false
+            referencedRelation: "quote_versions"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "quote_pricing_details_organization_id_sent_by_fkey"
+            columns: ["organization_id", "sent_by"]
+            isOneToOne: false
+            referencedRelation: "organization_memberships"
+            referencedColumns: ["organization_id", "profile_id"]
+          },
+        ]
+      }
       quote_versions: {
         Row: {
+          accepted_at: string | null
           created_at: string
+          currency: string
+          distance_km: number | null
+          distance_source: string | null
+          distance_verified_at: string | null
+          expires_at: string | null
+          final_subtotal_minor: number
           id: string
           organization_id: string
           quote_id: string
+          rejected_at: string | null
+          rejection_reason: string | null
+          sent_at: string | null
+          status: string
+          total_minor: number
           updated_at: string
+          validity_seconds: number
+          vat_amount_minor: number
+          vat_rate_bps: number
           version: number
+          viewed_at: string | null
         }
         Insert: {
+          accepted_at?: string | null
           created_at?: string
+          currency?: string
+          distance_km?: number | null
+          distance_source?: string | null
+          distance_verified_at?: string | null
+          expires_at?: string | null
+          final_subtotal_minor?: number
           id?: string
           organization_id: string
           quote_id: string
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          sent_at?: string | null
+          status?: string
+          total_minor?: number
           updated_at?: string
+          validity_seconds?: number
+          vat_amount_minor?: number
+          vat_rate_bps?: number
           version: number
+          viewed_at?: string | null
         }
         Update: {
+          accepted_at?: string | null
           created_at?: string
+          currency?: string
+          distance_km?: number | null
+          distance_source?: string | null
+          distance_verified_at?: string | null
+          expires_at?: string | null
+          final_subtotal_minor?: number
           id?: string
           organization_id?: string
           quote_id?: string
+          rejected_at?: string | null
+          rejection_reason?: string | null
+          sent_at?: string | null
+          status?: string
+          total_minor?: number
           updated_at?: string
+          validity_seconds?: number
+          vat_amount_minor?: number
+          vat_rate_bps?: number
           version?: number
+          viewed_at?: string | null
         }
         Relationships: [
           {
@@ -922,6 +1425,7 @@ export type Database = {
           created_at: string
           id: string
           organization_id: string
+          reference: string | null
           request_id: string
           updated_at: string
         }
@@ -929,6 +1433,7 @@ export type Database = {
           created_at?: string
           id?: string
           organization_id: string
+          reference?: string | null
           request_id: string
           updated_at?: string
         }
@@ -936,6 +1441,7 @@ export type Database = {
           created_at?: string
           id?: string
           organization_id?: string
+          reference?: string | null
           request_id?: string
           updated_at?: string
         }
@@ -950,7 +1456,7 @@ export type Database = {
           {
             foreignKeyName: "quotes_organization_id_request_id_fkey"
             columns: ["organization_id", "request_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "requests"
             referencedColumns: ["organization_id", "id"]
           },
@@ -1667,6 +2173,47 @@ export type Database = {
           },
         ]
       }
+      vehicle_pricing_classes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          id: string
+          name_ar: string
+          name_en: string
+          organization_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          id?: string
+          name_ar: string
+          name_en: string
+          organization_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          id?: string
+          name_ar?: string
+          name_en?: string
+          organization_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_pricing_classes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vehicles: {
         Row: {
           branch_id: string | null
@@ -1711,7 +2258,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_preliminary_price: {
+        Args: {
+          p_distance_km: number
+          p_mutation_id: string
+          p_request_id: string
+          p_source_note: string
+          p_vehicle_class_id: string
+          p_worker_count: number
+        }
+        Returns: Json
+      }
       create_customer_request: { Args: { p_key: string }; Returns: Json }
+      create_quote_draft: {
+        Args: {
+          p_adjustment_minor: number
+          p_adjustment_reason: string
+          p_evaluation_id: string
+          p_mutation_id: string
+          p_validity_seconds: number
+        }
+        Returns: Json
+      }
       customer_enrollment_state: { Args: never; Returns: string }
       has_permission: {
         Args: { organization_id: string; permission_code: string }
@@ -1739,6 +2307,20 @@ export type Database = {
           p_request_id: string
           p_size?: number
         }
+        Returns: Json
+      }
+      respond_to_quote: {
+        Args: {
+          p_action: string
+          p_idempotency_key: string
+          p_quote_version_id: string
+          p_reason?: string
+        }
+        Returns: Json
+      }
+      send_quote: { Args: { p_quote_version_id: string }; Returns: Json }
+      view_customer_quote: {
+        Args: { p_quote_version_id: string }
         Returns: Json
       }
     }

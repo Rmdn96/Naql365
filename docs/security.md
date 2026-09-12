@@ -9,7 +9,7 @@
 - Private storage buckets, registered object paths, constrained MIME types and short signed downloads. Foundation files retain their bucket limits; Phase 1 request images have the stricter limits below.
 - CSP nonces for scripts, no framing, no objects, self-only forms/base, nosniff, restrictive permissions policy, HTTPS HSTS and limited referrer disclosure.
 - React text escaping; controlled JSON-LD serialization escapes `<`; no user HTML rendering.
-- Same-origin allowlisted PKCE callback redirects. No mutable GET endpoint except the required one-time Auth code exchange.
+- Same-origin allowlisted PKCE callback redirects. Quote detail reads record idempotent view/expiry metadata for the authenticated owner; commercial acceptance/rejection and pricing changes use protected POST commands. The Auth callback performs the required one-time code exchange.
 - Customer intake mutations enforce explicit Origin checks and bounded JSON/multipart bodies in addition to server identity, ownership and database authorization. Server Actions retain framework Origin/Host checks.
 - Error boundaries expose translated generic messages, never raw stack traces, database details or credentials.
 - No password, session, URL token, uploaded content or API response logging in application code.
@@ -59,3 +59,7 @@ Phase 1 request images validate signature/type, limit each image to 3 MiB, cap a
 Profile onboarding requires confirmed Auth identity and a trusted private enrollment configuration. Editable email/metadata never grant roles. The transaction creates only CUSTOMER participation, serializes duplicate enrollment and cannot reactivate suspension. Request commands reject unknown fields, enforce ownership/active membership, compare revisions, allocate references atomically and protect submitted payloads. Raw table write privileges remain closed to customer clients. Application credentials remain user-scoped; operator admin credentials exist only in guarded test processes.
 
 Payment webhooks require raw-body signature verification and unique event processing; no gateway is active. Driver visibility must depend on assignment. New writes require authorization, validation, idempotency where applicable, audit coverage and negative RLS tests. Published quote immutability requires a lifecycle rule before quote writes are opened.
+
+## Phase 2 commercial authorization
+
+Pricing and quote commands derive auth.uid(), active tenant membership and explicit permissions inside PostgreSQL. Customers cannot provide authoritative distance or money, read internal pricing details, modify sent snapshots, or promote their permissions. Distance corrections create a new evaluation and stale earlier drafts. Customer acceptance locks the sent version and creates one Order from its immutable commercial facts. Sent versions and their components reject direct mutation. Operator fixture cleanup is confined to guarded Staging scripts; authenticated clients cannot invoke the cleanup path. Safe query diagnostics contain only an operation label and database error code.
