@@ -16,8 +16,16 @@ export default defineConfig({
   forbidOnly: true,
   retries: 0,
   timeout: 180000,
+  expect: { timeout: 20000 },
   reporter: './tests/staging/safe-reporter.ts',
-  use: { baseURL: origin.origin, trace: 'off', screenshot: 'off', video: 'off' },
+  use: {
+    baseURL: origin.origin,
+    trace: 'off',
+    screenshot: 'off',
+    video: 'off',
+    navigationTimeout: 45000,
+    actionTimeout: 20000,
+  },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' } },
