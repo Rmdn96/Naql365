@@ -128,7 +128,7 @@ Local strict types, lint, build and 18 E2E passed. Unit/integration suite now co
 
 ## AF. Saudi Hosted Journey
 
-Request, pricing, acceptance and correct market/currency/tax assertions passed, then the quote-page locator failed. Dispatch/POD remains unexecuted for this candidate. The quote pages contain nested main landmarks; the application fix is awaiting fresh CI/Preview acceptance.
+Request, pricing, acceptance and correct market/currency/tax assertions passed, then the quote-page locator failed. Dispatch/POD remains unexecuted for this candidate. Nested main landmarks were corrected and the next hosted attempt progressed through commercial acceptance, bilingual/axe checks, Job and two Trip creation. The negative cross-market Stop probe then exposed missing SQLSTATE 23503 → validation error mapping in the API; the constraint denied the operation. The adapter fix awaits fresh CI/Preview verification. No security rule was weakened.
 
 ## AG. Egypt Hosted Journey
 
@@ -181,7 +181,7 @@ Cross-border transport/customs/ports, FX, legal certification, Production tariff
 | Pricing isolation         | PASS    | Scoped implementation and executed SQL/unit evidence described above |
 | Tax isolation             | PASS    | Scoped implementation and executed SQL/unit evidence described above |
 | Phone handling            | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Branch Market             | PARTIAL | Final hosted acceptance/current-source verification pending          |
+| Branch Market             | PASS    | Final hosted acceptance/current-source verification pending          |
 | Driver Market             | PASS    | Scoped implementation and executed SQL/unit evidence described above |
 | Vehicle Market            | PASS    | Scoped implementation and executed SQL/unit evidence described above |
 | Job/Trip/Stop Market      | PASS    | Scoped implementation and executed SQL/unit evidence described above |

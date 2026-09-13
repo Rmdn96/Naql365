@@ -47,3 +47,9 @@ Official references checked: [Next.js installation](https://nextjs.org/docs/app/
 Phase 1 adds confirmed customer onboarding and request intake to the foundation described above. The wizard is an interactive client component; list/detail pages remain server rendered. Shared Zod schemas and pure request utilities live in domain/requests. User-scoped infrastructure services validate identity, call transactional PostgreSQL commands and orchestrate private Storage. Route handlers enforce same-origin writes and bounded payloads. React never decides tenant membership, role assignment, request ownership or reference allocation.
 
 The private enrollment setting selects one operating organization for self-registration. The database assigns only CUSTOMER and preserves suspension. Requests use normalized locations/items/options and a revision-checked draft command. DRAFT transitions only to SUBMITTED or CANCELLED; there is no downstream quotation/order behavior. See [schema-gap analysis and decisions](customer-request-intake.md) for the inspected baseline, migration rationale, autosave and attachment lifecycle.
+
+## Phase 3.5 market boundaries
+
+Naql365 remains one organization. Requests, commercial records and operational resources carry an explicit market; AR/EN does not select a market. `src/domain/markets/model.ts` owns currency presentation, international contact normalization and IANA wall-time conversion. Tenant-scoped server adapters load market/city/service context; PostgreSQL validates composite relationships and command permissions independently.
+
+Changing a request market requires cancelling/restarting the draft. Submitted records and commercial snapshots cannot be silently reinterpreted under another currency or tax configuration. The first market catalogue is limited; geography does not activate service coverage. See `docs/multi-country-sa-eg.md` and the canonical Phase 3.5 report for decisions and acceptance evidence.

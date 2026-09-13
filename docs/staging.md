@@ -64,3 +64,11 @@ Phase 3 remains unaccepted until its canonical report records all required hoste
 ## Phase 2 verification
 
 Use the canonical Phase 2 report for the accepted application source and Preview origin. The operator runs guarded Phase 2, intake and Foundation browser suites sequentially against that same origin, followed by repository migration/RLS verification and regenerated types. Test catalogues are synthetic Staging configuration; they do not approve Production tariffs. Preserve required role/permission/catalogue data during scoped fixture cleanup. Revoke the temporary automation-bypass credential only after all hosted tests finish.
+
+## Phase 3.5 Staging setup
+
+After current-source CI passes, apply repository migrations only to the explicitly allowlisted `naql365-staging` Supabase project. Existing accepted Staging data is upgraded; do not reset it. A fresh local/CI database is reconstructed separately.
+
+For a fresh controlled Staging catalogue, run intake configuration first, then `node scripts/staging/configure-markets.mjs --apply`, then `npm run staging:configure-pricing`. These commands verify the Staging project and require its enrollment organization. Market provisioning adds initial geography; the Staging-only step explicitly activates SA/EG service/city pairs. Pricing/tax fixtures are synthetic: SA 1500 bps, EG 2000 bps, 19 rules per market. They are neither approved tariffs nor a legal tax compliance claim.
+
+Deploy the tested branch as a protected Vercel Preview. Preview variables remain `APP_ENV`, `STAGING_AUTH_SMOKE_ENABLED`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, all Preview-scoped; no Production scope is required. Configure Supabase Auth to the exact candidate origin and the four bounded AR/EN callback URLs in `config/staging/supabase/config.toml`. No redirect wildcard is needed. The canonical Phase 3.5 report identifies the final accepted candidate and any remaining gates.

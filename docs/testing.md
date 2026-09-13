@@ -37,3 +37,11 @@ Cross-customer tracking tests assert the localized not-found content, absence of
 ## Phase 2 acceptance
 
 `npm run test:staging:phase2` requires an explicitly verified protected Preview and the allowlisted healthy Supabase Staging project. It creates disposable customer, Sales and peer identities, verifies the commercial journey and negative access, and cleans its scoped records in finally. Never run hosted suites concurrently. The shared SQL assertions execute against PGlite, complete Supabase in CI and hosted Staging. A separate TAP footer reports completed assertions to the Supabase runner; embedded/hosted SQL runners omit only that reporter footer, not security assertions. Phase 1 and Foundation hosted regression must target the same Phase 2 Preview.
+
+## Phase 3.5 verification
+
+`tests/unit/markets.test.ts` covers explicit currency, contact normalization, IANA winter/summer offsets, DST gaps/overlap and local month boundaries. Shared market SQL covers the same customer in SA/EG, pricing/tax isolation, inactive coverage, forbidden overrides, branch/resource relationships and domestic routes. The upgrade and fixture-isolation tests cover both historical commercial preservation and pre-existing configuration.
+
+The existing `node scripts/staging/verify-phase3.mjs` entry point now runs both SA and EG end-to-end journeys and authenticated bundle checks on the SAME protected Preview. Each market creates a request, accepted quote/order, two trips, four stops per trip and private POD; negative role/tenant/market/resource probes remain enforced. The planner round-trips a winter wall time to different SA/EG UTC instants, then restores the operational test schedule. The same disposable customer identity is reused for both countries. Old Phase 1/2 hosted entry points remain Saudi regression and now explicitly select their market/city IDs.
+
+Use the guarded runner, never launch privileged tests with hardcoded credentials. Screenshots/traces/video remain disabled, safe reporting emits no credential values, and cleanup removes disposable identities/business data/private files. Temporary Vercel automation credentials must be revoked after all suites finish. Test definitions alone are not PASS evidence; consult the report for actual executions.
