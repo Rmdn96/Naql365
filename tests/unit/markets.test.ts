@@ -45,3 +45,19 @@ it('normalizes national input with explicit country context and preserves intern
   expect(normalizeMarketPhone('+966500000001', '+20')).toBe('+966500000001');
   expect(normalizeMarketPhone('01000000001')).toBe('01000000001');
 });
+
+it('rejects malformed international contacts without using the phone to infer market', async () => {
+  const { phoneInput } = await import('@/domain/requests/intake');
+  for (const value of [
+    '01000000001',
+    '0500000001',
+    '+966+201000000001',
+    '+201abc',
+    '+000000000',
+    '+201000000000000000',
+  ]) {
+    expect(phoneInput.safeParse(value).success).toBe(false);
+  }
+  expect(phoneInput.parse('+201000000001')).toBe('+201000000001');
+  expect(phoneInput.parse('+966500000001')).toBe('+966500000001');
+});
