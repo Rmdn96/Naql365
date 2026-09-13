@@ -36,18 +36,16 @@ test('customer persists a bilingual request through private image, review, submi
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.getByRole('button', { name: t.next, exact: true }).click();
   for (const kind of ['pickup', 'delivery']) {
-    await page
-      .locator(`#${kind}-city`)
-      .selectOption({
-        label:
-          kind === 'pickup'
-            ? locale === 'ar'
-              ? 'الرياض — الرياض'
-              : 'Riyadh — Riyadh'
-            : locale === 'ar'
-              ? 'جدة — مكة المكرمة'
-              : 'Jeddah — Makkah',
-      });
+    await page.locator(`#${kind}-city`).selectOption({
+      label:
+        kind === 'pickup'
+          ? locale === 'ar'
+            ? 'الرياض — الرياض'
+            : 'Riyadh — Riyadh'
+          : locale === 'ar'
+            ? 'جدة — مكة المكرمة'
+            : 'Jeddah — Makkah',
+    });
     await page.locator(`#${kind}-district`).fill('Acceptance district');
     await page.locator(`#${kind}-address`).fill(`Harmless ${kind} address`);
     await page.locator(`#${kind}-notes`).fill('No real business data');
