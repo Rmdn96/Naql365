@@ -61,3 +61,9 @@ After complete CI succeeds, apply only to allowlisted Staging and deploy one gen
 ## Owner-level decisions
 
 No additional business decision is required for the foundation currently described. Existing staff can operate both markets, manual verified distance remains approved, and Egyptian pricing/tax fixtures are synthetic only. Production tariffs, legally approved tax treatment, and actual service rollout coverage are deliberately unconfigured rather than invented. If implementation uncovers a policy that cannot safely remain unconfigured, stop and request that decision.
+
+### Initial geographic catalogue
+
+The initial catalogue contains Riyadh (Riyadh province), Jeddah (Makkah province), Cairo and Alexandria (their respective governorates). It adds geography only: Egypt remains inactive until explicitly configured, and no city gets service coverage from the catalogue migration. Existing historical free-text addresses are preserved; new requests choose stable city IDs.
+
+Geographic references: [Riyadh province](https://saudipedia.com/en/riyadh-province), [Jeddah](https://saudipedia.com/en/jeddah-city), [Egyptian governorates](https://mediadr.sis.gov.eg/xmlui/handle/123456789/42973), [Cairo](https://www.sis.gov.eg/newvr/tourism/cairo/cairoweb/cairo.html). Catalogue scope is deliberately limited and does not imply nationwide service.
