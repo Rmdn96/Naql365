@@ -95,6 +95,11 @@ async function op(
     },
     { organizationId: org, entityId, revision, action, payload, mutationId: randomUUID() },
   );
+  if (result.status !== expected)
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: JSON.stringify({ action, expected, status: result.status }),
+    });
   expect(result.status).toBe(expected);
   return result.data.id!;
 }
@@ -298,6 +303,23 @@ for (const country of ['SA', 'EG'] as const)
     await op(page, 'assign', trip1, { driverId: d1, vehicleId: wrongVehicle }, 403);
     for (const trip of [trip1, trip2]) {
       await op(page, 'plan', trip, plan);
+      if (trip === trip1) {
+        await page.goto('/ar/portal/operations/trips/' + trip);
+        await page.locator('#planned-start').fill('2027-01-15T10:00');
+        await page.locator('#planned-end').fill('2027-01-15T12:00');
+        await page.getByRole('button', { name: ot.savePlan, exact: true }).click();
+        const expected = country === 'SA' ? '2027-01-15T07:00:00.000Z' : '2027-01-15T08:00:00.000Z';
+        await expect
+          .poll(async () => {
+            const row = await admin.from('trips').select('planned_start').eq('id', trip).single();
+            return row.data?.planned_start ? new Date(row.data.planned_start).toISOString() : null;
+          })
+          .toBe(expected);
+        await page.reload();
+        await expect(page.locator('#planned-start')).toHaveValue('2027-01-15T10:00');
+        await axe(page);
+        await op(page, 'plan', trip, plan);
+      }
       await op(page, 'assign', trip, { driverId: d1, vehicleId: v1 });
       await op(page, 'ready', trip);
     }
@@ -486,6 +508,11 @@ for (const country of ['SA', 'EG'] as const)
     }
     const final = await admin.from('orders').select('*').eq('id', orderId).single();
     for (const key of [
+      'currency',
+      'market_id',
+      'tax_version_id',
+      'tax_rate_bps',
+      'tax_code',
       'total_minor',
       'subtotal_minor',
       'vat_amount_minor',
