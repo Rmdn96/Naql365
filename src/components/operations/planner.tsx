@@ -3,22 +3,24 @@ import { useState } from 'react';
 import type { Locale } from '@/i18n/config';
 import { operationsDictionary } from '@/i18n/operations';
 import type { OperationalTrip } from '@/infrastructure/operations/service';
-import { Button, Input, Select } from '@/components/ui/primitives';
+import { marketDateTime, localScheduleToInstant } from '@/domain/markets/model';
+import { marketDictionary } from '@/i18n/markets';
+import { Button, Input, Select, Alert } from '@/components/ui/primitives';
 import { useOperationalCommand } from './command';
 type PlannedStop = {
   key: string;
+  cityId: string;
   kind: 'PICKUP' | 'DELIVERY';
   address: string;
   notes: string;
   pickups: string[];
 };
-function localTime(iso: string | null) {
-  if (!iso) return '';
-  const date = new Date(iso);
-  return new Date(date.getTime() + 3 * 60 * 60000).toISOString().slice(0, 16);
-}
 export function TripPlanner({ locale, data }: { locale: Locale; data: OperationalTrip }) {
-  const t = operationsDictionary(locale);
+  const t = operationsDictionary(locale),
+    mt = marketDictionary(locale);
+  const [scheduleError, setScheduleError] = useState(false);
+  const localTime = (iso: string | null) =>
+    iso ? marketDateTime(new Date(iso), data.market.timezone) : '';
   const command = useOperationalCommand(
     locale,
     data.trip.organization_id,
@@ -28,6 +30,7 @@ export function TripPlanner({ locale, data }: { locale: Locale; data: Operationa
   const [stops, setStops] = useState<PlannedStop[]>(() =>
     data.stops.map((s) => ({
       key: s.id,
+      cityId: s.city_id ?? '',
       kind: s.kind === 'DELIVERY' ? 'DELIVERY' : 'PICKUP',
       address: s.address ?? '',
       notes: s.notes,
@@ -52,19 +55,30 @@ export function TripPlanner({ locale, data }: { locale: Locale; data: Operationa
   return (
     <section>
       <h2>{t.plan}</h2>
+      <p>
+        {mt.market}: {locale === 'ar' ? data.market.name_ar : data.market.name_en} ·{' '}
+        {data.market.timezone}
+      </p>
+      {scheduleError && <Alert tone="error">{mt.localTimeError}</Alert>}
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          void command.run('plan', {
-            plannedStart: new Date(start + ':00+03:00').toISOString(),
-            plannedEnd: new Date(end + ':00+03:00').toISOString(),
-            stops: stops.map((s) => ({
-              kind: s.kind,
-              address: s.address,
-              notes: s.notes,
-              pickups: s.pickups.map((key) => stops.findIndex((p) => p.key === key)),
-            })),
-          });
+          setScheduleError(false);
+          try {
+            void command.run('plan', {
+              plannedStart: localScheduleToInstant(start, data.market.timezone),
+              plannedEnd: localScheduleToInstant(end, data.market.timezone),
+              stops: stops.map((s) => ({
+                kind: s.kind,
+                cityId: s.cityId,
+                address: s.address,
+                notes: s.notes,
+                pickups: s.pickups.map((key) => stops.findIndex((p) => p.key === key)),
+              })),
+            });
+          } catch {
+            setScheduleError(true);
+          }
         }}
       >
         <div className="form-columns">
@@ -91,6 +105,20 @@ export function TripPlanner({ locale, data }: { locale: Locale; data: Operationa
             <legend>
               {index + 1}. {s.kind === 'PICKUP' ? t.pickup : t.delivery}
             </legend>
+            <Select
+              id={`city-${s.key}`}
+              label={mt.city}
+              value={s.cityId}
+              required
+              onChange={(e) => patch(s.key, { cityId: e.target.value })}
+            >
+              <option value="">{mt.city}</option>
+              {data.cities.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {locale === 'ar' ? c.name_ar : c.name_en}
+                </option>
+              ))}
+            </Select>
             <Select
               id={`kind-${s.key}`}
               label={t.stops}
@@ -186,6 +214,7 @@ export function TripPlanner({ locale, data }: { locale: Locale; data: Operationa
                 ...current,
                 {
                   key: crypto.randomUUID(),
+                  cityId: '',
                   kind: current.length ? 'DELIVERY' : 'PICKUP',
                   address: '',
                   notes: '',

@@ -26,6 +26,10 @@ export default async function Page({
     <div className="container page">
       <h1>{t.tracking}</h1>
       <p>
+        {locale === 'ar' ? data.market.nameAr : data.market.nameEn} ·{' '}
+        <bdi>{data.market.currency}</bdi>
+      </p>
+      <p>
         <bdi>{data.reference}</bdi>
       </p>
       <Badge>{operationalStatus(data.status, locale)}</Badge>

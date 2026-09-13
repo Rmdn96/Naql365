@@ -1,3 +1,4 @@
+import { marketDate } from '@/domain/markets/model';
 import { expect, it } from 'vitest';
 import {
   blankDraft,
@@ -6,12 +7,11 @@ import {
   profileInput,
   commandInput,
   imageMime,
-  riyadhDate,
   submissionIssues,
 } from '@/domain/requests/intake';
 it.each([
-  ['0501234567', '+966501234567'],
-  ['٠٥٠١٢٣٤٥٦٧', '+966501234567'],
+  ['+966501234567', '+966501234567'],
+  ['+٢٠١٠١٢٣٤٥٦٧٨', '+201012345678'],
   ['00442079460958', '+442079460958'],
   ['+1 (202) 555-0123', '+12025550123'],
 ])('normalizes phone %s to an explicit international canonical value', (raw, canonical) =>
@@ -49,9 +49,9 @@ it.each([0, -1, 1.5, 10001])('rejects invalid item quantity %s', (quantity) =>
   ).toBe(false),
 );
 it('uses Riyadh date at UTC midnight boundary', () =>
-  expect(riyadhDate(new Date('2026-09-09T21:30:00Z'))).toBe('2026-09-10'));
+  expect(marketDate(new Date('2026-09-09T21:30:00Z'), 'Asia/Riyadh')).toBe('2026-09-10'));
 it('requires the persisted business payload to be complete before submission UX', () =>
-  expect(submissionIssues(blankDraft())).toEqual([
+  expect(submissionIssues(blankDraft(), 'Asia/Riyadh')).toEqual([
     'service',
     'route',
     'shipment',

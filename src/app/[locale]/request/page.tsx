@@ -1,3 +1,4 @@
+import { availableMarkets } from '@/infrastructure/markets/service';
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
@@ -13,7 +14,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     <div className="container page narrow">
       <h1>{t.request}</h1>
       <p>{t.savingHint}</p>
-      <StartRequest locale={locale} />
+      <StartRequest locale={locale} markets={await availableMarkets()} />
     </div>
   );
 }

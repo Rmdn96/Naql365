@@ -1,18 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import {
-  calculatePriceInput,
-  createQuoteInput,
-  formatSar,
-  parseSarToMinor,
-} from '@/domain/pricing/model';
+import { formatMoney } from '@/domain/markets/model';
+import { calculatePriceInput, createQuoteInput, parseAmountToMinor } from '@/domain/pricing/model';
 
 describe('Phase 2 pricing values', () => {
   it('parses SAR without binary floating-point authority', () => {
-    expect(parseSarToMinor('230.00')).toBe(23000);
-    expect(parseSarToMinor('-1.75')).toBe(-175);
-    expect(parseSarToMinor('1.001')).toBeNull();
-    expect(parseSarToMinor('NaN')).toBeNull();
-    expect(formatSar(23000, 'en')).toContain('230.00');
+    expect(parseAmountToMinor('230.00')).toBe(23000);
+    expect(parseAmountToMinor('-1.75')).toBe(-175);
+    expect(parseAmountToMinor('1.001')).toBeNull();
+    expect(parseAmountToMinor('NaN')).toBeNull();
+    expect(formatMoney(23000, 'SAR', 'en')).toContain('230.00');
   });
 
   it('bounds verified road distance and operational inputs', () => {

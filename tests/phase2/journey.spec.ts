@@ -1,4 +1,4 @@
-import { riyadhDate } from '../../src/domain/requests/intake';
+import { marketDate } from '../../src/domain/markets/model';
 import AxeBuilder from '@axe-core/playwright';
 import { createClient } from '@supabase/supabase-js';
 import type { Page } from '@playwright/test';
@@ -127,7 +127,7 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   await page.getByRole('checkbox', { name: 'تغليف', exact: true }).check();
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
-  await page.locator('#date').fill(riyadhDate(new Date(Date.now() + 86400000)));
+  await page.locator('#date').fill(marketDate(new Date(Date.now() + 86400000), 'Asia/Riyadh'));
   await page.locator('#time-window').selectOption('flexible');
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();

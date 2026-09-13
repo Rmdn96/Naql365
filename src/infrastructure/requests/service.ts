@@ -2,6 +2,7 @@ import 'server-only';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { AppError } from '@/domain/shared/errors';
+import { marketSchema } from '@/domain/markets/model';
 import {
   blankDraft,
   commandInput,
@@ -50,6 +51,22 @@ export async function requestDetails(id: string, writable = false) {
   const { data: r, error } = await client.from('requests').select('*').eq('id', id).maybeSingle();
   if (error) databaseError(error.code);
   if (!r) throw new AppError('not_found', 'Request unavailable');
+  const [marketResult, cities, coverage] = await Promise.all([
+    client.from('markets').select('*').eq('id', r.market_id).single(),
+    client
+      .from('market_cities')
+      .select('id,name_ar,name_en,region_id,market_regions(name_ar,name_en)')
+      .eq('market_id', r.market_id)
+      .order('name_en'),
+    client
+      .from('service_areas')
+      .select('service_id,city_id')
+      .eq('market_id', r.market_id)
+      .eq('active', true),
+  ]);
+  if (marketResult.error || cities.error || coverage.error)
+    throw new AppError('internal', 'Market context unavailable');
+  const market = marketSchema.parse(marketResult.data);
   // Customer ownership remains explicit even when a principal has additional read permissions.
   const { data: owner } = await client
     .from('customers')
@@ -70,10 +87,10 @@ export async function requestDetails(id: string, writable = false) {
       .select('file_id,file_objects(id,mime_type,size_bytes,upload_state)')
       .eq('request_id', id),
     client
-      .from('services')
-      .select('id,name_ar,name_en,property_required,active')
-      .eq('organization_id', r.organization_id)
-      .order('code'),
+      .from('market_services')
+      .select('active,services(id,name_ar,name_en,property_required,active)')
+      .eq('market_id', r.market_id)
+      .eq('organization_id', r.organization_id),
     client
       .from('additional_services')
       .select('id,name_ar,name_en,active')
@@ -87,6 +104,10 @@ export async function requestDetails(id: string, writable = false) {
     if (l.kind === 'pickup' || l.kind === 'delivery')
       draft[l.kind] = {
         city: l.city,
+        city_id: l.city_id ?? '',
+        postal_code: l.postal_code,
+        building: l.building,
+        unit: l.unit,
         district: l.district,
         address: l.address,
         notes: l.notes,
@@ -109,6 +130,9 @@ export async function requestDetails(id: string, writable = false) {
     contact_notes: r.contact_notes,
   });
   return {
+    market,
+    cities: cities.data,
+    coverage: coverage.data,
     request: {
       id: r.id,
       revision: r.revision,
@@ -119,15 +143,20 @@ export async function requestDetails(id: string, writable = false) {
     },
     payload,
     attachments: (attachments.data ?? []).flatMap((a) => (a.file_objects ? [a.file_objects] : [])),
-    services: services.data ?? [],
+    services: (services.data ?? []).flatMap((s) =>
+      s.services ? [{ ...s.services, active: s.active && s.services.active }] : [],
+    ),
     options: options.data ?? [],
   };
 }
 export type RequestDetails = Awaited<ReturnType<typeof requestDetails>>;
-export async function createDraft(key: unknown) {
+export async function createDraft(key: unknown, marketId: unknown) {
   const mutation = z.uuid().parse(key);
   const { client } = await customerClient(true);
-  const { data, error } = await client.rpc('create_customer_request', { p_key: mutation });
+  const { data, error } = await client.rpc('create_customer_request', {
+    p_key: mutation,
+    p_market_id: z.uuid().parse(marketId),
+  });
   if (error) databaseError(error.code);
   return commandResult.parse(data);
 }

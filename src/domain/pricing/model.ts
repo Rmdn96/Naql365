@@ -40,7 +40,7 @@ export const quoteResponseInput = z
   })
   .strict();
 
-export function parseSarToMinor(value: string): number | null {
+export function parseAmountToMinor(value: string): number | null {
   const match = /^(-?)(\d{1,12})(?:\.(\d{1,2}))?$/.exec(value.trim());
   if (!match) return null;
   const whole = Number(match[2]);
@@ -50,17 +50,9 @@ export function parseSarToMinor(value: string): number | null {
   return match[1] ? -amount : amount;
 }
 
-export function formatSar(minor: number, locale: 'ar' | 'en'): string {
-  if (!Number.isSafeInteger(minor)) throw new Error('Invalid money amount');
-  return new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-SA', {
-    style: 'currency',
-    currency: 'SAR',
-    minimumFractionDigits: 2,
-  }).format(minor / 100);
-}
-
 export interface DistanceProvider {
   calculateRoute(input: {
+    marketId: string;
     originReference: string;
     destinationReference: string;
   }): Promise<

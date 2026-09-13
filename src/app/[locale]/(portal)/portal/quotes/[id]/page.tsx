@@ -27,7 +27,7 @@ export default async function Page({
     throw error;
   }
   const latest = details.evaluations[0];
-  const versions = details.request.quotes?.quote_versions ?? [];
+  const versions = details.request.quotes.flatMap((q) => q.quote_versions);
   const draft = versions.find((v) => v.status === 'DRAFT');
   const locations = details.request.request_locations;
   const payload: RequestDraft = {
@@ -44,6 +44,10 @@ export default async function Page({
     additional_service_ids: [],
     pickup: {
       city: '',
+      city_id: '',
+      postal_code: '',
+      building: '',
+      unit: '',
       district: '',
       address: '',
       notes: '',
@@ -53,6 +57,10 @@ export default async function Page({
     },
     delivery: {
       city: '',
+      city_id: '',
+      postal_code: '',
+      building: '',
+      unit: '',
       district: '',
       address: '',
       notes: '',
@@ -65,6 +73,10 @@ export default async function Page({
     if (location.kind === 'pickup' || location.kind === 'delivery')
       payload[location.kind] = {
         city: location.city,
+        city_id: location.city_id ?? '',
+        postal_code: location.postal_code,
+        building: location.building,
+        unit: location.unit,
         district: location.district,
         address: location.address,
         notes: '',

@@ -7,7 +7,7 @@ import { customerDictionary } from '../../src/i18n/customer';
 import { dictionary } from '../../src/i18n/dictionaries';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { operationsDictionary, operationLabel } from '../../src/i18n/operations';
-import { riyadhDate } from '../../src/domain/requests/intake';
+import { marketDate } from '../../src/domain/markets/model';
 import type { Page } from '@playwright/test';
 import type { OperationAction } from '../../src/domain/operations/model';
 function required(key: string) {
@@ -134,7 +134,7 @@ test('hosted intake to multi-trip dispatch, private POD and whole-Order completi
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
   await page.getByRole('button', { name: ct.next, exact: true }).click();
-  await page.locator('#date').fill(riyadhDate(new Date(Date.now() + 86400000)));
+  await page.locator('#date').fill(marketDate(new Date(Date.now() + 86400000), 'Asia/Riyadh'));
   await page.locator('#time-window').selectOption('flexible');
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();

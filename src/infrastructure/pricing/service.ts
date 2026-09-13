@@ -32,7 +32,7 @@ export async function salesQueue() {
   const { data, error } = await client
     .from('requests')
     .select(
-      'id,reference,submitted_at,contact_name,status,services(name_ar,name_en),request_locations(kind,city),quotes(reference,quote_versions(id,status,version,total_minor,expires_at))',
+      'id,market_id,markets(name_ar,name_en,currency,timezone),reference,submitted_at,contact_name,status,services(name_ar,name_en),request_locations(kind,city),quotes(reference,quote_versions(id,status,version,total_minor,expires_at))',
     )
     .eq('organization_id', organizationId)
     .eq('status', 'SUBMITTED')
@@ -45,11 +45,19 @@ export async function salesQueue() {
 export async function salesRequestDetails(requestId: string) {
   z.uuid().parse(requestId);
   const { client, organizationId } = await salesClient('pricing.calculate');
+  const context = await client
+    .from('requests')
+    .select('market_id')
+    .eq('id', requestId)
+    .eq('organization_id', organizationId)
+    .maybeSingle();
+  if (context.error) pricingError(context.error.code);
+  if (!context.data) throw new AppError('not_found', 'Request unavailable');
   const [request, vehicles, evaluations] = await Promise.all([
     client
       .from('requests')
       .select(
-        'id,reference,status,revision,submitted_at,description,notes,contact_name,contact_phone,contact_email,services(name_ar,name_en),request_locations(kind,city,district,address,floor,elevator,access_notes),request_items(description,quantity,notes),request_additional_services(additional_services(code,name_ar,name_en)),quotes(id,reference,quote_versions(id,version,status,final_subtotal_minor,vat_amount_minor,total_minor,currency,expires_at,distance_km,distance_source))',
+        'id,market_id,markets(name_ar,name_en,currency,timezone),reference,status,revision,submitted_at,description,notes,contact_name,contact_phone,contact_email,services(name_ar,name_en),request_locations(kind,city,city_id,postal_code,building,unit,district,address,floor,elevator,access_notes),request_items(description,quantity,notes),request_additional_services(additional_services(code,name_ar,name_en)),quotes(id,reference,quote_versions(id,version,status,final_subtotal_minor,vat_amount_minor,total_minor,currency,expires_at,distance_km,distance_source))',
       )
       .eq('organization_id', organizationId)
       .eq('id', requestId)
@@ -58,6 +66,7 @@ export async function salesRequestDetails(requestId: string) {
     client
       .from('vehicle_pricing_classes')
       .select('id,code,name_ar,name_en')
+      .eq('market_id', context.data.market_id)
       .eq('organization_id', organizationId)
       .eq('active', true)
       .order('code'),
@@ -130,7 +139,7 @@ export async function customerQuotes() {
   const { data, error } = await client
     .from('quotes')
     .select(
-      'id,reference,request_id,requests(reference,services(name_ar,name_en)),quote_versions(id,version,status,final_subtotal_minor,vat_amount_minor,total_minor,currency,expires_at,sent_at)',
+      'id,reference,request_id,requests(reference,markets(name_ar,name_en,timezone),services(name_ar,name_en)),quote_versions(id,version,status,final_subtotal_minor,vat_amount_minor,total_minor,currency,expires_at,sent_at)',
     )
     .order('created_at', { ascending: false })
     .limit(100);
@@ -148,7 +157,7 @@ export async function customerQuoteDetails(quoteVersionId: string, recordView = 
   const { data, error } = await client
     .from('quote_versions')
     .select(
-      'id,version,status,currency,final_subtotal_minor,vat_rate_bps,vat_amount_minor,total_minor,expires_at,sent_at,viewed_at,accepted_at,rejected_at,distance_km,distance_source,quotes(reference,request_id,requests(reference,services(name_ar,name_en),request_locations(kind,city))),quote_items(component_code,label_ar,label_en,quantity,unit_amount_minor,total_amount_minor,position),orders(id,reference,accepted_at)',
+      'id,version,status,currency,final_subtotal_minor,vat_rate_bps,vat_amount_minor,total_minor,expires_at,sent_at,viewed_at,accepted_at,rejected_at,distance_km,distance_source,quotes(reference,request_id,requests(reference,markets(name_ar,name_en,timezone),services(name_ar,name_en),request_locations(kind,city))),quote_items(component_code,label_ar,label_en,quantity,unit_amount_minor,total_amount_minor,position),orders!orders_parent_market_fk(id,reference,accepted_at)',
     )
     .eq('id', quoteVersionId)
     .maybeSingle();

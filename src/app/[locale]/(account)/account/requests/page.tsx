@@ -1,3 +1,4 @@
+import { availableMarkets } from '@/infrastructure/markets/service';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
@@ -22,7 +23,7 @@ export default async function Page({
   const { data, error } = await client
     .from('requests')
     .select(
-      'id,status,reference,created_at,preferred_date,services(name_ar,name_en),request_locations(kind,city)',
+      'id,markets(name_ar,name_en,timezone,currency),status,reference,created_at,preferred_date,services(name_ar,name_en),request_locations(kind,city)',
     )
     .in(
       'customer_id',
@@ -36,7 +37,7 @@ export default async function Page({
     <div className="container page">
       <div className="wizard-top">
         <h1>{t.myRequests}</h1>
-        <StartRequest locale={locale} />
+        <StartRequest locale={locale} markets={await availableMarkets()} />
       </div>
       {!data.length ? (
         <EmptyState title={t.empty}>{t.emptyBody}</EmptyState>
@@ -79,7 +80,7 @@ export default async function Page({
                   {t.created}:{' '}
                   <time dateTime={r.created_at}>
                     {new Intl.DateTimeFormat(locale, {
-                      timeZone: 'Asia/Riyadh',
+                      timeZone: r.markets.timezone,
                       dateStyle: 'medium',
                     }).format(new Date(r.created_at))}
                   </time>

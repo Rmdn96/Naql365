@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { createClient } from '@supabase/supabase-js';
 import { test, expect, testIdentity } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
-import { riyadhDate } from '../../src/domain/requests/intake';
+import { marketDate } from '../../src/domain/markets/model';
 test('customer persists a bilingual request through private image, review, submit and history', async ({
   page,
   baseURL,
@@ -82,7 +82,7 @@ test('customer persists a bilingual request through private image, review, submi
     .check();
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.getByRole('button', { name: t.next, exact: true }).click();
-  await page.locator('#date').fill(riyadhDate(new Date(Date.now() + 86400000)));
+  await page.locator('#date').fill(marketDate(new Date(Date.now() + 86400000), 'Asia/Riyadh'));
   await page.locator('#time-window').selectOption('morning');
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.getByRole('button', { name: t.next, exact: true }).click();
