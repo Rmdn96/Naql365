@@ -6,31 +6,31 @@ create function public.market_reject(command text) returns void language plpgsql
 end $$;
 insert into auth.users(id,email,email_confirmed_at) values('13500000-0000-4000-8000-000000000001','staff@market.invalid',now()),('13500000-0000-4000-8000-000000000002','customer@market.invalid',now()),('13500000-0000-4000-8000-000000000003','peer@market.invalid',now());
 insert into public.organizations(id,name) values('23500000-0000-4000-8000-000000000001','Market fixture');
-insert into public.organization_memberships(organization_id,profile_id,member_type) select '23500000-0000-4000-8000-000000000001',id,case when id='13500000-0000-4000-8000-000000000001' then 'staff' else 'customer' end from auth.users;
-insert into public.user_roles(organization_id,profile_id,role_id) select m.organization_id,m.profile_id,r.id from public.organization_memberships m join public.roles r on r.code=case when m.member_type='staff' then 'SUPER_ADMIN' else 'CUSTOMER' end;
-insert into public.customers(organization_id,profile_id) select organization_id,profile_id from public.organization_memberships where member_type='customer';
-insert into private.customer_enrollment values(true,'23500000-0000-4000-8000-000000000001');
+insert into public.organization_memberships(organization_id,profile_id,member_type) select '23500000-0000-4000-8000-000000000001',id,case when id='13500000-0000-4000-8000-000000000001' then 'staff' else 'customer' end from auth.users where id::text like '13500000%';
+insert into public.user_roles(organization_id,profile_id,role_id) select m.organization_id,m.profile_id,r.id from public.organization_memberships m join public.roles r on r.code=case when m.member_type='staff' then 'SUPER_ADMIN' else 'CUSTOMER' end where m.organization_id='23500000-0000-4000-8000-000000000001';
+insert into public.customers(organization_id,profile_id) select organization_id,profile_id from public.organization_memberships where member_type='customer' and organization_id='23500000-0000-4000-8000-000000000001';
+insert into private.customer_enrollment values(true,'23500000-0000-4000-8000-000000000001') on conflict(singleton) do update set organization_id=excluded.organization_id;
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values
  ('33500000-0000-4000-8000-000000000001','23500000-0000-4000-8000-000000000001','SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966'),
  ('33500000-0000-4000-8000-000000000002','23500000-0000-4000-8000-000000000001','EG','مصر','Egypt',true,'EGP','Africa/Cairo','+20');
-insert into public.market_regions(id,organization_id,market_id,code,name_ar,name_en,administrative_type) select id,organization_id,id,'fixture','اختبار','Test','region' from public.markets;
-insert into public.market_cities(id,organization_id,market_id,region_id,code,name_ar,name_en) select id,organization_id,id,id,'same-name','مدينة','Same name' from public.markets;
+insert into public.market_regions(id,organization_id,market_id,code,name_ar,name_en,administrative_type) select id,organization_id,id,'fixture','اختبار','Test','region' from (select * from public.markets where organization_id::text like '23500000%') fixture_markets;
+insert into public.market_cities(id,organization_id,market_id,region_id,code,name_ar,name_en) select id,organization_id,id,id,'same-name','مدينة','Same name' from (select * from public.markets where organization_id::text like '23500000%') fixture_markets;
 insert into public.services(id,organization_id,code,name_ar,name_en,active) values('43500000-0000-4000-8000-000000000001','23500000-0000-4000-8000-000000000001','goods','بضائع','Goods',true);
-insert into public.market_services select organization_id,id,'43500000-0000-4000-8000-000000000001',true from public.markets;
-insert into public.service_areas(organization_id,market_id,service_id,city_id,active) select organization_id,id,'43500000-0000-4000-8000-000000000001',id,true from public.markets;
-insert into public.vehicle_pricing_classes(id,organization_id,market_id,code,name_ar,name_en,active) select id,organization_id,id,'truck','شاحنة','Truck',true from public.markets;
-insert into public.pricing_settings(organization_id,market_id,currency) select organization_id,id,currency from public.markets;
+insert into public.market_services select organization_id,id,'43500000-0000-4000-8000-000000000001',true from (select * from public.markets where organization_id::text like '23500000%') fixture_markets;
+insert into public.service_areas(organization_id,market_id,service_id,city_id,active) select organization_id,id,'43500000-0000-4000-8000-000000000001',id,true from (select * from public.markets where organization_id::text like '23500000%') fixture_markets;
+insert into public.vehicle_pricing_classes(id,organization_id,market_id,code,name_ar,name_en,active) select id,organization_id,id,'truck','شاحنة','Truck',true from (select * from public.markets where organization_id::text like '23500000%') fixture_markets;
+insert into public.pricing_settings(organization_id,market_id,currency) select organization_id,id,currency from (select * from public.markets where organization_id::text like '23500000%') fixture_markets;
 insert into public.market_tax_versions(id,organization_id,market_id,code,version,rate_bps,label_ar,label_en,active,effective_from,configuration_kind)
- select id,organization_id,id,'synthetic-only',1,case country_code when 'SA' then 1000 else 2000 end,'ضريبة اختبار','TEST TAX',true,now()-interval '1 day','STAGING_TEST' from public.markets;
+ select id,organization_id,id,'synthetic-only',1,case country_code when 'SA' then 1000 else 2000 end,'ضريبة اختبار','TEST TAX',true,now()-interval '1 day','STAGING_TEST' from (select * from public.markets where organization_id::text like '23500000%') fixture_markets;
 insert into public.pricing_rules(organization_id,market_id,code,version,component_code,calculation_method,amount_minor,active,label_ar,label_en)
- select organization_id,id,'test-distance',1,'DISTANCE','PER_KM',case country_code when 'SA' then 100 else 200 end,true,'مسافة اختبار','TEST distance' from public.markets;
+ select organization_id,id,'test-distance',1,'DISTANCE','PER_KM',case country_code when 'SA' then 100 else 200 end,true,'مسافة اختبار','TEST distance' from (select * from public.markets where organization_id::text like '23500000%') fixture_markets;
 create temporary table market_results(market uuid primary key,request uuid,quote uuid,order_id uuid,job uuid,trip uuid,driver uuid,vehicle uuid);
 grant all on market_results to authenticated;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','13500000-0000-4000-8000-000000000002',true);
 do $$ declare m record; other uuid; req uuid; result jsonb; payload jsonb; eval uuid; q uuid; ord uuid; job uuid; trip uuid; driver uuid; vehicle uuid;
 begin
- for m in select * from public.markets order by country_code loop
+ for m in select * from (select * from public.markets where organization_id::text like '23500000%') fixture_markets order by country_code loop
   perform set_config('request.jwt.claim.sub','13500000-0000-4000-8000-000000000002',true);
   -- Context is explicit; same identity can transact in both markets.
   result=public.create_customer_request(gen_random_uuid(),m.id); req=(result->>'id')::uuid;
@@ -47,7 +47,7 @@ begin
   perform public.market_reject(format('update public.requests set market_id=%L where id=%L',other,req));
   update public.markets set currency='USD' where id=m.id;
   perform public.market_assert(not found,'Customer market update affects zero rows');
-  perform public.market_assert((select currency=m.currency from public.markets where id=m.id),'Customer cannot change currency');
+  perform public.market_assert((select currency=m.currency from (select * from public.markets where organization_id::text like '23500000%') fixture_markets where id=m.id),'Customer cannot change currency');
   perform public.market_reject(format('select public.calculate_preliminary_price(%L,10,null,%L,1,%L)',req,m.id,gen_random_uuid()));
   perform set_config('request.jwt.claim.sub','13500000-0000-4000-8000-000000000001',true);
   perform public.market_reject(format('select public.calculate_preliminary_price(%L,10,null,%L,1,%L)',req,other,gen_random_uuid()));
@@ -76,7 +76,7 @@ do $$ declare a record; b record; begin
   perform public.market_reject(format('select public.operations_command(''23500000-0000-4000-8000-000000000001'',''assign'',%L,1,%L,%L)',a.trip,gen_random_uuid(),jsonb_build_object('driverId',b.driver,'vehicleId',a.vehicle)));
   perform public.market_reject(format('select public.operations_command(''23500000-0000-4000-8000-000000000001'',''assign'',%L,1,%L,%L)',a.trip,gen_random_uuid(),jsonb_build_object('driverId',a.driver,'vehicleId',b.vehicle)));
   perform public.operations_command('23500000-0000-4000-8000-000000000001','assign',a.trip,1,gen_random_uuid(),jsonb_build_object('driverId',a.driver,'vehicleId',a.vehicle));
-  perform public.market_assert((select market_id=a.market and currency=(select currency from public.markets where id=a.market) and tax_version_id=a.market from public.orders where id=a.order_id),'accepted snapshot retained');
+  perform public.market_assert((select market_id=a.market and currency=(select currency from (select * from public.markets where organization_id::text like '23500000%') fixture_markets where id=a.market) and tax_version_id=a.market from public.orders where id=a.order_id),'accepted snapshot retained');
  end loop;
  perform set_config('request.jwt.claim.sub','13500000-0000-4000-8000-000000000002',true);
  perform public.market_assert((select count(*)=2 from public.orders),'same customer sees both markets');

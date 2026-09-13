@@ -13,11 +13,11 @@ end $$;
 insert into public.organizations(id,name) values('a0000000-0000-4000-8000-000000000001','Intake fixture A'),('a0000000-0000-4000-8000-000000000002','Intake fixture B');
 -- Explicit synthetic catalogue for this rollback-only fixture; no production coverage.
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code)
- select md5(id::text||'SA')::uuid,id,'SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966' from public.organizations;
+ select md5(id::text||'SA')::uuid,id,'SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966' from public.organizations where id::text like 'a0000000%';
 insert into public.market_regions(id,organization_id,market_id,code,name_ar,name_en,administrative_type)
- select md5(id::text||'region')::uuid,organization_id,id,'fixture','منطقة اختبار','Fixture region','region' from public.markets;
+ select md5(id::text||'region')::uuid,organization_id,id,'fixture','منطقة اختبار','Fixture region','region' from (select * from public.markets where organization_id::text like 'a0000000%') fixture_markets;
 insert into public.market_cities(id,organization_id,market_id,region_id,code,name_ar,name_en)
- select md5(m.id::text||c.code)::uuid,m.organization_id,m.id,r.id,c.code,c.name,c.name from public.markets m join public.market_regions r on r.market_id=m.id cross join (values('Riyadh','Riyadh'),('Jeddah','Jeddah')) c(code,name);
+ select md5(m.id::text||c.code)::uuid,m.organization_id,m.id,r.id,c.code,c.name,c.name from (select * from public.markets where organization_id::text like 'a0000000%') m join public.market_regions r on r.market_id=m.id cross join (values('Riyadh','Riyadh'),('Jeddah','Jeddah')) c(code,name);
 
 insert into private.customer_enrollment values(true,'a0000000-0000-4000-8000-000000000001') on conflict(singleton) do update set organization_id=excluded.organization_id;
 insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data) values
@@ -28,8 +28,8 @@ insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data) values
 insert into public.services(id,organization_id,code,name_ar,name_en,active,property_required) values
  ('c0000000-0000-4000-8000-000000000001','a0000000-0000-4000-8000-000000000001','furniture','نقل أثاث','Furniture',true,true),
  ('c0000000-0000-4000-8000-000000000002','a0000000-0000-4000-8000-000000000002','goods','بضائع','Goods',true,false);
-insert into public.market_services(organization_id,market_id,service_id,active) select s.organization_id,m.id,s.id,s.active from public.services s join public.markets m on m.organization_id=s.organization_id;
-insert into public.service_areas(organization_id,market_id,service_id,city_id,active) select s.organization_id,s.market_id,s.service_id,c.id,true from public.market_services s join public.market_cities c on c.market_id=s.market_id;
+insert into public.market_services(organization_id,market_id,service_id,active) select s.organization_id,m.id,s.id,s.active from public.services s join (select * from public.markets where organization_id::text like 'a0000000%') m on m.organization_id=s.organization_id;
+insert into public.service_areas(organization_id,market_id,service_id,city_id,active) select s.organization_id,s.market_id,s.service_id,c.id,true from (select * from public.market_services where organization_id::text like 'a0000000%') s join public.market_cities c on c.market_id=s.market_id;
 
 insert into public.additional_services(id,organization_id,code,name_ar,name_en,active) values
  ('c0000000-0000-4000-8000-000000000003','a0000000-0000-4000-8000-000000000001','packing','تغليف','Packing',true);

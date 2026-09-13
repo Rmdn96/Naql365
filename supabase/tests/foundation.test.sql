@@ -16,11 +16,11 @@ select public.test_assert((select count(*)=0 from public.organization_membership
 insert into public.organizations(id,name) values ('20000000-0000-4000-8000-000000000001','Test A'),('20000000-0000-4000-8000-000000000002','Test B');
 -- Explicit synthetic catalogue for this rollback-only fixture; no production coverage.
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code)
- select md5(id::text||'SA')::uuid,id,'SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966' from public.organizations;
+ select md5(id::text||'SA')::uuid,id,'SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966' from public.organizations where id::text like '20000000%';
 insert into public.market_regions(id,organization_id,market_id,code,name_ar,name_en,administrative_type)
- select md5(id::text||'region')::uuid,organization_id,id,'fixture','منطقة اختبار','Fixture region','region' from public.markets;
+ select md5(id::text||'region')::uuid,organization_id,id,'fixture','منطقة اختبار','Fixture region','region' from (select * from public.markets where organization_id::text like '20000000%') fixture_markets;
 insert into public.market_cities(id,organization_id,market_id,region_id,code,name_ar,name_en)
- select md5(m.id::text||c.code)::uuid,m.organization_id,m.id,r.id,c.code,c.name,c.name from public.markets m join public.market_regions r on r.market_id=m.id cross join (values('Riyadh','Riyadh'),('Jeddah','Jeddah')) c(code,name);
+ select md5(m.id::text||c.code)::uuid,m.organization_id,m.id,r.id,c.code,c.name,c.name from (select * from public.markets where organization_id::text like '20000000%') m join public.market_regions r on r.market_id=m.id cross join (values('Riyadh','Riyadh'),('Jeddah','Jeddah')) c(code,name);
 
 insert into public.organization_memberships(organization_id,profile_id,member_type) values
  ('20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001','customer'),
