@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
   public: {
     Tables: {
       additional_services: {
@@ -63,6 +58,7 @@ export type Database = {
           ended_at: string | null
           execution_active: boolean
           id: string
+          market_id: string
           organization_id: string
           reason: string
           team_id: string | null
@@ -77,6 +73,7 @@ export type Database = {
           ended_at?: string | null
           execution_active?: boolean
           id?: string
+          market_id: string
           organization_id: string
           reason?: string
           team_id?: string | null
@@ -91,6 +88,7 @@ export type Database = {
           ended_at?: string | null
           execution_active?: boolean
           id?: string
+          market_id?: string
           organization_id?: string
           reason?: string
           team_id?: string | null
@@ -107,10 +105,17 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "assignments_organization_id_driver_id_fkey"
-            columns: ["organization_id", "driver_id"]
+            foreignKeyName: "assignments_driver_id_market_fk"
+            columns: ["organization_id", "market_id", "driver_id"]
             isOneToOne: false
             referencedRelation: "drivers"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "assignments_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
             referencedColumns: ["organization_id", "id"]
           },
           {
@@ -121,25 +126,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "assignments_organization_id_team_id_fkey"
-            columns: ["organization_id", "team_id"]
-            isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["organization_id", "id"]
-          },
-          {
-            foreignKeyName: "assignments_organization_id_trip_id_fkey"
-            columns: ["organization_id", "trip_id"]
+            foreignKeyName: "assignments_parent_market_fk"
+            columns: ["organization_id", "market_id", "trip_id"]
             isOneToOne: false
             referencedRelation: "trips"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
           {
-            foreignKeyName: "assignments_organization_id_vehicle_id_fkey"
-            columns: ["organization_id", "vehicle_id"]
+            foreignKeyName: "assignments_team_id_market_fk"
+            columns: ["organization_id", "market_id", "team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "assignments_vehicle_id_market_fk"
+            columns: ["organization_id", "market_id", "vehicle_id"]
             isOneToOne: false
             referencedRelation: "vehicles"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -201,6 +206,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          market_id: string
           name: string
           organization_id: string
           updated_at: string
@@ -208,6 +214,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          market_id: string
           name: string
           organization_id: string
           updated_at?: string
@@ -215,11 +222,19 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          market_id?: string
           name?: string
           organization_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "branches_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "branches_organization_id_fkey"
             columns: ["organization_id"]
@@ -273,6 +288,7 @@ export type Database = {
           created_at: string
           distance_km: number
           id: string
+          market_id: string
           organization_id: string
           request_id: string
           revision: number
@@ -286,6 +302,7 @@ export type Database = {
           created_at?: string
           distance_km: number
           id?: string
+          market_id: string
           organization_id: string
           request_id: string
           revision: number
@@ -299,6 +316,7 @@ export type Database = {
           created_at?: string
           distance_km?: number
           id?: string
+          market_id?: string
           organization_id?: string
           request_id?: string
           revision?: number
@@ -310,18 +328,18 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "distance_snapshots_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "distance_snapshots_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "distance_snapshots_organization_id_request_id_fkey"
-            columns: ["organization_id", "request_id"]
-            isOneToOne: false
-            referencedRelation: "requests"
-            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "distance_snapshots_organization_id_verified_by_fkey"
@@ -330,40 +348,67 @@ export type Database = {
             referencedRelation: "organization_memberships"
             referencedColumns: ["organization_id", "profile_id"]
           },
+          {
+            foreignKeyName: "distance_snapshots_parent_market_fk"
+            columns: ["organization_id", "market_id", "request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
         ]
       }
       drivers: {
         Row: {
           active: boolean
+          branch_id: string | null
           created_at: string
           display_name: string | null
           driver_type: string
           id: string
+          market_id: string
           organization_id: string
           profile_id: string | null
           updated_at: string
         }
         Insert: {
           active?: boolean
+          branch_id?: string | null
           created_at?: string
           display_name?: string | null
           driver_type?: string
           id?: string
+          market_id: string
           organization_id: string
           profile_id?: string | null
           updated_at?: string
         }
         Update: {
           active?: boolean
+          branch_id?: string | null
           created_at?: string
           display_name?: string | null
           driver_type?: string
           id?: string
+          market_id?: string
           organization_id?: string
           profile_id?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "drivers_branch_id_market_fk"
+            columns: ["organization_id", "market_id", "branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "drivers_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "drivers_organization_id_fkey"
             columns: ["organization_id"]
@@ -517,6 +562,7 @@ export type Database = {
           completed_at: string | null
           created_at: string
           id: string
+          market_id: string
           order_id: string
           organization_id: string
           reference: string | null
@@ -528,6 +574,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           id?: string
+          market_id: string
           order_id: string
           organization_id: string
           reference?: string | null
@@ -539,6 +586,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           id?: string
+          market_id?: string
           order_id?: string
           organization_id?: string
           reference?: string | null
@@ -548,6 +596,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "jobs_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "jobs_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
@@ -555,11 +610,232 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "jobs_organization_id_order_id_fkey"
-            columns: ["organization_id", "order_id"]
-            isOneToOne: true
+            foreignKeyName: "jobs_parent_market_fk"
+            columns: ["organization_id", "market_id", "order_id"]
+            isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+        ]
+      }
+      market_cities: {
+        Row: {
+          code: string
+          id: string
+          market_id: string
+          name_ar: string
+          name_en: string
+          organization_id: string
+          region_id: string
+        }
+        Insert: {
+          code: string
+          id?: string
+          market_id: string
+          name_ar: string
+          name_en: string
+          organization_id: string
+          region_id: string
+        }
+        Update: {
+          code?: string
+          id?: string
+          market_id?: string
+          name_ar?: string
+          name_en?: string
+          organization_id?: string
+          region_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_cities_organization_id_market_id_region_id_fkey"
+            columns: ["organization_id", "market_id", "region_id"]
+            isOneToOne: false
+            referencedRelation: "market_regions"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+        ]
+      }
+      market_regions: {
+        Row: {
+          administrative_type: string
+          code: string
+          id: string
+          market_id: string
+          name_ar: string
+          name_en: string
+          organization_id: string
+        }
+        Insert: {
+          administrative_type: string
+          code: string
+          id?: string
+          market_id: string
+          name_ar: string
+          name_en: string
+          organization_id: string
+        }
+        Update: {
+          administrative_type?: string
+          code?: string
+          id?: string
+          market_id?: string
+          name_ar?: string
+          name_en?: string
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_regions_organization_id_market_id_fkey"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
             referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      market_services: {
+        Row: {
+          active: boolean
+          market_id: string
+          organization_id: string
+          service_id: string
+        }
+        Insert: {
+          active?: boolean
+          market_id: string
+          organization_id: string
+          service_id: string
+        }
+        Update: {
+          active?: boolean
+          market_id?: string
+          organization_id?: string
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_services_organization_id_market_id_fkey"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "market_services_organization_id_service_id_fkey"
+            columns: ["organization_id", "service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      market_tax_versions: {
+        Row: {
+          active: boolean
+          code: string
+          configuration_kind: string
+          created_at: string
+          effective_from: string
+          effective_until: string | null
+          id: string
+          label_ar: string
+          label_en: string
+          market_id: string
+          organization_id: string
+          rate_bps: number
+          version: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          configuration_kind: string
+          created_at?: string
+          effective_from: string
+          effective_until?: string | null
+          id?: string
+          label_ar: string
+          label_en: string
+          market_id: string
+          organization_id: string
+          rate_bps: number
+          version: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          configuration_kind?: string
+          created_at?: string
+          effective_from?: string
+          effective_until?: string | null
+          id?: string
+          label_ar?: string
+          label_en?: string
+          market_id?: string
+          organization_id?: string
+          rate_bps?: number
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_tax_versions_organization_id_market_id_fkey"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
+      markets: {
+        Row: {
+          active: boolean
+          country_code: string
+          created_at: string
+          currency: string
+          default_locale: string
+          id: string
+          name_ar: string
+          name_en: string
+          organization_id: string
+          phone_country_code: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          country_code: string
+          created_at?: string
+          currency: string
+          default_locale?: string
+          id?: string
+          name_ar: string
+          name_en: string
+          organization_id: string
+          phone_country_code: string
+          timezone: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          country_code?: string
+          created_at?: string
+          currency?: string
+          default_locale?: string
+          id?: string
+          name_ar?: string
+          name_en?: string
+          organization_id?: string
+          phone_country_code?: string
+          timezone?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "markets_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -664,6 +940,7 @@ export type Database = {
           distance_source: string | null
           id: string
           idempotency_key: string
+          market_id: string
           operational_completed_at: string | null
           operational_status: string
           organization_id: string
@@ -671,6 +948,11 @@ export type Database = {
           reference: string | null
           request_id: string | null
           subtotal_minor: number
+          tax_code: string | null
+          tax_label_ar: string | null
+          tax_label_en: string | null
+          tax_rate_bps: number | null
+          tax_version_id: string | null
           total_minor: number
           updated_at: string
           vat_amount_minor: number
@@ -679,12 +961,13 @@ export type Database = {
           accepted_at?: string | null
           accepted_quote_version_id: string
           created_at?: string
-          currency?: string
+          currency: string
           customer_id?: string | null
           distance_km?: number | null
           distance_source?: string | null
           id?: string
           idempotency_key: string
+          market_id: string
           operational_completed_at?: string | null
           operational_status?: string
           organization_id: string
@@ -692,6 +975,11 @@ export type Database = {
           reference?: string | null
           request_id?: string | null
           subtotal_minor?: number
+          tax_code?: string | null
+          tax_label_ar?: string | null
+          tax_label_en?: string | null
+          tax_rate_bps?: number | null
+          tax_version_id?: string | null
           total_minor?: number
           updated_at?: string
           vat_amount_minor?: number
@@ -706,6 +994,7 @@ export type Database = {
           distance_source?: string | null
           id?: string
           idempotency_key?: string
+          market_id?: string
           operational_completed_at?: string | null
           operational_status?: string
           organization_id?: string
@@ -713,6 +1002,11 @@ export type Database = {
           reference?: string | null
           request_id?: string | null
           subtotal_minor?: number
+          tax_code?: string | null
+          tax_label_ar?: string | null
+          tax_label_en?: string | null
+          tax_rate_bps?: number | null
+          tax_version_id?: string | null
           total_minor?: number
           updated_at?: string
           vat_amount_minor?: number
@@ -726,11 +1020,25 @@ export type Database = {
             referencedColumns: ["organization_id", "id"]
           },
           {
+            foreignKeyName: "orders_market_currency_fk"
+            columns: ["organization_id", "market_id", "currency"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id", "currency"]
+          },
+          {
             foreignKeyName: "orders_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_organization_id_market_id_tax_version_id_fkey"
+            columns: ["organization_id", "market_id", "tax_version_id"]
+            isOneToOne: false
+            referencedRelation: "market_tax_versions"
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
           {
             foreignKeyName: "orders_organization_id_quote_id_accepted_quote_version_id_fkey"
@@ -744,11 +1052,29 @@ export type Database = {
             referencedColumns: ["organization_id", "quote_id", "id"]
           },
           {
-            foreignKeyName: "orders_request_fk"
-            columns: ["organization_id", "request_id"]
+            foreignKeyName: "orders_parent_market_fk"
+            columns: [
+              "organization_id",
+              "market_id",
+              "accepted_quote_version_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "quote_versions"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "orders_quote_id_market_fk"
+            columns: ["organization_id", "market_id", "quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "orders_request_id_market_fk"
+            columns: ["organization_id", "market_id", "request_id"]
             isOneToOne: false
             referencedRelation: "requests"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -932,6 +1258,7 @@ export type Database = {
           id: string
           label_ar: string
           label_en: string
+          market_id: string
           organization_id: string
           position: number
           pricing_rule_id: string
@@ -947,6 +1274,7 @@ export type Database = {
           id?: string
           label_ar: string
           label_en: string
+          market_id: string
           organization_id: string
           position: number
           pricing_rule_id: string
@@ -962,6 +1290,7 @@ export type Database = {
           id?: string
           label_ar?: string
           label_en?: string
+          market_id?: string
           organization_id?: string
           position?: number
           pricing_rule_id?: string
@@ -972,10 +1301,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "pricing_evaluation_components_organization_id_evaluation_i_fkey"
-            columns: ["organization_id", "evaluation_id"]
+            foreignKeyName: "pricing_evaluation_components_market_fk"
+            columns: ["organization_id", "market_id"]
             isOneToOne: false
-            referencedRelation: "pricing_evaluations"
+            referencedRelation: "markets"
             referencedColumns: ["organization_id", "id"]
           },
           {
@@ -986,11 +1315,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "pricing_evaluation_components_organization_id_pricing_rule_fkey"
-            columns: ["organization_id", "pricing_rule_id"]
+            foreignKeyName: "pricing_evaluation_components_parent_market_fk"
+            columns: ["organization_id", "market_id", "evaluation_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_evaluations"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "pricing_evaluation_components_pricing_rule_id_market_fk"
+            columns: ["organization_id", "market_id", "pricing_rule_id"]
             isOneToOne: false
             referencedRelation: "pricing_rules"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -1003,12 +1339,14 @@ export type Database = {
           currency: string
           distance_snapshot_id: string
           id: string
+          market_id: string
           mutation_id: string
           organization_id: string
           request_id: string
           request_revision: number
           route_scope: string
           status: string
+          tax_version_id: string | null
           vehicle_class_id: string
           worker_count: number
         }
@@ -1017,15 +1355,17 @@ export type Database = {
           calculated_by: string
           calculated_subtotal_minor: number
           created_at?: string
-          currency?: string
+          currency: string
           distance_snapshot_id: string
           id?: string
+          market_id: string
           mutation_id: string
           organization_id: string
           request_id: string
           request_revision: number
           route_scope: string
           status?: string
+          tax_version_id?: string | null
           vehicle_class_id: string
           worker_count: number
         }
@@ -1037,29 +1377,38 @@ export type Database = {
           currency?: string
           distance_snapshot_id?: string
           id?: string
+          market_id?: string
           mutation_id?: string
           organization_id?: string
           request_id?: string
           request_revision?: number
           route_scope?: string
           status?: string
+          tax_version_id?: string | null
           vehicle_class_id?: string
           worker_count?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "pricing_evaluations_distance_snapshot_id_market_fk"
+            columns: ["organization_id", "market_id", "distance_snapshot_id"]
+            isOneToOne: false
+            referencedRelation: "distance_snapshots"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "pricing_evaluations_market_currency_fk"
+            columns: ["organization_id", "market_id", "currency"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id", "currency"]
+          },
           {
             foreignKeyName: "pricing_evaluations_organization_id_calculated_by_fkey"
             columns: ["organization_id", "calculated_by"]
             isOneToOne: false
             referencedRelation: "organization_memberships"
             referencedColumns: ["organization_id", "profile_id"]
-          },
-          {
-            foreignKeyName: "pricing_evaluations_organization_id_distance_snapshot_id_fkey"
-            columns: ["organization_id", "distance_snapshot_id"]
-            isOneToOne: false
-            referencedRelation: "distance_snapshots"
-            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "pricing_evaluations_organization_id_fkey"
@@ -1069,18 +1418,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "pricing_evaluations_organization_id_request_id_fkey"
-            columns: ["organization_id", "request_id"]
+            foreignKeyName: "pricing_evaluations_organization_id_market_id_tax_version__fkey"
+            columns: ["organization_id", "market_id", "tax_version_id"]
             isOneToOne: false
-            referencedRelation: "requests"
-            referencedColumns: ["organization_id", "id"]
+            referencedRelation: "market_tax_versions"
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
           {
-            foreignKeyName: "pricing_evaluations_organization_id_vehicle_class_id_fkey"
-            columns: ["organization_id", "vehicle_class_id"]
+            foreignKeyName: "pricing_evaluations_parent_market_fk"
+            columns: ["organization_id", "market_id", "request_id"]
+            isOneToOne: false
+            referencedRelation: "requests"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "pricing_evaluations_vehicle_class_id_market_fk"
+            columns: ["organization_id", "market_id", "vehicle_class_id"]
             isOneToOne: false
             referencedRelation: "vehicle_pricing_classes"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -1097,6 +1453,7 @@ export type Database = {
           id: string
           label_ar: string
           label_en: string
+          market_id: string
           organization_id: string
           selector_code: string | null
           updated_at: string
@@ -1114,6 +1471,7 @@ export type Database = {
           id?: string
           label_ar: string
           label_en: string
+          market_id: string
           organization_id: string
           selector_code?: string | null
           updated_at?: string
@@ -1131,12 +1489,20 @@ export type Database = {
           id?: string
           label_ar?: string
           label_en?: string
+          market_id?: string
           organization_id?: string
           selector_code?: string | null
           updated_at?: string
           version?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "pricing_rules_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "pricing_rules_organization_id_fkey"
             columns: ["organization_id"]
@@ -1150,29 +1516,36 @@ export type Database = {
         Row: {
           created_at: string
           currency: string
+          market_id: string
           organization_id: string
           updated_at: string
-          vat_rate_bps: number
         }
         Insert: {
           created_at?: string
-          currency?: string
+          currency: string
+          market_id: string
           organization_id: string
           updated_at?: string
-          vat_rate_bps: number
         }
         Update: {
           created_at?: string
           currency?: string
+          market_id?: string
           organization_id?: string
           updated_at?: string
-          vat_rate_bps?: number
         }
         Relationships: [
           {
+            foreignKeyName: "pricing_settings_market_currency_fk"
+            columns: ["organization_id", "market_id", "currency"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id", "currency"]
+          },
+          {
             foreignKeyName: "pricing_settings_organization_id_fkey"
             columns: ["organization_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
@@ -1251,6 +1624,7 @@ export type Database = {
           id: string
           label_ar: string
           label_en: string
+          market_id: string
           organization_id: string
           position: number
           quantity: number
@@ -1265,6 +1639,7 @@ export type Database = {
           id?: string
           label_ar?: string
           label_en?: string
+          market_id: string
           organization_id: string
           position?: number
           quantity?: number
@@ -1279,6 +1654,7 @@ export type Database = {
           id?: string
           label_ar?: string
           label_en?: string
+          market_id?: string
           organization_id?: string
           position?: number
           quantity?: number
@@ -1289,6 +1665,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "quote_items_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "quote_items_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
@@ -1296,11 +1679,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "quote_items_organization_id_quote_version_id_fkey"
-            columns: ["organization_id", "quote_version_id"]
+            foreignKeyName: "quote_items_parent_market_fk"
+            columns: ["organization_id", "market_id", "quote_version_id"]
             isOneToOne: false
             referencedRelation: "quote_versions"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -1312,6 +1695,7 @@ export type Database = {
           created_by: string
           evaluation_id: string
           manual_adjustment_minor: number
+          market_id: string
           organization_id: string
           quote_version_id: string
           sent_by: string | null
@@ -1323,6 +1707,7 @@ export type Database = {
           created_by: string
           evaluation_id: string
           manual_adjustment_minor: number
+          market_id: string
           organization_id: string
           quote_version_id: string
           sent_by?: string | null
@@ -1334,24 +1719,32 @@ export type Database = {
           created_by?: string
           evaluation_id?: string
           manual_adjustment_minor?: number
+          market_id?: string
           organization_id?: string
           quote_version_id?: string
           sent_by?: string | null
         }
         Relationships: [
           {
+            foreignKeyName: "quote_pricing_details_evaluation_id_market_fk"
+            columns: ["organization_id", "market_id", "evaluation_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_evaluations"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "quote_pricing_details_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "quote_pricing_details_organization_id_created_by_fkey"
             columns: ["organization_id", "created_by"]
             isOneToOne: false
             referencedRelation: "organization_memberships"
             referencedColumns: ["organization_id", "profile_id"]
-          },
-          {
-            foreignKeyName: "quote_pricing_details_organization_id_evaluation_id_fkey"
-            columns: ["organization_id", "evaluation_id"]
-            isOneToOne: true
-            referencedRelation: "pricing_evaluations"
-            referencedColumns: ["organization_id", "id"]
           },
           {
             foreignKeyName: "quote_pricing_details_organization_id_fkey"
@@ -1361,18 +1754,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "quote_pricing_details_organization_id_quote_version_id_fkey"
-            columns: ["organization_id", "quote_version_id"]
-            isOneToOne: false
-            referencedRelation: "quote_versions"
-            referencedColumns: ["organization_id", "id"]
-          },
-          {
             foreignKeyName: "quote_pricing_details_organization_id_sent_by_fkey"
             columns: ["organization_id", "sent_by"]
             isOneToOne: false
             referencedRelation: "organization_memberships"
             referencedColumns: ["organization_id", "profile_id"]
+          },
+          {
+            foreignKeyName: "quote_pricing_details_parent_market_fk"
+            columns: ["organization_id", "market_id", "quote_version_id"]
+            isOneToOne: false
+            referencedRelation: "quote_versions"
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -1387,12 +1780,17 @@ export type Database = {
           expires_at: string | null
           final_subtotal_minor: number
           id: string
+          market_id: string
           organization_id: string
           quote_id: string
           rejected_at: string | null
           rejection_reason: string | null
           sent_at: string | null
           status: string
+          tax_code: string | null
+          tax_label_ar: string | null
+          tax_label_en: string | null
+          tax_version_id: string | null
           total_minor: number
           updated_at: string
           validity_seconds: number
@@ -1404,19 +1802,24 @@ export type Database = {
         Insert: {
           accepted_at?: string | null
           created_at?: string
-          currency?: string
+          currency: string
           distance_km?: number | null
           distance_source?: string | null
           distance_verified_at?: string | null
           expires_at?: string | null
           final_subtotal_minor?: number
           id?: string
+          market_id: string
           organization_id: string
           quote_id: string
           rejected_at?: string | null
           rejection_reason?: string | null
           sent_at?: string | null
           status?: string
+          tax_code?: string | null
+          tax_label_ar?: string | null
+          tax_label_en?: string | null
+          tax_version_id?: string | null
           total_minor?: number
           updated_at?: string
           validity_seconds?: number
@@ -1435,12 +1838,17 @@ export type Database = {
           expires_at?: string | null
           final_subtotal_minor?: number
           id?: string
+          market_id?: string
           organization_id?: string
           quote_id?: string
           rejected_at?: string | null
           rejection_reason?: string | null
           sent_at?: string | null
           status?: string
+          tax_code?: string | null
+          tax_label_ar?: string | null
+          tax_label_en?: string | null
+          tax_version_id?: string | null
           total_minor?: number
           updated_at?: string
           validity_seconds?: number
@@ -1451,6 +1859,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "quote_versions_market_currency_fk"
+            columns: ["organization_id", "market_id", "currency"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id", "currency"]
+          },
+          {
             foreignKeyName: "quote_versions_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
@@ -1458,18 +1873,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "quote_versions_organization_id_quote_id_fkey"
-            columns: ["organization_id", "quote_id"]
+            foreignKeyName: "quote_versions_organization_id_market_id_tax_version_id_fkey"
+            columns: ["organization_id", "market_id", "tax_version_id"]
+            isOneToOne: false
+            referencedRelation: "market_tax_versions"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "quote_versions_parent_market_fk"
+            columns: ["organization_id", "market_id", "quote_id"]
             isOneToOne: false
             referencedRelation: "quotes"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
       quotes: {
         Row: {
           created_at: string
+          currency: string
           id: string
+          market_id: string
           organization_id: string
           reference: string | null
           request_id: string
@@ -1477,7 +1901,9 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          currency: string
           id?: string
+          market_id: string
           organization_id: string
           reference?: string | null
           request_id: string
@@ -1485,7 +1911,9 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          currency?: string
           id?: string
+          market_id?: string
           organization_id?: string
           reference?: string | null
           request_id?: string
@@ -1500,31 +1928,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "quotes_organization_id_request_id_fkey"
-            columns: ["organization_id", "request_id"]
-            isOneToOne: true
+            foreignKeyName: "quotes_organization_id_market_id_currency_fkey"
+            columns: ["organization_id", "market_id", "currency"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id", "currency"]
+          },
+          {
+            foreignKeyName: "quotes_parent_market_fk"
+            columns: ["organization_id", "market_id", "request_id"]
+            isOneToOne: false
             referencedRelation: "requests"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
       request_additional_services: {
         Row: {
           additional_service_id: string
+          market_id: string
           organization_id: string
           request_id: string
         }
         Insert: {
           additional_service_id: string
+          market_id: string
           organization_id: string
           request_id: string
         }
         Update: {
           additional_service_id?: string
+          market_id?: string
           organization_id?: string
           request_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "request_additional_services_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "request_additional_services_organization_id_additional_ser_fkey"
             columns: ["organization_id", "additional_service_id"]
@@ -1533,11 +1978,11 @@ export type Database = {
             referencedColumns: ["organization_id", "id"]
           },
           {
-            foreignKeyName: "request_additional_services_organization_id_request_id_fkey"
-            columns: ["organization_id", "request_id"]
+            foreignKeyName: "request_additional_services_parent_market_fk"
+            columns: ["organization_id", "market_id", "request_id"]
             isOneToOne: false
             referencedRelation: "requests"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -1546,6 +1991,7 @@ export type Database = {
           created_at: string
           file_id: string
           id: string
+          market_id: string
           organization_id: string
           request_id: string
           updated_at: string
@@ -1554,6 +2000,7 @@ export type Database = {
           created_at?: string
           file_id: string
           id?: string
+          market_id: string
           organization_id: string
           request_id: string
           updated_at?: string
@@ -1562,11 +2009,19 @@ export type Database = {
           created_at?: string
           file_id?: string
           id?: string
+          market_id?: string
           organization_id?: string
           request_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "request_attachments_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "request_attachments_organization_id_file_id_fkey"
             columns: ["organization_id", "file_id"]
@@ -1582,11 +2037,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "request_attachments_organization_id_request_id_fkey"
-            columns: ["organization_id", "request_id"]
+            foreignKeyName: "request_attachments_parent_market_fk"
+            columns: ["organization_id", "market_id", "request_id"]
             isOneToOne: false
             referencedRelation: "requests"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -1595,6 +2050,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          market_id: string
           notes: string
           organization_id: string
           position: number
@@ -1606,6 +2062,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          market_id: string
           notes?: string
           organization_id: string
           position?: number
@@ -1617,6 +2074,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          market_id?: string
           notes?: string
           organization_id?: string
           position?: number
@@ -1626,6 +2084,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "request_items_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "request_items_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
@@ -1633,11 +2098,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "request_items_organization_id_request_id_fkey"
-            columns: ["organization_id", "request_id"]
+            foreignKeyName: "request_items_parent_market_fk"
+            columns: ["organization_id", "market_id", "request_id"]
             isOneToOne: false
             referencedRelation: "requests"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -1645,46 +2110,75 @@ export type Database = {
         Row: {
           access_notes: string
           address: string
+          building: string
           city: string
+          city_id: string | null
           district: string
           elevator: boolean | null
           floor: number | null
           kind: string
+          market_id: string
           notes: string
           organization_id: string
+          postal_code: string
           request_id: string
+          unit: string
         }
         Insert: {
           access_notes?: string
           address?: string
+          building?: string
           city?: string
+          city_id?: string | null
           district?: string
           elevator?: boolean | null
           floor?: number | null
           kind: string
+          market_id: string
           notes?: string
           organization_id: string
+          postal_code?: string
           request_id: string
+          unit?: string
         }
         Update: {
           access_notes?: string
           address?: string
+          building?: string
           city?: string
+          city_id?: string | null
           district?: string
           elevator?: boolean | null
           floor?: number | null
           kind?: string
+          market_id?: string
           notes?: string
           organization_id?: string
+          postal_code?: string
           request_id?: string
+          unit?: string
         }
         Relationships: [
           {
-            foreignKeyName: "request_locations_organization_id_request_id_fkey"
-            columns: ["organization_id", "request_id"]
+            foreignKeyName: "request_locations_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "request_locations_organization_id_market_id_city_id_fkey"
+            columns: ["organization_id", "market_id", "city_id"]
+            isOneToOne: false
+            referencedRelation: "market_cities"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "request_locations_parent_market_fk"
+            columns: ["organization_id", "market_id", "request_id"]
             isOneToOne: false
             referencedRelation: "requests"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -1700,6 +2194,7 @@ export type Database = {
           description: string
           id: string
           last_mutation_id: string | null
+          market_id: string
           notes: string
           organization_id: string
           preferred_date: string | null
@@ -1722,6 +2217,7 @@ export type Database = {
           description?: string
           id?: string
           last_mutation_id?: string | null
+          market_id: string
           notes?: string
           organization_id: string
           preferred_date?: string | null
@@ -1744,6 +2240,7 @@ export type Database = {
           description?: string
           id?: string
           last_mutation_id?: string | null
+          market_id?: string
           notes?: string
           organization_id?: string
           preferred_date?: string | null
@@ -1757,6 +2254,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "requests_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "requests_organization_id_customer_id_fkey"
             columns: ["organization_id", "customer_id"]
             isOneToOne: false
@@ -1769,6 +2273,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "requests_organization_id_market_id_service_id_fkey"
+            columns: ["organization_id", "market_id", "service_id"]
+            isOneToOne: false
+            referencedRelation: "market_services"
+            referencedColumns: ["organization_id", "market_id", "service_id"]
           },
           {
             foreignKeyName: "requests_service_fk"
@@ -1878,33 +2389,63 @@ export type Database = {
       }
       service_areas: {
         Row: {
+          active: boolean
+          city_id: string | null
           created_at: string
           id: string
+          market_id: string
           organization_id: string
           service_id: string
           updated_at: string
         }
         Insert: {
+          active?: boolean
+          city_id?: string | null
           created_at?: string
           id?: string
+          market_id: string
           organization_id: string
           service_id: string
           updated_at?: string
         }
         Update: {
+          active?: boolean
+          city_id?: string | null
           created_at?: string
           id?: string
+          market_id?: string
           organization_id?: string
           service_id?: string
           updated_at?: string
         }
         Relationships: [
           {
+            foreignKeyName: "service_areas_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "service_areas_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_areas_organization_id_market_id_city_id_fkey"
+            columns: ["organization_id", "market_id", "city_id"]
+            isOneToOne: false
+            referencedRelation: "market_cities"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "service_areas_organization_id_market_id_service_id_fkey"
+            columns: ["organization_id", "market_id", "service_id"]
+            isOneToOne: false
+            referencedRelation: "market_services"
+            referencedColumns: ["organization_id", "market_id", "service_id"]
           },
           {
             foreignKeyName: "service_areas_organization_id_service_id_fkey"
@@ -2013,6 +2554,7 @@ export type Database = {
           branch_id: string | null
           created_at: string
           id: string
+          market_id: string
           organization_id: string
           updated_at: string
         }
@@ -2020,6 +2562,7 @@ export type Database = {
           branch_id?: string | null
           created_at?: string
           id?: string
+          market_id: string
           organization_id: string
           updated_at?: string
         }
@@ -2027,15 +2570,23 @@ export type Database = {
           branch_id?: string | null
           created_at?: string
           id?: string
+          market_id?: string
           organization_id?: string
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "teams_organization_id_branch_id_fkey"
-            columns: ["organization_id", "branch_id"]
+            foreignKeyName: "teams_branch_id_market_fk"
+            columns: ["organization_id", "market_id", "branch_id"]
             isOneToOne: false
             referencedRelation: "branches"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "teams_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
             referencedColumns: ["organization_id", "id"]
           },
           {
@@ -2053,6 +2604,7 @@ export type Database = {
           created_at: string
           event_type: string
           id: string
+          market_id: string
           metadata: Json
           occurred_at: string
           organization_id: string
@@ -2065,6 +2617,7 @@ export type Database = {
           created_at?: string
           event_type: string
           id?: string
+          market_id: string
           metadata?: Json
           occurred_at?: string
           organization_id: string
@@ -2077,6 +2630,7 @@ export type Database = {
           created_at?: string
           event_type?: string
           id?: string
+          market_id?: string
           metadata?: Json
           occurred_at?: string
           organization_id?: string
@@ -2093,6 +2647,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "trip_events_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "trip_events_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
@@ -2100,11 +2661,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "trip_events_organization_id_trip_id_fkey"
-            columns: ["organization_id", "trip_id"]
+            foreignKeyName: "trip_events_parent_market_fk"
+            columns: ["organization_id", "market_id", "trip_id"]
             isOneToOne: false
             referencedRelation: "trips"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
           {
             foreignKeyName: "trip_events_stop_fk"
@@ -2121,6 +2682,7 @@ export type Database = {
           captured_at: string | null
           created_at: string
           id: string
+          market_id: string
           mime_type: string
           notes: string
           object_name: string
@@ -2135,6 +2697,7 @@ export type Database = {
           captured_at?: string | null
           created_at?: string
           id: string
+          market_id: string
           mime_type: string
           notes?: string
           object_name: string
@@ -2149,6 +2712,7 @@ export type Database = {
           captured_at?: string | null
           created_at?: string
           id?: string
+          market_id?: string
           mime_type?: string
           notes?: string
           object_name?: string
@@ -2167,11 +2731,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "trip_pods_organization_id_trip_id_fkey"
-            columns: ["organization_id", "trip_id"]
-            isOneToOne: true
-            referencedRelation: "trips"
+            foreignKeyName: "trip_pods_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
             referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "trip_pods_parent_market_fk"
+            columns: ["organization_id", "market_id", "trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -2215,10 +2786,12 @@ export type Database = {
         Row: {
           address: string | null
           arrived_at: string | null
+          city_id: string | null
           completed_at: string | null
           created_at: string
           id: string
           kind: string | null
+          market_id: string
           notes: string
           organization_id: string
           position: number
@@ -2229,10 +2802,12 @@ export type Database = {
         Insert: {
           address?: string | null
           arrived_at?: string | null
+          city_id?: string | null
           completed_at?: string | null
           created_at?: string
           id?: string
           kind?: string | null
+          market_id: string
           notes?: string
           organization_id: string
           position: number
@@ -2243,10 +2818,12 @@ export type Database = {
         Update: {
           address?: string | null
           arrived_at?: string | null
+          city_id?: string | null
           completed_at?: string | null
           created_at?: string
           id?: string
           kind?: string | null
+          market_id?: string
           notes?: string
           organization_id?: string
           position?: number
@@ -2256,6 +2833,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "trip_stops_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "trip_stops_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
@@ -2263,11 +2847,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "trip_stops_organization_id_trip_id_fkey"
-            columns: ["organization_id", "trip_id"]
+            foreignKeyName: "trip_stops_organization_id_market_id_city_id_fkey"
+            columns: ["organization_id", "market_id", "city_id"]
+            isOneToOne: false
+            referencedRelation: "market_cities"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "trip_stops_parent_market_fk"
+            columns: ["organization_id", "market_id", "trip_id"]
             isOneToOne: false
             referencedRelation: "trips"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -2277,6 +2868,7 @@ export type Database = {
           created_at: string
           id: string
           job_id: string
+          market_id: string
           organization_id: string
           planned_end: string | null
           planned_start: string | null
@@ -2291,6 +2883,7 @@ export type Database = {
           created_at?: string
           id?: string
           job_id: string
+          market_id: string
           organization_id: string
           planned_end?: string | null
           planned_start?: string | null
@@ -2305,6 +2898,7 @@ export type Database = {
           created_at?: string
           id?: string
           job_id?: string
+          market_id?: string
           organization_id?: string
           planned_end?: string | null
           planned_start?: string | null
@@ -2316,6 +2910,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "trips_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
             foreignKeyName: "trips_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
@@ -2323,11 +2924,11 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "trips_organization_id_job_id_fkey"
-            columns: ["organization_id", "job_id"]
+            foreignKeyName: "trips_parent_market_fk"
+            columns: ["organization_id", "market_id", "job_id"]
             isOneToOne: false
             referencedRelation: "jobs"
-            referencedColumns: ["organization_id", "id"]
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
         ]
       }
@@ -2373,6 +2974,7 @@ export type Database = {
           code: string
           created_at: string
           id: string
+          market_id: string
           name_ar: string
           name_en: string
           organization_id: string
@@ -2383,6 +2985,7 @@ export type Database = {
           code: string
           created_at?: string
           id?: string
+          market_id: string
           name_ar: string
           name_en: string
           organization_id: string
@@ -2393,12 +2996,20 @@ export type Database = {
           code?: string
           created_at?: string
           id?: string
+          market_id?: string
           name_ar?: string
           name_en?: string
           organization_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "vehicle_pricing_classes_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "vehicle_pricing_classes_organization_id_fkey"
             columns: ["organization_id"]
@@ -2415,6 +3026,7 @@ export type Database = {
           created_at: string
           id: string
           identifier: string | null
+          market_id: string
           organization_id: string
           updated_at: string
           vehicle_type: string | null
@@ -2425,6 +3037,7 @@ export type Database = {
           created_at?: string
           id?: string
           identifier?: string | null
+          market_id: string
           organization_id: string
           updated_at?: string
           vehicle_type?: string | null
@@ -2435,16 +3048,24 @@ export type Database = {
           created_at?: string
           id?: string
           identifier?: string | null
+          market_id?: string
           organization_id?: string
           updated_at?: string
           vehicle_type?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "vehicles_organization_id_branch_id_fkey"
-            columns: ["organization_id", "branch_id"]
+            foreignKeyName: "vehicles_branch_id_market_fk"
+            columns: ["organization_id", "market_id", "branch_id"]
             isOneToOne: false
             referencedRelation: "branches"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "vehicles_market_fk"
+            columns: ["organization_id", "market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
             referencedColumns: ["organization_id", "id"]
           },
           {
@@ -2472,7 +3093,10 @@ export type Database = {
         }
         Returns: Json
       }
-      create_customer_request: { Args: { p_key: string }; Returns: Json }
+      create_customer_request: {
+        Args: { p_key: string; p_market_id: string }
+        Returns: Json
+      }
       create_quote_draft: {
         Args: {
           p_adjustment_minor: number
@@ -2683,3 +3307,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+

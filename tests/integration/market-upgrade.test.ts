@@ -1,15 +1,13 @@
 import { expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { foundationDatabase } from '../helpers/database.mjs';
 
-const migration =
-  readFileSync('supabase/migrations/20260913000100_market_foundation.sql', 'utf8') +
-  '\n' +
-  readFileSync('supabase/migrations/20260913000200_market_commands.sql', 'utf8') +
-  '\n' +
-  readFileSync('supabase/migrations/20260913000300_market_snapshot_guards.sql', 'utf8') +
-  '\n' +
-  readFileSync('supabase/migrations/20260913000400_market_relationship_metadata.sql', 'utf8');
+const migration = readdirSync('supabase/migrations')
+  .filter((f) => f.endsWith('.sql'))
+  .sort()
+  .slice(13)
+  .map((f) => readFileSync(`supabase/migrations/${f}`, 'utf8'))
+  .join('\n');
 it('reconstructs the market schema from an empty accepted foundation', async () => {
   const db = await foundationDatabase(13);
   try {

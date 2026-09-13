@@ -81,6 +81,12 @@ try {
     .replace(/^([\s\S]*?)begin;/, '$1');
   await sql(fixture);
   setup = true;
+  const marketId = await sql(
+    `select id from public.markets where organization_id='${org}' and country_code='SA'`,
+  );
+  const cityId = await sql(
+    `select id from public.market_cities where market_id='${marketId}' and code='Riyadh'`,
+  );
   const [j1, j2] = await Promise.all([command('create_job', order), command('create_job', order)]);
   assert(j1.id === j2.id, 'one Job per Order');
   const job = j1.id;
@@ -95,21 +101,30 @@ try {
     (await sql(`select count(distinct reference) from public.trips where job_id='${job}'`)) === '2',
     'unique Trip references',
   );
-  const d1 = (await command('create_driver', job, { type: 'INTERNAL', name: 'Concurrent A' })).id;
-  const d2 = (await command('create_driver', job, { type: 'EXTERNAL', name: 'Concurrent B' })).id;
-  const d3 = (await command('create_driver', job, { type: 'EXTERNAL', name: 'Concurrent C' })).id;
-  const v1 = (await command('create_vehicle', job, { type: 'Truck', identifier: 'CONCURRENT-A' }))
-    .id;
-  const v2 = (await command('create_vehicle', job, { type: 'Truck', identifier: 'CONCURRENT-B' }))
-    .id;
-  const v3 = (await command('create_vehicle', job, { type: 'Truck', identifier: 'CONCURRENT-C' }))
-    .id;
+  const d1 = (
+    await command('create_driver', job, { marketId, type: 'INTERNAL', name: 'Concurrent A' })
+  ).id;
+  const d2 = (
+    await command('create_driver', job, { marketId, type: 'EXTERNAL', name: 'Concurrent B' })
+  ).id;
+  const d3 = (
+    await command('create_driver', job, { marketId, type: 'EXTERNAL', name: 'Concurrent C' })
+  ).id;
+  const v1 = (
+    await command('create_vehicle', job, { marketId, type: 'Truck', identifier: 'CONCURRENT-A' })
+  ).id;
+  const v2 = (
+    await command('create_vehicle', job, { marketId, type: 'Truck', identifier: 'CONCURRENT-B' })
+  ).id;
+  const v3 = (
+    await command('create_vehicle', job, { marketId, type: 'Truck', identifier: 'CONCURRENT-C' })
+  ).id;
   const plan = {
     plannedStart: '2026-10-01T09:00:00Z',
     plannedEnd: '2026-10-01T13:00:00Z',
     stops: [
-      { kind: 'PICKUP', address: 'Fixture pickup', pickups: [] },
-      { kind: 'DELIVERY', address: 'Fixture delivery', pickups: [0] },
+      { cityId, kind: 'PICKUP', address: 'Fixture pickup', pickups: [] },
+      { cityId, kind: 'DELIVERY', address: 'Fixture delivery', pickups: [0] },
     ],
   };
   for (const id of [t1, t2]) await command('plan', id, plan);
@@ -272,7 +287,7 @@ try {
  delete from public.quote_versions where organization_id='${org}';delete from public.quotes where organization_id='${org}';delete from public.requests where organization_id='${org}';
  delete from public.customers where organization_id='${org}';delete from public.drivers where organization_id='${org}';delete from public.vehicles where organization_id='${org}';
  delete from public.user_roles where profile_id::text like '13000000%';delete from public.organization_memberships where profile_id::text like '13000000%';
- delete from auth.users where id::text like '13000000%';delete from public.audit_logs where organization_id::text like '23000000%';delete from public.organizations where id::text like '23000000%';
+ delete from auth.users where id::text like '13000000%';delete from public.audit_logs where organization_id::text like '23000000%';delete from public.market_cities where organization_id::text like '23000000%';delete from public.market_regions where organization_id::text like '23000000%';delete from public.markets where organization_id::text like '23000000%';delete from public.organizations where id::text like '23000000%';
  drop function public.phase3_command(text,uuid,jsonb);drop function public.phase3_assert(boolean,text)`);
   }
 }
