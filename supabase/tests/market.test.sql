@@ -104,6 +104,11 @@ reset role;
 -- Constraints/immutability remain effective for trusted writers as well.
 do $$ declare a record; b record; begin
  select * into a from market_results order by market limit 1;select * into b from market_results where market<>a.market;
+ insert into public.branches(id,organization_id,market_id,name) values(a.market,'23500000-0000-4000-8000-000000000001',a.market,'Test branch A'),(b.market,'23500000-0000-4000-8000-000000000001',b.market,'Test branch B');
+ update public.drivers set branch_id=a.market where id=a.driver;
+ update public.vehicles set branch_id=a.market where id=a.vehicle;
+ perform public.market_reject(format('update public.drivers set branch_id=%L where id=%L',b.market,a.driver));
+ perform public.market_reject(format('update public.vehicles set branch_id=%L where id=%L',b.market,a.vehicle));
  perform public.market_reject(format('insert into public.trips(organization_id,market_id,job_id) values(''23500000-0000-4000-8000-000000000001'',%L,%L)',b.market,a.job));
  perform public.market_reject(format('update public.quote_versions set tax_code=''tampered'' where id=%L',a.quote));
  perform public.market_reject(format('update public.quote_versions set currency=''EGP'' where id=%L',(select quote from market_results where market='33500000-0000-4000-8000-000000000001')));
