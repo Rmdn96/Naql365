@@ -17,7 +17,7 @@ function dbError(code: string): never {
   if (code === '42501') throw new AppError('forbidden', 'Operational access denied');
   if (['40001', '23505'].includes(code))
     throw new AppError('conflict', 'Operational state changed');
-  if (['22023', '22P02', '23514', '23502', '55000', '22007', '22008'].includes(code))
+  if (['22023', '22P02', '23514', '23503', '23502', '55000', '22007', '22008'].includes(code))
     throw new AppError('validation', 'Invalid operational action');
   throw new AppError('internal', 'Operation unavailable');
 }

@@ -14,7 +14,7 @@ import {
 function databaseError(code: string): never {
   if (code === 'PT409' || code === '40001') throw new AppError('conflict', 'Draft changed');
   if (code === '42501') throw new AppError('forbidden', 'Access denied');
-  if (['22023', '22P02', '22007', '23514', '23505', '55000', '54000'].includes(code))
+  if (['22023', '22P02', '22007', '23514', '23503', '23505', '55000', '54000'].includes(code))
     throw new AppError('validation', 'Check request data');
   throw new AppError('internal', 'Operation unavailable');
 }
