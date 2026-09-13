@@ -1,6 +1,6 @@
 # Staging architecture and reconstruction
 
-Phase 0.5 verified the foundation; Phase 1 extends the same isolated Staging environment with customer identity and request intake. Phase 2 adds isolated pricing and quote acceptance verification. Dispatch, payment and Phase 3+ workflows remain excluded. Historical foundation evidence stays in the Phase 0.5 report; current intake acceptance belongs to the Phase 1 report.
+Phase 0.5 verified the foundation; Phase 1 added customer identity and request intake, Phase 2 pricing and quote acceptance, and Phase 3 multi-Trip dispatch and private POD. Phase 3.5 extends this same isolated Staging environment with Saudi and Egyptian markets. Each canonical phase report preserves its historical acceptance evidence. Payments and Phase 4 remain excluded.
 
 ## Environment inventory
 
@@ -59,7 +59,7 @@ Keep one reviewed deployment origin active for acceptance. After a replacement P
 
 ## Phase 3 rollout gate
 
-Phase 3 remains unaccepted until its canonical report records all required hosted evidence. The three additive repository migrations were applied after successful complete Supabase CI; Staging now contains thirteen migrations and 49 public tables with RLS. Authoritative hosted database types were regenerated and typechecked. The genuine protected Phase 3 Preview and exact Auth origin are recorded in the canonical report and operator configuration. Run the Phase 3, Phase 2, intake and foundation suites sequentially on that same Preview. Finish with scoped data/file/session cleanup and automation-bypass revocation. The accepted Phase 2 Preview is not Phase 3 evidence.
+The accepted Phase 3 baseline contained thirteen migrations and 49 public tables with RLS. Its canonical report preserves the accepted Preview and tests; protected PR #4 subsequently merged it into develop. Phase 3.5 adds six migrations, bringing Staging to nineteen migrations and 54 public tables with RLS. Run both-market Phase 3 journeys, Phase 2, intake and foundation suites sequentially on the current Phase 3.5 Preview. Finish with scoped data/file/session cleanup and automation-bypass revocation. Historical Preview results do not substitute for current acceptance.
 
 ## Phase 2 verification
 

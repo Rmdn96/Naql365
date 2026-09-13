@@ -46,3 +46,11 @@ Phase 2 application source: `00e5b33bb91a139afa64130c519417c970a2f4ee`; Preview 
 Phase 2 was merged through protected PR #3 into accepted develop `86ba612a5f6f7f4afd7a5c0650d5b4d3848f2b6f`. Phase 3 continues exclusively on `feature/phase-3-operations-dispatch-pod`; no merge is authorized. Application source `3bff649ed8132accfce84f53a6df1517ff079268` passed both jobs in CI 34695503511 before deployment.
 
 The current protected Preview is https://naql365-staging-nuy9j66y2-naql365.vercel.app, deployment `dpl_267qYKS5siSkbk5kXHYBMKmDA4W1`, independently READY with Preview target. It replaces the first Phase 3 candidate after correction of nested main landmarks. The exact Supabase Auth allowlist was rotated to this origin with no wildcards. All 21 hosted acceptance and Phase 0–2 regression tests passed on this exact Preview; fixtures and temporary protection bypass credentials were removed. Consult the canonical Phase 3 report for the final decision; a READY deployment alone is not acceptance.
+
+## Phase 3.5 accepted Preview
+
+Phase 3 was merged through protected PR #4 into develop `6937efa96201329d149e61057433f46a4cdb1d73`. Phase 3.5 remains on `feature/phase-3-5-multi-country-sa-eg`; no merge or Production deployment is authorized.
+
+The accepted application source is `9dc62e604525033e50fc0e60038dc2797e52c524`, which passed both required CI jobs before deployment. Vercel independently reports deployment `dpl_DfQKcWmNVQpEQUKwWuYkPi44uhY4` READY and Preview at https://naql365-staging-hretspdjl-naql365.vercel.app. The four variables remain Preview-scoped and point only to Supabase Staging. Production scopes/deployments remain absent.
+
+All 22 hosted multi-country and Phase 0–3 regression tests passed on this exact origin. Supabase Auth uses its four explicit AR/EN callback URLs in the operator config; no wildcard was introduced. Subsequent commits contain test fixtures, documentation and the exact Auth origin configuration, not changes to deployed application behavior. The canonical Phase 3.5 report records database reconstruction/types, RLS, cleanup and final review status. Keep this Preview protected; do not promote it.

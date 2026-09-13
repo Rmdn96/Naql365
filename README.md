@@ -1,6 +1,6 @@
 # Naql365 · نقل 365
 
-Transportation Operating Platform. **Phase 3: Operations, multi-Trip dispatch and POD foundation.** Staging acceptance and review status are recorded in the canonical Phase 3 report; this is not a Production release.
+Transportation Operating Platform. **Phase 3.5: Saudi Arabia and Egypt multi-country foundation.** Staging acceptance and review status are recorded in the canonical Phase 3.5 report; this is not a Production release.
 
 Independent implementation for Naql365. No source, branding, credentials or data from another product is used.
 
@@ -64,5 +64,7 @@ docs/                       Architecture, operations and decision records
 - [Phase 2 acceptance report](docs/reports/Naql365-Phase-2-Report.md)
 - [Operations architecture and schema analysis](docs/operations-dispatch-pod.md)
 - [Phase 3 acceptance report](docs/reports/Naql365-Phase-3-Report.md)
+- [Multi-country architecture and gap analysis](docs/multi-country-sa-eg.md)
+- [Phase 3.5 acceptance report](docs/reports/Naql365-Phase-3-5-Report.md)
 
-Workflow: `feature/* → develop → main`. Phase 3 uses `feature/phase-3-operations-dispatch-pod` from accepted develop `86ba612a5f6f7f4afd7a5c0650d5b4d3848f2b6f`. Phase 4 remains locked. Phase 3 merging requires separate owner authorization and the protected review workflow. No automatic Production release is configured.
+Workflow: `feature/* → develop → main`. Phase 3.5 uses `feature/phase-3-5-multi-country-sa-eg` from accepted develop `6937efa96201329d149e61057433f46a4cdb1d73`, which contains the protected Phase 3 merge. Phase 4 remains locked. Phase 3.5 merging requires separate owner authorization and the protected review workflow. No automatic Production release is configured.

@@ -1,6 +1,6 @@
 # Naql365 — Phase 3.5 Report
 
-Checkpoint, 2026-09-13. Evidence is scoped to the current implementation and candidate Preview.
+Closeout, 2026-09-14. Evidence is scoped to the accepted protected Preview and the Phase 3.5 feature branch. No merge or Production release.
 
 ## A. Starting State
 
@@ -106,53 +106,132 @@ Market selector, scoped cities/services, optional address details and market/cur
 
 Hosted shared SQL suites passed after migration. All 54 public tables have RLS enabled. No client privilege or policy was relaxed.
 
+Hosted security checks passed private file/POD isolation, signed access and expiry, suspended membership, security headers/CSP, redirects, cookie behavior and browser asset/source-map inspection. No privileged test secret appeared in inspected assets. A bounded 1000-record Preview runtime sample inspected at 2026-09-13T22:28:25Z contained no error records, secret patterns or auth query values; this is not a claim of exhaustive log retention coverage. Production variables and deployments remain absent. Temporary automation bypass revocation was confirmed with zero credentials remaining and a 302 protection redirect when the revoked credential was used.
+
 ## AA. Cross-Market Security
 
 Composite relational constraints plus permission-checked commands enforce route/resource/currency/tax context. Tests run beside pre-existing catalogue/configuration and prove rollback fixtures do not alter it.
 
 ## AB. Analytics/SEO
 
-No country marketing pages, nationwide-service claims, global cross-currency totals or FX analytics are introduced. Existing non-production robots/noindex and localized metadata remain; hosted regression is pending.
+No country marketing pages, nationwide-service claims, global cross-currency totals or FX analytics are introduced. Hosted desktop/mobile AR/EN public tests passed title, metadata, canonical/hreflang, structured data, routing, robots/sitemap and non-production indexing protection.
 
 ## AC. Accessibility
 
-Local desktop/mobile E2E passed. Hosted market selector, customer and authenticated operational axe/focus/responsive acceptance is in progress.
+PASS: authenticated axe checks on market selection, request/quote, operations workspace/planner, emergency dialog, mobile POD and customer tracking in both market journeys. Foundation AR/EN pages, customer login/account and desktop/mobile checks passed. Keyboard focus and RTL/LTR were checked; no axe violations in the tested WCAG 2 A/AA and 2.1 AA rules. Automated smoke checks do not replace a full assistive-technology audit.
 
 ## AD. AR/EN
 
-Market and locale are independent. Hosted both-locale evidence is in progress on one Preview.
+PASS on the same Preview: market selection is independent of locale; Arabic RTL and English LTR request, commercial and tracking views were exercised for SA and EG. Foundation and intake suites also passed desktop Arabic and mobile English coverage.
 
 ## AE. Tests
 
-Local strict types, lint, build and 18 E2E passed. Unit/integration suite now contains 109 tests across 19 files. CI includes fresh real Supabase reset, shared SQL/RLS, independent PostgreSQL connection concurrency, generated types and typecheck. Hosted SQL passed. Hosted browser acceptance remains pending.
+Local formatting, secret scan, lint, strict types, build, 109 unit/integration tests across 19 files and 18 desktop/mobile E2E passed. Required CI includes install, all quality checks, fresh Supabase reconstruction, shared SQL/RLS, real independent-connection concurrency, official types and typecheck. Hosted database verification covers all 19 migrations and 54/54 public tables with RLS.
+
+All 22 hosted tests passed on one accepted Preview: 3 multi-country/operations tests (SA journey, EG journey, asset security), 6 intake regression, 1 complete commercial regression, 12 foundation/auth/public/security tests. No skipped tests or continue-on-error. Earlier test fixtures were updated to provide mandatory market IDs, country-scoped vehicle identifiers, current market labels and immutable tax labels; security assertions remain intact.
 
 ## AF. Saudi Hosted Journey
 
-Request, pricing, acceptance and correct market/currency/tax assertions passed, then the quote-page locator failed. Dispatch/POD remains unexecuted for this candidate. Nested main landmarks were corrected and the next hosted attempt progressed through commercial acceptance, bilingual/axe checks, Job and two Trip creation. The negative cross-market Stop probe then exposed missing SQLSTATE 23503 → validation error mapping in the API; the constraint denied the operation. The adapter fix awaits fresh CI/Preview verification. No security rule was weakened.
+PASS on the current Preview: explicit SA market, national phone normalization, SAR pricing/tax snapshot, customer acceptance, one Job with two Trips and four Stops per Trip, internal/external resources, independent assignment, conflicts, emergency history, private POD and final aggregate completion. Both locales, authenticated axe/mobile, suspended staff and customer isolation passed. January 2027 10:00 Riyadh persisted as 07:00 UTC and reloaded as 10:00.
+
+Earlier candidates exposed nested main landmarks and missing SQLSTATE 23503 validation mapping. Both were corrected without relaxing constraints or policies. The current hosted run verifies those corrections. Intermediate expect.poll messages are retry observations; final test status is authoritative.
 
 ## AG. Egypt Hosted Journey
 
-In progress; do not treat local results as hosted PASS.
+PASS on the same Preview and customer identity as SA: explicit EG, national +20 phone normalization, EGP and market tax snapshot, accepted Quote → Order → one Job → two Trips, four Stops per Trip, independent internal/external resources, emergency history, private POD and completion only after the final required Trip. January 2027 10:00 Cairo persisted as 08:00 UTC and reloaded as 10:00. The same customer held one Saudi and one Egyptian Order.
+
+An earlier attempt reused the Saudi isolation-fixture vehicle identifier within one organization. The existing uniqueness constraint correctly rejected it. Test identifiers now include country; both full journeys passed without changing that constraint.
 
 ## AH. Cross-Market Negative Tests
 
-Hosted SQL proved domestic route, pricing class, resource, commercial override and ownership negatives. Hosted browser/API probes remain in progress.
+PASS: hosted SQL proves domestic route, pricing class, branch/resource, currency/tax override, inactive coverage/service/tax and ownership negatives. Hosted browser/API proves SA→EG and EG→SA wrong-city, Driver-only and Vehicle-only denial; cross-tenant reassignment denial; customer/Sales mutation denial; suspended staff denial; customer isolation; private POD denial, no public object access and signed URL expiry. Orders retain accepted currency/tax/distance after operational completion.
 
 ## AI. Hosted Staging
 
-Candidate Preview: https://naql365-staging-efwrhnkgv-naql365.vercel.app — dpl_Hnfmm2CBfn4mHzQseaQEcyXQQwEi, independently classified Preview and READY, source f70d5fde27c6eb6a1b8ac6ae9505e11aeed7d4bf. Protected with Vercel SSO. Only Preview-scoped Staging variables exist; no Production deployment/scope exists. Staging Auth uses this exact origin and four explicit callback URLs, no wildcards.
+Current protected Preview: https://naql365-staging-hretspdjl-naql365.vercel.app — deployment `dpl_DfQKcWmNVQpEQUKwWuYkPi44uhY4`, source `9dc62e604525033e50fc0e60038dc2797e52c524`. Vercel independently reports READY and Preview (target null). Only the four Preview-scoped Staging variables exist; no Production variables or deployments exist. Supabase Auth uses this exact origin and four explicit AR/EN callback URLs with no wildcards. Later commits change test fixtures, operator Auth URLs and documentation, not deployed application behavior.
 
 ## AJ. Cleanup
 
-Shared hosted SQL fixtures rolled back. Browser fixture cleanup and temporary automation credential removal must be verified after acceptance.
+All four hosted suite runners confirmed scoped fixture cleanup. Final audit verified zero Auth test identities, requests, Quotes/Versions, Orders, Jobs, Trips, PODs, assignments, Drivers, Vehicles, file registry rows and storage objects. SA/EG market/city/service/pricing/tax and required role/permission catalogues remain. Temporary Vercel automation credentials were revoked and the revoked credential no longer bypasses protection. No Production data was used or modified.
 
 ## AK. Files Changed
 
-Migrations, domain market utilities, scoped server adapters, affected customer/pricing/operations presentation, authoritative types, shared SQL and browser tests, Staging configuration tools and documentation. Final inventory will be recorded at closeout.
+- `.github/workflows/database-types.yml`
+- `README.md`
+- `config/staging/supabase/config.toml`
+- `docs/architecture.md`
+- `docs/database.md`
+- `docs/deployment.md`
+- `docs/multi-country-sa-eg.md`
+- `docs/reports/Naql365-Phase-3-5-Report.md`
+- `docs/security.md`
+- `docs/staging.md`
+- `docs/testing.md`
+- `scripts/staging/configure-markets.mjs`
+- `scripts/staging/configure-pricing.mjs`
+- `scripts/staging/verify-intake.mjs`
+- `scripts/staging/verify-phase2.mjs`
+- `scripts/staging/verify-phase3.mjs`
+- `scripts/test-operations-concurrency.mjs`
+- `src/app/[locale]/(account)/account/orders/[id]/page.tsx`
+- `src/app/[locale]/(account)/account/quotes/[id]/page.tsx`
+- `src/app/[locale]/(account)/account/quotes/page.tsx`
+- `src/app/[locale]/(account)/account/requests/[id]/page.tsx`
+- `src/app/[locale]/(account)/account/requests/page.tsx`
+- `src/app/[locale]/(portal)/portal/operations/trips/[id]/page.tsx`
+- `src/app/[locale]/(portal)/portal/quotes/[id]/page.tsx`
+- `src/app/[locale]/(portal)/portal/quotes/page.tsx`
+- `src/app/[locale]/request/page.tsx`
+- `src/app/api/customer/requests/route.ts`
+- `src/components/operations/planner.tsx`
+- `src/components/operations/workspace.tsx`
+- `src/components/pricing/sales-pricing.tsx`
+- `src/components/requests/account.tsx`
+- `src/components/requests/wizard.tsx`
+- `src/domain/markets/model.ts`
+- `src/domain/operations/model.ts`
+- `src/domain/pricing/model.ts`
+- `src/domain/requests/intake.ts`
+- `src/i18n/customer.ts`
+- `src/i18n/markets.ts`
+- `src/i18n/quotes.ts`
+- `src/infrastructure/markets/service.ts`
+- `src/infrastructure/operations/service.ts`
+- `src/infrastructure/pricing/service.ts`
+- `src/infrastructure/requests/service.ts`
+- `src/infrastructure/supabase/database.types.ts`
+- `supabase/migrations/20260913000100_market_foundation.sql`
+- `supabase/migrations/20260913000200_market_commands.sql`
+- `supabase/migrations/20260913000300_market_snapshot_guards.sql`
+- `supabase/migrations/20260913000400_market_relationship_metadata.sql`
+- `supabase/migrations/20260913000500_market_tracking_projection.sql`
+- `supabase/migrations/20260913000600_initial_market_geography.sql`
+- `supabase/tests/customer_request.test.sql`
+- `supabase/tests/foundation.test.sql`
+- `supabase/tests/market.test.sql`
+- `supabase/tests/phase2.test.sql`
+- `supabase/tests/phase3.test.sql`
+- `tests/fixtures/phase2-legacy.sql`
+- `tests/helpers/database.d.mts`
+- `tests/helpers/database.mjs`
+- `tests/intake/journey.spec.ts`
+- `tests/integration/market-fixture-isolation.test.ts`
+- `tests/integration/market-upgrade.test.ts`
+- `tests/integration/markets.test.ts`
+- `tests/phase2/journey.spec.ts`
+- `tests/phase3/journey.spec.ts`
+- `tests/unit/intake.test.ts`
+- `tests/unit/markets.test.ts`
+- `tests/unit/operations.test.ts`
+- `tests/unit/pricing.test.ts`
 
 ## AL. Commits/CI
 
-Latest deployment source f70d5fde27c6eb6a1b8ac6ae9505e11aeed7d4bf passed both required CI jobs: https://github.com/Rmdn96/Naql365/actions/runs/34746822991. Initial concurrency cleanup failed after all race assertions passed; fixture audit deletion order was corrected, then CI passed. Hosted types differ from local generated types only by the authoritative PostgREST 14.5 metadata header; no business schema drift.
+Branch: `feature/phase-3-5-multi-country-sa-eg`. The immutable accepted Preview application source is `9dc62e604525033e50fc0e60038dc2797e52c524`, with successful [CI 34761749962](https://github.com/Rmdn96/Naql365/actions/runs/34761749962). Subsequent test/configuration commits `d0c7f52` and `8792371` passed [CI 34782396053](https://github.com/Rmdn96/Naql365/actions/runs/34782396053) and [CI 34783283827](https://github.com/Rmdn96/Naql365/actions/runs/34783283827). Later closeout commits contain tests/documentation only; no application/migration changes after the accepted Preview source.
+
+The final containing report commit SHA and its exact-HEAD CI run are supplied in the owner closeout message after that run finishes; use `git rev-parse origin/feature/phase-3-5-multi-country-sa-eg` to resolve it without a self-referential commit hash in this file. Both required jobs must pass before delivery. No merge is authorized.
+
+Official hosted types include PostgREST 14.5 metadata and match committed formatted types. Initial concurrency fixture cleanup ordering was fixed before subsequent complete CI passes; no concurrency invariant was skipped.
 
 ## AM. Known Limitations
 
@@ -164,47 +243,47 @@ Cross-border transport/customs/ports, FX, legal certification, Production tariff
 
 ## AO. Acceptance Matrix
 
-| Gate                      | Result  | Evidence                                                             |
-| ------------------------- | ------- | -------------------------------------------------------------------- |
-| Git baseline              | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Gap analysis              | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Market architecture       | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Migrations/backfill       | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| SA Market                 | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| EG Market                 | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Locations                 | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Service areas             | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Request Market            | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Cross-market route denial | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| SAR                       | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| EGP                       | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Pricing isolation         | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Tax isolation             | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Phone handling            | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Branch Market             | PASS    | Final hosted acceptance/current-source verification pending          |
-| Driver Market             | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Vehicle Market            | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Job/Trip/Stop Market      | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Assignment isolation      | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Timezones                 | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Scheduling                | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| Operations UX             | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| Customer UX               | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| RLS                       | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Customer isolation        | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Cross-market negatives    | PASS    | Scoped implementation and executed SQL/unit evidence described above |
-| Accessibility             | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| AR/EN                     | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| Saudi hosted journey      | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| Egypt hosted journey      | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| Regression                | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| CI                        | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| Hosted Staging            | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| Cleanup                   | PARTIAL | Final hosted acceptance/current-source verification pending          |
-| Scope compliance          | PASS    | Scoped implementation and executed SQL/unit evidence described above |
+| Gate                      | Result | Evidence                                                                         |
+| ------------------------- | ------ | -------------------------------------------------------------------------------- |
+| Git baseline              | PASS   | Protected develop 6937efa; main unchanged; scoped feature branch                 |
+| Gap analysis              | PASS   | 4dafa8a committed before migrations; original 13 inspected                       |
+| Market architecture       | PASS   | One organization, explicit relational market; schema and hosted journeys         |
+| Migrations/backfill       | PASS   | 19 migrations; populated original-13 upgrade; authoritative hosted history/types |
+| SA Market                 | PASS   | SA hosted journey; SAR/Asia-Riyadh/+966                                          |
+| EG Market                 | PASS   | EG hosted journey; EGP/Africa-Cairo/+20                                          |
+| Locations                 | PASS   | Scoped stable IDs and initial four-city catalogue; hosted intake/planner         |
+| Service areas             | PASS   | Active coverage separate from catalogue; negative SQL tests                      |
+| Request Market            | PASS   | Explicit hosted selection, immutable market; same customer in both               |
+| Cross-market route denial | PASS   | Hosted API wrong-city denial in both directions; SQL                             |
+| SAR                       | PASS   | Saudi immutable commercial snapshot and UI                                       |
+| EGP                       | PASS   | Egyptian immutable commercial snapshot and UI                                    |
+| Pricing isolation         | PASS   | Market rules/classes and negative shared SQL                                     |
+| Tax isolation             | PASS   | Effective immutable versions; missing tax/override negatives                     |
+| Phone handling            | PASS   | Hosted +966/+20 national normalization; invalid input unit tests                 |
+| Branch Market             | PASS   | Hosted SQL branch/resource composite-constraint negatives                        |
+| Driver Market             | PASS   | Both-market internal/external hosted journeys and wrong-market denial            |
+| Vehicle Market            | PASS   | Independent hosted assignment and both-direction denial                          |
+| Job/Trip/Stop Market      | PASS   | Two Trips/four Stops per Trip in each hosted market                              |
+| Assignment isolation      | PASS   | Cross-market/tenant hosted denial; independent-connection CI races               |
+| Timezones                 | PASS   | Riyadh/Cairo winter/summer, DST gap/overlap/month-boundary unit tests            |
+| Scheduling                | PASS   | Hosted winter wall-time → UTC persistence and reload, both markets               |
+| Operations UX             | PASS   | Hosted workspace/planner/emergency/POD desktop/mobile axe                        |
+| Customer UX               | PASS   | Same identity across markets; hosted request/quote/tracking                      |
+| RLS                       | PASS   | Hosted shared SQL; 54/54 tables RLS; browser authorization negatives             |
+| Customer isolation        | PASS   | Hosted peer and cross-tenant denial; foundation/intake regressions               |
+| Cross-market negatives    | PASS   | Hosted SQL plus both-direction browser/API assertions                            |
+| Accessibility             | PASS   | Authenticated and public axe, labels/focus/RTL/LTR/mobile                        |
+| AR/EN                     | PASS   | Both locales in both market journeys and old hosted regressions                  |
+| Saudi hosted journey      | PASS   | PASS current Preview, one Job/two Trips/POD/completion                           |
+| Egypt hosted journey      | PASS   | PASS same Preview and customer, one Job/two Trips/POD/completion                 |
+| Regression                | PASS   | 22 hosted tests total; 109 unit/integration and 18 local E2E                     |
+| CI                        | PASS   | Both required jobs passed; exact final HEAD run in delivery evidence             |
+| Hosted Staging            | PASS   | READY protected Preview 9dc62e6; isolated Supabase Staging                       |
+| Cleanup                   | PASS   | Suite cleanup + zero-count audit + automation credential revocation              |
+| Scope compliance          | PASS   | No main/develop change, merge, Production or Phase 4                             |
 
 ## AP. Final Decision
 
-PHASE 3.5 PARTIAL — NOT READY
+PHASE 3.5 PASS — READY FOR REVIEW
 
-Implementation checkpoint. Hosted acceptance and closeout remain in progress. No merge, Production deployment or Phase 4.
+All critical gates have executed evidence. Owner review and protected approval remain required before any merge. Production is untouched and Phase 4 remains locked.
