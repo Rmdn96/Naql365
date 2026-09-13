@@ -129,7 +129,7 @@ for (const country of ['SA', 'EG'] as const)
     await login(page, 'customer');
     // The runner always creates a fresh customer. Await onboarding hydration before continuing.
     await page.locator('#name').fill('Phase 3 controlled customer');
-    await page.locator('#phone').fill('+966500000001');
+    await page.locator('#phone').fill(country === 'SA' ? '+966500000001' : '+201000000001');
     await page.getByRole('button', { name: ct.saveProfile, exact: true }).click();
     await page.locator('#request-market').focus();
     await expect(page.locator('#request-market')).toBeFocused();
@@ -173,8 +173,11 @@ for (const country of ['SA', 'EG'] as const)
     await expect(page.locator('.save-status')).toHaveText(ct.saved);
     await page.getByRole('button', { name: ct.next, exact: true }).click();
     await page.locator('#contact_name').fill('Controlled recipient');
-    await page.locator('#contact_phone').fill('+966500000001');
+    await page.locator('#contact_phone').fill(country === 'SA' ? '0500000001' : '01000000001');
     await page.locator('#contact_email').fill('fixture@example.invalid');
+    await expect(page.locator('#contact_phone')).toHaveValue(
+      country === 'SA' ? '+966500000001' : '+201000000001',
+    );
     await expect(page.locator('.save-status')).toHaveText(ct.saved);
     await page.getByRole('button', { name: ct.next, exact: true }).click();
     await page.getByRole('button', { name: ct.submit, exact: true }).click();
@@ -381,7 +384,11 @@ for (const country of ['SA', 'EG'] as const)
       p_entity_id: otherOrg,
       p_revision: 0,
       p_mutation_id: randomUUID(),
-      p_payload: { marketId: otherMarket.data!.id, type: 'Truck', identifier: 'Isolated fixture' },
+      p_payload: {
+        marketId: otherMarket.data!.id,
+        type: 'Truck',
+        identifier: 'Isolated fixture ' + country,
+      },
     });
     expect(otherVehicle.error).toBeNull();
     await op(
