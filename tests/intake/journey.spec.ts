@@ -25,7 +25,7 @@ test('customer persists a bilingual request through private image, review, submi
   ).toEqual([]);
   await page
     .locator('#request-market')
-    .selectOption({ label: locale === 'ar' ? 'السعودية' : 'Saudi Arabia' });
+    .selectOption({ label: locale === 'ar' ? 'السعودية — SAR' : 'Saudi Arabia — SAR' });
   await page.getByRole('button', { name: t.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const draftUrl = page.url();
@@ -191,16 +191,27 @@ test('customer direct APIs reject IDOR, mass assignment, stale writes and suspen
   const admin = createClient(url, adminKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+  const market = await admin
+    .from('markets')
+    .select('id')
+    .eq('organization_id', org)
+    .eq('country_code', 'SA')
+    .single();
+  expect(market.error).toBeNull();
+  const marketId = market.data!.id;
   await page.goto(`/${locale}`);
-  const anonymous = await page.evaluate(async () => ({
-    create: (
-      await fetch('/api/customer/requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: crypto.randomUUID() }),
-      })
-    ).status,
-  }));
+  const anonymous = await page.evaluate(
+    async (marketId) => ({
+      create: (
+        await fetch('/api/customer/requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: crypto.randomUUID(), marketId }),
+        })
+      ).status,
+    }),
+    marketId,
+  );
   expect(anonymous.create).toBe(401);
   await page.goto(`/${locale}/login`);
   await page.locator('#email').fill(identity.email);
@@ -217,19 +228,29 @@ test('customer direct APIs reject IDOR, mass assignment, stale writes and suspen
     { peer, other },
   );
   expect(isolated).toEqual([404, 404]);
-  const created = await page.evaluate(async () => {
+  await page
+    .locator('#request-market')
+    .selectOption({ label: locale === 'ar' ? 'السعودية — SAR' : 'Saudi Arabia — SAR' });
+
+  const created = await page.evaluate(async (marketId) => {
     const key = crypto.randomUUID();
     const calls = await Promise.all(
       [1, 2].map(() =>
         fetch('/api/customer/requests', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key }),
-        }).then((r) => r.json()),
+          body: JSON.stringify({ key, marketId }),
+        }).then(async (r) => ({ status: r.status, body: await r.json() })),
       ),
     );
-    return { id: calls[0].id, same: calls[0].id === calls[1].id };
-  });
+    return {
+      id: calls[0]!.body.id,
+      same: calls[0]!.body.id === calls[1]!.body.id,
+      statuses: calls.map((c) => c.status),
+    };
+  }, marketId);
+  expect(created.statuses.every((status) => status >= 200 && status < 300)).toBe(true);
+  expect(created.id).toMatch(/^[a-f0-9-]{36}$/);
   expect(created.same).toBe(true);
   const draft = await page.evaluate(
     async (id) => (await fetch(`/api/customer/requests/${id}`)).json(),
@@ -306,6 +327,9 @@ test('draft cancellation removes private images and prevents further edits', asy
   await page.locator('#password').fill(identity.password);
   await page.getByRole('button', { name: t.login, exact: true }).click();
   await expect(page).toHaveURL(`${baseURL}/${locale}/account`);
+  await page
+    .locator('#request-market')
+    .selectOption({ label: locale === 'ar' ? 'السعودية — SAR' : 'Saudi Arabia — SAR' });
   await page.getByRole('button', { name: t.start, exact: true }).click();
   await expect(page.locator('#service')).toBeVisible();
   const result = await page.evaluate(async () => {

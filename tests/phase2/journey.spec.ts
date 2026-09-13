@@ -98,7 +98,7 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
         ).status,
     ),
   ).toBe(403);
-  await page.locator('#request-market').selectOption({ label: 'السعودية' });
+  await page.locator('#request-market').selectOption({ label: 'السعودية — SAR' });
   await page.getByRole('button', { name: ct.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const primaryRequestId = new URL(page.url()).pathname.split('/').at(-1)!;

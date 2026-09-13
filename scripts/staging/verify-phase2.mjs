@@ -50,6 +50,11 @@ try {
     `select id from public.services where organization_id='${org}' and code='furniture' and active`,
   )[0]?.id;
   if (!service) throw new Error('Staging catalogue unavailable');
+  const geography = query(
+    ref,
+    `select m.id as market_id,c.id as city_id from public.markets m join public.market_cities c on c.market_id=m.id where m.organization_id='${org}' and m.country_code='SA' and m.active and c.name_en='Riyadh'`,
+  )[0];
+  if (!geography) throw new Error('Staging market geography unavailable');
   const referenceBase = 900000 + (Date.now() % 90000);
   const fixtureValues = requestIds
     .map((id, index) => `('${id}'::uuid,'N365-202609-${referenceBase + index}')`)
@@ -62,12 +67,12 @@ try {
    insert into public.user_roles(organization_id,profile_id,role_id) select '${org}',profile_id,r.id from public.organization_memberships m cross join public.roles r where m.profile_id in ('${users[0]}','${users[2]}') and r.code='CUSTOMER';
    insert into public.user_roles(organization_id,profile_id,role_id) select '${org}','${users[1]}',id from public.roles where code='SALES';
    insert into public.customers(organization_id,profile_id) values('${org}','${users[0]}'),('${org}','${users[2]}');
-   insert into public.requests(id,organization_id,customer_id,status,revision,service_id,reference,submitted_at,contact_name,contact_phone,contact_email)
-    select fixture.id,'${org}',c.id,'SUBMITTED',1,'${service}',fixture.reference,now(),'Phase 2 fixture','+966500000001','fixture@example.invalid' from public.customers c cross join (values ${fixtureValues}) fixture(id,reference) where c.profile_id='${users[0]}';
-   insert into public.request_locations(request_id,organization_id,kind,city,district,address) select id,'${org}','pickup','Riyadh','Fixture','Harmless pickup' from public.requests where id in (${requestList});
-   insert into public.request_locations(request_id,organization_id,kind,city,district,address) select id,'${org}','delivery','Riyadh','Fixture','Harmless delivery' from public.requests where id in (${requestList});
-   insert into public.request_items(request_id,organization_id,description,quantity) select id,'${org}','Harmless box',2 from public.requests where id in (${requestList});
-   insert into public.request_additional_services(request_id,organization_id,additional_service_id) select r.id,'${org}',s.id from public.requests r cross join public.additional_services s where r.id in (${requestList}) and s.organization_id='${org}' and s.code='packing'; commit;`,
+   insert into public.requests(id,organization_id,customer_id,market_id,status,revision,service_id,reference,submitted_at,contact_name,contact_phone,contact_email)
+    select fixture.id,'${org}',c.id,'${geography.market_id}','SUBMITTED',1,'${service}',fixture.reference,now(),'Phase 2 fixture','+966500000001','fixture@example.invalid' from public.customers c cross join (values ${fixtureValues}) fixture(id,reference) where c.profile_id='${users[0]}';
+   insert into public.request_locations(request_id,organization_id,market_id,city_id,kind,city,district,address) select id,'${org}',market_id,'${geography.city_id}','pickup','Riyadh','Fixture','Harmless pickup' from public.requests where id in (${requestList});
+   insert into public.request_locations(request_id,organization_id,market_id,city_id,kind,city,district,address) select id,'${org}',market_id,'${geography.city_id}','delivery','Riyadh','Fixture','Harmless delivery' from public.requests where id in (${requestList});
+   insert into public.request_items(request_id,organization_id,market_id,description,quantity) select id,'${org}',market_id,'Harmless box',2 from public.requests where id in (${requestList});
+   insert into public.request_additional_services(request_id,organization_id,market_id,additional_service_id) select r.id,'${org}',r.market_id,s.id from public.requests r cross join public.additional_services s where r.id in (${requestList}) and s.organization_id='${org}' and s.code='packing'; commit;`,
   );
   const env = {
     ...process.env,
