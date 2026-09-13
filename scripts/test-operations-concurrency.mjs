@@ -287,7 +287,7 @@ try {
  delete from public.quote_versions where organization_id='${org}';delete from public.quotes where organization_id='${org}';delete from public.requests where organization_id='${org}';
  delete from public.customers where organization_id='${org}';delete from public.drivers where organization_id='${org}';delete from public.vehicles where organization_id='${org}';
  delete from public.user_roles where profile_id::text like '13000000%';delete from public.organization_memberships where profile_id::text like '13000000%';
- delete from auth.users where id::text like '13000000%';delete from public.audit_logs where organization_id::text like '23000000%';delete from public.market_cities where organization_id::text like '23000000%';delete from public.market_regions where organization_id::text like '23000000%';delete from public.markets where organization_id::text like '23000000%';delete from public.organizations where id::text like '23000000%';
+ delete from auth.users where id::text like '13000000%';delete from public.market_cities where organization_id::text like '23000000%';delete from public.market_regions where organization_id::text like '23000000%';delete from public.markets where organization_id::text like '23000000%';delete from public.audit_logs where organization_id::text like '23000000%';delete from public.organizations where id::text like '23000000%';
  drop function public.phase3_command(text,uuid,jsonb);drop function public.phase3_assert(boolean,text)`);
   }
 }
