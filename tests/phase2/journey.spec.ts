@@ -98,6 +98,7 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
         ).status,
     ),
   ).toBe(403);
+  await page.locator('#request-market').selectOption({ label: 'السعودية' });
   await page.getByRole('button', { name: ct.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const primaryRequestId = new URL(page.url()).pathname.split('/').at(-1)!;
@@ -105,7 +106,7 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
   for (const kind of ['pickup', 'delivery']) {
-    await page.locator(`#${kind}-city`).fill('Riyadh');
+    await page.locator(`#${kind}-city`).selectOption({ label: 'الرياض — الرياض' });
     await page.locator(`#${kind}-district`).fill('Phase 2 district');
     await page.locator(`#${kind}-address`).fill(`Harmless ${kind}`);
   }

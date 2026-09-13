@@ -104,6 +104,10 @@ export default async function Page({
       <h1>
         {t.pricing} · <bdi>{details.request.reference}</bdi>
       </h1>
+      <p>
+        {locale === 'ar' ? details.request.markets.name_ar : details.request.markets.name_en} ·{' '}
+        <bdi>{details.request.markets.currency}</bdi>
+      </p>
       <RequestSummary
         locale={locale}
         payload={payload}

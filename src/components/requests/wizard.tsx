@@ -14,7 +14,7 @@ import type { RequestDetails } from '@/infrastructure/requests/service';
 import { Input, Select, Button, Alert } from '@/components/ui/primitives';
 import { RequestSummary } from './summary';
 import type { Market } from '@/domain/markets/model';
-import { marketDate } from '@/domain/markets/model';
+import { marketDate, normalizeMarketPhone } from '@/domain/markets/model';
 import { marketDictionary } from '@/i18n/markets';
 
 const steps = [
@@ -380,6 +380,16 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
       maxLength={max}
       type={type}
       onChange={(e) => change({ ...draft, [key]: e.target.value })}
+      onBlur={() => {
+        if (key === 'contact_phone')
+          change({
+            ...draft,
+            contact_phone: normalizeMarketPhone(
+              draft.contact_phone,
+              details.market.phone_country_code,
+            ),
+          });
+      }}
     />
   );
   const locationField = (

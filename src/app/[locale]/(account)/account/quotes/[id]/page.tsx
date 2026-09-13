@@ -89,7 +89,8 @@ export default async function Page({
           <bdi>{formatMoney(quote.final_subtotal_minor, quote.currency, locale)}</bdi>
         </dd>
         <dt>
-          {t.vat} ({quote.vat_rate_bps / 100}%)
+          {(locale === 'ar' ? quote.tax_label_ar : quote.tax_label_en) ?? t.vat} (
+          {quote.vat_rate_bps / 100}%)
         </dt>
         <dd>
           <bdi>{formatMoney(quote.vat_amount_minor, quote.currency, locale)}</bdi>

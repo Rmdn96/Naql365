@@ -64,6 +64,10 @@ export default async function Page({
                     <bdi>{r.reference ?? t.DRAFT}</bdi>
                   </Link>
                 </h2>
+                <p>
+                  {locale === 'ar' ? r.markets.name_ar : r.markets.name_en} ·{' '}
+                  <bdi>{r.markets.currency}</bdi>
+                </p>
                 <p>{locale === 'ar' ? r.services?.name_ar : r.services?.name_en}</p>
                 <p>
                   {t.pickup}:{' '}

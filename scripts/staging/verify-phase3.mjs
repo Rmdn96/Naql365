@@ -35,7 +35,7 @@ try {
   admin = createClient(url, adminKey, { auth: { persistSession: false, autoRefreshToken: false } });
   query(
     ref,
-    `insert into public.organizations(id,name) values('${otherOrg}','Phase 3 isolation fixture')`,
+    `insert into public.organizations(id,name) values('${otherOrg}','Phase 3 isolation fixture');select private.provision_initial_market_catalogue('${otherOrg}');update public.markets set active=true where organization_id='${otherOrg}'`,
   );
   const identities = {};
   for (const label of ['customer', 'sales', 'operations', 'peer', 'other']) {
@@ -135,7 +135,7 @@ try {
       }
       query(
         ref,
-        `begin;delete from public.audit_logs where organization_id='${otherOrg}';delete from public.organizations where id='${otherOrg}';commit;`,
+        `begin;delete from public.market_cities where organization_id='${otherOrg}';delete from public.market_regions where organization_id='${otherOrg}';delete from public.markets where organization_id='${otherOrg}';delete from public.audit_logs where organization_id='${otherOrg}';delete from public.organizations where id='${otherOrg}';commit;`,
       );
       const remaining = query(
         ref,

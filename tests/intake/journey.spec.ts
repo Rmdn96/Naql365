@@ -23,6 +23,9 @@ test('customer persists a bilingual request through private image, review, submi
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
       .violations,
   ).toEqual([]);
+  await page
+    .locator('#request-market')
+    .selectOption({ label: locale === 'ar' ? 'السعودية' : 'Saudi Arabia' });
   await page.getByRole('button', { name: t.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const draftUrl = page.url();
@@ -33,7 +36,18 @@ test('customer persists a bilingual request through private image, review, submi
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.getByRole('button', { name: t.next, exact: true }).click();
   for (const kind of ['pickup', 'delivery']) {
-    await page.locator(`#${kind}-city`).fill(kind === 'pickup' ? 'Riyadh' : 'Jeddah');
+    await page
+      .locator(`#${kind}-city`)
+      .selectOption({
+        label:
+          kind === 'pickup'
+            ? locale === 'ar'
+              ? 'الرياض — الرياض'
+              : 'Riyadh — Riyadh'
+            : locale === 'ar'
+              ? 'جدة — مكة المكرمة'
+              : 'Jeddah — Makkah',
+      });
     await page.locator(`#${kind}-district`).fill('Acceptance district');
     await page.locator(`#${kind}-address`).fill(`Harmless ${kind} address`);
     await page.locator(`#${kind}-notes`).fill('No real business data');
@@ -41,7 +55,9 @@ test('customer persists a bilingual request through private image, review, submi
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.reload();
   await page.locator('.wizard-progress button').nth(1).click();
-  await expect(page.locator('#pickup-city')).toHaveValue('Riyadh');
+  await expect(page.locator('#pickup-city option:checked')).toHaveText(
+    locale === 'ar' ? 'الرياض — الرياض' : 'Riyadh — Riyadh',
+  );
   await page.getByRole('button', { name: t.next, exact: true }).click();
   await page.locator('#description').fill('Harmless staging furniture request');
   await page.getByRole('button', { name: t.addItem, exact: true }).click();
