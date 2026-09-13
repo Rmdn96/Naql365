@@ -29,7 +29,7 @@ export default async function Page({
   }
   const request = quote.quotes?.requests;
   return (
-    <main className="container page narrow">
+    <div className="container page narrow">
       <Link href={`/${locale}/account/quotes`}>{t.back}</Link>
       <div className="wizard-top">
         <h1>{t.quoteDetails}</h1>
@@ -115,6 +115,6 @@ export default async function Page({
       {(quote.status === 'SENT' || quote.status === 'VIEWED') && (
         <QuoteActions locale={locale} quoteVersionId={id} />
       )}
-    </main>
+    </div>
   );
 }

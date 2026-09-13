@@ -99,7 +99,7 @@ export default async function Page({
   );
   payload.additional_service_ids = options.map((o) => o.id);
   return (
-    <main className="container page">
+    <div className="container page">
       <Link href={`/${locale}/portal/quotes`}>{t.back}</Link>
       <h1>
         {t.pricing} · <bdi>{details.request.reference}</bdi>
@@ -130,6 +130,6 @@ export default async function Page({
         evaluation={latest ?? undefined}
         draft={draft ?? undefined}
       />
-    </main>
+    </div>
   );
 }

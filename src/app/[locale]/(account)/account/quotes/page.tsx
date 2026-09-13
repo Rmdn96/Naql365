@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     .flatMap((q) => q.quote_versions.map((v) => ({ q, v })))
     .sort((a, b) => (b.v.sent_at ?? '').localeCompare(a.v.sent_at ?? ''));
   return (
-    <main className="container page">
+    <div className="container page">
       <h1>{t.myQuotes}</h1>
       {!versions.length ? (
         <EmptyState title={t.myQuotes}>{t.noQuotes}</EmptyState>
@@ -53,6 +53,6 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 }
