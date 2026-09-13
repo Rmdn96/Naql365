@@ -47,7 +47,7 @@ export function Workspace({ locale, data }: { locale: Locale; data: OperationsWo
         <h2>{t.orders}</h2>
         <ul className="request-list">
           {data.orders
-            .filter((o) => !o.jobs && (!marketFilter || o.market_id === marketFilter))
+            .filter((o) => o.jobs.length === 0 && (!marketFilter || o.market_id === marketFilter))
             .map((o) => (
               <li key={o.id}>
                 <bdi>{o.reference}</bdi> <Badge>{marketName(o.market_id)}</Badge>
