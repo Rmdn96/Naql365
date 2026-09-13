@@ -273,7 +273,16 @@ test('hosted commercial journey enforces pricing, lifecycle, isolation and acces
   await expect(page.getByText(qt.manualVerified, { exact: false })).toBeVisible();
   await expect(page.getByText(`${qt.service}: نقل الأثاث`, { exact: true })).toBeVisible();
   await expect(page.locator('.badge')).toHaveText('تم الاطلاع');
-  await expect(page.getByText(qt.vat, { exact: false })).toBeVisible();
+  const taxSnapshot = await admin
+    .from('quote_versions')
+    .select('tax_label_ar,vat_rate_bps')
+    .eq('id', primaryVersion)
+    .single();
+  expect(taxSnapshot.error).toBeNull();
+  expect(taxSnapshot.data!.tax_label_ar).toBeTruthy();
+  await expect(page.locator('.commercial-summary dt')).toContainText([
+    `${taxSnapshot.data!.tax_label_ar} (${taxSnapshot.data!.vat_rate_bps / 100}%)`,
+  ]);
   expect(
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
       .violations,
