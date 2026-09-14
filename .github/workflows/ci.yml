@@ -58,7 +58,9 @@ jobs:
       - run: npx supabase db reset
       - run: npm run test:db
       - run: node scripts/test-operations-concurrency.mjs
+      - run: node scripts/test-driver-concurrency.mjs
       - run: npm run db:types
+      - run: git diff --exit-code -- src/infrastructure/supabase/database.types.ts
       - run: npm run typecheck
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
