@@ -47,3 +47,7 @@ The committed database types come from the pinned Supabase CLI's local workflow.
 `scripts/staging/verify-phase4.mjs` requires explicit Staging project/org, verified Preview origin and an in-memory protection bypass. It creates disposable identities, runs `playwright.phase4.config.ts`, and cleans their scoped data/files in `finally`. Never run overlapping hosted fixture suites. Test credentials remain only in process memory/environment, with screenshots/traces/video disabled and a safe reporter. The Preview must point to Supabase Staging, never Production.
 
 The canonical [Phase 4 report](reports/Naql365-Phase-4-Report.md) records actual execution and cleanup evidence. Phase 5, merging and Production remain outside authorization.
+
+# Completed assignment attribution
+
+Completed history is authorized by a private, stable Trip-to-final-assignment relationship captured transactionally before completion closes the active assignment. It does not infer authority from equal timestamps: PostgreSQL transaction timestamps can match across emergency handovers and completion. Migration `20260915000100` preserves unambiguous existing attribution; ambiguous legacy rows fail closed for Driver history rather than guessing an identity. Staff history remains available. The regression performs two handovers and completion in one transaction and denies the previous Driver afterward. No commercial snapshot changes.

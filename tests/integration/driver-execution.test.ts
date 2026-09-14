@@ -325,12 +325,28 @@ it('binds optional arrival location and final POD to the driver actor and preser
     (await db.query(`select actor_id,recipient_name from public.trip_pods where trip_id='${trip}'`))
       .rows,
   ).toEqual([{ actor_id: replacement, recipient_name: 'Separate recipient' }]);
+  // Equal transaction timestamps must not authorize a previous assignment.
+  await db.exec('begin');
+  await op('reassign', trip, {
+    driverId: resource,
+    vehicleId: vehicle,
+    reason: 'Regression handover',
+    confirmed: true,
+  });
+  await op('reassign', trip, {
+    driverId: otherResource,
+    vehicleId: vehicle,
+    reason: 'Final handover',
+    confirmed: true,
+  });
   const mutation = randomUUID(),
     rev = (
       await db.query<{ revision: number }>(`select revision from public.trips where id='${trip}'`)
     ).rows[0]!.revision;
   const done = await command(replacement, 'complete_trip', {}, trip, mutation, rev);
   expect(await command(replacement, 'complete_trip', {}, trip, mutation, rev)).toEqual(done);
+  await db.exec('commit');
+  await expect(as(driver, `select public.driver_trip('${trip}') v`)).rejects.toThrow();
   const historical = (
     await as<{ v: { contact: unknown; stops: { address: unknown }[] } }>(
       replacement,
