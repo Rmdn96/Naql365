@@ -768,3 +768,45 @@ dialog::backdrop {
     margin-inline: -0.5rem;
   }
 }
+
+.driver-shell {
+  max-width: 48rem;
+}
+.driver-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-block-end: 1rem;
+}
+.driver-nav a {
+  padding: 0.75rem;
+  min-height: 44px;
+}
+.driver-nav [aria-current] {
+  border-bottom: 3px solid var(--color-primary, #1677ff);
+  font-weight: 700;
+}
+.driver-stops {
+  padding-inline-start: 1.5rem;
+  display: grid;
+  gap: 1rem;
+}
+.driver-shell p {
+  overflow-wrap: anywhere;
+}
+.driver-signature {
+  width: 100%;
+  height: auto;
+  border: 2px solid #0b1f33;
+  background: #fff;
+  touch-action: none;
+}
+.driver-shell fieldset {
+  min-inline-size: 0;
+  border: 0;
+  padding: 0;
+}
+.driver-shell summary {
+  cursor: pointer;
+  padding-block: 1rem;
+}

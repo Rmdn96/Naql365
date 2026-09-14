@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.5"
-  }
   public: {
     Tables: {
       additional_services: {
@@ -523,29 +518,137 @@ export type Database = {
           },
         ]
       }
+      issue_photos: {
+        Row: {
+          actor_id: string
+          created_at: string
+          finalized_at: string | null
+          id: string
+          issue_id: string
+          mime_type: string
+          object_name: string
+          organization_id: string
+          size_bytes: number
+          state: string
+        }
+        Insert: {
+          actor_id: string
+          created_at?: string
+          finalized_at?: string | null
+          id: string
+          issue_id: string
+          mime_type: string
+          object_name: string
+          organization_id: string
+          size_bytes: number
+          state?: string
+        }
+        Update: {
+          actor_id?: string
+          created_at?: string
+          finalized_at?: string | null
+          id?: string
+          issue_id?: string
+          mime_type?: string
+          object_name?: string
+          organization_id?: string
+          size_bytes?: number
+          state?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_photos_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issue_photos_organization_id_issue_id_fkey"
+            columns: ["organization_id", "issue_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       issues: {
         Row: {
+          actor_id: string | null
+          category: string | null
           created_at: string
           id: string
+          market_id: string | null
+          mutation_id: string | null
           organization_id: string
+          reason: string | null
           request_id: string
+          resolution: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          stop_id: string | null
+          trip_id: string | null
           updated_at: string
         }
         Insert: {
+          actor_id?: string | null
+          category?: string | null
           created_at?: string
           id?: string
+          market_id?: string | null
+          mutation_id?: string | null
           organization_id: string
+          reason?: string | null
           request_id: string
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          stop_id?: string | null
+          trip_id?: string | null
           updated_at?: string
         }
         Update: {
+          actor_id?: string | null
+          category?: string | null
           created_at?: string
           id?: string
+          market_id?: string | null
+          mutation_id?: string | null
           organization_id?: string
+          reason?: string | null
           request_id?: string
+          resolution?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          stop_id?: string | null
+          trip_id?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "issue_stop_trip"
+            columns: ["organization_id", "trip_id", "stop_id"]
+            isOneToOne: false
+            referencedRelation: "trip_stops"
+            referencedColumns: ["organization_id", "trip_id", "id"]
+          },
+          {
+            foreignKeyName: "issue_trip_market"
+            columns: ["organization_id", "market_id", "trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "issues_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "issues_organization_id_fkey"
             columns: ["organization_id"]
@@ -559,6 +662,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "requests"
             referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "issues_resolved_by_fkey"
+            columns: ["resolved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -2603,6 +2713,64 @@ export type Database = {
           },
         ]
       }
+      trip_event_locations: {
+        Row: {
+          accuracy_m: number | null
+          actor_id: string
+          captured_at: string
+          event_id: string
+          latitude: number
+          longitude: number
+          organization_id: string
+          recorded_at: string
+          trip_id: string
+        }
+        Insert: {
+          accuracy_m?: number | null
+          actor_id: string
+          captured_at: string
+          event_id: string
+          latitude: number
+          longitude: number
+          organization_id: string
+          recorded_at?: string
+          trip_id: string
+        }
+        Update: {
+          accuracy_m?: number | null
+          actor_id?: string
+          captured_at?: string
+          event_id?: string
+          latitude?: number
+          longitude?: number
+          organization_id?: string
+          recorded_at?: string
+          trip_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_event_locations_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_event_locations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "trip_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trip_event_locations_organization_id_trip_id_fkey"
+            columns: ["organization_id", "trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["organization_id", "id"]
+          },
+        ]
+      }
       trip_events: {
         Row: {
           actor_id: string | null
@@ -2613,6 +2781,7 @@ export type Database = {
           metadata: Json
           occurred_at: string
           organization_id: string
+          source: string
           stop_id: string | null
           trip_id: string
           updated_at: string
@@ -2626,6 +2795,7 @@ export type Database = {
           metadata?: Json
           occurred_at?: string
           organization_id: string
+          source?: string
           stop_id?: string | null
           trip_id: string
           updated_at?: string
@@ -2639,6 +2809,7 @@ export type Database = {
           metadata?: Json
           occurred_at?: string
           organization_id?: string
+          source?: string
           stop_id?: string | null
           trip_id?: string
           updated_at?: string
@@ -2794,6 +2965,7 @@ export type Database = {
           city_id: string | null
           completed_at: string | null
           created_at: string
+          driver_instructions: string
           id: string
           kind: string | null
           market_id: string
@@ -2810,6 +2982,7 @@ export type Database = {
           city_id?: string | null
           completed_at?: string | null
           created_at?: string
+          driver_instructions?: string
           id?: string
           kind?: string | null
           market_id: string
@@ -2826,6 +2999,7 @@ export type Database = {
           city_id?: string | null
           completed_at?: string | null
           created_at?: string
+          driver_instructions?: string
           id?: string
           kind?: string | null
           market_id?: string
@@ -3114,9 +3288,44 @@ export type Database = {
       }
       customer_enrollment_state: { Args: never; Returns: string }
       customer_order_progress: { Args: { p_order_id: string }; Returns: Json }
+      driver_evidence_path: {
+        Args: { p_id: string; p_kind: string }
+        Returns: Json
+      }
+      driver_execute: {
+        Args: {
+          p_action: string
+          p_location?: Json
+          p_mutation: string
+          p_payload?: Json
+          p_revision: number
+          p_trip: string
+        }
+        Returns: Json
+      }
+      driver_finalize_pod: {
+        Args: { p_file: string; p_location?: Json; p_trip: string }
+        Returns: Json
+      }
+      driver_identity: { Args: never; Returns: Json }
+      driver_trip: { Args: { p_trip: string }; Returns: Json }
+      driver_trips: {
+        Args: { p_offset?: number; p_view?: string }
+        Returns: Json
+      }
       has_permission: {
         Args: { organization_id: string; permission_code: string }
         Returns: boolean
+      }
+      issue_photo_command: {
+        Args: {
+          p_action: string
+          p_file: string
+          p_issue: string
+          p_mime?: string
+          p_size?: number
+        }
+        Returns: Json
       }
       onboard_customer: {
         Args: { p_locale: string; p_name: string; p_phone: string }
@@ -3131,6 +3340,16 @@ export type Database = {
           p_organization_id: string
           p_payload?: Json
           p_revision: number
+        }
+        Returns: Json
+      }
+      report_driver_issue: {
+        Args: {
+          p_category: string
+          p_mutation: string
+          p_reason: string
+          p_stop: string
+          p_trip: string
         }
         Returns: Json
       }
@@ -3152,6 +3371,10 @@ export type Database = {
           p_request_id: string
           p_size?: number
         }
+        Returns: Json
+      }
+      resolve_driver_issue: {
+        Args: { p_issue: string; p_reason: string }
         Returns: Json
       }
       respond_to_quote: {
