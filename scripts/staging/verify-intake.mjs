@@ -46,10 +46,11 @@ try {
     ref,
     `begin;
  insert into public.organizations(id,name) values('${otherOrg}','Naql365 intake isolation fixture');
+ select private.provision_initial_market_catalogue('${otherOrg}');
  insert into public.organization_memberships(organization_id,profile_id,member_type) values('${org}','${users[1]}','customer'),('${otherOrg}','${users[2]}','customer');
  insert into public.user_roles(organization_id,profile_id,role_id) select organization_id,profile_id,r.id from public.organization_memberships m cross join public.roles r where m.profile_id in ('${users[1]}','${users[2]}') and r.code='CUSTOMER';
  insert into public.customers(organization_id,profile_id) values('${org}','${users[1]}'),('${otherOrg}','${users[2]}');
- insert into public.requests(id,organization_id,customer_id) select case when profile_id='${users[1]}' then '${peerRequest}'::uuid else '${otherRequest}'::uuid end,organization_id,id from public.customers where profile_id in ('${users[1]}','${users[2]}');commit;`,
+ insert into public.requests(id,organization_id,customer_id,market_id) select case when c.profile_id='${users[1]}' then '${peerRequest}'::uuid else '${otherRequest}'::uuid end,c.organization_id,c.id,m.id from public.customers c join public.markets m on m.organization_id=c.organization_id and m.country_code='SA' where c.profile_id in ('${users[1]}','${users[2]}');commit;`,
   );
   const env = {
     ...process.env,
@@ -99,6 +100,9 @@ try {
     delete from public.customers where profile_id in (${ids});
     delete from public.user_roles where profile_id in (${ids});
     delete from public.organization_memberships where profile_id in (${ids});
+    delete from public.market_cities where organization_id='${otherOrg}';
+    delete from public.market_regions where organization_id='${otherOrg}';
+    delete from public.markets where organization_id='${otherOrg}';
     delete from public.audit_logs where actor_id in (${ids}) or organization_id='${otherOrg}' or entity_id in (${ids});
     delete from public.organizations where id='${otherOrg}';commit;`,
       );

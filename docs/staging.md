@@ -1,6 +1,6 @@
 # Staging architecture and reconstruction
 
-Phase 0.5 verified the foundation; Phase 1 extends the same isolated Staging environment with customer identity and request intake. Phase 2 adds isolated pricing and quote acceptance verification. Dispatch, payment and Phase 3+ workflows remain excluded. Historical foundation evidence stays in the Phase 0.5 report; current intake acceptance belongs to the Phase 1 report.
+Phase 0.5 verified the foundation; Phase 1 added customer identity and request intake, Phase 2 pricing and quote acceptance, and Phase 3 multi-Trip dispatch and private POD. Phase 3.5 extends this same isolated Staging environment with Saudi and Egyptian markets. Each canonical phase report preserves its historical acceptance evidence. Payments and Phase 4 remain excluded.
 
 ## Environment inventory
 
@@ -59,8 +59,16 @@ Keep one reviewed deployment origin active for acceptance. After a replacement P
 
 ## Phase 3 rollout gate
 
-Phase 3 remains unaccepted until its canonical report records all required hosted evidence. The three additive repository migrations were applied after successful complete Supabase CI; Staging now contains thirteen migrations and 49 public tables with RLS. Authoritative hosted database types were regenerated and typechecked. The genuine protected Phase 3 Preview and exact Auth origin are recorded in the canonical report and operator configuration. Run the Phase 3, Phase 2, intake and foundation suites sequentially on that same Preview. Finish with scoped data/file/session cleanup and automation-bypass revocation. The accepted Phase 2 Preview is not Phase 3 evidence.
+The accepted Phase 3 baseline contained thirteen migrations and 49 public tables with RLS. Its canonical report preserves the accepted Preview and tests; protected PR #4 subsequently merged it into develop. Phase 3.5 adds six migrations, bringing Staging to nineteen migrations and 54 public tables with RLS. Run both-market Phase 3 journeys, Phase 2, intake and foundation suites sequentially on the current Phase 3.5 Preview. Finish with scoped data/file/session cleanup and automation-bypass revocation. Historical Preview results do not substitute for current acceptance.
 
 ## Phase 2 verification
 
 Use the canonical Phase 2 report for the accepted application source and Preview origin. The operator runs guarded Phase 2, intake and Foundation browser suites sequentially against that same origin, followed by repository migration/RLS verification and regenerated types. Test catalogues are synthetic Staging configuration; they do not approve Production tariffs. Preserve required role/permission/catalogue data during scoped fixture cleanup. Revoke the temporary automation-bypass credential only after all hosted tests finish.
+
+## Phase 3.5 Staging setup
+
+After current-source CI passes, apply repository migrations only to the explicitly allowlisted `naql365-staging` Supabase project. Existing accepted Staging data is upgraded; do not reset it. A fresh local/CI database is reconstructed separately.
+
+For a fresh controlled Staging catalogue, run intake configuration first, then `node scripts/staging/configure-markets.mjs --apply`, then `npm run staging:configure-pricing`. These commands verify the Staging project and require its enrollment organization. Market provisioning adds initial geography; the Staging-only step explicitly activates SA/EG service/city pairs. Pricing/tax fixtures are synthetic: SA 1500 bps, EG 2000 bps, 19 rules per market. They are neither approved tariffs nor a legal tax compliance claim.
+
+Deploy the tested branch as a protected Vercel Preview. Preview variables remain `APP_ENV`, `STAGING_AUTH_SMOKE_ENABLED`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, all Preview-scoped; no Production scope is required. Configure Supabase Auth to the exact candidate origin and the four bounded AR/EN callback URLs in `config/staging/supabase/config.toml`. No redirect wildcard is needed. The canonical Phase 3.5 report identifies the final accepted candidate and any remaining gates.

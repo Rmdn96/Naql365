@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     throw error;
   }
   return (
-    <main className="container page">
+    <div className="container page">
       <h1>{t.salesQuotes}</h1>
       <h2>{t.awaiting}</h2>
       {!data.length ? (
@@ -31,7 +31,10 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             <li key={r.id}>
               <div>
                 <Badge>
-                  {quoteStatusLabel(r.quotes?.quote_versions.at(-1)?.status ?? r.status, locale)}
+                  {quoteStatusLabel(
+                    r.quotes.flatMap((q) => q.quote_versions).at(-1)?.status ?? r.status,
+                    locale,
+                  )}
                 </Badge>
                 <h2>
                   <bdi>{r.reference}</bdi>
@@ -46,6 +49,6 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 }

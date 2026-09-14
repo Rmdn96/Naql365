@@ -1,12 +1,7 @@
 import { z } from 'zod';
+import { marketDate, normalizeMarketPhone } from '@/domain/markets/model';
 
-export function normalizePhone(value: string): string {
-  const digits = value
-    .replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
-    .replace(/[\s()-]/g, '');
-  if (/^05\d{8}$/.test(digits)) return `+966${digits.slice(1)}`;
-  return digits.startsWith('00') ? `+${digits.slice(2)}` : digits;
-}
+export const normalizePhone = (value: string) => normalizeMarketPhone(value);
 export const phoneInput = z
   .string()
   .transform(normalizePhone)
@@ -19,6 +14,10 @@ export const profileInput = z.strictObject({
 const text = (max: number) => z.string().max(max);
 export const locationInput = z.strictObject({
   city: text(120),
+  city_id: z.union([z.uuid(), z.literal('')]).default(''),
+  postal_code: text(20).default(''),
+  building: text(100).default(''),
+  unit: text(60).default(''),
   district: text(120),
   address: text(500),
   notes: text(1000),
@@ -72,21 +71,13 @@ export const commandResult = z.object({
   status: z.enum(['DRAFT', 'SUBMITTED', 'CANCELLED']),
   reference: z.string().nullable(),
 });
-export function riyadhDate(now = new Date()) {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Riyadh',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(now);
-}
-export function submissionIssues(draft: RequestDraft): string[] {
+export function submissionIssues(draft: RequestDraft, timezone: string): string[] {
   const missing: string[] = [];
   if (!draft.service_id) missing.push('service');
   if (
-    !draft.pickup.city.trim() ||
+    !draft.pickup.city_id ||
     !draft.pickup.address.trim() ||
-    !draft.delivery.city.trim() ||
+    !draft.delivery.city_id ||
     !draft.delivery.address.trim()
   )
     missing.push('route');
@@ -96,7 +87,11 @@ export function submissionIssues(draft: RequestDraft): string[] {
     draft.items.some((i) => !i.description.trim())
   )
     missing.push('shipment');
-  if (!draft.preferred_date || draft.preferred_date < riyadhDate() || !draft.time_window)
+  if (
+    !draft.preferred_date ||
+    draft.preferred_date < marketDate(new Date(), timezone) ||
+    !draft.time_window
+  )
     missing.push('schedule');
   if (!draft.contact_name.trim() || !phoneInput.safeParse(draft.contact_phone).success)
     missing.push('contact');
@@ -104,6 +99,10 @@ export function submissionIssues(draft: RequestDraft): string[] {
 }
 export const emptyLocation = (): RequestDraft['pickup'] => ({
   city: '',
+  city_id: '',
+  postal_code: '',
+  building: '',
+  unit: '',
   district: '',
   address: '',
   notes: '',

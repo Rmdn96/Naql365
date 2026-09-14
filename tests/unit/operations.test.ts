@@ -4,8 +4,13 @@ const plan = {
   plannedStart: '2026-10-01T10:00:00Z',
   plannedEnd: '2026-10-01T12:00:00Z',
   stops: [
-    { kind: 'PICKUP', address: 'A', pickups: [] },
-    { kind: 'DELIVERY', address: 'B', pickups: [0] },
+    { cityId: '33500000-0000-4000-8000-000000000001', kind: 'PICKUP', address: 'A', pickups: [] },
+    {
+      cityId: '33500000-0000-4000-8000-000000000001',
+      kind: 'DELIVERY',
+      address: 'B',
+      pickups: [0],
+    },
   ],
 };
 describe('operational command validation', () => {

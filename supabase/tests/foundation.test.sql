@@ -14,6 +14,14 @@ select public.test_assert((select count(*)=5 from public.profiles),'registration
 select public.test_assert((select count(*)=0 from public.user_roles),'metadata cannot assign roles');
 select public.test_assert((select count(*)=0 from public.organization_memberships),'metadata cannot assign tenants');
 insert into public.organizations(id,name) values ('20000000-0000-4000-8000-000000000001','Test A'),('20000000-0000-4000-8000-000000000002','Test B');
+-- Explicit synthetic catalogue for this rollback-only fixture; no production coverage.
+insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code)
+ select md5(id::text||'SA')::uuid,id,'SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966' from public.organizations where id::text like '20000000%';
+insert into public.market_regions(id,organization_id,market_id,code,name_ar,name_en,administrative_type)
+ select md5(id::text||'region')::uuid,organization_id,id,'fixture','منطقة اختبار','Fixture region','region' from (select * from public.markets where organization_id::text like '20000000%') fixture_markets;
+insert into public.market_cities(id,organization_id,market_id,region_id,code,name_ar,name_en)
+ select md5(m.id::text||c.code)::uuid,m.organization_id,m.id,r.id,c.code,c.name,c.name from (select * from public.markets where organization_id::text like '20000000%') m join public.market_regions r on r.market_id=m.id cross join (values('Riyadh','Riyadh'),('Jeddah','Jeddah')) c(code,name);
+
 insert into public.organization_memberships(organization_id,profile_id,member_type) values
  ('20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001','customer'),
  ('20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000002','customer'),
@@ -27,15 +35,15 @@ insert into public.customers(id,organization_id,profile_id) values
  ('30000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001'),
  ('30000000-0000-4000-8000-000000000002','20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000002'),
  ('30000000-0000-4000-8000-000000000003','20000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000003');
-insert into public.requests(id,organization_id,customer_id) select id,organization_id,id from public.customers;
+insert into public.requests(id,organization_id,customer_id,market_id) select id,organization_id,id,md5(organization_id::text||'SA')::uuid from public.customers;
 insert into public.request_items(organization_id,request_id) select organization_id,id from public.requests;
 insert into public.file_objects(id,organization_id,owner_profile_id,bucket_id) select id,organization_id,profile_id,'attachments' from public.customers;
 insert into storage.objects(bucket_id,name) select bucket_id,object_name from public.file_objects;
 insert into public.quotes(id,organization_id,request_id) select id,organization_id,id from public.requests;
-insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,accepted_at,distance_km,distance_source,distance_verified_at)
- select id,organization_id,id,1,'ACCEPTED',now(),now()+interval '1 day',now(),1,'MANUAL_VERIFIED',now() from public.quotes;
-insert into public.quote_versions(id,organization_id,quote_id,version) values ('40000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001',2);
-insert into public.orders(organization_id,quote_id,accepted_quote_version_id,idempotency_key) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','test-acceptance');
+insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,accepted_at,distance_km,distance_source,distance_verified_at,currency)
+ select id,organization_id,id,1,'ACCEPTED',now(),now()+interval '1 day',now(),1,'MANUAL_VERIFIED',now(),'SAR' from public.quotes;
+insert into public.quote_versions(id,organization_id,quote_id,version,currency) values ('40000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001',2,'SAR');
+insert into public.orders(organization_id,quote_id,accepted_quote_version_id,idempotency_key,currency) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','test-acceptance','SAR');
 insert into public.jobs(id,organization_id,order_id) select '50000000-0000-4000-8000-000000000001',organization_id,id from public.orders;
 insert into public.trips(id,organization_id,job_id) values
  ('60000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','50000000-0000-4000-8000-000000000001'),
@@ -49,10 +57,10 @@ select public.test_assert((select bool_and(not public) from storage.buckets wher
 do $$ begin
  begin insert into public.trip_events(organization_id,trip_id,stop_id,event_type) values ('20000000-0000-4000-8000-000000000001','60000000-0000-4000-8000-000000000002','70000000-0000-4000-8000-000000000001','test'); raise exception 'event linked to another trip stop'; exception when foreign_key_violation then null; end;
  begin insert into public.trip_stops(organization_id,trip_id,position) values ('20000000-0000-4000-8000-000000000001','60000000-0000-4000-8000-000000000001',1); raise exception 'duplicate stop position accepted'; exception when unique_violation then null; end;
- begin insert into public.drivers(organization_id,profile_id) values ('20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001'); raise exception 'customer linked as driver'; exception when check_violation then null; end;
+ begin insert into public.drivers(organization_id,profile_id,market_id) values ('20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001',md5(('20000000-0000-4000-8000-000000000001')::text||'SA')::uuid); raise exception 'customer linked as driver'; exception when check_violation then null; end;
  begin update public.organization_memberships set member_type='staff' where profile_id='10000000-0000-4000-8000-000000000001'; raise exception 'incompatible membership change accepted'; exception when check_violation then null; end;
- begin insert into public.requests(organization_id,customer_id) values ('20000000-0000-4000-8000-000000000002','30000000-0000-4000-8000-000000000001'); raise exception 'cross-tenant FK accepted'; exception when foreign_key_violation then null; end;
- begin insert into public.orders(organization_id,quote_id,accepted_quote_version_id,idempotency_key) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','40000000-0000-4000-8000-000000000001','repeated-acceptance'); raise exception 'duplicate quote order accepted'; exception when unique_violation then null; end;
+ begin insert into public.requests(organization_id,customer_id,market_id) values ('20000000-0000-4000-8000-000000000002','30000000-0000-4000-8000-000000000001',md5(('20000000-0000-4000-8000-000000000002')::text||'SA')::uuid); raise exception 'cross-tenant FK accepted'; exception when foreign_key_violation then null; end;
+ begin insert into public.orders(organization_id,quote_id,accepted_quote_version_id,idempotency_key,currency) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','40000000-0000-4000-8000-000000000001','repeated-acceptance','SAR'); raise exception 'duplicate quote order accepted'; exception when unique_violation then null; end;
  begin insert into public.user_roles(organization_id,profile_id,role_id) select '20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001',id from public.roles where code='SUPER_ADMIN'; raise exception 'customer assigned staff role'; exception when check_violation then null; end;
 end $$;
 
@@ -73,7 +81,7 @@ select public.test_assert(not public.has_permission('20000000-0000-4000-8000-000
 do $$ begin
  begin insert into public.user_roles(organization_id,profile_id,role_id) select '20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001',id from public.roles where code='SUPER_ADMIN'; raise exception 'privilege escalation succeeded'; exception when insufficient_privilege then null; end;
  begin update public.organization_memberships set member_type='staff'; raise exception 'membership escalation succeeded'; exception when insufficient_privilege then null; end;
- begin insert into public.requests(organization_id,customer_id) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001'); raise exception 'unimplemented write succeeded'; exception when insufficient_privilege then null; end;
+ begin insert into public.requests(organization_id,customer_id,market_id) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001',md5(('20000000-0000-4000-8000-000000000001')::text||'SA')::uuid); raise exception 'unimplemented write succeeded'; exception when insufficient_privilege then null; end;
  begin insert into storage.objects(bucket_id,name) values ('attachments','20000000-0000-4000-8000-000000000002/forged'); raise exception 'storage upload bypass'; exception when insufficient_privilege then null; end;
  begin insert into public.audit_logs(action,entity_type) values ('forged','roles'); raise exception 'audit forgery succeeded'; exception when insufficient_privilege then null; end;
  begin update public.audit_logs set action='forged'; raise exception 'audit update succeeded'; exception when insufficient_privilege then null; end;

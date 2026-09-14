@@ -21,6 +21,10 @@ export default async function Page({
     <div className="container page">
       <Link href={`/${locale}/account/requests`}>{t.allRequests}</Link>
       <h1>{t.details}</h1>
+      <p>
+        {locale === 'ar' ? details.market.name_ar : details.market.name_en} ·{' '}
+        <bdi>{details.market.currency}</bdi>
+      </p>
       <Alert tone={details.request.status === 'SUBMITTED' ? 'success' : 'info'}>
         {details.request.status === 'SUBMITTED' ? t.success : t.cancelled}
       </Alert>
@@ -40,7 +44,7 @@ export default async function Page({
             {new Intl.DateTimeFormat(locale, {
               dateStyle: 'medium',
               timeStyle: 'short',
-              timeZone: 'Asia/Riyadh',
+              timeZone: details.market.timezone,
             }).format(new Date(details.request.submitted_at))}
           </time>
         </p>

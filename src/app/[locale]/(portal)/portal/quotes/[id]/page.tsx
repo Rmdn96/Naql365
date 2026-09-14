@@ -27,7 +27,7 @@ export default async function Page({
     throw error;
   }
   const latest = details.evaluations[0];
-  const versions = details.request.quotes?.quote_versions ?? [];
+  const versions = details.request.quotes.flatMap((q) => q.quote_versions);
   const draft = versions.find((v) => v.status === 'DRAFT');
   const locations = details.request.request_locations;
   const payload: RequestDraft = {
@@ -44,6 +44,10 @@ export default async function Page({
     additional_service_ids: [],
     pickup: {
       city: '',
+      city_id: '',
+      postal_code: '',
+      building: '',
+      unit: '',
       district: '',
       address: '',
       notes: '',
@@ -53,6 +57,10 @@ export default async function Page({
     },
     delivery: {
       city: '',
+      city_id: '',
+      postal_code: '',
+      building: '',
+      unit: '',
       district: '',
       address: '',
       notes: '',
@@ -65,6 +73,10 @@ export default async function Page({
     if (location.kind === 'pickup' || location.kind === 'delivery')
       payload[location.kind] = {
         city: location.city,
+        city_id: location.city_id ?? '',
+        postal_code: location.postal_code,
+        building: location.building,
+        unit: location.unit,
         district: location.district,
         address: location.address,
         notes: '',
@@ -87,11 +99,15 @@ export default async function Page({
   );
   payload.additional_service_ids = options.map((o) => o.id);
   return (
-    <main className="container page">
+    <div className="container page">
       <Link href={`/${locale}/portal/quotes`}>{t.back}</Link>
       <h1>
         {t.pricing} · <bdi>{details.request.reference}</bdi>
       </h1>
+      <p>
+        {locale === 'ar' ? details.request.markets.name_ar : details.request.markets.name_en} ·{' '}
+        <bdi>{details.request.markets.currency}</bdi>
+      </p>
       <RequestSummary
         locale={locale}
         payload={payload}
@@ -114,6 +130,6 @@ export default async function Page({
         evaluation={latest ?? undefined}
         draft={draft ?? undefined}
       />
-    </main>
+    </div>
   );
 }

@@ -5,7 +5,7 @@ import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { customerQuotes } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
 import { Badge, EmptyState } from '@/components/ui/primitives';
-import { formatSar } from '@/domain/pricing/model';
+import { formatMoney } from '@/domain/markets/model';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     .flatMap((q) => q.quote_versions.map((v) => ({ q, v })))
     .sort((a, b) => (b.v.sent_at ?? '').localeCompare(a.v.sent_at ?? ''));
   return (
-    <main className="container page">
+    <div className="container page">
       <h1>{t.myQuotes}</h1>
       {!versions.length ? (
         <EmptyState title={t.myQuotes}>{t.noQuotes}</EmptyState>
@@ -40,16 +40,19 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                   </Link>
                 </h2>
                 <p>
+                  {locale === 'ar' ? q.requests?.markets?.name_ar : q.requests?.markets?.name_en}
+                </p>
+                <p>
                   {t.relatedRequest}: <bdi>{q.requests?.reference}</bdi>
                 </p>
               </div>
               <strong>
-                <bdi>{formatSar(v.total_minor, locale)}</bdi>
+                <bdi>{formatMoney(v.total_minor, v.currency, locale)}</bdi>
               </strong>
             </li>
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 }

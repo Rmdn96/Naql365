@@ -8,12 +8,14 @@ import {
   draftInput,
   commandResult,
   submissionIssues,
-  riyadhDate,
   type RequestDraft,
 } from '@/domain/requests/intake';
 import type { RequestDetails } from '@/infrastructure/requests/service';
 import { Input, Select, Button, Alert } from '@/components/ui/primitives';
 import { RequestSummary } from './summary';
+import type { Market } from '@/domain/markets/model';
+import { marketDate, normalizeMarketPhone } from '@/domain/markets/model';
+import { marketDictionary } from '@/i18n/markets';
 
 const steps = [
   'service',
@@ -46,15 +48,17 @@ async function responseJson(response: Response): Promise<unknown> {
     );
   return result;
 }
-export function StartRequest({ locale }: { locale: Locale }) {
+export function StartRequest({ locale, markets }: { locale: Locale; markets: Market[] }) {
   const t = customerDictionary(locale),
     router = useRouter();
   const key = useRef<string | null>(null),
     busy = useRef(false);
   const [pending, setPending] = useState(false),
     [error, setError] = useState(false);
+  const [marketId, setMarketId] = useState('');
+  const mt = marketDictionary(locale);
   async function start() {
-    if (busy.current) return;
+    if (busy.current || !marketId) return;
     busy.current = true;
     setPending(true);
     setError(false);
@@ -65,7 +69,7 @@ export function StartRequest({ locale }: { locale: Locale }) {
           await fetch('/api/customer/requests', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ key: key.current }),
+            body: JSON.stringify({ key: key.current, marketId }),
           }),
         ),
       );
@@ -78,7 +82,24 @@ export function StartRequest({ locale }: { locale: Locale }) {
   }
   return (
     <>
-      <Button onClick={start} disabled={pending}>
+      <Select
+        id="request-market"
+        label={mt.market}
+        value={marketId}
+        disabled={pending}
+        onChange={(e) => {
+          setMarketId(e.target.value);
+          key.current = null;
+        }}
+      >
+        <option value="">{mt.choose}</option>
+        {markets.map((m) => (
+          <option key={m.id} value={m.id}>
+            {locale === 'ar' ? m.name_ar : m.name_en} — {m.currency}
+          </option>
+        ))}
+      </Select>
+      <Button onClick={start} disabled={pending || !marketId}>
         {pending ? t.loading : t.start}
       </Button>
       {error && <Alert tone="error">{t.error}</Alert>}
@@ -86,6 +107,7 @@ export function StartRequest({ locale }: { locale: Locale }) {
   );
 }
 export function RequestWizard({ locale, initial }: { locale: Locale; initial: RequestDetails }) {
+  const mt = marketDictionary(locale);
   const t = customerDictionary(locale),
     router = useRouter();
   const [details, setDetails] = useState(initial),
@@ -247,7 +269,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
   async function transition(operation: 'submit' | 'cancel') {
     if (operation === 'cancel' && !window.confirm(t.confirmCancel)) return;
     if (operation === 'submit') {
-      const issues = submissionIssues(draftRef.current);
+      const issues = submissionIssues(draftRef.current, details.market.timezone);
       if (issues.length) {
         setMissing(issues);
         setError(t.invalid);
@@ -358,11 +380,29 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
       maxLength={max}
       type={type}
       onChange={(e) => change({ ...draft, [key]: e.target.value })}
+      onBlur={() => {
+        if (key === 'contact_phone')
+          change({
+            ...draft,
+            contact_phone: normalizeMarketPhone(
+              draft.contact_phone,
+              details.market.phone_country_code,
+            ),
+          });
+      }}
     />
   );
   const locationField = (
     kind: 'pickup' | 'delivery',
-    key: 'city' | 'district' | 'address' | 'notes' | 'access_notes',
+    key:
+      | 'city'
+      | 'district'
+      | 'address'
+      | 'notes'
+      | 'access_notes'
+      | 'postal_code'
+      | 'building'
+      | 'unit',
     label: string,
     max: number,
   ) => (
@@ -378,6 +418,11 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
   const service = details.services.find((s) => s.id === draft.service_id);
   return (
     <div className="wizard">
+      <p>
+        {mt.market}: {locale === 'ar' ? details.market.name_ar : details.market.name_en} ·{' '}
+        <bdi>{details.market.currency}</bdi>
+      </p>
+      <p>{mt.fixed}</p>
       <div className="wizard-top">
         <p className="eyebrow">Naql365 · {t.request}</p>
         <Link href={`/${locale}/account/requests`}>{t.myRequests}</Link>
@@ -468,9 +513,41 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
             {(['pickup', 'delivery'] as const).map((kind) => (
               <section key={kind}>
                 <h2>{t[kind]}</h2>
-                {locationField(kind, 'city', t.city, 120)}
+                <Select
+                  id={`${kind}-city`}
+                  label={mt.city}
+                  value={draft[kind].city_id}
+                  onChange={(e) => {
+                    const city = details.cities.find((c) => c.id === e.target.value);
+                    change({
+                      ...draft,
+                      [kind]: {
+                        ...draft[kind],
+                        city_id: city?.id ?? '',
+                        city: city?.name_en ?? '',
+                      },
+                    });
+                  }}
+                >
+                  <option value="">{t.city}</option>
+                  {details.cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {locale === 'ar' ? city.name_ar : city.name_en} —{' '}
+                      {locale === 'ar'
+                        ? city.market_regions?.name_ar
+                        : city.market_regions?.name_en}
+                    </option>
+                  ))}
+                </Select>
+                {draft[kind].city_id &&
+                  !details.coverage.some(
+                    (c) => c.city_id === draft[kind].city_id && c.service_id === draft.service_id,
+                  ) && <Alert>{mt.unavailable}</Alert>}
                 {locationField(kind, 'district', t.district, 120)}
                 {locationField(kind, 'address', t.address, 500)}
+                {locationField(kind, 'postal_code', mt.postal, 20)}
+                {locationField(kind, 'building', mt.building, 100)}
+                {locationField(kind, 'unit', mt.unit, 60)}
                 {locationField(kind, 'notes', t.notes, 1000)}
               </section>
             ))}
@@ -653,7 +730,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
               id="date"
               label={t.date}
               type="date"
-              min={riyadhDate()}
+              min={marketDate(new Date(), details.market.timezone)}
               value={draft.preferred_date}
               onChange={(e) => change({ ...draft, preferred_date: e.target.value })}
             />
@@ -672,7 +749,9 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
                 </option>
               ))}
             </Select>
-            <p>{t.scheduleHint}</p>
+            <p>
+              {t.scheduleHint} {mt.timezone}: <bdi>{details.market.timezone}</bdi>
+            </p>
           </>
         )}
         {step === 6 && (

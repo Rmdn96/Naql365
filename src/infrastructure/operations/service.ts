@@ -10,13 +10,14 @@ import {
 import { portalAccess } from '@/infrastructure/identity/access';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { customerClient } from '@/infrastructure/requests/service';
+import { marketSchema } from '@/domain/markets/model';
 import { normalizeSignature } from './signature';
 
 function dbError(code: string): never {
   if (code === '42501') throw new AppError('forbidden', 'Operational access denied');
   if (['40001', '23505'].includes(code))
     throw new AppError('conflict', 'Operational state changed');
-  if (['22023', '22P02', '23514', '23502', '55000', '22007', '22008'].includes(code))
+  if (['22023', '22P02', '23514', '23503', '23502', '55000', '22007', '22008'].includes(code))
     throw new AppError('validation', 'Invalid operational action');
   throw new AppError('internal', 'Operation unavailable');
 }
@@ -57,10 +58,16 @@ export async function executeOperation(input: unknown) {
 }
 export async function operationsWorkspace() {
   const { client, organizationId } = await staffClient();
+  const marketResult = await client
+    .from('markets')
+    .select('*')
+    .eq('organization_id', organizationId);
+  if (marketResult.error) dbError(marketResult.error.code);
+  const markets = marketSchema.array().parse(marketResult.data);
   const [orders, jobs, trips, drivers, vehicles, assignments] = await Promise.all([
     client
       .from('orders')
-      .select('id,reference,operational_status,accepted_at,jobs(id)')
+      .select('id,market_id,currency,reference,operational_status,accepted_at,jobs(id)')
       .eq('organization_id', organizationId)
       .not('accepted_at', 'is', null)
       .order('created_at', { ascending: false })
@@ -79,13 +86,13 @@ export async function operationsWorkspace() {
       .limit(200),
     client
       .from('drivers')
-      .select('id,display_name,driver_type,active')
+      .select('id,market_id,display_name,driver_type,active')
       .eq('organization_id', organizationId)
       .order('display_name')
       .limit(500),
     client
       .from('vehicles')
-      .select('id,identifier,vehicle_type,active')
+      .select('id,market_id,identifier,vehicle_type,active')
       .eq('organization_id', organizationId)
       .order('identifier')
       .limit(500),
@@ -100,6 +107,7 @@ export async function operationsWorkspace() {
     if (result.error) dbError(result.error.code);
   return {
     organizationId,
+    markets,
     orders: orders.data ?? [],
     jobs: jobs.data ?? [],
     trips: trips.data ?? [],
@@ -152,6 +160,16 @@ export async function operationalTrip(id: string) {
     .maybeSingle();
   if (error) dbError(error.code);
   if (!trip) throw new AppError('not_found', 'Trip unavailable');
+  const [marketResult, cities] = await Promise.all([
+    client.from('markets').select('*').eq('id', trip.market_id).single(),
+    client
+      .from('market_cities')
+      .select('id,name_ar,name_en')
+      .eq('market_id', trip.market_id)
+      .order('name_en'),
+  ]);
+  if (marketResult.error || cities.error) throw new AppError('internal', 'Trip market unavailable');
+  const market = marketSchema.parse(marketResult.data);
   const [stops, dependencies, assignments, events, pod, drivers, vehicles] = await Promise.all([
     client.from('trip_stops').select('*').eq('trip_id', id).order('position'),
     client.from('trip_stop_dependencies').select('*').eq('trip_id', id),
@@ -174,6 +192,7 @@ export async function operationalTrip(id: string) {
     client
       .from('drivers')
       .select('id,display_name,driver_type')
+      .eq('market_id', trip.market_id)
       .eq('organization_id', organizationId)
       .eq('active', true)
       .order('display_name')
@@ -181,6 +200,7 @@ export async function operationalTrip(id: string) {
     client
       .from('vehicles')
       .select('id,identifier,vehicle_type')
+      .eq('market_id', trip.market_id)
       .eq('organization_id', organizationId)
       .eq('active', true)
       .order('identifier')
@@ -190,6 +210,8 @@ export async function operationalTrip(id: string) {
     if (result.error) dbError(result.error.code);
   return {
     trip,
+    market,
+    cities: cities.data,
     stops: stops.data ?? [],
     dependencies: dependencies.data ?? [],
     assignments: assignments.data ?? [],

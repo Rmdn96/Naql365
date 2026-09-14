@@ -5,7 +5,7 @@ import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { customerQuoteDetails } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
 import { Alert, Badge, Table } from '@/components/ui/primitives';
-import { formatSar } from '@/domain/pricing/model';
+import { formatMoney } from '@/domain/markets/model';
 import { QuoteActions } from '@/components/pricing/quote-actions';
 import { operationsDictionary } from '@/i18n/operations';
 export const dynamic = 'force-dynamic';
@@ -29,7 +29,7 @@ export default async function Page({
   }
   const request = quote.quotes?.requests;
   return (
-    <main className="container page narrow">
+    <div className="container page narrow">
       <Link href={`/${locale}/account/quotes`}>{t.back}</Link>
       <div className="wizard-top">
         <h1>{t.quoteDetails}</h1>
@@ -45,6 +45,10 @@ export default async function Page({
           </Link>
         </p>
       )}
+      <p>
+        {locale === 'ar' ? request?.markets?.name_ar : request?.markets?.name_en} ·{' '}
+        <bdi>{quote.currency}</bdi>
+      </p>
       <p>
         {t.relatedRequest}: <bdi>{request?.reference}</bdi>
       </p>
@@ -76,23 +80,24 @@ export default async function Page({
           .map((line) => [
             locale === 'ar' ? line.label_ar : line.label_en,
             <bdi key="q">{line.quantity}</bdi>,
-            <bdi key="a">{formatSar(line.total_amount_minor, locale)}</bdi>,
+            <bdi key="a">{formatMoney(line.total_amount_minor, quote.currency, locale)}</bdi>,
           ])}
       />
       <dl className="commercial-summary">
         <dt>{t.finalSubtotal}</dt>
         <dd>
-          <bdi>{formatSar(quote.final_subtotal_minor, locale)}</bdi>
+          <bdi>{formatMoney(quote.final_subtotal_minor, quote.currency, locale)}</bdi>
         </dd>
         <dt>
-          {t.vat} ({quote.vat_rate_bps / 100}%)
+          {(locale === 'ar' ? quote.tax_label_ar : quote.tax_label_en) ?? t.vat} (
+          {quote.vat_rate_bps / 100}%)
         </dt>
         <dd>
-          <bdi>{formatSar(quote.vat_amount_minor, locale)}</bdi>
+          <bdi>{formatMoney(quote.vat_amount_minor, quote.currency, locale)}</bdi>
         </dd>
         <dt>{t.total}</dt>
         <dd>
-          <bdi>{formatSar(quote.total_minor, locale)}</bdi>
+          <bdi>{formatMoney(quote.total_minor, quote.currency, locale)}</bdi>
         </dd>
         <dt>{t.validUntil}</dt>
         <dd>
@@ -101,7 +106,7 @@ export default async function Page({
               ? new Intl.DateTimeFormat(locale, {
                   dateStyle: 'medium',
                   timeStyle: 'short',
-                  timeZone: 'Asia/Riyadh',
+                  timeZone: request?.markets?.timezone,
                 }).format(new Date(quote.expires_at))
               : '—'}
           </time>
@@ -110,6 +115,6 @@ export default async function Page({
       {(quote.status === 'SENT' || quote.status === 'VIEWED') && (
         <QuoteActions locale={locale} quoteVersionId={id} />
       )}
-    </main>
+    </div>
   );
 }

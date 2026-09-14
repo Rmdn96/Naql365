@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import type { Locale } from '@/i18n/config';
 import { quotesDictionary } from '@/i18n/quotes';
-import { formatSar, parseSarToMinor } from '@/domain/pricing/model';
+import { parseAmountToMinor } from '@/domain/pricing/model';
+import { formatMoney } from '@/domain/markets/model';
 import { Alert, Button, Input, Select, Table } from '@/components/ui/primitives';
 
 type ComponentLine = {
@@ -28,6 +29,7 @@ type Evaluation = {
   pricing_evaluation_components: ComponentLine[];
 };
 type Version = {
+  currency: string;
   id: string;
   status: string;
   version: number;
@@ -86,7 +88,7 @@ export function SalesPricing({
       mutationId: crypto.randomUUID(),
     });
   const createDraft = () => {
-    const minor = parseSarToMinor(adjustment);
+    const minor = parseAmountToMinor(adjustment);
     if (minor === null) {
       setError(true);
       return;
@@ -162,12 +164,19 @@ export function SalesPricing({
               .map((line) => [
                 locale === 'ar' ? line.label_ar : line.label_en,
                 <bdi key="q">{line.quantity}</bdi>,
-                <bdi key="u">{formatSar(line.unit_amount_minor, locale)}</bdi>,
-                <bdi key="a">{formatSar(line.total_amount_minor, locale)}</bdi>,
+                <bdi key="u">
+                  {formatMoney(line.unit_amount_minor, evaluation.currency, locale)}
+                </bdi>,
+                <bdi key="a">
+                  {formatMoney(line.total_amount_minor, evaluation.currency, locale)}
+                </bdi>,
               ])}
           />
           <strong>
-            {t.calculated}: <bdi>{formatSar(evaluation.calculated_subtotal_minor, locale)}</bdi>
+            {t.calculated}:{' '}
+            <bdi>
+              {formatMoney(evaluation.calculated_subtotal_minor, evaluation.currency, locale)}
+            </bdi>
           </strong>
           {evaluation.status === 'CURRENT' && (
             <>
@@ -211,15 +220,15 @@ export function SalesPricing({
           </h2>
           <p>
             <strong>{t.finalSubtotal}: </strong>
-            <bdi>{formatSar(draft.final_subtotal_minor, locale)}</bdi>
+            <bdi>{formatMoney(draft.final_subtotal_minor, draft.currency, locale)}</bdi>
           </p>
           <p>
             <strong>{t.vat}: </strong>
-            <bdi>{formatSar(draft.vat_amount_minor, locale)}</bdi>
+            <bdi>{formatMoney(draft.vat_amount_minor, draft.currency, locale)}</bdi>
           </p>
           <p className="commercial-total">
             <strong>{t.total}: </strong>
-            <bdi>{formatSar(draft.total_minor, locale)}</bdi>
+            <bdi>{formatMoney(draft.total_minor, draft.currency, locale)}</bdi>
           </p>
           <Button disabled={busy} onClick={() => post(`/api/sales/quotes/${draft.id}/send`, {})}>
             {t.sendQuote}

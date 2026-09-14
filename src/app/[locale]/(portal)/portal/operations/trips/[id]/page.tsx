@@ -32,6 +32,12 @@ export default async function Page({
       <h1>
         <bdi>{data.trip.reference}</bdi>
       </h1>
+      <p>
+        {locale === 'ar' ? data.market.name_ar : data.market.name_en} ·{' '}
+        <bdi>
+          {data.market.currency} · {data.market.timezone}
+        </bdi>
+      </p>
       <Badge>{operationalStatus(data.trip.status, locale)}</Badge>
       <p>{t.requiredStops}</p>
       {!data.trip.started_at && !['CANCELLED', 'FAILED', 'COMPLETED'].includes(data.trip.status) ? (
@@ -67,7 +73,7 @@ export default async function Page({
                   {new Intl.DateTimeFormat(locale, {
                     dateStyle: 'medium',
                     timeStyle: 'short',
-                    timeZone: 'Asia/Riyadh',
+                    timeZone: data.market.timezone,
                   }).format(new Date(e.occurred_at))}
                 </time>
               </li>

@@ -21,6 +21,7 @@ export const stopStatuses = ['PENDING', 'EN_ROUTE', 'ARRIVED', 'IN_PROGRESS', 'C
 export const stopInput = z
   .object({
     kind: z.enum(['PICKUP', 'DELIVERY']),
+    cityId: z.uuid(),
     address: z.string().trim().min(1).max(500),
     notes: z.string().max(1000).default(''),
     pickups: z.array(z.number().int().min(0).max(39)).max(40),
@@ -61,10 +62,15 @@ export const payloadSchemas = {
   create_trip: empty,
   plan: planInput,
   create_driver: z
-    .object({ type: z.enum(['INTERNAL', 'EXTERNAL']), name: z.string().trim().min(1).max(120) })
+    .object({
+      marketId: z.uuid(),
+      type: z.enum(['INTERNAL', 'EXTERNAL']),
+      name: z.string().trim().min(1).max(120),
+    })
     .strict(),
   create_vehicle: z
     .object({
+      marketId: z.uuid(),
       type: z.string().trim().min(1).max(80),
       identifier: z.string().trim().min(1).max(60),
     })
@@ -123,6 +129,13 @@ export const progressSchema = z.object({
   reference: z.string().nullable(),
   status: z.enum(['NOT_STARTED', 'IN_PROGRESS', 'EXCEPTION', 'COMPLETED']),
   completedAt: z.string().nullable(),
+  market: z.object({
+    countryCode: z.string(),
+    nameAr: z.string(),
+    nameEn: z.string(),
+    currency: z.string(),
+    timezone: z.string(),
+  }),
   trips: z.array(
     z.object({
       reference: z.string().nullable(),

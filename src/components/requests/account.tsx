@@ -10,6 +10,7 @@ import { customerLogout } from '@/app/auth/customer-actions';
 import { Card, Button, Alert } from '@/components/ui/primitives';
 import { StartRequest } from './wizard';
 import { quotesDictionary } from '@/i18n/quotes';
+import { availableMarkets } from '@/infrastructure/markets/service';
 export async function CustomerAccount({ locale }: { locale: Locale }) {
   if (!getPublicEnv()) return <ProtectedShell locale={locale} portal="account" />;
   const t = customerDictionary(locale),
@@ -38,7 +39,7 @@ export async function CustomerAccount({ locale }: { locale: Locale }) {
               <nav className="customer-links" aria-label={t.account}>
                 <Link href={`/${locale}/account/requests`}>{t.myRequests}</Link>
                 <Link href={`/${locale}/account/quotes`}>{qt.myQuotes}</Link>
-                <StartRequest locale={locale} />
+                <StartRequest locale={locale} markets={await availableMarkets()} />
               </nav>
             )}
             <h2>{onboarding ? t.onboard : t.profile}</h2>

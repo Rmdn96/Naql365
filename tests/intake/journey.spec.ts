@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { createClient } from '@supabase/supabase-js';
 import { test, expect, testIdentity } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
-import { riyadhDate } from '../../src/domain/requests/intake';
+import { marketDate } from '../../src/domain/markets/model';
 test('customer persists a bilingual request through private image, review, submit and history', async ({
   page,
   baseURL,
@@ -23,6 +23,9 @@ test('customer persists a bilingual request through private image, review, submi
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
       .violations,
   ).toEqual([]);
+  await page
+    .locator('#request-market')
+    .selectOption({ label: locale === 'ar' ? 'السعودية — SAR' : 'Saudi Arabia — SAR' });
   await page.getByRole('button', { name: t.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const draftUrl = page.url();
@@ -33,7 +36,16 @@ test('customer persists a bilingual request through private image, review, submi
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.getByRole('button', { name: t.next, exact: true }).click();
   for (const kind of ['pickup', 'delivery']) {
-    await page.locator(`#${kind}-city`).fill(kind === 'pickup' ? 'Riyadh' : 'Jeddah');
+    await page.locator(`#${kind}-city`).selectOption({
+      label:
+        kind === 'pickup'
+          ? locale === 'ar'
+            ? 'الرياض — الرياض'
+            : 'Riyadh — Riyadh'
+          : locale === 'ar'
+            ? 'جدة — مكة المكرمة'
+            : 'Jeddah — Makkah',
+    });
     await page.locator(`#${kind}-district`).fill('Acceptance district');
     await page.locator(`#${kind}-address`).fill(`Harmless ${kind} address`);
     await page.locator(`#${kind}-notes`).fill('No real business data');
@@ -41,7 +53,9 @@ test('customer persists a bilingual request through private image, review, submi
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.reload();
   await page.locator('.wizard-progress button').nth(1).click();
-  await expect(page.locator('#pickup-city')).toHaveValue('Riyadh');
+  await expect(page.locator('#pickup-city option:checked')).toHaveText(
+    locale === 'ar' ? 'الرياض — الرياض' : 'Riyadh — Riyadh',
+  );
   await page.getByRole('button', { name: t.next, exact: true }).click();
   await page.locator('#description').fill('Harmless staging furniture request');
   await page.getByRole('button', { name: t.addItem, exact: true }).click();
@@ -82,7 +96,7 @@ test('customer persists a bilingual request through private image, review, submi
     .check();
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.getByRole('button', { name: t.next, exact: true }).click();
-  await page.locator('#date').fill(riyadhDate(new Date(Date.now() + 86400000)));
+  await page.locator('#date').fill(marketDate(new Date(Date.now() + 86400000), 'Asia/Riyadh'));
   await page.locator('#time-window').selectOption('morning');
   await expect(page.locator('.save-status')).toHaveText(t.saved);
   await page.getByRole('button', { name: t.next, exact: true }).click();
@@ -177,16 +191,27 @@ test('customer direct APIs reject IDOR, mass assignment, stale writes and suspen
   const admin = createClient(url, adminKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+  const market = await admin
+    .from('markets')
+    .select('id')
+    .eq('organization_id', org)
+    .eq('country_code', 'SA')
+    .single();
+  expect(market.error).toBeNull();
+  const marketId = market.data!.id;
   await page.goto(`/${locale}`);
-  const anonymous = await page.evaluate(async () => ({
-    create: (
-      await fetch('/api/customer/requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: crypto.randomUUID() }),
-      })
-    ).status,
-  }));
+  const anonymous = await page.evaluate(
+    async (marketId) => ({
+      create: (
+        await fetch('/api/customer/requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: crypto.randomUUID(), marketId }),
+        })
+      ).status,
+    }),
+    marketId,
+  );
   expect(anonymous.create).toBe(401);
   await page.goto(`/${locale}/login`);
   await page.locator('#email').fill(identity.email);
@@ -203,19 +228,29 @@ test('customer direct APIs reject IDOR, mass assignment, stale writes and suspen
     { peer, other },
   );
   expect(isolated).toEqual([404, 404]);
-  const created = await page.evaluate(async () => {
+  await page
+    .locator('#request-market')
+    .selectOption({ label: locale === 'ar' ? 'السعودية — SAR' : 'Saudi Arabia — SAR' });
+
+  const created = await page.evaluate(async (marketId) => {
     const key = crypto.randomUUID();
     const calls = await Promise.all(
       [1, 2].map(() =>
         fetch('/api/customer/requests', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key }),
-        }).then((r) => r.json()),
+          body: JSON.stringify({ key, marketId }),
+        }).then(async (r) => ({ status: r.status, body: await r.json() })),
       ),
     );
-    return { id: calls[0].id, same: calls[0].id === calls[1].id };
-  });
+    return {
+      id: calls[0]!.body.id,
+      same: calls[0]!.body.id === calls[1]!.body.id,
+      statuses: calls.map((c) => c.status),
+    };
+  }, marketId);
+  expect(created.statuses.every((status) => status >= 200 && status < 300)).toBe(true);
+  expect(created.id).toMatch(/^[a-f0-9-]{36}$/);
   expect(created.same).toBe(true);
   const draft = await page.evaluate(
     async (id) => (await fetch(`/api/customer/requests/${id}`)).json(),
@@ -292,6 +327,9 @@ test('draft cancellation removes private images and prevents further edits', asy
   await page.locator('#password').fill(identity.password);
   await page.getByRole('button', { name: t.login, exact: true }).click();
   await expect(page).toHaveURL(`${baseURL}/${locale}/account`);
+  await page
+    .locator('#request-market')
+    .selectOption({ label: locale === 'ar' ? 'السعودية — SAR' : 'Saudi Arabia — SAR' });
   await page.getByRole('button', { name: t.start, exact: true }).click();
   await expect(page.locator('#service')).toBeVisible();
   const result = await page.evaluate(async () => {
