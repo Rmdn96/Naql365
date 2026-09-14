@@ -144,11 +144,11 @@ Checkpoint: 119 unit/integration tests and 24 local browser tests passed. Format
 
 ## AJ. CI
 
-Checkpoint CI 34849417444 PASS, including fresh reconstruction, SQL/RLS, both concurrency harnesses, exact generated-type diff, build and E2E. Official type-generation run 34849417510 PASS. The final feature HEAD will require its own passing run.
+Checkpoint CI 34849417444 PASS, including fresh reconstruction, SQL/RLS, both concurrency harnesses, exact generated-type diff, build and E2E. Official type-generation run 34849417510 PASS. Hosted-suite checkpoint `d7d8ea759e389cabbcd0d7d6f8c0a7ed85d4db70` also passed [CI 34850723142](https://github.com/Rmdn96/Naql365/actions/runs/34850723142). The final feature HEAD will require its own passing run.
 
 ## AK. Hosted Preview
 
-Pending Phase 4 deployment. Vercel audit: Preview-scoped public Supabase URL/key plus server staging flags; no Production-scoped variables or Production deployments. Protection remains enabled.
+Pending Phase 4 deployment. Staging upgraded from 19 to 24 migrations on 2026-09-15; all SQL assertions passed and all 56 public tables have RLS. Hosted public types match official CI types; the only generator difference was the optional PostgREST 14.5 client hint, now compared separately from schema. Vercel audit: Preview-scoped public Supabase URL/key plus server staging flags; no Production-scoped variables or Production deployments. Protection remains enabled.
 
 ## AL. Saudi Hosted Journey
 
