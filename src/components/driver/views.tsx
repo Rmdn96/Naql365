@@ -6,7 +6,15 @@ import { operationsDictionary, operationalStatus } from '@/i18n/operations';
 import { driverViews, type DriverTrip } from '@/domain/driver/model';
 import { driverLogout } from '@/app/auth/driver-actions';
 import { Card, Badge, Button } from '@/components/ui/primitives';
-export function DriverNavigation({ locale, view }: { locale: Locale; view?: string }) {
+export function DriverNavigation({
+  locale,
+  view,
+  tripId,
+}: {
+  locale: Locale;
+  view?: string;
+  tripId?: string;
+}) {
   const t = driverDictionary(locale);
   return (
     <>
@@ -20,6 +28,12 @@ export function DriverNavigation({ locale, view }: { locale: Locale; view?: stri
             {t[v]}
           </Link>
         ))}
+        <Link
+          lang={locale === 'ar' ? 'en' : 'ar'}
+          href={`/${locale === 'ar' ? 'en' : 'ar'}/driver${tripId ? `/trips/${tripId}` : view ? `?view=${view}` : ''}`}
+        >
+          {dictionary(locale).language}
+        </Link>
       </nav>
       <form action={driverLogout.bind(null, locale)}>
         <Button variant="secondary">{dictionary(locale).logout}</Button>

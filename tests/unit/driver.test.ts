@@ -1,5 +1,6 @@
 import { expect, it } from 'vitest';
-import { driverCommand, driverIssue, eventLocation, marketDate } from '@/domain/driver/model';
+import { driverCommand, driverIssue, eventLocation } from '@/domain/driver/model';
+import { marketDate } from '@/domain/markets/model';
 const id = '14000000-0000-4000-8000-000000000001';
 it('permits only explicit Driver commands with strict payloads', () => {
   const command = { tripId: id, action: 'dispatch', revision: 0, mutationId: id, payload: {} };

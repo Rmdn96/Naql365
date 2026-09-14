@@ -159,7 +159,11 @@ export function DriverExecution({ trip, locale }: { trip: DriverTrip; locale: Lo
           })
         }
       >
-        {feedback.busy ? t.saving : operationLabel(action, locale)}
+        {feedback.busy
+          ? t.saving
+          : action === 'dispatch'
+            ? t.startTrip
+            : operationLabel(action, locale)}
       </Button>
       {feedback.feedback}
     </section>

@@ -32,7 +32,7 @@ export default async function Page({
     completed = trip.status === 'COMPLETED';
   return (
     <div className="container page driver-shell">
-      <DriverNavigation locale={locale} />
+      <DriverNavigation locale={locale} tripId={trip.id} />
       <h1>{trip.reference}</h1>
       <Badge>{operationalStatus(trip.status, locale)}</Badge>
       <p>

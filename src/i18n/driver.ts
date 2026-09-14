@@ -1,6 +1,7 @@
 import type { Locale } from './config';
 const ar = {
   title: 'بوابة السائق',
+  startTrip: 'بدء الرحلة',
   login: 'دخول السائق الداخلي',
   loginHelp:
     'استخدم حساب البريد وكلمة المرور الذي جهزته الإدارة. هذه البوابة للسائقين الداخليين فقط.',
@@ -65,6 +66,7 @@ const ar = {
 };
 const en: typeof ar = {
   title: 'Driver Portal',
+  startTrip: 'Start Trip',
   login: 'Internal Driver sign in',
   loginHelp:
     'Use the email and password account provisioned by your administrator. This portal is for internal drivers only.',

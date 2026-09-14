@@ -103,11 +103,3 @@ export const driverTrip = z.object({
     .nullable(),
 });
 export type DriverTrip = z.infer<typeof driverTrip>;
-export function marketDate(value: Date, timezone: string) {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(value);
-}
