@@ -466,7 +466,9 @@ for (const country of ['SA', 'EG'] as const)
     expect(
       (await replacement.rpc('driver_finalize_pod', { p_trip: trip1, p_file: randomUUID() })).error,
     ).not.toBeNull();
-    const signed = await replacement.storage.from('pod-files').createSignedUrl(pod.object_name, 1);
+    // Allow the real network round trip, then verify expiry against the same issued URL.
+    const signedExpiry = Date.now() + 10000;
+    const signed = await replacement.storage.from('pod-files').createSignedUrl(pod.object_name, 10);
     expect(signed.error).toBeNull();
     expect((await fetch(signed.data!.signedUrl)).ok).toBe(true);
     expect(
@@ -537,7 +539,9 @@ for (const country of ['SA', 'EG'] as const)
       'assignment',
     ])
       expect(JSON.stringify(safe.data)).not.toContain(secret);
-    await new Promise((resolve) => setTimeout(resolve, 2200));
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.max(0, signedExpiry + 2200 - Date.now())),
+    );
     expect((await fetch(signed.data!.signedUrl)).ok).toBe(false);
     const response = await page.goto(`/${locale}/driver`);
     expect(response?.headers()['content-security-policy']).toContain("frame-ancestors 'none'");

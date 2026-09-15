@@ -6,9 +6,9 @@ import { stagingProject, supabase, query } from './supabase.mjs';
 import { acquireHostedRun } from './exclusive-run.mjs';
 process.chdir(fileURLToPath(new URL('../../', import.meta.url)));
 const args = process.argv.slice(2);
-if (args.some((arg) => arg !== '--assets-only')) throw new Error('Unknown verification option');
-// Supplemental bundle inspection is useful after a completed journey; it is not full acceptance.
-const selectedTests = args.includes('--assets-only') ? ['tests/phase4/assets.spec.ts'] : [];
+if (args.some((arg) => arg !== '--session-only')) throw new Error('Unknown verification option');
+// Session-only is supplemental evidence; the default includes both execution journeys.
+const selectedTests = args.includes('--session-only') ? ['tests/phase4/session.spec.ts'] : [];
 const origin = process.env.STAGING_BASE_URL;
 if (
   !origin ||
@@ -51,6 +51,7 @@ try {
     'otherDriver',
     'crossMarketDriver',
     'externalDriver',
+    'sessionDriver',
   ]) {
     const email = `naql365-phase4-${label}-${randomUUID()}@example.test`,
       password = randomBytes(32).toString('base64url');
