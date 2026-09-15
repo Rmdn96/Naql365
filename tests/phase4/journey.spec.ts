@@ -107,8 +107,12 @@ for (const country of ['SA', 'EG'] as const)
       name: 'Phase 4 external resource',
     });
     expect(
-      (await admin.from('drivers').update({ profile_id: identities[a]!.id }).eq('id', external))
-        .error,
+      (
+        await admin
+          .from('drivers')
+          .update({ profile_id: identities.externalDriver!.id })
+          .eq('id', external)
+      ).error,
     ).not.toBeNull();
     const vehicles = [];
     for (let i = 0; i < 2; i++)
@@ -419,6 +423,7 @@ for (const country of ['SA', 'EG'] as const)
     await axe(page);
     await page.locator('#pod-recipient').fill('Distinct controlled recipient');
     if (country === 'SA') {
+      await page.locator('canvas').scrollIntoViewIfNeeded();
       const box = await page.locator('canvas').boundingBox();
       expect(box).not.toBeNull();
       const session = await context.newCDPSession(page);
@@ -432,6 +437,14 @@ for (const country of ['SA', 'EG'] as const)
       });
       await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
       await session.detach();
+      expect(
+        await page.locator('canvas').evaluate((canvas: HTMLCanvasElement) =>
+          canvas
+            .getContext('2d')!
+            .getImageData(0, 0, canvas.width, canvas.height)
+            .data.some((value, index) => index % 4 === 3 && value > 0),
+        ),
+      ).toBe(true);
     } else
       await page
         .locator('#pod-file')
