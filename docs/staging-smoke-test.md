@@ -43,3 +43,13 @@ This protocol was executed in Chrome in Arabic and English on the accepted Previ
 ## Signed URL semantics
 
 RLS is checked when a signed URL is issued. A prior URL remains a bearer capability until its short expiry. Suspension blocks new signing and authenticated reads immediately; it does not retrospectively revoke an already issued URL. The service uses a 60-second TTL and tests rejection after 65 seconds. Do not cache or log signed URLs.
+
+## Phase 4 Driver acceptance
+
+Use the protected Preview recorded in the canonical Phase 4 report. With the explicit Staging project/organization, Preview origin and temporary automation-bypass environment configured securely, run `node scripts/staging/verify-phase4.mjs`. The default runs SA and EG execution journeys plus the independent Driver session lifecycle test. `--session-only` runs only the supplemental session test and is not a substitute for execution acceptance.
+
+The runner creates synthetic Auth identities in memory, exercises customer intake through acceptance to provide operational fixtures, then tests Driver execution, reassignment, issues/private photo, touch or uploaded POD, signed access/expiry, aggregate completion and safe tracking. Browser traces, screenshots and videos are disabled to keep credentials and signed URLs out of artifacts. The safe reporter prints test outcomes and bounded diagnostic categories only. Poll assertions may report intermediate failed steps; the final test outcome determines acceptance.
+
+Run prior foundation, intake, commercial and SA/EG staff-operated execution suites sequentially against the same Preview. Do not overlap hosted fixture runners. Check the exclusive-run lock before recovering an interrupted process. Verify cleanup independently, including `private.completed_trip_assignments`, and revoke the temporary automation-bypass credential only after all suites finish.
+
+Session expiry verification expires real browser Auth cookies and confirms a fresh protected request is denied. It does not forge a JWT or claim to accelerate Supabase's signed JWT clock. Suspension and role removal are independently checked with the session still present. Signed URL tests prove access before expiry and denial after the same URL expires; app-issued evidence URLs retain their 60-second policy.

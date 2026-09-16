@@ -1,6 +1,6 @@
 # Naql365 · نقل 365
 
-Transportation Operating Platform. **Phase 3.5: Saudi Arabia and Egypt multi-country foundation.** Staging acceptance and review status are recorded in the canonical Phase 3.5 report; this is not a Production release.
+Transportation Operating Platform. **Phase 4: Internal Driver execution portal for Saudi Arabia and Egypt.** Staging acceptance and review status are recorded in the canonical Phase 4 report; this is not a Production release.
 
 Independent implementation for Naql365. No source, branding, credentials or data from another product is used.
 
@@ -67,4 +67,8 @@ docs/                       Architecture, operations and decision records
 - [Multi-country architecture and gap analysis](docs/multi-country-sa-eg.md)
 - [Phase 3.5 acceptance report](docs/reports/Naql365-Phase-3-5-Report.md)
 
-Workflow: `feature/* → develop → main`. Phase 3.5 uses `feature/phase-3-5-multi-country-sa-eg` from accepted develop `6937efa96201329d149e61057433f46a4cdb1d73`, which contains the protected Phase 3 merge. Phase 4 remains locked. Phase 3.5 merging requires separate owner authorization and the protected review workflow. No automatic Production release is configured.
+- [Driver execution gap analysis](docs/phase-4-driver-execution-gap-analysis.md)
+- [Internal Driver architecture and provisioning](docs/driver-execution.md)
+- [Phase 4 acceptance report](docs/reports/Naql365-Phase-4-Report.md)
+
+Workflow: `feature/* → develop → main`. Phase 4 uses `feature/phase-4-internal-driver-portal` from protected develop `167f2caba4685e71c44d19b20423115acf0100da`, containing the accepted Phase 3.5 merge. Phase 4 requires owner review and separately authorized protected merging. Phase 5 remains locked. No Production deployment is authorized.
