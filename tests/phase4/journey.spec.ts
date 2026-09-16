@@ -467,10 +467,18 @@ for (const country of ['SA', 'EG'] as const)
       (await replacement.rpc('driver_finalize_pod', { p_trip: trip1, p_file: randomUUID() })).error,
     ).not.toBeNull();
     // Allow the real network round trip, then verify expiry against the same issued URL.
-    const signedExpiry = Date.now() + 10000;
     const signed = await replacement.storage.from('pod-files').createSignedUrl(pod.object_name, 10);
+    const signedExpiry = Date.now() + 10000;
     expect(signed.error).toBeNull();
-    expect((await fetch(signed.data!.signedUrl)).ok).toBe(true);
+    const signedResponse = await fetch(signed.data!.signedUrl);
+    if (!signedResponse.ok) {
+      const diagnostic = await signedResponse.text();
+      test.info().annotations.push({
+        type: 'safe-security-probe',
+        description: `signed-object-status=${signedResponse.status}; expiry-message=${/expired/i.test(diagnostic)}`,
+      });
+    }
+    expect(signedResponse.ok).toBe(true);
     expect(
       (
         await fetch(
