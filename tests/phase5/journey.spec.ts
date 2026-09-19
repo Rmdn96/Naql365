@@ -253,6 +253,12 @@ registerDriverJourneys({
     await expect.poll(() => oldDriver.length).toBeGreaterThan(0);
     expect(unassigned).toHaveLength(0);
     if (h.country === 'SA') {
+      let publications = 0;
+      const countPublication = (request: import('@playwright/test').Request) => {
+        if (new URL(request.url()).pathname === '/api/tracking' && request.method() === 'POST')
+          publications++;
+      };
+      h.page.on('request', countPublication);
       await h.page.reload(); // Restore a stationary watcher while the server still throttles the new page.
       const first = (
         await admin
@@ -274,6 +280,8 @@ registerDriverJourneys({
         (await admin.from('trip_live_locations').select('version').eq('trip_id', h.tripId).single())
           .data?.version,
       ).toBe(first.version);
+      expect(publications).toBeLessThanOrEqual(2);
+      h.page.off('request', countPublication);
       // Chromium's fixed emulated fix retains its timestamp; emit a genuinely new device observation at the same coordinates.
       await h.context.setGeolocation({ ...point(h.country), accuracy: 5 });
       await expect

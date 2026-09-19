@@ -6,6 +6,7 @@ import { trackingDictionary } from '@/i18n/tracking';
 import {
   locationSample,
   trackingPolicy,
+  trackingTrip,
   publicationDue,
   needsHeartbeatObservation,
   type LocationSample,
@@ -132,13 +133,29 @@ export function DriverTracking({
         const parsed = z
           .object({
             policy: trackingPolicy,
-            trips: z.array(z.object({ id: z.string(), active: z.boolean() })),
+            trips: trackingTrip.array(),
           })
           .parse(body);
         policy = parsed.policy;
-        if (!parsed.trips.find((r) => r.id === tripId)?.active) {
+        const current = parsed.trips.find((r) => r.id === tripId);
+        if (!current?.active) {
           denied();
           return;
+        }
+        if (
+          current.location &&
+          (!last || Date.parse(current.location.receivedAt) > last.receivedAt)
+        ) {
+          last = {
+            sample: {
+              latitude: current.location.latitude,
+              longitude: current.location.longitude,
+              accuracy: current.location.accuracy,
+              capturedAt: current.location.capturedAt,
+              clientType: 'WEB',
+            },
+            receivedAt: Date.parse(current.location.receivedAt),
+          };
         }
         void acquire();
       } catch {
@@ -221,6 +238,10 @@ export function DriverTracking({
         if (result.status === 'ACCEPTED' || result.status === 'REPLAY') {
           last = { sample: intent.location, receivedAt: Date.parse(result.receivedAt!) };
           if (!disposed && watch !== undefined) setState('ACTIVE');
+        }
+        if (result.status === 'OUT_OF_ORDER') {
+          notBefore = Date.now() + policy.movingSeconds * 1000;
+          void authority();
         }
         if (result.status === 'THROTTLED') {
           notBefore = Date.parse(result.retryAt!);
