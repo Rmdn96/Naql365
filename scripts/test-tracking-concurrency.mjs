@@ -195,6 +195,58 @@ try {
   console.log(
     'PASS: independent Driver publication versus Dispatcher reassignment; old denied/new accepted',
   );
+
+  const second = (await staffCommand('create_trip', job)).id;
+  const secondVehicle = (
+    await staffCommand('create_vehicle', org, {
+      marketId,
+      type: 'Truck',
+      identifier: 'TRACKING-RACE-2',
+    })
+  ).id;
+  await staffCommand('plan', second, {
+    plannedStart: '2026-10-01T09:00:00Z',
+    plannedEnd: '2026-10-01T13:00:00Z',
+    stops: [
+      { cityId, kind: 'PICKUP', address: 'Synthetic second pickup', pickups: [] },
+      { cityId, kind: 'DELIVERY', address: 'Synthetic second delivery', pickups: [0] },
+    ],
+  });
+  await staffCommand('assign', second, { driverId: da, vehicleId: secondVehicle });
+  await staffCommand('ready', second);
+  await driverCommand(a, second, 'dispatch', await revision(second), randomUUID());
+  await sql(
+    `update public.trip_live_locations set received_at=clock_timestamp()-interval '31 seconds' where trip_id='${trip}'`,
+  );
+  const acceptedBefore = Number(
+    await sql(
+      `select count(*) from private.trip_location_samples where trip_id in ('${trip}','${second}')`,
+    ),
+  );
+  const burst = await Promise.all(
+    Array.from({ length: 20 }, (_, i) => {
+      const tid = i % 2 ? trip : second,
+        actor = i % 2 ? b : a;
+      return sql(
+        `select public.publish_trip_location('${tid}','${randomUUID()}',${json({ latitude: 24.72, longitude: 46.69, accuracy: 5, speed: 3, capturedAt: new Date().toISOString(), clientType: 'NATIVE' })})`,
+        actor,
+      ).then(JSON.parse);
+    }),
+  );
+  assert(
+    burst.filter((r) => r.status === 'ACCEPTED').length === 2,
+    'two active Trips each accept at most one sample in burst',
+  );
+  assert(
+    Number(
+      await sql(
+        `select count(*) from private.trip_location_samples where trip_id in ('${trip}','${second}')`,
+      ),
+    ) ===
+      acceptedBefore + 2,
+    'bounded write load',
+  );
+  console.log('PASS: twenty independent publications across two active Trips remain bounded');
 } finally {
   if (setup) {
     const local = JSON.parse(
