@@ -59,6 +59,7 @@ jobs:
       - run: npm run test:db
       - run: node scripts/test-operations-concurrency.mjs
       - run: node scripts/test-driver-concurrency.mjs
+      - run: node scripts/test-tracking-concurrency.mjs
       - run: npm run db:types
       - run: git diff --exit-code -- src/infrastructure/supabase/database.types.ts
       - run: npm run typecheck
