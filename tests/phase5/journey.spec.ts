@@ -521,7 +521,9 @@ registerDriverJourneys({
       .getByRole('button', { name: trackingDictionary(h.locale).filter, exact: true })
       .click();
     await expect(live.locator('article')).toHaveCount(1);
-    await expect(live.getByText(trackingDictionary(h.locale).LIVE, { exact: true })).toBeVisible();
+    await expect(
+      live.locator('article').getByText(trackingDictionary(h.locale).LIVE, { exact: true }),
+    ).toBeVisible();
     await live.getByRole('button', { name: trackingDictionary(h.locale).map, exact: true }).click();
     await expect(live.getByRole('link', { name: '© OpenStreetMap contributors' })).toBeVisible();
     await axe(ops);
