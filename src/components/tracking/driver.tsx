@@ -87,7 +87,7 @@ export function DriverTracking({
         if (navigator.locks) {
           await navigator.locks.request(
             'naql365-driver-location',
-            { ifAvailable: true, signal: abort.signal },
+            { ifAvailable: true },
             async (lock) => {
               if (!lock) {
                 if (!disposed) setState('OTHER_TAB');

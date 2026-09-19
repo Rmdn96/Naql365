@@ -99,6 +99,19 @@ registerDriverJourneys({
     await h.context.grantPermissions(['geolocation'], { origin: h.baseURL });
     await h.context.setGeolocation({ ...point(h.country), accuracy: 5 });
     await h.page.reload();
+    await h.page.bringToFront();
+    const probe = await h.page.evaluate(async (tripId) => {
+      const r = await fetch('/api/tracking?mode=driver&tripId=' + tripId);
+      return {
+        status: r.status,
+        visible: !document.hidden,
+        geoAllowed: navigator.geolocation !== undefined,
+      };
+    }, h.tripId);
+    test
+      .info()
+      .annotations.push({ type: 'safe-security-probe', description: JSON.stringify(probe) });
+    expect(probe.status).toBe(200);
     await expect
       .poll(
         async () =>

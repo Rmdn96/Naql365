@@ -46,7 +46,7 @@ Trip primary-key lookup and organization/Market active index; bounded 50-row pro
 
 ## L. Historical Retention
 
-2,880 sample hard cap per Trip; guarded Staging setup configures 24 hours and ten-minute privileged prune batches up to 10,000. Setup has not yet been executed. Production time retention remains unset.
+2,880 sample hard cap per Trip; guarded Staging setup configures 24 hours and ten-minute privileged prune batches up to 10,000. Guarded setup executed on Staging: pg_cron job naql365-staging-tracking-retention, every ten minutes, 24-hour retention. Production time retention remains unset.
 
 ## M. Validation
 
@@ -136,17 +136,19 @@ Implementation/verification in progress; no acceptance claim yet.
 
 Initial CI35442511358 passed all three independent-connection harnesses. Overall run failed only generated-type drift; authoritative types from successful run35442511328 have now been imported. Final CI remains pending.
 
+First hosted attempt exposed an incompatible Web Locks option pair (`ifAvailable` plus `signal`), reproduced independently in Chromium as `NotSupportedError`. The collector now uses non-blocking acquisition alone; disposal and lock-release guards remain. No authorization or database policy was weakened. Hosted rerun is required.
+
 ## AI. Tests
 
 Local unit/integration, populated25 upgrade and24 browser regressions have run. More hosted and negative coverage pending; no hosted gate marked PASS.
 
 ## AJ. CI
 
-Final feature-head CI pending. Initial generated-type mismatch corrected using official CLI output, not hand-edited types.
+Source 2033fc13a6e3dbaa9331c0867641918d4f1d1343 passed CI35443506478 (both required jobs). Initial generated-type mismatch corrected using official CLI output, not hand-edited types. Final documentation/test commit CI remains pending.
 
 ## AK. Hosted Preview
 
-Not deployed for Phase 5 yet. Staging still has25 migrations; no Production changes.
+Protected genuine Preview https://naql365-staging-ukhl750e0-naql365.vercel.app is READY on source2033fc13a6e3dbaa9331c0867641918d4f1d1343 (deployment dpl_HKfxhK92m2XHDrdpy1k2TQArsJz5, target null/Preview). Staging has27 migrations; 57/57 public tables have RLS and official generated types match. Auth uses four exact callback URLs, no wildcard. No Production changes.
 
 ## AL. Saudi Journey
 
@@ -178,7 +180,7 @@ docs/native-driver-location-contract.md documents Auth, payload, rate, replay, l
 
 ## AS. Cleanup
 
-No Phase 5 hosted fixtures or bypass credential created yet. Final hosted cleanup must be independently verified.
+Hosted fixtures and temporary Preview automation bypass are in use during acceptance. Scoped runner cleanup and final independent audit/revocation are required before acceptance.
 
 ## AT. Files Changed
 
