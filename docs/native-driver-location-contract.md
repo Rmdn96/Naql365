@@ -23,7 +23,7 @@ Server `received_at` is separate from device `capturedAt`. Samples older than 12
 
 ## Ordering, idempotency and rate
 
-Read `tracking_policy()` for validated settings. Moving: 30 seconds; stationary: 180 seconds; speed >1.5m/s or displacement at least the maximum of 25m and both point accuracies. Observations may be more frequent than publications. Select the latest valid observation rather than uploading every callback.
+Read `tracking_policy()` for validated settings. Moving: 30 seconds; stationary: 180 seconds; speed >1.5m/s or displacement at least the maximum of 25m and both point accuracies. Observations may be more frequent than publications. If the watch supplies no fresh fix at the stationary deadline, the foreground client requests one uncached observation; it never rewrites an old fix timestamp. Select the latest valid observation rather than uploading every callback.
 
 The server serializes with staff reassignment and enforces rate independently of device timers/tab coordination. Returns ACCEPTED or REPLAY with server receipt time, THROTTLED with retryAt, or OUT_OF_ORDER. Older/equal captured timestamps cannot replace a newer accepted point. Reusing a sample UUID with changed facts is rejected. Discard expired pending samples and obtain a fresh observation. Retry identity is bounded by retention; an expired old sample cannot become current again.
 
@@ -40,3 +40,5 @@ Customer/Operations subscriptions see only minimized latest rows through RLS; pr
 Hard cap: 2,880 samples per Trip. Staging retention is explicitly configured to 24 hours by the guarded Staging setup; the privileged bounded prune operation is scheduled separately. Production time-based retention remains unset. No precise location goes to analytics or general audit payloads.
 
 Map rendering and ETA are independent interfaces. Controlled Staging may load attributed OSM tiles after disclosure; no offline/prefetching. ETA provider is unconfigured and returns unavailable. The future ETA refresh policy is separate from GPS: minimum 300 seconds, 500m movement/next-Stop changes, maximum 600-second validity; a real provider and tests are required before claiming an ETA.
+
+Browser acquisition semantics: [MDN watchPosition](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition) and [fresh getCurrentPosition options](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition).

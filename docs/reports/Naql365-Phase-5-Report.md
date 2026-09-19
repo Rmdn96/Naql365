@@ -106,49 +106,47 @@ No location outside active assigned execution, no external Driver tracking, raw 
 
 ## AA. RLS
 
-Implementation/verification in progress; no acceptance claim yet.
+Staging SQL assertions pass with 57/57 public tables protected. Current-membership RLS isolates latest location and notifications; raw samples/sessions remain private. Local/CI tests reject direct writes, forged relationships, anonymous/customer/staff/unassigned publishers, role loss and suspension. Actual hosted subscription results are recorded below when the full suite completes.
 
 ## AB. Security
 
-Implementation/verification in progress; no acceptance claim yet.
+HTTP mutation requires same-origin SSR authentication; no client service-role key. Existing security headers remain, with only the exact Supabase WebSocket origin and OSM image origin added to CSP. Driver pages alone allow same-origin geolocation. No new dependency or credentials introduced; npm production dependency audit found zero vulnerabilities. Bounded hosted logs, deployed assets and final cleanup remain acceptance gates.
 
 ## AC. SA
 
-Implementation/verification in progress; no acceptance claim yet.
+Saudi resources use SA Market, SAR commercial snapshots and Asia/Riyadh scheduling. First corrected hosted Saudi journey passed in436464ms, including actual browser GPS and Realtime. Final suite/regression closeout pending.
 
 ## AD. EG
 
-Implementation/verification in progress; no acceptance claim yet.
+Egypt resources retain EG Market, EGP commercial snapshots and Africa/Cairo IANA timezone. Hosted execution pending completion; no Saudi default is used in tracking timestamps.
 
 ## AE. Timezones
 
-Implementation/verification in progress; no acceptance claim yet.
+Latest location and notification timestamps are rendered with each authoritative Market timezone through Intl.DateTimeFormat. Existing winter/summer, DST and Market date-boundary tests remain green. GPS ordering uses server receipt/device timestamp validation, not localized text.
 
 ## AF. Accessibility
 
-Implementation/verification in progress; no acceptance claim yet.
+Textual Trip status, next Stop, freshness, update time and unavailable ETA remain available without a map. Controls have labels and existing visible-focus styles. Automated axe checks run on authenticated Driver/customer/Operations pages at390px in both locales. These checks are bounded evidence, not full WCAG certification.
 
 ## AG. Performance
 
-Implementation/verification in progress; no acceptance claim yet.
+Latest-row lookup avoids history scans. Feed is capped at50 rows and bounded pagination; Operations filters run server-side. One bounded channel per view,30-second visibility-aware refresh, client freshness clock and no per-marker subscriptions. Map requests nine visible tiles after explicit disclosure; no bulk prefetch/offline cache.
 
 ## AH. Concurrency
 
-Initial CI35442511358 passed all three independent-connection harnesses. Overall run failed only generated-type drift; authoritative types from successful run35442511328 have now been imported. Final CI remains pending.
-
-First hosted attempt exposed an incompatible Web Locks option pair (`ifAvailable` plus `signal`), reproduced independently in Chromium as `NotSupportedError`. The collector now uses non-blocking acquisition alone; disposal and lock-release guards remain. No authorization or database policy was weakened. Hosted rerun is required.
+CI35445015602 DB job105902336727 passed the retained independent-connection Operations and Driver matrices and the new tracking harness. Proven: duplicate location replay; newer point defeats delayed older point; simultaneous updates stay rate-limited; publication vs Dispatcher reassignment leaves only current Driver authority; twenty independent requests across two active Trips yield exactly two authoritative writes.
 
 ## AI. Tests
 
-Local unit/integration, populated25 upgrade and24 browser regressions have run. More hosted and negative coverage pending; no hosted gate marked PASS.
+CI35445015602:131 unit/integration tests in26 files and24 browser E2E tests PASS; all SQL/RLS assertions, populated25→27 upgrade, fresh Supabase reconstruction, official generated-type exact diff, three independent concurrency harnesses, formatting, secrets, lint, strict types and production build PASS. First hosted attempt exposed an incompatible Web Locks option pair (`ifAvailable` plus `signal`), reproduced in Chromium as NotSupportedError; commit214b9a2 removed the unsupported pair without weakening authority. Corrected hosted suite and same-Preview regressions are in progress.
 
 ## AJ. CI
 
-Source 2033fc13a6e3dbaa9331c0867641918d4f1d1343 passed CI35443506478 (both required jobs). Initial generated-type mismatch corrected using official CLI output, not hand-edited types. Final documentation/test commit CI remains pending.
+Source214b9a29a9082f4025a707e6de3f69f1e14364b1 passed [35444424511](https://github.com/Rmdn96/Naql365/actions/runs/35444424511) before deploying the corrected Preview. Tests/documentation checkpoint22115bed881502132675ae792c81f81ed0399576 passed [35445015602](https://github.com/Rmdn96/Naql365/actions/runs/35445015602). Final report commit exact-HEAD CI still required. Initial generated-type drift was corrected from official successful Supabase CLI output, not manual type edits.
 
 ## AK. Hosted Preview
 
-Protected genuine Preview https://naql365-staging-ukhl750e0-naql365.vercel.app is READY on source2033fc13a6e3dbaa9331c0867641918d4f1d1343 (deployment dpl_HKfxhK92m2XHDrdpy1k2TQArsJz5, target null/Preview). Staging has27 migrations; 57/57 public tables have RLS and official generated types match. Auth uses four exact callback URLs, no wildcard. No Production changes.
+Genuine protected Preview https://naql365-staging-foqvxnanr-naql365.vercel.app is READY on source214b9a29a9082f4025a707e6de3f69f1e14364b1; deployment dpl_EiBLoaEDa5WE5FUtgorC6fjUXPop, target null/Preview. Preview-only variables point to zuvyfeflkzlciuaauxba Staging; no Production variables/deployments. Auth uses this exact Site URL and four exact AR/EN callback/recovery allowlist URLs, no wildcard. Staging has27 migrations, matching official public types. Later test/documentation commits do not alter the deployed application.
 
 ## AL. Saudi Journey
 
@@ -184,11 +182,11 @@ Hosted fixtures and temporary Preview automation bypass are in use during accept
 
 ## AT. Files Changed
 
-Implementation/verification in progress; no acceptance claim yet.
+Two additive migrations; generated public DB types; tracking domain/policy/provider port; server adapters; tracking/notification APIs; foreground collector; customer/Operations live views and OSM viewport; localized dictionaries/CSS/CSP integration; reused Driver hosted harness; local/hosted/concurrency/upgrade tests; CI step; guarded Staging retention command; native contract; gap analysis; README/security/testing/staging/roadmap and this report. No accepted migration was rewritten.
 
 ## AU. Commits
 
-e9b53b0 gap analysis; 361a749 location authority/notifications/initial tests. Subsequent UI and hosted verification work pending commit.
+e9b53b0 gap analysis before migrations;361a749 database authority/notifications;9deba5a foreground views/types/native contract;969a58a filters and collector cleanup;concurrency checkpoint2033fc13a6e3dbaa9331c0867641918d4f1d1343;214b9a2 supported Web Lock fix;a2deaaa extended hosted revocation/history tests;22115be operating documentation and exact Auth origin. Final closeout commit recorded in Git and delivery response.
 
 ## AV. Known Limitations
 
