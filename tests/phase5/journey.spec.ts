@@ -109,6 +109,15 @@ registerDriverJourneys({
     await subscribe(await principal('operations'), h.tripId, opsEvents);
     await subscribe(await principal('peer'), h.tripId, peerEvents);
     await subscribe(await principal('other'), h.tripId, otherEvents);
+    await h.context.addInitScript(() => {
+      const original = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
+      navigator.geolocation.getCurrentPosition = (...args) => {
+        document.documentElement.dataset.heartbeatObservations = String(
+          Number(document.documentElement.dataset.heartbeatObservations ?? 0) + 1,
+        );
+        return original(...args);
+      };
+    });
     await h.context.grantPermissions(['geolocation'], { origin: h.baseURL });
     await h.context.setGeolocation({ ...point(h.country), accuracy: 5 });
     await h.page.reload();
@@ -144,6 +153,62 @@ registerDriverJourneys({
     expect(otherEvents).toHaveLength(0);
     await expect.poll(() => oldDriver.length).toBeGreaterThan(0);
     expect(unassigned).toHaveLength(0);
+    if (h.country === 'SA') {
+      const first = (
+        await admin
+          .from('trip_live_locations')
+          .select('version,received_at')
+          .eq('trip_id', h.tripId)
+          .single()
+      ).data!;
+      await expect
+        .poll(
+          () =>
+            h.page.evaluate(() =>
+              Number(document.documentElement.dataset.heartbeatObservations ?? 0),
+            ),
+          { timeout: 195000, intervals: [1000, 2000, 5000] },
+        )
+        .toBeGreaterThan(0);
+      expect(
+        (await admin.from('trip_live_locations').select('version').eq('trip_id', h.tripId).single())
+          .data?.version,
+      ).toBe(first.version);
+      // Chromium's fixed emulated fix retains its timestamp; emit a genuinely new device observation at the same coordinates.
+      await h.context.setGeolocation({ ...point(h.country), accuracy: 5 });
+      await expect
+        .poll(
+          async () =>
+            (
+              await admin
+                .from('trip_live_locations')
+                .select('version')
+                .eq('trip_id', h.tripId)
+                .single()
+            ).data?.version,
+          { timeout: 20000 },
+        )
+        .toBeGreaterThan(first.version);
+      const next = (
+        await admin
+          .from('trip_live_locations')
+          .select('received_at')
+          .eq('trip_id', h.tripId)
+          .single()
+      ).data!;
+      expect(Date.parse(next.received_at) - Date.parse(first.received_at)).toBeGreaterThanOrEqual(
+        180000,
+      );
+      test
+        .info()
+        .annotations.push({
+          type: 'safe-security-probe',
+          description:
+            'stationary heartbeat: real 180-second interval, fresh observation requested, unchanged stale fix never republished',
+        });
+      await expect.poll(() => ownerEvents.length).toBeGreaterThan(1);
+      await expect.poll(() => opsEvents.length).toBeGreaterThan(1);
+    }
     // Recheck RLS on an already-established socket after membership suspension.
     const beforeOwner = ownerEvents.length,
       beforeOps = opsEvents.length;

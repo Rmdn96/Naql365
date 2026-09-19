@@ -2,6 +2,7 @@ import { expect, it } from 'vitest';
 import {
   locationPublication,
   publicationDue,
+  needsHeartbeatObservation,
   freshness,
   displacement,
   unavailableEta,
@@ -64,4 +65,16 @@ it('rejects forged relationship fields and does not invent ETA', async () => {
       nextStopId: id,
     }),
   ).toEqual({ status: 'UNAVAILABLE', reason: 'PROVIDER_NOT_CONFIGURED' });
+});
+
+it('requests a fresh stationary observation without fabricating a timestamp or extra publication', () => {
+  const last = { sample: sample(now - 180000), receivedAt: now - 180000 };
+  expect(needsHeartbeatObservation(last.sample, last, p, now)).toBe(true);
+  expect(
+    needsHeartbeatObservation(last.sample, { ...last, receivedAt: now - 179000 }, p, now),
+  ).toBe(false);
+  expect(needsHeartbeatObservation(sample(), last, p, now)).toBe(false);
+  expect(needsHeartbeatObservation(null, null, p, now)).toBe(false);
+  expect(publicationDue(last.sample, last, p, now)).toBe(false);
+  expect(publicationDue(sample(), last, p, now)).toBe(true);
 });

@@ -7,6 +7,7 @@ import {
   locationSample,
   trackingPolicy,
   publicationDue,
+  needsHeartbeatObservation,
   type LocationSample,
   type TrackingPolicy,
 } from '@/domain/tracking/model';
@@ -40,7 +41,9 @@ export function DriverTracking({
       busy = false,
       notBefore = 0,
       release: (() => void) | undefined,
-      starting = false;
+      starting = false,
+      observing = false,
+      nextObservation = 0;
     const abort = new AbortController();
     const stop = () => {
       if (watch !== undefined) navigator.geolocation.clearWatch(watch);
@@ -53,6 +56,20 @@ export function DriverTracking({
       stop();
       if (!disposed) setState('STOPPED');
     };
+    const record = (position: GeolocationPosition) => {
+      if (disposed || document.hidden || watch === undefined) return;
+      const parsed = locationSample.safeParse({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+        speed: position.coords.speed,
+        heading: position.coords.heading,
+        capturedAt: new Date(position.timestamp).toISOString(),
+        clientType: 'WEB',
+      });
+      if (parsed.success) sample = parsed.data;
+      else setState('WAITING');
+    };
     const startWatch = () => {
       if (disposed || document.hidden || watch !== undefined) return;
       if (!navigator.geolocation) {
@@ -61,19 +78,7 @@ export function DriverTracking({
       }
       setState('WAITING');
       watch = navigator.geolocation.watchPosition(
-        (position) => {
-          const parsed = locationSample.safeParse({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy,
-            speed: position.coords.speed,
-            heading: position.coords.heading,
-            capturedAt: new Date(position.timestamp).toISOString(),
-            clientType: 'WEB',
-          });
-          if (parsed.success) sample = parsed.data;
-          else setState('WAITING');
-        },
+        record,
         (error) => {
           if (!disposed) setState(error.code === 1 ? 'DENIED' : 'WAITING');
         },
@@ -170,6 +175,26 @@ export function DriverTracking({
         Date.now() - Date.parse(pending.location.capturedAt) > policy.maxAgeSeconds * 1000
       )
         pending = null;
+      if (
+        !pending &&
+        !observing &&
+        Date.now() >= nextObservation &&
+        needsHeartbeatObservation(sample, last, policy, Date.now())
+      ) {
+        observing = true;
+        nextObservation = Date.now() + policy.movingSeconds * 1000;
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            observing = false;
+            record(position);
+          },
+          (error) => {
+            observing = false;
+            if (!disposed && watch !== undefined) setState(error.code === 1 ? 'DENIED' : 'WAITING');
+          },
+          { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 },
+        );
+      }
       if (!pending) {
         if (!sample || !publicationDue(sample, last, policy, Date.now())) return;
         pending = { tripId, sampleId: crypto.randomUUID(), location: sample };

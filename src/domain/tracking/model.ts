@@ -84,6 +84,20 @@ export function publicationDue(
       Math.max(policy.movementM, sample.accuracy, last.sample.accuracy);
   return now - last.receivedAt >= (moving ? policy.movingSeconds : policy.stationarySeconds) * 1000;
 }
+export function needsHeartbeatObservation(
+  sample: LocationSample | null,
+  last: { sample: LocationSample; receivedAt: number } | null,
+  policy: TrackingPolicy,
+  now: number,
+) {
+  return (
+    !!last &&
+    now - last.receivedAt >= policy.stationarySeconds * 1000 &&
+    (!sample ||
+      Date.parse(sample.capturedAt) <= Date.parse(last.sample.capturedAt) ||
+      now - Date.parse(sample.capturedAt) > policy.maxAgeSeconds * 1000)
+  );
+}
 export function freshness(
   active: boolean,
   receivedAt: string | null,
