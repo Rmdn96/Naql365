@@ -2,9 +2,13 @@ import { randomUUID } from 'node:crypto';
 import type { BrowserContext } from '@playwright/test';
 import { test, expect } from '../staging/fixtures';
 import { registerDriverJourneys, type DriverJourneyHook } from '../helpers/driver-journey';
-import { admin, principal, login, axe } from '../phase4/helpers';
+import { admin, principal, login, axe, org, identities } from '../phase4/helpers';
 import { trackingDictionary } from '../../src/i18n/tracking';
 const contexts: BrowserContext[] = [];
+const probes = new Map<
+  string,
+  { oldDriver: unknown[]; oldCount: number; notes: unknown[]; peerNotes: unknown[] }
+>();
 const clients: Awaited<ReturnType<typeof principal>>[] = [];
 const point = (country: 'SA' | 'EG', delta = 0) =>
   country === 'SA'
@@ -44,6 +48,7 @@ async function subscribe(
   client: Awaited<ReturnType<typeof principal>>,
   trip: string,
   events: unknown[],
+  table: 'trip_live_locations' | 'notifications' = 'trip_live_locations',
 ) {
   clients.push(client);
   await client.realtime.setAuth();
@@ -56,7 +61,7 @@ async function subscribe(
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'trip_live_locations',
+          table,
           filter: `trip_id=eq.${trip}`,
         },
         (payload) => events.push(payload.new),
@@ -66,7 +71,7 @@ async function subscribe(
         {
           event: 'UPDATE',
           schema: 'public',
-          table: 'trip_live_locations',
+          table,
           filter: `trip_id=eq.${trip}`,
         },
         (payload) => events.push(payload.new),
@@ -92,6 +97,14 @@ registerDriverJourneys({
       opsEvents: unknown[] = [],
       peerEvents: unknown[] = [],
       otherEvents: unknown[] = [];
+    const oldDriver: unknown[] = [],
+      unassigned: unknown[] = [],
+      notes: unknown[] = [],
+      peerNotes: unknown[] = [];
+    await subscribe(h.driver, h.tripId, oldDriver);
+    await subscribe(h.replacement, h.tripId, unassigned);
+    await subscribe(h.customer, h.tripId, notes, 'notifications');
+    await subscribe(await principal('peer'), h.tripId, peerNotes, 'notifications');
     await subscribe(h.customer, h.tripId, ownerEvents);
     await subscribe(await principal('operations'), h.tripId, opsEvents);
     await subscribe(await principal('peer'), h.tripId, peerEvents);
@@ -129,6 +142,46 @@ registerDriverJourneys({
     await expect.poll(() => opsEvents.length, { timeout: 20000 }).toBeGreaterThan(0);
     expect(peerEvents).toHaveLength(0);
     expect(otherEvents).toHaveLength(0);
+    await expect.poll(() => oldDriver.length).toBeGreaterThan(0);
+    expect(unassigned).toHaveLength(0);
+    // Recheck RLS on an already-established socket after membership suspension.
+    const beforeOwner = ownerEvents.length,
+      beforeOps = opsEvents.length;
+    expect(
+      (
+        await admin
+          .from('organization_memberships')
+          .update({ status: 'suspended' })
+          .eq('organization_id', org)
+          .eq('profile_id', identities.customer!.id)
+      ).error,
+    ).toBeNull();
+    try {
+      expect(
+        (await h.customer.from('trip_live_locations').select('*').eq('trip_id', h.tripId)).data,
+      ).toEqual([]);
+      expect(
+        (
+          await admin
+            .from('trip_live_locations')
+            .update({ received_at: new Date().toISOString() })
+            .eq('trip_id', h.tripId)
+        ).error,
+      ).toBeNull();
+      await expect.poll(() => opsEvents.length, { timeout: 20000 }).toBeGreaterThan(beforeOps);
+      await h.page.waitForTimeout(1500);
+      expect(ownerEvents).toHaveLength(beforeOwner);
+    } finally {
+      expect(
+        (
+          await admin
+            .from('organization_memberships')
+            .update({ status: 'active' })
+            .eq('organization_id', org)
+            .eq('profile_id', identities.customer!.id)
+        ).error,
+      ).toBeNull();
+    }
     const last = ownerEvents.at(-1) as Record<string, unknown>;
     expect(last).not.toHaveProperty('actor_id');
     expect(last).not.toHaveProperty('assignment_id');
@@ -156,7 +209,22 @@ registerDriverJourneys({
       t = trackingDictionary(h.locale);
     await owner.goto(`/${h.locale}/account/orders/${h.orderId}`);
     await expect(owner.getByText(t.LIVE, { exact: true })).toBeVisible();
-    await expect(owner.getByText(t.eta, { exact: true })).toBeVisible();
+    await expect(owner.getByText(t.eta, { exact: true })).toHaveCount(2);
+    await expect(owner.getByText(t.TRIP_STARTED, { exact: true })).toBeVisible();
+    await owner.getByRole('button', { name: t.markRead, exact: true }).first().click();
+    await expect
+      .poll(
+        async () =>
+          (
+            await h.customer
+              .from('notifications')
+              .select('read_at')
+              .eq('trip_id', h.tripId)
+              .eq('event_code', 'TRIP_STARTED')
+              .single()
+          ).data?.read_at,
+      )
+      .toBeTruthy();
     await axe(owner);
     await owner.getByRole('button', { name: t.map, exact: true }).click();
     await expect(owner.getByRole('link', { name: '© OpenStreetMap contributors' })).toBeVisible();
@@ -200,24 +268,26 @@ registerDriverJourneys({
         { timeout: 45000 },
       )
       .toBeCloseTo(point(h.country, 0.001).latitude, 6);
-    const notes = await h.customer
+    const storedNotes = await h.customer
       .from('notifications')
       .select('id,event_code,read_at')
       .eq('trip_id', h.tripId);
-    expect(notes.error).toBeNull();
-    expect(notes.data?.some((n) => n.event_code === 'TRIP_STARTED')).toBe(true);
-    const note = notes.data![0]!;
+    expect(storedNotes.error).toBeNull();
+    expect(storedNotes.data?.some((n) => n.event_code === 'TRIP_STARTED')).toBe(true);
+    const note = storedNotes.data![0]!;
     expect(
       (await h.customer.rpc('read_notification', { p_notification: note.id })).error,
     ).toBeNull();
     const peer = await principal('peer');
     clients.push(peer);
     expect((await peer.rpc('read_notification', { p_notification: note.id })).error).not.toBeNull();
+    probes.set(h.tripId, { oldDriver, oldCount: oldDriver.length, notes, peerNotes });
     await owner.context().close();
     contexts.splice(contexts.indexOf(owner.context()), 1);
     await h.page.bringToFront();
   },
   async reassigned(h) {
+    const oldCount = probes.get(h.tripId)!.oldDriver.length;
     expect(
       (await h.driver.rpc('publish_trip_location', publication(h.tripId, h.country))).error,
     ).not.toBeNull();
@@ -236,11 +306,25 @@ registerDriverJourneys({
         { timeout: 45000 },
       )
       .toBeCloseTo(point(h.country, 0.002).latitude, 6);
+    const probe = probes.get(h.tripId)!;
+    await h.page.waitForTimeout(1500);
+    expect(probe.oldDriver).toHaveLength(oldCount);
     const ops = await viewer(h, 'operations');
     await ops.goto(`/${h.locale}/portal/operations`);
     await expect(
       ops.getByRole('heading', { name: trackingDictionary(h.locale).title, exact: true }),
     ).toBeVisible();
+    const live = ops.locator('section').filter({
+      has: ops.getByRole('heading', { name: trackingDictionary(h.locale).title, exact: true }),
+    });
+    await live.locator('select[name="trip"]').selectOption(h.tripId);
+    await live
+      .getByRole('button', { name: trackingDictionary(h.locale).filter, exact: true })
+      .click();
+    await expect(live.locator('article')).toHaveCount(1);
+    await expect(live.getByText(trackingDictionary(h.locale).LIVE, { exact: true })).toBeVisible();
+    await live.getByRole('button', { name: trackingDictionary(h.locale).map, exact: true }).click();
+    await expect(live.getByRole('link', { name: '© OpenStreetMap contributors' })).toBeVisible();
     await axe(ops);
     await ops.context().close();
     contexts.splice(contexts.indexOf(ops.context()), 1);
@@ -257,6 +341,15 @@ registerDriverJourneys({
       .single();
     expect(row.error).toBeNull();
     expect(row.data).toEqual({ active: false, latitude: null, longitude: null });
+    const probe = probes.get(h.tripId)!;
+    await expect
+      .poll(
+        () =>
+          probe.notes.some((n) => (n as { event_code?: string }).event_code === 'TRIP_COMPLETED'),
+        { timeout: 20000 },
+      )
+      .toBe(true);
+    expect(probe.peerNotes).toHaveLength(0);
     const notifications = await h.customer
       .from('notifications')
       .select('*')

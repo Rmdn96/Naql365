@@ -135,6 +135,14 @@ it('rejects pre-start publication and creates safe notifications from actual exe
   ).toBeTruthy();
 });
 it('validates identity, ranges, timestamps and strict payloads before any sample write', async () => {
+  await db.exec('set role anon');
+  try {
+    await expect(
+      db.query(`select public.publish_trip_location('${trip}','${randomUUID()}',${q(sample())})`),
+    ).rejects.toThrow();
+  } finally {
+    await db.exec('reset role');
+  }
   for (const actor of [
     customer,
     otherCustomer,
@@ -193,6 +201,25 @@ it('publishes minimal latest position with RLS, deduplication, ordering and serv
   );
   expect(JSON.stringify(feed)).toContain('PROVIDER_NOT_CONFIGURED');
   expect(JSON.stringify(feed)).not.toContain(driver);
+});
+it('bounds sample history on authoritative publication without losing the latest point', async () => {
+  await db.exec('begin');
+  try {
+    await db.exec(`update private.tracking_configuration set history_cap=100;
+      insert into private.trip_location_samples select gen_random_uuid(),s.trip_id,s.session_id,s.actor_id,s.assignment_id,s.latitude,s.longitude,s.accuracy_m,s.speed_mps,s.heading,s.captured_at,clock_timestamp()-interval '1 hour',s.client_type,s.intent from private.trip_location_samples s cross join generate_series(1,120);
+      update public.trip_live_locations set received_at=clock_timestamp()-interval '1 minute', captured_at=clock_timestamp()-interval '1 minute' where trip_id='${trip}'`);
+    expect((await publish(driver))[0]!.v.status).toBe('ACCEPTED');
+    expect(
+      (
+        await db.query<{ n: number }>(
+          `select count(*)::int n from private.trip_location_samples where trip_id='${trip}'`,
+        )
+      ).rows[0]!.n,
+    ).toBe(100);
+    expect(await as(driver, 'select * from public.trip_live_locations')).toHaveLength(1);
+  } finally {
+    await db.exec('rollback');
+  }
 });
 it('clears old position on reassignment, rejects old retries and accepts only new assignment', async () => {
   const snapshot = (
