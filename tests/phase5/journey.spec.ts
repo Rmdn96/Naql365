@@ -64,6 +64,12 @@ async function viewer(h: DriverJourneyHook, role: string) {
           : frame && typeof frame === 'object' && 'event' in frame
             ? frame.event
             : null;
+        const topic = Array.isArray(frame)
+          ? frame[2]
+          : frame && typeof frame === 'object' && 'topic' in frame
+            ? frame.topic
+            : null;
+        if (typeof topic !== 'string' || !topic.startsWith('realtime:tracking-')) return;
         if (event === 'phx_reply') evidence.joined = true;
         if (event === 'postgres_changes') evidence.changes++;
       } catch {
