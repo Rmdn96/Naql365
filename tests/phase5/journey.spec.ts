@@ -247,6 +247,7 @@ registerDriverJourneys({
     await expect.poll(() => oldDriver.length).toBeGreaterThan(0);
     expect(unassigned).toHaveLength(0);
     if (h.country === 'SA') {
+      await h.page.reload(); // Restore a stationary watcher while the server still throttles the new page.
       const first = (
         await admin
           .from('trip_live_locations')

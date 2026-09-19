@@ -90,8 +90,8 @@ export function needsHeartbeatObservation(
   policy: TrackingPolicy,
   now: number,
 ) {
+  if (!last) return !!sample && now - Date.parse(sample.capturedAt) >= policy.maxAgeSeconds * 1000;
   return (
-    !!last &&
     now - last.receivedAt >= policy.stationarySeconds * 1000 &&
     (!sample ||
       Date.parse(sample.capturedAt) <= Date.parse(last.sample.capturedAt) ||

@@ -75,6 +75,8 @@ it('requests a fresh stationary observation without fabricating a timestamp or e
   ).toBe(false);
   expect(needsHeartbeatObservation(sample(), last, p, now)).toBe(false);
   expect(needsHeartbeatObservation(null, null, p, now)).toBe(false);
+  expect(needsHeartbeatObservation(sample(now - 121000), null, p, now)).toBe(true);
+  expect(needsHeartbeatObservation(sample(), null, p, now)).toBe(false);
   expect(publicationDue(last.sample, last, p, now)).toBe(false);
   expect(publicationDue(sample(), last, p, now)).toBe(true);
 });
