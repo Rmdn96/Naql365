@@ -994,33 +994,55 @@ export type Database = {
       }
       notifications: {
         Row: {
+          audience: string | null
           created_at: string
+          event_code: string | null
           id: string
           idempotency_key: string
+          market_id: string | null
           organization_id: string
+          read_at: string | null
           recipient_profile_id: string
           template_id: string | null
+          trip_id: string | null
           updated_at: string
         }
         Insert: {
+          audience?: string | null
           created_at?: string
+          event_code?: string | null
           id?: string
           idempotency_key: string
+          market_id?: string | null
           organization_id: string
+          read_at?: string | null
           recipient_profile_id: string
           template_id?: string | null
+          trip_id?: string | null
           updated_at?: string
         }
         Update: {
+          audience?: string | null
           created_at?: string
+          event_code?: string | null
           id?: string
           idempotency_key?: string
+          market_id?: string | null
           organization_id?: string
+          read_at?: string | null
           recipient_profile_id?: string
           template_id?: string | null
+          trip_id?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_market_id_fkey"
+            columns: ["market_id"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notifications_organization_id_fkey"
             columns: ["organization_id"]
@@ -1041,6 +1063,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "notification_templates"
             referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "notifications_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -2852,6 +2881,60 @@ export type Database = {
           },
         ]
       }
+      trip_live_locations: {
+        Row: {
+          accuracy_m: number | null
+          active: boolean
+          captured_at: string | null
+          latitude: number | null
+          longitude: number | null
+          market_id: string
+          organization_id: string
+          received_at: string | null
+          trip_id: string
+          version: number
+        }
+        Insert: {
+          accuracy_m?: number | null
+          active?: boolean
+          captured_at?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          market_id: string
+          organization_id: string
+          received_at?: string | null
+          trip_id: string
+          version?: number
+        }
+        Update: {
+          accuracy_m?: number | null
+          active?: boolean
+          captured_at?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          market_id?: string
+          organization_id?: string
+          received_at?: string | null
+          trip_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_live_locations_organization_id_market_id_trip_id_fkey"
+            columns: ["organization_id", "market_id", "trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "trip_live_locations_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: true
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trip_pods: {
         Row: {
           actor_id: string
@@ -3343,6 +3426,14 @@ export type Database = {
         }
         Returns: Json
       }
+      publish_trip_location: {
+        Args: { p_location: Json; p_sample: string; p_trip: string }
+        Returns: Json
+      }
+      read_notification: {
+        Args: { p_notification: string }
+        Returns: undefined
+      }
       report_driver_issue: {
         Args: {
           p_category: string
@@ -3387,6 +3478,17 @@ export type Database = {
         Returns: Json
       }
       send_quote: { Args: { p_quote_version_id: string }; Returns: Json }
+      tracking_feed: {
+        Args: {
+          p_driver?: string
+          p_market?: string
+          p_offset?: number
+          p_order?: string
+          p_trip?: string
+        }
+        Returns: Json
+      }
+      tracking_policy: { Args: never; Returns: Json }
       trip_pod_command: {
         Args: {
           p_action: string

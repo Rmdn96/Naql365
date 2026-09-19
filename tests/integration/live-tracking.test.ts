@@ -230,6 +230,34 @@ it('clears old position on reassignment, rejects old retries and accepts only ne
     await as(staff, `select * from public.notifications where event_code='TRIP_REASSIGNED'`),
   ).toHaveLength(1);
 });
+it('suspension/role loss revoke both reads and publication; retention removes old evidence', async () => {
+  await db.exec(
+    `update public.organization_memberships set status='suspended' where profile_id='${customer}';`,
+  );
+  expect(await as(customer, 'select * from public.trip_live_locations')).toHaveLength(0);
+  await db.exec(
+    `update public.organization_memberships set status='active' where profile_id='${customer}';`,
+  );
+  await db.exec('begin');
+  await db.exec(`delete from public.user_roles where profile_id='${replacement}'`);
+  await expect(publish(replacement)).rejects.toThrow();
+  await db.exec('rollback');
+  await expect(db.query('select private.prune_tracking_history()')).rejects.toThrow(
+    'Retention policy not configured',
+  );
+  await db.exec(
+    `update private.tracking_configuration set staging_retention_hours=24;update private.trip_location_samples set received_at=clock_timestamp()-interval '25 hours';update public.trip_live_locations set received_at=clock_timestamp()-interval '25 hours' where trip_id='${trip}'`,
+  );
+  await db.query('select private.prune_tracking_history()');
+  expect(
+    (await db.query<{ n: number }>('select count(*)::int n from private.trip_location_samples'))
+      .rows[0]!.n,
+  ).toBe(0);
+  expect(
+    (await db.query<{ latitude: number | null }>('select latitude from public.trip_live_locations'))
+      .rows[0]!.latitude,
+  ).toBeNull();
+});
 it('terminal state removes live coordinates and denies further publication', async () => {
   await op('fail', trip, { reason: 'Synthetic terminal test' });
   await expect(publish(replacement)).rejects.toThrow();

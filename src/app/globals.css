@@ -810,3 +810,30 @@ dialog::backdrop {
   cursor: pointer;
   padding-block: 1rem;
 }
+.tracking-map {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 512px;
+  height: 320px;
+  background: #e7edf0;
+}
+.tracking-map-surface {
+  position: absolute;
+  width: 512px;
+  height: 512px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.tracking-marker {
+  position: absolute;
+  color: #0b1f33;
+  background: white;
+  border: 2px solid #0b1f33;
+  border-radius: 50%;
+  line-height: 20px;
+  width: 24px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}

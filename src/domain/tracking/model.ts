@@ -25,6 +25,7 @@ export const locationPublication = z.strictObject({
 });
 export type LocationSample = z.infer<typeof locationSample>;
 export const trackingQuery = z.strictObject({
+  mode: z.literal('driver').optional(),
   orderId: z.uuid().optional(),
   marketId: z.uuid().optional(),
   tripId: z.uuid().optional(),

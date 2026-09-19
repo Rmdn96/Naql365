@@ -1,3 +1,4 @@
+import { DriverTracking } from '@/components/tracking/driver';
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { driverDictionary } from '@/i18n/driver';
@@ -42,6 +43,15 @@ export default async function Page({
       <p>
         {t.vehicle}: <bdi>{trip.vehicle.identifier}</bdi>
       </p>
+      <DriverTracking
+        tripId={trip.id}
+        eligible={
+          !['PLANNED', 'ASSIGNED', 'READY', 'COMPLETED', 'CANCELLED', 'FAILED'].includes(
+            trip.status,
+          )
+        }
+        locale={locale}
+      />
       {completed && <Alert>{t.history}</Alert>}
       {trip.contact && (
         <section>

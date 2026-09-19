@@ -1,3 +1,5 @@
+import { TrackingView } from '@/components/tracking/view';
+import { InAppNotifications } from '@/components/tracking/notifications';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { operationsDictionary } from '@/i18n/operations';
@@ -22,6 +24,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     <div className="container page operations">
       <h1>{t.title}</h1>
       <Workspace locale={locale} data={data} />
+      <TrackingView locale={locale} operations />
+      <InAppNotifications locale={locale} />
     </div>
   );
 }
