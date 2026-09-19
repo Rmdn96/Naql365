@@ -15,7 +15,9 @@ export default class SafeReporter implements Reporter {
     }
   }
   onTestEnd(test: TestCase, result: TestResult) {
-    process.stdout.write(`${result.status}: ${test.titlePath().slice(1).join(' > ')}\n`);
+    process.stdout.write(
+      `${result.status}: ${test.titlePath().slice(1).join(' > ')}; durationMs=${result.duration}\n`,
+    );
     for (const annotation of test.annotations.filter(
       (item) => item.type === 'safe-security-probe',
     )) {

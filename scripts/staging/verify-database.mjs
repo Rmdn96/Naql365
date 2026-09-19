@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { stagingProject, supabase, query } from './supabase.mjs';
 import { acquireHostedRun } from './exclusive-run.mjs';
+import { schemaTypes } from '../database-type-comparison.mjs';
 
 const release = acquireHostedRun();
 try {
@@ -46,7 +47,9 @@ try {
   }
   const types = supabase(['gen', 'types', 'typescript', '--project-id', ref, '--schema', 'public']);
   if (!types.includes('export type Database')) throw new Error('Invalid generated types');
-  writeFileSync('src/infrastructure/supabase/database.types.ts', types);
+  const committed = readFileSync('src/infrastructure/supabase/database.types.ts', 'utf8');
+  if (schemaTypes(types) !== schemaTypes(committed))
+    throw new Error('Hosted public schema types differ from canonical CLI-generated types');
   const schema = query(
     ref,
     "select count(*)::integer as tables, count(*) filter (where c.relrowsecurity)::integer as rls_tables from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r'",
@@ -63,7 +66,8 @@ try {
         })),
         schema,
         assertions: 'PASS',
-        generated_types: 'written; run typecheck',
+        generated_types:
+          'PASS: public schema exactly matches canonical local-CLI types; optional hosted PostgREST client-version hint excluded',
       },
       null,
       2,

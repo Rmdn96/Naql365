@@ -18,8 +18,19 @@ export default defineConfig({
   workers: 1,
   forbidOnly: true,
   retries: 0,
+  // These hosted journeys include several remote navigations and Auth round trips.
+  // Keep each action bounded while allowing the complete journey to finish.
+  timeout: 120_000,
+  expect: { timeout: 20_000 },
   reporter: './tests/staging/safe-reporter.ts',
-  use: { baseURL: origin.origin, trace: 'off', screenshot: 'off', video: 'off' },
+  use: {
+    baseURL: origin.origin,
+    trace: 'off',
+    screenshot: 'off',
+    video: 'off',
+    navigationTimeout: 45_000,
+    actionTimeout: 20_000,
+  },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' } },

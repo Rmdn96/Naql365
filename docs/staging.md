@@ -72,3 +72,9 @@ After current-source CI passes, apply repository migrations only to the explicit
 For a fresh controlled Staging catalogue, run intake configuration first, then `node scripts/staging/configure-markets.mjs --apply`, then `npm run staging:configure-pricing`. These commands verify the Staging project and require its enrollment organization. Market provisioning adds initial geography; the Staging-only step explicitly activates SA/EG service/city pairs. Pricing/tax fixtures are synthetic: SA 1500 bps, EG 2000 bps, 19 rules per market. They are neither approved tariffs nor a legal tax compliance claim.
 
 Deploy the tested branch as a protected Vercel Preview. Preview variables remain `APP_ENV`, `STAGING_AUTH_SMOKE_ENABLED`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, all Preview-scoped; no Production scope is required. Configure Supabase Auth to the exact candidate origin and the four bounded AR/EN callback URLs in `config/staging/supabase/config.toml`. No redirect wildcard is needed. The canonical Phase 3.5 report identifies the final accepted candidate and any remaining gates.
+
+## Phase 4 staging continuation
+
+Phase 4 adds six migrations to the accepted nineteen, for twenty-five total. Apply them through the same allowlisted Staging-only workflow after CI passes. Do not reset the hosted database. Fresh reconstruction and populated upgrade are separate CI/integration gates. No extra application secret or Production environment scope is needed.
+
+Use the candidate URL and acceptance status from `docs/reports/Naql365-Phase-4-Report.md`. Keep the exact callback allowlist synchronized with `config/staging/supabase/config.toml`. Driver account provisioning follows `docs/driver-execution.md`; EXTERNAL resources remain unlinked and non-authenticated. The execution and session suites use disposable synthetic accounts and retain the intended Market/catalogue configuration during cleanup.

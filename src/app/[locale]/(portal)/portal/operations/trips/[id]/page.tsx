@@ -3,7 +3,11 @@ import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { operationsDictionary, operationalStatus, operationLabel } from '@/i18n/operations';
 import { payloadSchemas, type OperationAction } from '@/domain/operations/model';
-import { operationalTrip } from '@/infrastructure/operations/service';
+import { operationalTrip, operationalIssues } from '@/infrastructure/operations/service';
+import { driverDictionary } from '@/i18n/driver';
+import { issueCategories } from '@/domain/driver/model';
+import { ResolveIssue } from '@/components/operations/issues';
+import { PrivateEvidence } from '@/components/driver/execution';
 import { AppError } from '@/domain/shared/errors';
 import { Badge } from '@/components/ui/primitives';
 import { TripPlanner } from '@/components/operations/planner';
@@ -26,6 +30,8 @@ export default async function Page({
     if (error instanceof AppError && ['forbidden', 'not_found'].includes(error.code)) notFound();
     throw error;
   }
+  const issues = await operationalIssues(id),
+    dt = driverDictionary(locale);
   return (
     <div className="container page operations">
       <Link href={`/${locale}/portal/operations/jobs/${data.trip.job_id}`}>{t.job}</Link>
@@ -57,6 +63,24 @@ export default async function Page({
       )}
       <TripControls key={`controls-${data.trip.revision}`} locale={locale} data={data} />
       <section>
+        <h2>{dt.issues}</h2>
+        {issues.map((issue) => {
+          const category = issueCategories.find((c) => c === issue.category) ?? 'OTHER';
+          return (
+            <article key={issue.id} className="card">
+              <h3>{dt.categories[category]}</h3>
+              <p>{issue.reason}</p>
+              <p>{issue.status === 'OPEN' ? dt.pending : dt.resolved}</p>
+              {issue.resolution && <p>{issue.resolution}</p>}
+              {issue.issue_photos?.some((p) => p.state === 'FINAL') && (
+                <PrivateEvidence kind="issue" id={issue.id} locale={locale} />
+              )}{' '}
+              {issue.status === 'OPEN' && <ResolveIssue id={issue.id} locale={locale} />}
+            </article>
+          );
+        })}
+      </section>
+      <section>
         <h2>{t.events}</h2>
         <ol>
           {data.events.map((e) => {
@@ -67,8 +91,10 @@ export default async function Page({
                   ? operationLabel(action as OperationAction, locale)
                   : e.event_type === 'POD_CAPTURED'
                     ? t.pod
-                    : t.createTrip}{' '}
-                — {t.staffEvent} —{' '}
+                    : e.event_type.startsWith('ISSUE_')
+                      ? dt.issues
+                      : t.createTrip}{' '}
+                — {e.source === 'DRIVER' ? t.driver : t.staffEvent} —{' '}
                 <time dateTime={e.occurred_at}>
                   {new Intl.DateTimeFormat(locale, {
                     dateStyle: 'medium',

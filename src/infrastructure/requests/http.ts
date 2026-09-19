@@ -7,6 +7,39 @@ import { appUrl } from '@/infrastructure/config/server-env';
 export function checkOrigin(request: Request) {
   assertSameOrigin(request.headers.get('origin'), appUrl().origin);
 }
+export async function readEvidenceForm(request: Request): Promise<FormData> {
+  const reader = request.body?.getReader();
+  if (!reader) throw new AppError('validation', 'Body required');
+  const chunks: Uint8Array[] = [];
+  let length = 0;
+  try {
+    for (;;) {
+      const part = await reader.read();
+      if (part.done) break;
+      length += part.value.length;
+      if (length > 2200000) {
+        await reader.cancel();
+        throw new AppError('validation', 'Evidence too large');
+      }
+      chunks.push(part.value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const bytes = new Uint8Array(length);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.length;
+  }
+  try {
+    return await new Response(bytes, {
+      headers: { 'content-type': request.headers.get('content-type') ?? '' },
+    }).formData();
+  } catch {
+    throw new AppError('validation', 'Invalid evidence form');
+  }
+}
 export async function readJson(request: Request): Promise<unknown> {
   const reader = request.body?.getReader();
   if (!reader) throw new AppError('validation', 'Body required');

@@ -7,4 +7,5 @@ const generated = execFileSync(
   [cli, 'gen', 'types', 'typescript', '--local', '--schema', 'public'],
   { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] },
 );
-writeFileSync('src/infrastructure/supabase/database.types.ts', generated);
+// Preserve the CLI schema verbatim; normalize only its trailing blank lines.
+writeFileSync('src/infrastructure/supabase/database.types.ts', generated.trimEnd() + '\n');

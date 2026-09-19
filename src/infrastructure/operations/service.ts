@@ -180,7 +180,7 @@ export async function operationalTrip(id: string) {
       .order('created_at'),
     client
       .from('trip_events')
-      .select('id,event_type,occurred_at,actor_id')
+      .select('id,event_type,occurred_at,actor_id,source')
       .eq('trip_id', id)
       .order('occurred_at', { ascending: false })
       .limit(100),
@@ -222,6 +222,30 @@ export async function operationalTrip(id: string) {
   };
 }
 export type OperationalTrip = Awaited<ReturnType<typeof operationalTrip>>;
+export async function operationalIssues(tripId: string) {
+  const { client, organizationId } = await staffClient();
+  const result = await client
+    .from('issues')
+    .select('id,stop_id,category,reason,status,resolution,issue_photos(state)')
+    .eq('organization_id', organizationId)
+    .eq('trip_id', z.uuid().parse(tripId))
+    .order('created_at', { ascending: false })
+    .limit(100);
+  if (result.error) dbError(result.error.code);
+  return result.data ?? [];
+}
+export async function resolveOperationalIssue(input: unknown) {
+  const data = z
+    .strictObject({ issueId: z.uuid(), reason: z.string().trim().min(1).max(1000) })
+    .parse(input);
+  const { client } = await staffClient('dispatch.manage', undefined, true);
+  const result = await client.rpc('resolve_driver_issue', {
+    p_issue: data.issueId,
+    p_reason: data.reason,
+  });
+  if (result.error) dbError(result.error.code);
+  return result.data;
+}
 const fileResult = z.object({
   id: z.uuid(),
   path: z.string(),
