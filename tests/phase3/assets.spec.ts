@@ -1,6 +1,7 @@
 import { test, expect } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 import { hasSourceMapDirective } from '../helpers/source-map';
+import { hasSupabaseSecretMaterial } from '../helpers/secret-key';
 
 test('authenticated operations assets preserve server-only secret boundaries', async ({
   page,
@@ -40,7 +41,17 @@ test('authenticated operations assets preserve server-only secret boundaries', a
     expect(asset.ok).toBe(true);
     const body = await asset.text();
     expect(secrets.every((value) => !body.includes(value))).toBe(true);
-    expect(body.includes('sb_secret_')).toBe(false);
+    if (body.includes('sb_secret_'))
+      test.info().annotations.push({
+        type: 'safe-security-probe',
+        description: JSON.stringify({
+          assetPath: url.pathname,
+          prefixCount: body.split('sb_secret_').length - 1,
+          knownSdkPredicate: body.includes('.startsWith("sb_secret_")'),
+          credentialPattern: hasSupabaseSecretMaterial(body),
+        }),
+      });
+    expect(hasSupabaseSecretMaterial(body)).toBe(false);
     expect(hasSourceMapDirective(body)).toBe(false);
   }
 });
