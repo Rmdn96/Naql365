@@ -19,11 +19,17 @@ export function TrackingView({
   orderId,
   tripId,
   operations = false,
+  options,
 }: {
   locale: Locale;
   orderId?: string;
   tripId?: string;
   operations?: boolean;
+  options?: {
+    markets: { id: string; label: string }[];
+    drivers: { id: string; label: string }[];
+    trips: { id: string; label: string }[];
+  };
 }) {
   const t = trackingDictionary(locale),
     [data, setData] = useState<{ trips: TrackingTrip[]; policy: TrackingPolicy } | null>(null),
@@ -49,6 +55,7 @@ export function TrackingView({
         if (orderId) query.set('orderId', orderId);
         if (tripId || filter.trip) query.set('tripId', tripId ?? filter.trip);
         if (filter.driver) query.set('driverId', filter.driver);
+        if (filter.market) query.set('marketId', filter.market);
         const response = await fetch('/api/tracking?' + query, {
           cache: 'no-store',
           signal: abort.signal,
@@ -112,11 +119,11 @@ export function TrackingView({
       document.removeEventListener('visibilitychange', visible);
       if (channel) void client.removeChannel(channel);
     };
-  }, [ids, orderId, tripId, page, filter.driver, filter.trip, reload]);
+  }, [ids, orderId, tripId, page, filter.driver, filter.trip, filter.market, reload]);
   const trips =
     data?.trips.filter(
       (p) =>
-        (!filter.market || p.market.countryCode === filter.market) &&
+        (!filter.market || p.market.id === filter.market) &&
         (!filter.fresh ||
           freshness(p.active, p.location?.receivedAt ?? null, data.policy, now) === filter.fresh),
     ) ?? [];
@@ -141,17 +148,34 @@ export function TrackingView({
             {t.market}
             <select name="market">
               <option value="">{t.all}</option>
-              <option value="SA">SA</option>
-              <option value="EG">EG</option>
+              {options?.markets.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
             </select>
           </label>
           <label>
             {t.driver}
-            <input name="driver" />
+            <select name="driver">
+              <option value="">{t.all}</option>
+              {options?.drivers.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
             {t.trip}
-            <input name="trip" />
+            <select name="trip">
+              <option value="">{t.all}</option>
+              {options?.trips.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.label}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
             {t.title}

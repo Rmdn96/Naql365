@@ -24,7 +24,22 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     <div className="container page operations">
       <h1>{t.title}</h1>
       <Workspace locale={locale} data={data} />
-      <TrackingView locale={locale} operations />
+      <TrackingView
+        locale={locale}
+        operations
+        options={{
+          markets: data.markets.map((m) => ({
+            id: m.id,
+            label: locale === 'ar' ? m.name_ar : m.name_en,
+          })),
+          drivers: data.drivers
+            .filter((d) => d.active)
+            .map((d) => ({ id: d.id, label: d.display_name ?? '' })),
+          trips: data.trips
+            .filter((t) => !['COMPLETED', 'CANCELLED', 'FAILED'].includes(t.status))
+            .map((t) => ({ id: t.id, label: t.reference ?? '' })),
+        }}
+      />
       <InAppNotifications locale={locale} />
     </div>
   );

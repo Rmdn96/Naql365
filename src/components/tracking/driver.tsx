@@ -195,7 +195,7 @@ export function DriverTracking({
         const result = reply.parse(await response.json());
         if (result.status === 'ACCEPTED' || result.status === 'REPLAY') {
           last = { sample: intent.location, receivedAt: Date.parse(result.receivedAt!) };
-          if (!disposed) setState('ACTIVE');
+          if (!disposed && watch !== undefined) setState('ACTIVE');
         }
         if (result.status === 'THROTTLED') {
           notBefore = Date.parse(result.retryAt!);
