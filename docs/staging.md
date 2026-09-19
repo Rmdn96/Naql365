@@ -1,6 +1,6 @@
 # Staging architecture and reconstruction
 
-Phase 0.5 verified the foundation; Phase 1 added customer identity and request intake, Phase 2 pricing and quote acceptance, and Phase 3 multi-Trip dispatch and private POD. Phase 3.5 extends this same isolated Staging environment with Saudi and Egyptian markets. Each canonical phase report preserves its historical acceptance evidence. Payments and Phase 4 remain excluded.
+Phase 0.5 verified the foundation; Phase 1 added customer identity and request intake, Phase 2 pricing and quote acceptance, and Phase 3 multi-Trip dispatch and private POD. Phase 3.5 extends this same isolated Staging environment with Saudi and Egyptian markets. Each canonical phase report preserves its historical acceptance evidence. Phase 4 adds Internal Driver execution and Phase 5 adds foreground tracking and owned in-app notifications. Payments and Production remain excluded.
 
 ## Environment inventory
 
@@ -78,3 +78,13 @@ Deploy the tested branch as a protected Vercel Preview. Preview variables remain
 Phase 4 adds six migrations to the accepted nineteen, for twenty-five total. Apply them through the same allowlisted Staging-only workflow after CI passes. Do not reset the hosted database. Fresh reconstruction and populated upgrade are separate CI/integration gates. No extra application secret or Production environment scope is needed.
 
 Use the candidate URL and acceptance status from `docs/reports/Naql365-Phase-4-Report.md`. Keep the exact callback allowlist synchronized with `config/staging/supabase/config.toml`. Driver account provisioning follows `docs/driver-execution.md`; EXTERNAL resources remain unlinked and non-authenticated. The execution and session suites use disposable synthetic accounts and retain the intended Market/catalogue configuration during cleanup.
+
+## Phase 5 tracking setup
+
+After the complete local/CI gate passes, apply the two additive tracking migrations through the guarded Staging migration workflow. Verify twenty-seven migrations, official generated types and all public-table RLS checks. The Realtime publication contains only latest Trip location and notifications, with INSERT/UPDATE and per-event RLS; private sample history is never published.
+
+Run `node scripts/staging/configure-tracking.mjs --apply` with the approved Staging guard variables. It sets a 24-hour Staging retention policy, installs pg_cron if necessary and schedules `private.prune_tracking_history()` every ten minutes. The function removes at most 10,000 expired samples per invocation; publication also enforces a per-Trip cap. Production retention remains unconfigured. Inspect cron execution metadata without logging location data.
+
+Deploy with the supported Vercel Preview target after CI, independently verify target/source/READY and protection, then update only the exact Staging Auth origin/callback allowlist. No map or routing API credentials are needed for the disclosed OpenStreetMap raster viewport; ETA is explicitly unavailable. See the canonical Phase 5 report for the accepted Preview and executed evidence.
+
+Run `node scripts/staging/verify-phase5.mjs` against that verified protected origin using a temporary automation credential held only in the process environment. Do not overlap fixture runners. It exercises the complete SA/EG Driver journeys with real browser GPS and actual Supabase Realtime subscriptions. Run foundation/intake/commercial/Operations regressions serially on the same Preview. Cleanup must remove synthetic identities, operational/commercial data, files, latest locations, private samples/sessions and owned notifications; retain intended catalogues and retention configuration. Revoke the temporary Preview automation credential last.

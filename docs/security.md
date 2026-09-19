@@ -79,3 +79,11 @@ Identity/customer verification diagnostics record only operation labels, provide
 Market selection is explicit input, validated against active tenant markets. City IDs, service activation/coverage, pricing classes, tax versions and operational resources must match the record market. Composite foreign keys enforce this even for trusted writers; the application never substitutes UI filtering for database checks. Customers cannot override currency/tax or change committed market context. Configuration writes require the separate `markets.manage` permission, initially assigned only to SUPER_ADMIN.
 
 International contact numbers do not establish market, identity or authorization. No routing credential or legal tax policy is inferred. Shared SQL fixtures are tenant-scoped and transactional; a populated configuration test proves existing catalogues/enrollment survive them unchanged. Initial hosted testing exposed nested commercial main landmarks; these were corrected without weakening authorization, RLS or assertions.
+
+## Phase 5 location boundary
+
+Location publication rechecks active membership, DRIVER role, INTERNAL profile mapping, current assignment, Trip activity and tenant/Market under the existing operational lock before accepting or replaying a sample. Customer/Operations read permission never grants publishing authority. Reassignment clears the last position and closes the old session; terminal execution clears live coordinates. Client labels such as WEB/NATIVE carry no privilege.
+
+Latest rows expose only bounded operational location facts. Raw samples/session actors/assignment history stay private and are excluded from Realtime. Postgres Changes rechecks row security for each subscriber; no DELETE event is used as an authorization boundary. Customer notifications contain safe event codes, not issue reasons, emails or precise location. Only recipient read_at can be updated.
+
+The web collector stops when hidden or disposed and revalidates authority. Server publication limits remain mandatory across tabs/clients. GPS is device-reported evidence, not certified physical presence. OpenStreetMap tile requests disclose approximate viewport to that provider only after an explicit load action; attribution and referrer are retained. No paid provider secret or fabricated ETA is introduced.
