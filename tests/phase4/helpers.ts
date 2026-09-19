@@ -105,7 +105,7 @@ export async function op(
   return result.data.id!;
 }
 
-export async function acceptedOrder(page: Page, country: 'SA' | 'EG') {
+export async function acceptedOrder(page: Page, country: 'SA' | 'EG', customerRole = 'customer') {
   const ct = customerDictionary('ar'),
     qt = quotesDictionary('ar');
   const marketResult = await admin
@@ -124,7 +124,7 @@ export async function acceptedOrder(page: Page, country: 'SA' | 'EG') {
     .single();
   expect(cityResult.error).toBeNull();
   const cityId = cityResult.data!.id;
-  await login(page, 'customer');
+  await login(page, customerRole);
   // The runner always creates a fresh customer. Await onboarding hydration before continuing.
   await page.locator('#name').fill('Phase 4 controlled customer');
   await page.locator('#phone').fill(country === 'SA' ? '+966500000001' : '+201000000001');
@@ -200,7 +200,7 @@ export async function acceptedOrder(page: Page, country: 'SA' | 'EG') {
   expect(version.error).toBeNull();
   const versionId = version.data!.quote_versions.find((v) => v.status === 'SENT')!.id;
   await logout(page);
-  await login(page, 'customer');
+  await login(page, customerRole);
   await page.goto(`/ar/account/quotes/${versionId}`);
   page.once('dialog', (dialog) => void dialog.accept());
   await page.getByRole('button', { name: qt.accept, exact: true }).click();

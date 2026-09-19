@@ -58,6 +58,7 @@ export async function verifyDriverAcceptance(phase) {
       'crossMarketDriver',
       'externalDriver',
       'sessionDriver',
+      ...(phase === 5 ? ['isolationDriver'] : []),
     ]) {
       const email = `naql365-phase${phase}-${label}-${randomUUID()}@example.test`,
         password = randomBytes(32).toString('base64url');

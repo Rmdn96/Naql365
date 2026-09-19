@@ -1,10 +1,20 @@
 import { randomUUID } from 'node:crypto';
-import type { BrowserContext } from '@playwright/test';
+import type { BrowserContext, Page } from '@playwright/test';
 import { test, expect } from '../staging/fixtures';
 import { registerDriverJourneys, type DriverJourneyHook } from '../helpers/driver-journey';
-import { admin, principal, login, axe, org, identities } from '../phase4/helpers';
+import {
+  admin,
+  principal,
+  login,
+  axe,
+  org,
+  identities,
+  acceptedOrder,
+  op,
+} from '../phase4/helpers';
 import { trackingDictionary } from '../../src/i18n/tracking';
 const contexts: BrowserContext[] = [];
+const browserRealtime = new WeakMap<Page, { joined: boolean; changes: number }>();
 const probes = new Map<
   string,
   { oldDriver: unknown[]; oldCount: number; notes: unknown[]; peerNotes: unknown[] }
@@ -41,8 +51,90 @@ async function viewer(h: DriverJourneyHook, role: string) {
     else await route.continue();
   });
   const p = await c.newPage();
+  const evidence = { joined: false, changes: 0 };
+  browserRealtime.set(p, evidence);
+  p.on('websocket', (socket) =>
+    socket.on('framereceived', ({ payload }) => {
+      try {
+        const frame: unknown = JSON.parse(
+          typeof payload === 'string' ? payload : payload.toString(),
+        );
+        const event = Array.isArray(frame)
+          ? frame[3]
+          : frame && typeof frame === 'object' && 'event' in frame
+            ? frame.event
+            : null;
+        if (event === 'phx_reply') evidence.joined = true;
+        if (event === 'postgres_changes') evidence.changes++;
+      } catch {
+        /* Binary/non-JSON transport frames contain no assertion evidence. */
+      }
+    }),
+  );
   await login(p, role, h.locale);
   return p;
+}
+async function bilateralCustomerIsolation(h: DriverJourneyHook) {
+  const page = await viewer(h, 'peer');
+  const { market, cityId, orderId } = await acceptedOrder(page, h.country, 'peer');
+  await login(page, 'operations');
+  const job = await op(page, 'create_job', orderId),
+    trip = await op(page, 'create_trip', job);
+  const driver = await op(page, 'create_driver', job, {
+    marketId: market.id,
+    type: 'INTERNAL',
+    name: 'Isolated customer execution',
+  });
+  expect(
+    (
+      await admin
+        .from('drivers')
+        .update({ profile_id: identities.isolationDriver!.id })
+        .eq('id', driver)
+    ).error,
+  ).toBeNull();
+  const vehicle = await op(page, 'create_vehicle', job, {
+    marketId: market.id,
+    type: 'Truck',
+    identifier: 'ISO-' + randomUUID().slice(0, 8),
+  });
+  await op(page, 'plan', trip, {
+    plannedStart: new Date().toISOString(),
+    plannedEnd: new Date(Date.now() + 3600000).toISOString(),
+    stops: [
+      { cityId, kind: 'PICKUP', address: 'Isolated pickup', pickups: [] },
+      { cityId, kind: 'DELIVERY', address: 'Isolated delivery', pickups: [0] },
+    ],
+  });
+  await op(page, 'assign', trip, { driverId: driver, vehicleId: vehicle });
+  await op(page, 'ready', trip);
+  await op(page, 'dispatch', trip);
+  const peer = await principal('peer'),
+    publisher = await principal('isolationDriver');
+  clients.push(publisher);
+  const allowed: unknown[] = [],
+    forbidden: unknown[] = [];
+  await subscribe(peer, trip, allowed);
+  await subscribe(h.customer, trip, forbidden);
+  expect(
+    (await publisher.rpc('publish_trip_location', publication(trip, h.country))).error,
+  ).toBeNull();
+  await expect.poll(() => allowed.length, { timeout: 20000 }).toBeGreaterThan(0);
+  await page.waitForTimeout(1500);
+  expect(forbidden).toHaveLength(0);
+  expect(
+    (await h.customer.from('trip_live_locations').select('*').eq('trip_id', trip)).data,
+  ).toEqual([]);
+  expect((await h.customer.rpc('tracking_feed', { p_trip: trip })).error).not.toBeNull();
+  expect((await peer.rpc('tracking_feed', { p_trip: h.tripId })).error).not.toBeNull();
+  await page.context().close();
+  contexts.splice(contexts.indexOf(page.context()), 1);
+  await h.page.bringToFront();
+  test.info().annotations.push({
+    type: 'safe-security-probe',
+    description:
+      'two actual customer Orders/active Trips: bilateral read/query/subscription isolation verified with authorized positive delivery',
+  });
 }
 async function subscribe(
   client: Awaited<ReturnType<typeof principal>>,
@@ -109,6 +201,7 @@ registerDriverJourneys({
     await subscribe(await principal('operations'), h.tripId, opsEvents);
     await subscribe(await principal('peer'), h.tripId, peerEvents);
     await subscribe(await principal('other'), h.tripId, otherEvents);
+    if (h.country === 'SA') await bilateralCustomerIsolation(h);
     await h.context.addInitScript(() => {
       const original = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
       navigator.geolocation.getCurrentPosition = (...args) => {
@@ -288,6 +381,23 @@ registerDriverJourneys({
           ).data?.read_at,
       )
       .toBeTruthy();
+    const transport = browserRealtime.get(owner)!;
+    await expect.poll(() => transport.joined, { timeout: 20000 }).toBe(true);
+    const beforeChange = transport.changes;
+    expect(
+      (
+        await admin
+          .from('trip_live_locations')
+          .update({ received_at: new Date().toISOString() })
+          .eq('trip_id', h.tripId)
+      ).error,
+    ).toBeNull();
+    await expect.poll(() => transport.changes, { timeout: 20000 }).toBeGreaterThan(beforeChange);
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description:
+        'customer browser received actual postgres_changes WebSocket frame under deployed CSP',
+    });
     await axe(owner);
     await owner.getByRole('button', { name: t.map, exact: true }).click();
     await expect(owner.getByRole('link', { name: '© OpenStreetMap contributors' })).toBeVisible();
