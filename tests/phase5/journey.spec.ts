@@ -381,8 +381,19 @@ registerDriverJourneys({
     await owner.goto(`/${h.locale}/account/orders/${h.orderId}`);
     await expect(owner.getByText(t.LIVE, { exact: true })).toBeVisible();
     await expect(owner.getByText(t.eta, { exact: true })).toHaveCount(2);
-    await expect(owner.getByText(t.TRIP_STARTED, { exact: true })).toBeVisible();
-    await owner.getByRole('button', { name: t.markRead, exact: true }).first().click();
+    const currentNotification = (
+      await h.customer
+        .from('notifications')
+        .select('created_at')
+        .eq('trip_id', h.tripId)
+        .eq('event_code', 'TRIP_STARTED')
+        .single()
+    ).data!;
+    const notificationRow = owner
+      .locator('li')
+      .filter({ has: owner.locator(`time[datetime="${currentNotification.created_at}"]`) });
+    await expect(notificationRow.getByText(t.TRIP_STARTED, { exact: true })).toBeVisible();
+    await notificationRow.getByRole('button', { name: t.markRead, exact: true }).click();
     await expect
       .poll(
         async () =>
