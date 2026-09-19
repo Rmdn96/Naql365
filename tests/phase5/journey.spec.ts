@@ -199,13 +199,11 @@ registerDriverJourneys({
       expect(Date.parse(next.received_at) - Date.parse(first.received_at)).toBeGreaterThanOrEqual(
         180000,
       );
-      test
-        .info()
-        .annotations.push({
-          type: 'safe-security-probe',
-          description:
-            'stationary heartbeat: real 180-second interval, fresh observation requested, unchanged stale fix never republished',
-        });
+      test.info().annotations.push({
+        type: 'safe-security-probe',
+        description:
+          'stationary heartbeat: real 180-second interval, fresh observation requested, unchanged stale fix never republished',
+      });
       await expect.poll(() => ownerEvents.length).toBeGreaterThan(1);
       await expect.poll(() => opsEvents.length).toBeGreaterThan(1);
     }
