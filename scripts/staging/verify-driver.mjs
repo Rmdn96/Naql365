@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 import { stagingProject, supabase, query } from './supabase.mjs';
 import { acquireHostedRun } from './exclusive-run.mjs';
 export async function verifyDriverAcceptance(phase) {
-  if (![4, 5].includes(phase)) throw Error('Unsupported driver acceptance phase');
+  if (![4, 5, 6].includes(phase)) throw Error('Unsupported acceptance phase');
   process.chdir(fileURLToPath(new URL('../../', import.meta.url)));
   const args = process.argv.slice(2);
   if (args.some((arg) => arg !== '--session-only')) throw new Error('Unknown verification option');
@@ -59,6 +59,7 @@ export async function verifyDriverAcceptance(phase) {
       'externalDriver',
       'sessionDriver',
       ...(phase === 5 ? ['isolationDriver'] : []),
+      ...(phase === 6 ? ['finance', 'otherFinance', 'bankAdmin'] : []),
     ]) {
       const email = `naql365-phase${phase}-${label}-${randomUUID()}@example.test`,
         password = randomBytes(32).toString('base64url');
@@ -73,21 +74,37 @@ export async function verifyDriverAcceptance(phase) {
       users.push(id);
       identities[label] = { email, password, id };
       if (label !== 'customer') {
-        const tenant = label === 'other' || label === 'otherDriver' ? otherOrg : org;
+        const tenant = ['other', 'otherDriver', 'otherFinance'].includes(label) ? otherOrg : org;
         const type = label === 'peer' ? 'customer' : label.includes('Driver') ? 'driver' : 'staff',
           role =
-            label === 'peer'
-              ? 'CUSTOMER'
-              : label.includes('Driver')
-                ? 'DRIVER'
-                : label === 'sales'
-                  ? 'SALES'
-                  : 'DISPATCHER';
+            label === 'bankAdmin'
+              ? 'SUPER_ADMIN'
+              : label === 'finance' || label === 'otherFinance'
+                ? 'FINANCE'
+                : label === 'peer'
+                  ? 'CUSTOMER'
+                  : label.includes('Driver')
+                    ? 'DRIVER'
+                    : label === 'sales'
+                      ? 'SALES'
+                      : 'DISPATCHER';
         query(
           ref,
           `begin;insert into public.organization_memberships(organization_id,profile_id,member_type) values('${tenant}','${id}','${type}');insert into public.user_roles(organization_id,profile_id,role_id) select '${tenant}','${id}',id from public.roles where code='${role}';${label === 'peer' ? `insert into public.customers(organization_id,profile_id) values('${org}','${id}');` : ''}commit;`,
         );
       }
+    }
+    if (phase === 6) {
+      const count = query(
+        ref,
+        `select count(*)::integer n from public.bank_accounts where organization_id='${org}' and active and is_primary`,
+      )[0]?.n;
+      if (count !== 0) throw Error('Existing bank configuration must not be replaced by fixtures');
+      query(
+        ref,
+        `insert into public.bank_accounts(organization_id,market_id,currency,bank_name_ar,bank_name_en,beneficiary_ar,beneficiary_en,account_number,created_by)
+        select organization_id,id,currency,'حساب اختبار فقط','STAGING TEST ONLY','مستفيد اختبار','TEST BENEFICIARY','TEST-ONLY-'||country_code,'${identities.bankAdmin.id}' from public.markets where organization_id='${org}' and active`,
+      );
     }
     const code = await new Promise((resolve) => {
       const child = spawn(
@@ -152,6 +169,13 @@ export async function verifyDriverAcceptance(phase) {
     delete from public.assignments where trip_id in(select id from cleanup_trips);
     delete from public.trips where id in(select id from cleanup_trips);delete from public.jobs where id in(select id from cleanup_jobs);
     delete from public.drivers where id in(select id from cleanup_resources where action='create_driver');delete from public.vehicles where id in(select id from cleanup_resources where action='create_vehicle');
+    delete from public.notifications where payment_id in(select id from public.payments where order_id in(select id from cleanup_orders));
+    delete from public.invoices where order_id in(select id from cleanup_orders);
+    delete from public.payment_transactions where payment_id in(select id from public.payments where order_id in(select id from cleanup_orders));
+    delete from public.bank_transfer_attempts where payment_id in(select id from public.payments where order_id in(select id from cleanup_orders));
+    delete from public.payments where order_id in(select id from cleanup_orders);
+    delete from private.payment_mutations where actor_id in (${ids});
+    delete from public.bank_accounts where created_by in (${ids});
     delete from private.operational_mutations where actor_id in (${ids});delete from public.orders where id in(select id from cleanup_orders);
     delete from public.quote_items where quote_version_id in(select id from cleanup_versions);delete from public.quote_pricing_details where quote_version_id in(select id from cleanup_versions);
     delete from public.quote_versions where id in(select id from cleanup_versions);delete from public.quotes where id in(select id from cleanup_quotes);
@@ -159,7 +183,10 @@ export async function verifyDriverAcceptance(phase) {
     delete from public.pricing_evaluations where request_id in(select id from cleanup_requests);delete from public.distance_snapshots where request_id in(select id from cleanup_requests);
     delete from public.request_attachments where request_id in(select id from cleanup_requests);delete from public.file_objects where owner_profile_id in (${ids});
     delete from public.request_additional_services where request_id in(select id from cleanup_requests);delete from public.request_locations where request_id in(select id from cleanup_requests);delete from public.request_items where request_id in(select id from cleanup_requests);delete from public.requests where id in(select id from cleanup_requests);
-    delete from public.customers where profile_id in (${ids});delete from public.user_roles where profile_id in (${ids});delete from public.organization_memberships where profile_id in (${ids});delete from public.audit_logs where actor_id in (${ids});commit;`,
+    delete from public.customers where profile_id in (${ids});delete from public.user_roles where profile_id in (${ids});delete from public.organization_memberships where profile_id in (${ids});delete from public.audit_logs where actor_id in (${ids});
+    do $$ begin
+     if exists(select 1 from public.payments where order_id in(select id from cleanup_orders)) or exists(select 1 from public.invoices where order_id in(select id from cleanup_orders)) or exists(select 1 from public.bank_transfer_attempts where submitted_by in (${ids})) or exists(select 1 from public.bank_accounts where created_by in (${ids})) or exists(select 1 from public.file_objects where owner_profile_id in (${ids})) or exists(select 1 from private.payment_mutations where actor_id in (${ids})) then raise exception 'Financial fixture cleanup incomplete';end if;
+    end $$;commit;`,
         );
         for (const id of users) {
           if ((await admin.auth.admin.deleteUser(id)).error)

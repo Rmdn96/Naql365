@@ -214,6 +214,9 @@ for (const country of ['SA', 'EG'] as const)
       .single();
     expect(order.error).toBeNull();
     const orderId = order.data!.id;
+    await page.goto(`/ar/account/orders/${orderId}/payment`);
+    await page.getByRole('button', { name: 'نقدًا', exact: true }).click();
+    await expect(page.getByText('النقد مستحق', { exact: true })).toBeVisible();
     expect(order.data!.market_id).toBe(market.id);
     expect(order.data!.currency).toBe(country === 'SA' ? 'SAR' : 'EGP');
     expect(order.data!.tax_rate_bps).toBe(country === 'SA' ? 1500 : 2000);

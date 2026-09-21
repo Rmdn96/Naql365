@@ -120,6 +120,9 @@ try {
     delete from public.assignments where trip_id in(select id from cleanup_trips);
     delete from public.trips where id in(select id from cleanup_trips);delete from public.jobs where id in(select id from cleanup_jobs);
     delete from public.drivers where id in(select id from cleanup_resources where action='create_driver');delete from public.vehicles where id in(select id from cleanup_resources where action='create_vehicle');
+    delete from private.payment_mutations where actor_id in (${ids});
+    delete from public.payment_transactions where payment_id in(select id from public.payments where order_id in(select id from cleanup_orders));
+    delete from public.payments where order_id in(select id from cleanup_orders);
     delete from private.operational_mutations where actor_id in (${ids});delete from public.orders where id in(select id from cleanup_orders);
     delete from public.quote_items where quote_version_id in(select id from cleanup_versions);delete from public.quote_pricing_details where quote_version_id in(select id from cleanup_versions);
     delete from public.quote_versions where id in(select id from cleanup_versions);delete from public.quotes where id in(select id from cleanup_quotes);

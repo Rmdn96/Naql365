@@ -105,7 +105,12 @@ export async function op(
   return result.data.id!;
 }
 
-export async function acceptedOrder(page: Page, country: 'SA' | 'EG', customerRole = 'customer') {
+export async function acceptedOrder(
+  page: Page,
+  country: 'SA' | 'EG',
+  customerRole = 'customer',
+  checkout: 'CASH' | null = 'CASH',
+) {
   const ct = customerDictionary('ar'),
     qt = quotesDictionary('ar');
   const marketResult = await admin
@@ -212,6 +217,11 @@ export async function acceptedOrder(page: Page, country: 'SA' | 'EG', customerRo
     .single();
   expect(order.error).toBeNull();
   const orderId = order.data!.id;
+  if (checkout) {
+    await page.goto(`/ar/account/orders/${orderId}/payment`);
+    await page.getByRole('button', { name: 'نقدًا', exact: true }).click();
+    await expect(page.getByText('النقد مستحق', { exact: true })).toBeVisible();
+  }
 
   return { market, cityId, orderId, requestId, versionId };
 }

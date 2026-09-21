@@ -7,6 +7,7 @@ begin
  if not private.has_permission(p_org,'finance.accounts.manage') then raise exception 'Bank configuration permission required' using errcode='42501'; end if;
  if p_id is null or p_mutation is null or p_details is null or jsonb_typeof(p_details)<>'object' or octet_length(p_details::text)>8192 or
  (p_details-array['bankNameAr','bankNameEn','beneficiaryAr','beneficiaryEn','iban','accountNumber','bic','instructionsAr','instructionsEn','active','primary'])<>'{}'::jsonb then raise exception 'Invalid account configuration' using errcode='22023'; end if;
+ if not private.text_fields(p_details,array['bankNameAr','bankNameEn','beneficiaryAr','beneficiaryEn','iban','accountNumber','bic','instructionsAr','instructionsEn']) then raise exception 'Invalid account text' using errcode='22023'; end if;
  perform pg_advisory_xact_lock(hashtextextended(auth.uid()::text||p_mutation::text,33));
  perform pg_advisory_xact_lock(hashtextextended(p_org::text,34));
  select * into m from public.markets where id=p_market and organization_id=p_org and active;

@@ -93,6 +93,7 @@ export function ProofUpload({ data, locale }: { data: PaymentDetails; locale: Lo
             disabled={busy}
             onChange={(e) => {
               setFile(e.target.files?.[0] ?? null);
+              setError(false);
               ids.current = null;
             }}
           />

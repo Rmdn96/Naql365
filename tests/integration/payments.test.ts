@@ -248,8 +248,62 @@ it('rejects ambiguous method/state facts and cross-Market bank selection', async
     ),
   ).rejects.toThrow();
   await db.exec(`update public.bank_accounts set active=false where organization_id='${org}'`);
+  const egypt = randomUUID();
+  await db.query(
+    `insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values($1,$2,'EG','مصر','Egypt',true,'EGP','Africa/Cairo','+20')`,
+    [egypt, org],
+  );
+  await db.query(
+    `insert into public.bank_accounts(organization_id,market_id,currency,bank_name_ar,bank_name_en,beneficiary_ar,beneficiary_en,account_number,created_by) values($1,$2,'EGP','اختبار','EG TEST ONLY','اختبار','TEST','TEST-EG-0000',$3)`,
+    [org, egypt, finance],
+  );
   await actor(customer);
   await expect(command('choose', 0, { method: 'BANK_TRANSFER' })).rejects.toThrow(
     'Bank instructions unavailable',
+  );
+});
+it('bank administration is separately privileged, scoped, revisioned and replay safe', async () => {
+  const bank = randomUUID(),
+    mutation = randomUUID();
+  const details = {
+    bankNameAr: 'اختبار',
+    bankNameEn: 'TEST ONLY',
+    beneficiaryAr: 'اختبار',
+    beneficiaryEn: 'TEST ONLY',
+    accountNumber: 'TEST-SECONDARY',
+    active: true,
+    primary: false,
+  };
+  const configure = (data: object = details, revision = 0) =>
+    db.query('select public.configure_bank_account($1,$2,$3,$4,$5,$6::jsonb) r', [
+      org,
+      market,
+      bank,
+      revision,
+      mutation,
+      JSON.stringify(data),
+    ]);
+  for (const role of [customer, finance, staff, sales, other]) {
+    await actor(role);
+    await expect(configure()).rejects.toThrow('Bank configuration permission required');
+  }
+  await db.exec(
+    `reset role;insert into public.user_roles(organization_id,profile_id,role_id) select '${org}','${staff}',id from public.roles where code='SUPER_ADMIN';`,
+  );
+  await actor(staff);
+  await expect(configure({ ...details, currency: 'EGP' })).rejects.toThrow();
+  await expect(configure({ ...details, bankNameAr: 42 })).rejects.toThrow();
+  const first = await configure();
+  expect((await configure()).rows).toEqual(first.rows);
+  expect(
+    (
+      await db.query<{ currency: string }>(
+        'select currency from public.bank_accounts where id=$1',
+        [bank],
+      )
+    ).rows[0]?.currency,
+  ).toBe('SAR');
+  await expect(configure({ ...details, accountNumber: 'FORGED-REPLAY' })).rejects.toThrow(
+    'Mutation identity reused',
   );
 });
