@@ -333,13 +333,11 @@ for (const country of ['SA', 'EG'] as const)
           page.getByText('Please upload a readable transfer proof', { exact: true }),
         ).toBeVisible();
         await expect(page.locator('body')).not.toContainText('PRIVATE FINANCE TEST NOTE');
-        await page
-          .locator('#transfer-proof-file')
-          .setInputFiles({
-            name: country === 'EG' ? 'replacement.pdf' : 'replacement.png',
-            mimeType: country === 'EG' ? 'application/pdf' : 'image/png',
-            buffer: country === 'EG' ? proofPdf() : png,
-          });
+        await page.locator('#transfer-proof-file').setInputFiles({
+          name: country === 'EG' ? 'replacement.pdf' : 'replacement.png',
+          mimeType: country === 'EG' ? 'application/pdf' : 'image/png',
+          buffer: country === 'EG' ? proofPdf() : png,
+        });
         await page.getByRole('button', { name: t.upload, exact: true }).click();
         await expect(page.getByText(t.states.UNDER_REVIEW, { exact: true })).toBeVisible();
         const history = await admin
