@@ -1,6 +1,6 @@
 # Phase 6 — Payments and Finance gap analysis
 
-Date: 2026-09-21. Status: repository inspection complete for the payment design; owner decisions below must be resolved before implementation. This is not Phase 6 acceptance.
+Date: 2026-09-21. Status: repository inspection complete for the payment design; both owner decisions below were explicitly approved on 2026-09-21. This is not Phase 6 acceptance.
 
 ## Verified baseline
 
@@ -36,21 +36,21 @@ The action named dispatch is physical Start Trip: READY becomes EN_ROUTE_TO_PICK
 
 Use a single database clearance predicate and enforce it inside the authoritative transition under the same organization lock as Finance confirmation and method changes. Projections display its result; Realtime does not authorize execution. No payment command may mutate Quote/Order commercial fields. Preserve multi-Trip aggregate completion, history, POD and active-assignment resource constraints.
 
-## Owner decisions required before migrations
+## Owner-approved decisions before migrations
 
 ### 1. Upgrade behavior for paymentless accepted Orders
 
 Phase 5 legitimately has accepted Orders and started/completed Trips without any Payment. Populated upgrade must preserve them. The Phase 6 specification defines CASH and BANK_TRANSFER clearance, but does not define a payment method or execution entitlement for these existing Orders. Silently backfilling CASH or PAID would invent a customer choice or receipt of money. Conversely, stopping an already-started Trip could strand execution/POD.
 
-Proposed policy for owner approval: do not invent payment methods or receipts; preserve already-started Trips so they can finish; require explicit CASH selection or confirmed BANK_TRANSFER before any not-yet-started Trip, including additional Trips of an existing multi-Trip Order. Completed historical facts remain unchanged. Orders with no chosen method may still be planned, but new physical starts are blocked. This is a proposal, not an implemented exception.
+Owner-approved policy: do not invent payment methods or receipts; preserve already-started Trips so they can finish; require explicit CASH selection or confirmed BANK_TRANSFER before any not-yet-started Trip, including additional Trips of an existing multi-Trip Order. Completed historical facts remain unchanged. Orders with no chosen method may still be planned, but new physical starts are blocked. Implement this policy without inventing historical payment facts.
 
 ### 2. Method switching after physical execution starts
 
 Sections49-50 permit an authoritative switch before proof/collection, but a CASH_DUE Order can already have an active Trip without financial evidence. Switching it to BANK_TRANSFER would create an unverified transfer on an executing Order, conflicting with the new execution rule. For a multi-Trip Order it also changes the conditions for later Trips.
 
-Proposed policy for owner approval: permit method changes only before any Trip of the Order has started AND before any proof submission/review/cash confirmation; freeze the selected method after the first physical start or financial evidence. Same-method replay remains safe. No silent change, automatic pause, cancellation or refund is introduced. Both directions and switch-vs-start races will be tested.
+Owner-approved policy: permit method changes only before any Trip of the Order has started AND before any proof submission/review/cash confirmation; freeze the selected method after the first physical start or financial evidence. Same-method replay remains safe. No silent change, automatic pause, cancellation or refund is introduced. Both directions and switch-vs-start races will be tested.
 
-Implementation pauses for these decisions as required by the master prompt. No Phase 6 migration exists yet.
+Owner explicitly approved both rules: «أعتمد القاعدتين». Implementation may proceed. Initial selection for a paymentless legacy Order is not a method switch; existing started Trips remain protected history. All subsequent method changes are frozen once any Trip has started.
 
 ## Transfer attempts, bank accounts and evidence
 
