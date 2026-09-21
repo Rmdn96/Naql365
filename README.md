@@ -1,6 +1,6 @@
 # Naql365 · نقل 365
 
-Transportation Operating Platform. **Phase 4: Internal Driver execution portal for Saudi Arabia and Egypt.** Staging acceptance and review status are recorded in the canonical Phase 4 report; this is not a Production release.
+Transportation Operating Platform. **Phase 5: foreground live tracking and in-app notifications for Saudi Arabia and Egypt.** Staging acceptance and review status are recorded in the canonical Phase 5 report; this is not a Production release.
 
 Independent implementation for Naql365. No source, branding, credentials or data from another product is used.
 
@@ -71,4 +71,10 @@ docs/                       Architecture, operations and decision records
 - [Internal Driver architecture and provisioning](docs/driver-execution.md)
 - [Phase 4 acceptance report](docs/reports/Naql365-Phase-4-Report.md)
 
-Workflow: `feature/* → develop → main`. Phase 4 uses `feature/phase-4-internal-driver-portal` from protected develop `167f2caba4685e71c44d19b20423115acf0100da`, containing the accepted Phase 3.5 merge. Phase 4 requires owner review and separately authorized protected merging. Phase 5 remains locked. No Production deployment is authorized.
+- [Live tracking gap analysis](docs/phase-5-live-tracking-gap-analysis.md)
+- [Native location publication contract](docs/native-driver-location-contract.md)
+- [Phase 5 acceptance report](docs/reports/Naql365-Phase-5-Report.md)
+
+Workflow: `feature/* → develop → main`. Phase 5 uses `feature/phase-5-live-tracking-eta-notifications` from protected develop `b5a6406b69a62bdc9c4d383433efea5b9da86b44` (accepted Phase 4). Separate owner review and protected approval are required before merging. No Production deployment or Phase 6 work is authorized.
+
+Browser GPS is foreground-only; reliable background/screen-locked tracking requires a future native client. ETA explicitly remains unavailable because no external routing provider is configured. Maps load OpenStreetMap tiles only after disclosure and retain visible attribution.

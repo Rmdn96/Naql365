@@ -11,7 +11,9 @@ import type {
 export default class SafeReporter implements Reporter {
   onStepEnd(_test: TestCase, _result: TestResult, step: TestStep) {
     if (step.error && step.location?.file.replaceAll('\\', '/').includes('/tests/')) {
-      process.stdout.write(`Failed test step source line: ${step.location.line}\n`);
+      process.stdout.write(
+        `Failed test step: ${step.location.file.replaceAll('\\', '/').split('/').slice(-2).join('/')}:${step.location.line}\n`,
+      );
     }
   }
   onTestEnd(test: TestCase, result: TestResult) {

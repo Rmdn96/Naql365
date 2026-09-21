@@ -1,3 +1,5 @@
+import { InAppNotifications } from '@/components/tracking/notifications';
+import { TrackingView } from '@/components/tracking/view';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { operationsDictionary, operationalStatus } from '@/i18n/operations';
@@ -34,6 +36,8 @@ export default async function Page({
       </p>
       <Badge>{operationalStatus(data.status, locale)}</Badge>
       <p>{t.trackingHelp}</p>
+      <TrackingView locale={locale} orderId={id} />
+      <InAppNotifications locale={locale} />
       {data.trips.length ? (
         <ul className="request-list">
           {data.trips.map((trip, index) => (
