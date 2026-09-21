@@ -30,6 +30,15 @@ insert into public.requests(id,organization_id,customer_id,market_id) values ('5
 insert into public.quotes(id,organization_id,request_id) values('63000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','53000000-0000-4000-8000-000000000001');
 insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,distance_km,distance_source,distance_verified_at,currency) values ('73000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','63000000-0000-4000-8000-000000000001',1,'ACCEPTED',now(),now()+interval '2 days',10,'MANUAL_VERIFIED',now(),'SAR');
 insert into public.orders(id,organization_id,quote_id,accepted_quote_version_id,idempotency_key,reference,request_id,customer_id,distance_km,distance_source,accepted_at,currency) values ('83000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','63000000-0000-4000-8000-000000000001','73000000-0000-4000-8000-000000000001','phase3','O-N365-202609-930001','53000000-0000-4000-8000-000000000001','33000000-0000-4000-8000-000000000001',10,'MANUAL_VERIFIED',now(),'SAR');
+-- Phase 6 explicit checkout for operational regression fixtures. Older-schema
+-- upgrade tests run this journey before the payment command exists.
+do $$ begin
+ if to_regprocedure('public.payment_command(uuid,text,uuid,integer,jsonb)') is not null then
+  perform set_config('request.jwt.claim.sub','13000000-0000-4000-8000-000000000002',false);
+  perform public.payment_command('83000000-0000-4000-8000-000000000001','choose',gen_random_uuid(),0,'{"method":"CASH"}');
+  perform set_config('request.jwt.claim.sub','',false);
+ end if;
+end $$;
 create function public.phase3_command(action text,entity uuid,payload jsonb default '{}') returns jsonb language plpgsql as $$
 declare rev integer;
 begin
