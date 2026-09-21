@@ -66,8 +66,9 @@ begin
  if not private.has_permission(p_org,'finance.read') then raise exception 'Finance access denied' using errcode='42501'; end if;
  if p_offset is null or p_offset not between 0 and 10000 or (p_status is not null and p_status not in ('PENDING','CASH_DUE','AWAITING_TRANSFER_PROOF','UNDER_REVIEW','TRANSFER_REJECTED','PAID')) then raise exception 'Invalid queue filter' using errcode='22023'; end if;
  select coalesce(jsonb_agg(row order by created_at desc,id),'[]') into result from (
- select p.id,p.created_at,jsonb_build_object('orderId',o.id,'reference',o.reference,'customerId',o.customer_id,'marketId',o.market_id,'currency',o.currency,'amountMinor',o.total_minor,'method',p.method,'status',p.status,'createdAt',p.created_at) row
- from public.payments p join public.orders o on o.id=p.order_id where p.organization_id=p_org and (p_status is null or p.status=p_status) order by p.created_at desc,p.id limit 30 offset p_offset) q;
+ select p.id,p.created_at,jsonb_build_object('orderId',o.id,'reference',o.reference,'customerId',o.customer_id,'customerName',r.contact_name,'marketId',o.market_id,'marketNameAr',m.name_ar,'marketNameEn',m.name_en,'timezone',m.timezone,'currency',o.currency,'amountMinor',o.total_minor,'method',p.method,'status',p.status,'createdAt',p.created_at,
+ 'latestProof',(select jsonb_build_object('id',a.id,'submittedAt',a.submitted_at,'bankNameAr',a.bank_snapshot->>'bankNameAr','bankNameEn',a.bank_snapshot->>'bankNameEn') from public.bank_transfer_attempts a where a.payment_id=p.id and a.submitted_at is not null order by a.attempt_number desc limit 1)) row
+ from public.payments p join public.orders o on o.id=p.order_id join public.requests r on r.id=o.request_id join public.markets m on m.id=o.market_id where p.organization_id=p_org and (p_status is null or p.status=p_status) order by p.created_at desc,p.id limit 30 offset p_offset) q;
  return result;
 end $$;
 create function public.payment_clearance(p_trip uuid) returns jsonb language plpgsql stable security definer set search_path='' as $$

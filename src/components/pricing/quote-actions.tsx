@@ -1,8 +1,10 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { Locale } from '@/i18n/config';
 import { quotesDictionary } from '@/i18n/quotes';
 import { Alert, Button, Input } from '@/components/ui/primitives';
+import { z } from 'zod';
 
 export function QuoteActions({
   locale,
@@ -12,6 +14,7 @@ export function QuoteActions({
   quoteVersionId: string;
 }) {
   const t = quotesDictionary(locale),
+    router = useRouter(),
     [busy, setBusy] = useState(false),
     [reason, setReason] = useState(''),
     [message, setMessage] = useState<string>();
@@ -30,6 +33,13 @@ export function QuoteActions({
       return;
     }
     setMessage(action === 'accept' ? t.accepted : t.rejected);
+    if (action === 'accept') {
+      const result = z.object({ order_id: z.uuid() }).safeParse(await response.json());
+      if (result.success) {
+        router.push(`/${locale}/account/orders/${result.data.order_id}/payment`);
+        return;
+      }
+    }
     window.location.reload();
   }
   return (

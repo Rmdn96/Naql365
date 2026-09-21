@@ -7,7 +7,15 @@ import { nextStopAction, type OperationAction } from '@/domain/operations/model'
 import type { OperationalTrip } from '@/infrastructure/operations/service';
 import { Alert, Badge, Button, Input, Select } from '@/components/ui/primitives';
 import { useOperationalCommand } from './command';
-export function TripControls({ locale, data }: { locale: Locale; data: OperationalTrip }) {
+export function TripControls({
+  locale,
+  data,
+  executionAllowed,
+}: {
+  locale: Locale;
+  data: OperationalTrip;
+  executionAllowed: boolean;
+}) {
   const t = operationsDictionary(locale);
   const command = useOperationalCommand(
     locale,
@@ -61,7 +69,11 @@ export function TripControls({ locale, data }: { locale: Locale; data: Operation
     </>
   );
   const action = (a: OperationAction) => (
-    <Button key={a} disabled={command.busy} onClick={() => void command.run(a)}>
+    <Button
+      key={a}
+      disabled={command.busy || (a === 'dispatch' && !executionAllowed)}
+      onClick={() => void command.run(a)}
+    >
       {operationLabel(a, locale)}
     </Button>
   );

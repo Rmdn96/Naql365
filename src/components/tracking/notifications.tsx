@@ -8,7 +8,16 @@ const schema = z
   .array(
     z.object({
       id: z.uuid(),
-      event_code: z.enum(['TRIP_STARTED', 'TRIP_COMPLETED', 'TRIP_REASSIGNED', 'ISSUE_REPORTED']),
+      event_code: z.enum([
+        'TRIP_STARTED',
+        'TRIP_COMPLETED',
+        'TRIP_REASSIGNED',
+        'ISSUE_REPORTED',
+        'TRANSFER_PROOF_RECEIVED',
+        'TRANSFER_CONFIRMED',
+        'TRANSFER_REJECTED',
+        'CASH_RECEIVED',
+      ]),
       created_at: z.string(),
       read_at: z.string().nullable(),
       timezone: z.string(),

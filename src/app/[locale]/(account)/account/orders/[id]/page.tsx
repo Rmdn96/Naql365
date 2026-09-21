@@ -1,4 +1,6 @@
 import { InAppNotifications } from '@/components/tracking/notifications';
+import Link from 'next/link';
+import { paymentDictionary } from '@/i18n/payments';
 import { TrackingView } from '@/components/tracking/view';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
@@ -36,6 +38,9 @@ export default async function Page({
       </p>
       <Badge>{operationalStatus(data.status, locale)}</Badge>
       <p>{t.trackingHelp}</p>
+      <Link className="button button--primary" href={`/${locale}/account/orders/${id}/payment`}>
+        {paymentDictionary(locale).title}
+      </Link>
       <TrackingView locale={locale} orderId={id} />
       <InAppNotifications locale={locale} />
       {data.trips.length ? (

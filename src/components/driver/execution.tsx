@@ -122,7 +122,15 @@ function useLocation(locale: Locale, id: string) {
     ),
   };
 }
-export function DriverExecution({ trip, locale }: { trip: DriverTrip; locale: Locale }) {
+export function DriverExecution({
+  trip,
+  locale,
+  executionAllowed,
+}: {
+  trip: DriverTrip;
+  locale: Locale;
+  executionAllowed: boolean;
+}) {
   const t = driverDictionary(locale),
     feedback = useFeedback(locale),
     location = useLocation(locale, 'arrival-location');
@@ -143,7 +151,7 @@ export function DriverExecution({ trip, locale }: { trip: DriverTrip; locale: Lo
     <section className="stack">
       {action === 'arrive' && location.field}
       <Button
-        disabled={feedback.busy}
+        disabled={feedback.busy || (action === 'dispatch' && !executionAllowed)}
         onClick={() =>
           void feedback.run(async () => {
             request.current ??= {

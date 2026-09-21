@@ -8,6 +8,7 @@ import { smokeLogout } from '@/app/auth/actions';
 import Link from 'next/link';
 import { quotesDictionary } from '@/i18n/quotes';
 import { operationsDictionary } from '@/i18n/operations';
+import { paymentDictionary } from '@/i18n/payments';
 
 export async function ProtectedShell({
   locale,
@@ -21,6 +22,7 @@ export async function ProtectedShell({
   const result = await portalAccess(`${portal}.access`);
   const pricingAccess = portal === 'portal' ? await portalAccess('pricing.calculate') : null;
   const operationsAccess = portal === 'portal' ? await portalAccess('operations.manage') : null;
+  const financeAccess = portal === 'portal' ? await portalAccess('finance.read') : null;
   if (result.status === 'unauthenticated') redirect(`/${locale}/login`);
   if (result.status === 'unconfigured')
     return (
@@ -50,6 +52,13 @@ export async function ProtectedShell({
       <Card>
         <h1>{t[portal]}</h1>
         <p>{t.protectedBody}</p>
+        {financeAccess?.status === 'authorized' && (
+          <p>
+            <Link className="button button--primary" href={`/${locale}/portal/finance`}>
+              {paymentDictionary(locale).finance}
+            </Link>
+          </p>
+        )}
         {operationsAccess?.status === 'authorized' && (
           <p>
             <Link className="button button--primary" href={`/${locale}/portal/operations`}>
