@@ -16,6 +16,63 @@ import {
 import { paymentDictionary } from '../../src/i18n/payments';
 import { customerDictionary } from '../../src/i18n/customer';
 import { driverDictionary } from '../../src/i18n/driver';
+test('hosted bank configuration is privileged, localized and revisioned', async ({ page }) => {
+  const banks = await admin
+    .from('bank_accounts')
+    .select('id,revision')
+    .eq('created_by', identities.bankAdmin!.id)
+    .order('created_at');
+  expect(banks.error).toBeNull();
+  expect(banks.data).toHaveLength(2);
+  await login(page, 'finance', 'en');
+  const denied = await page.goto('/en/portal/finance/banks');
+  expect(denied?.status()).toBe(404);
+  await logout(page, 'en');
+  await login(page, 'bankAdmin', 'en');
+  await page.goto('/en/portal/finance/banks');
+  await axe(page);
+  const bank = banks.data![0]!;
+  const field = page.locator(`[id="${bank.id}-instructionsEn"]`);
+  await field.fill('STAGING TEST ONLY. Transfer the exact accepted total.');
+  await page
+    .locator('form')
+    .filter({ has: field })
+    .getByRole('button', { name: paymentDictionary('en').saveBank, exact: true })
+    .click();
+  await expect
+    .poll(
+      async () =>
+        (await admin.from('bank_accounts').select('revision').eq('id', bank.id).single()).data
+          ?.revision,
+    )
+    .toBe(bank.revision + 1);
+  await page.goto('/ar/portal/finance/banks');
+  await axe(page);
+  await logout(page);
+});
+function proofPdf() {
+  let content = '%PDF-1.4\n';
+  const offsets = [0];
+  const objects = [
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] /Contents 4 0 R >>',
+    '<< /Length 0 >>\nstream\n\nendstream',
+  ];
+  objects.forEach((body, i) => {
+    offsets.push(Buffer.byteLength(content));
+    content += `${i + 1} 0 obj\n${body}\nendobj\n`;
+  });
+  const xref = Buffer.byteLength(content);
+  content +=
+    'xref\n0 5\n0000000000 65535 f \n' +
+    offsets
+      .slice(1)
+      .map((n) => `${String(n).padStart(10, '0')} 00000 n \n`)
+      .join('');
+  content += `trailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return Buffer.from(content);
+}
 async function payment(orderId: string) {
   const r = await admin.from('payments').select('*').eq('order_id', orderId).single();
   expect(r.error).toBeNull();
@@ -184,13 +241,11 @@ for (const country of ['SA', 'EG'] as const)
         await command(page, orderId, 'choose', { method: 'BANK_TRANSFER' }, 409);
       let attemptId: string | undefined;
       if (method === 'BANK_TRANSFER') {
-        await page
-          .locator('#transfer-proof-file')
-          .setInputFiles({
-            name: 'malformed.png',
-            mimeType: 'image/png',
-            buffer: Buffer.from('not an image'),
-          });
+        await page.locator('#transfer-proof-file').setInputFiles({
+          name: 'malformed.png',
+          mimeType: 'image/png',
+          buffer: Buffer.from('not an image'),
+        });
         await page.getByRole('button', { name: t.upload, exact: true }).click();
         await expect(page.getByRole('alert')).toContainText(t.error);
         expect(
@@ -280,7 +335,11 @@ for (const country of ['SA', 'EG'] as const)
         await expect(page.locator('body')).not.toContainText('PRIVATE FINANCE TEST NOTE');
         await page
           .locator('#transfer-proof-file')
-          .setInputFiles({ name: 'replacement.png', mimeType: 'image/png', buffer: png });
+          .setInputFiles({
+            name: country === 'EG' ? 'replacement.pdf' : 'replacement.png',
+            mimeType: country === 'EG' ? 'application/pdf' : 'image/png',
+            buffer: country === 'EG' ? proofPdf() : png,
+          });
         await page.getByRole('button', { name: t.upload, exact: true }).click();
         await expect(page.getByText(t.states.UNDER_REVIEW, { exact: true })).toBeVisible();
         const history = await admin
