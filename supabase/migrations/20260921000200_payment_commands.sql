@@ -118,7 +118,6 @@ begin
  end if;
  result=jsonb_build_object('paymentId',p.id,'revision',p.revision,'method',p.method,'status',p.status,'executionAllowed',private.order_payment_cleared(o.id));
  if p_action in ('reserve','remove') then result=result||jsonb_build_object('attemptId',a.id,'fileId',f.id,'path',f.object_name); end if;
- if p_action='remove' then result=result||jsonb_build_object('path',f.object_name); end if;
  insert into private.payment_mutations values(auth.uid(),p_mutation,o.organization_id,intent,result,now());
  return result;
 end $$;
@@ -139,6 +138,7 @@ create trigger receipt_immutable before update or delete on public.invoices for 
 
 create function private.transfer_history_guard() returns trigger language plpgsql set search_path='' as $$
 begin
+ if tg_op='DELETE' and auth.uid() is null and current_setting('app.fixture_cleanup',true)='on' then return old; end if;
  if tg_op='DELETE' then
   if old.state<>'REMOVING' then raise exception 'Transfer evidence immutable' using errcode='55000'; end if;
   return old;

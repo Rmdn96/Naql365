@@ -283,7 +283,7 @@ try {
  delete from public.trip_pods where organization_id='${org}';delete from public.trip_events where organization_id='${org}';
  delete from public.trip_stop_dependencies where organization_id='${org}';delete from public.trip_stops where organization_id='${org}';
  delete from public.assignments where organization_id='${org}';delete from public.trips where organization_id='${org}';delete from public.jobs where organization_id='${org}';
- delete from private.operational_mutations where organization_id='${org}';delete from public.orders where organization_id='${org}';
+ delete from private.operational_mutations where organization_id='${org}';delete from private.payment_mutations where organization_id='${org}';delete from public.payment_transactions where organization_id='${org}';delete from public.payments where organization_id='${org}';delete from public.orders where organization_id='${org}';
  delete from public.quote_versions where organization_id='${org}';delete from public.quotes where organization_id='${org}';delete from public.requests where organization_id='${org}';
  delete from public.customers where organization_id='${org}';delete from public.drivers where organization_id='${org}';delete from public.vehicles where organization_id='${org}';
  delete from public.user_roles where profile_id::text like '13000000%';delete from public.organization_memberships where profile_id::text like '13000000%';
