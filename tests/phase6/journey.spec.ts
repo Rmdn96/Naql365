@@ -26,7 +26,7 @@ test('hosted bank configuration is privileged, localized and revisioned', async 
   expect(banks.error).toBeNull();
   expect(banks.data).toHaveLength(2);
   await login(page, 'finance', 'en');
-  const denied = await page.goto('/en/portal/finance/banks');
+  const denied = await page.goto('/en/portal/finance/banks', { waitUntil: 'domcontentloaded' });
   test.info().annotations.push({
     type: 'safe-security-probe',
     description: 'bank-page-denial-status=' + denied?.status(),
@@ -48,7 +48,7 @@ test('hosted bank configuration is privileged, localized and revisioned', async 
   ).toBe(false);
   await logout(page, 'en');
   await login(page, 'bankAdmin', 'en');
-  await page.goto('/en/portal/finance/banks');
+  await page.goto('/en/portal/finance/banks', { waitUntil: 'domcontentloaded' });
   await axe(page);
   const bank = banks.data![0]!;
   const field = page.locator(`[id="${bank.id}-instructionsEn"]`);
@@ -65,7 +65,7 @@ test('hosted bank configuration is privileged, localized and revisioned', async 
           ?.revision,
     )
     .toBe(bank.revision + 1);
-  await page.goto('/ar/portal/finance/banks');
+  await page.goto('/ar/portal/finance/banks', { waitUntil: 'domcontentloaded' });
   await axe(page);
   await logout(page);
 });
@@ -130,7 +130,9 @@ for (const country of ['SA', 'EG'] as const)
         { orderId, market, cityId } = accepted;
       const before = await admin.from('orders').select('*').eq('id', orderId).single();
       expect(before.error).toBeNull();
-      await page.goto(`/${locale}/account/orders/${orderId}/payment`);
+      await page.goto(`/${locale}/account/orders/${orderId}/payment`, {
+        waitUntil: 'domcontentloaded',
+      });
       await page.setViewportSize({ width: 390, height: 844 });
       expect(await page.locator('html').getAttribute('dir')).toBe(locale === 'ar' ? 'rtl' : 'ltr');
       await axe(page);
@@ -216,14 +218,14 @@ for (const country of ['SA', 'EG'] as const)
       await op(page, 'ready', trip);
       if (method === 'BANK_TRANSFER') await op(page, 'dispatch', trip, {}, 400);
       await logout(page, locale);
-      await page.goto(`/${locale}/driver/login`);
+      await page.goto(`/${locale}/driver/login`, { waitUntil: 'domcontentloaded' });
       await page.locator('#driver-email').fill(identities[driverRole]!.email);
       await page.locator('#driver-password').fill(identities[driverRole]!.password);
       await page
         .getByRole('button', { name: customerDictionary(locale).login, exact: true })
         .click();
       await expect(page).toHaveURL(new RegExp(`/${locale}/driver$`));
-      await page.goto(`/${locale}/driver/trips/${trip}`);
+      await page.goto(`/${locale}/driver/trips/${trip}`, { waitUntil: 'domcontentloaded' });
       const dt = driverDictionary(locale);
       if (method === 'BANK_TRANSFER') {
         await expect(page.getByRole('button', { name: dt.startTrip, exact: true })).toBeDisabled();
@@ -255,11 +257,14 @@ for (const country of ['SA', 'EG'] as const)
       await axe(page);
       await logout(page, locale);
       await login(page, 'customer', locale);
-      await page.goto(`/${locale}/account/orders/${orderId}/payment`);
+      await page.goto(`/${locale}/account/orders/${orderId}/payment`, {
+        waitUntil: 'domcontentloaded',
+      });
       if (method === 'CASH')
         await command(page, orderId, 'choose', { method: 'BANK_TRANSFER' }, 409);
       let attemptId: string | undefined;
       if (method === 'BANK_TRANSFER') {
+        await expect(page.locator('#transfer-proof-file')).toBeEnabled();
         await page.locator('#transfer-proof-file').setInputFiles({
           name: 'malformed.png',
           mimeType: 'image/png',
@@ -275,12 +280,10 @@ for (const country of ['SA', 'EG'] as const)
                 .getByRole('button', { name: t.upload, exact: true })
                 .count(),
               retryButtons: await page.getByRole('button', { name: t.retry, exact: true }).count(),
-              file: await page
-                .locator('#transfer-proof-file')
-                .evaluate((e: HTMLInputElement) => ({
-                  files: e.files?.length,
-                  disabled: e.disabled,
-                })),
+              file: await page.locator('#transfer-proof-file').evaluate((e: HTMLInputElement) => ({
+                files: e.files?.length,
+                disabled: e.disabled,
+              })),
               uploadDisabled: await page
                 .getByRole('button', { name: t.upload, exact: true })
                 .isDisabled()
@@ -354,7 +357,7 @@ for (const country of ['SA', 'EG'] as const)
         await command(page, orderId, 'choose', { method: 'CASH' }, 409);
         await logout(page, locale);
         await login(page, 'finance', locale);
-        await page.goto(`/${locale}/portal/finance/${orderId}`);
+        await page.goto(`/${locale}/portal/finance/${orderId}`, { waitUntil: 'domcontentloaded' });
         await axe(page);
         await command(page, orderId, 'reject_transfer', { attemptId, reason: '' }, 400);
         const download = await page.evaluate(async (id) => {
@@ -370,7 +373,9 @@ for (const country of ['SA', 'EG'] as const)
         await expect(page.getByText(t.states.TRANSFER_REJECTED, { exact: true })).toBeVisible();
         await logout(page, locale);
         await login(page, 'customer', locale);
-        await page.goto(`/${locale}/account/orders/${orderId}/payment`);
+        await page.goto(`/${locale}/account/orders/${orderId}/payment`, {
+          waitUntil: 'domcontentloaded',
+        });
         await expect(
           page.getByText('Please upload a readable transfer proof', { exact: true }),
         ).toBeVisible();
@@ -394,7 +399,7 @@ for (const country of ['SA', 'EG'] as const)
       }
       await logout(page, locale);
       await login(page, 'finance', locale);
-      await page.goto(`/${locale}/portal/finance`);
+      await page.goto(`/${locale}/portal/finance`, { waitUntil: 'domcontentloaded' });
       await axe(page);
       await page.getByRole('link', { name: before.data!.reference!, exact: true }).click();
       p = await payment(orderId);
@@ -460,14 +465,14 @@ for (const country of ['SA', 'EG'] as const)
         [],
       );
       await logout(page, locale);
-      await page.goto(`/${locale}/driver/login`);
+      await page.goto(`/${locale}/driver/login`, { waitUntil: 'domcontentloaded' });
       await page.locator('#driver-email').fill(identities[driverRole]!.email);
       await page.locator('#driver-password').fill(identities[driverRole]!.password);
       await page
         .getByRole('button', { name: customerDictionary(locale).login, exact: true })
         .click();
       await expect(page).toHaveURL(new RegExp(`/${locale}/driver$`));
-      await page.goto(`/${locale}/driver/trips/${trip}`);
+      await page.goto(`/${locale}/driver/trips/${trip}`, { waitUntil: 'domcontentloaded' });
       if (method === 'BANK_TRANSFER') {
         await expect(page.getByRole('button', { name: dt.startTrip, exact: true })).toBeEnabled();
         await page.getByRole('button', { name: dt.startTrip, exact: true }).click();
@@ -493,7 +498,9 @@ for (const country of ['SA', 'EG'] as const)
         expect(after.data![field]).toEqual(before.data![field]);
       await logout(page, locale);
       await login(page, 'customer', locale);
-      await page.goto(`/${locale}/account/orders/${orderId}/payment`);
+      await page.goto(`/${locale}/account/orders/${orderId}/payment`, {
+        waitUntil: 'domcontentloaded',
+      });
       await expect(page.getByText(t.states.PAID, { exact: true })).toBeVisible();
       await axe(page);
       test.info().annotations.push({

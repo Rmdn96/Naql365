@@ -33,7 +33,7 @@ export const admin = createClient(
   },
 );
 export async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar') {
-  await page.goto(`/${locale}/login`);
+  await page.goto(`/${locale}/login`, { waitUntil: 'domcontentloaded' });
   await page.locator('#email').fill(identities[role]!.email);
   await page.locator('#password').fill(identities[role]!.password);
   await page.getByRole('button', { name: customerDictionary(locale).login, exact: true }).click();
@@ -48,7 +48,7 @@ export async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar'
   }
 }
 export async function logout(page: Page, locale: 'ar' | 'en' = 'ar') {
-  await page.goto(`/${locale}/account`);
+  await page.goto(`/${locale}/account`, { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: customerDictionary(locale).logout, exact: true }).click();
 }
 export async function axe(page: Page) {
@@ -68,6 +68,11 @@ export async function axe(page: Page) {
       }),
     });
   expect(result.violations).toEqual([]);
+  await expect
+    .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), {
+      timeout: 5000,
+    })
+    .toBe(true);
   const layout = await page.evaluate(() => ({
     fits: document.documentElement.scrollWidth <= innerWidth,
     width: innerWidth,
@@ -177,12 +182,12 @@ export async function acceptedOrder(
   await page.getByRole('button', { name: ct.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const requestId = page.url().split('/').at(-1)!;
-  await page.goto('/en/request/' + requestId);
+  await page.goto('/en/request/' + requestId, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   await expect(page.locator('main')).toContainText(market.name_en);
   await expect(page.locator('main')).toContainText(market.currency);
   await axe(page);
-  await page.goto('/ar/request/' + requestId);
+  await page.goto('/ar/request/' + requestId, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await page.locator('#service').selectOption({ label: 'نقل الأثاث' });
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
@@ -222,7 +227,7 @@ export async function acceptedOrder(
   await expect(page).toHaveURL(/account\/requests/);
   await logout(page);
   await login(page, 'sales');
-  await page.goto(`/ar/portal/quotes/${requestId}`);
+  await page.goto(`/ar/portal/quotes/${requestId}`, { waitUntil: 'domcontentloaded' });
   await page.locator('#distance').fill('18.750');
   await page.locator('#source-note').fill('Controlled verified road distance');
   await page.locator('#vehicle').selectOption({ label: 'شاحنة صغيرة' });
@@ -241,7 +246,7 @@ export async function acceptedOrder(
   const versionId = version.data!.quote_versions.find((v) => v.status === 'SENT')!.id;
   await logout(page);
   await login(page, customerRole);
-  await page.goto(`/ar/account/quotes/${versionId}`);
+  await page.goto(`/ar/account/quotes/${versionId}`, { waitUntil: 'domcontentloaded' });
   page.once('dialog', (dialog) => void dialog.accept());
   await page.getByRole('button', { name: qt.accept, exact: true }).click();
   await expect(page.getByRole('button', { name: qt.accept, exact: true })).toBeHidden();
@@ -253,7 +258,7 @@ export async function acceptedOrder(
   expect(order.error).toBeNull();
   const orderId = order.data!.id;
   if (checkout) {
-    await page.goto(`/ar/account/orders/${orderId}/payment`);
+    await page.goto(`/ar/account/orders/${orderId}/payment`, { waitUntil: 'domcontentloaded' });
     await page.getByRole('button', { name: 'نقدًا', exact: true }).click();
     await expect(page.getByText('النقد مستحق', { exact: true })).toBeVisible();
   }

@@ -1,11 +1,15 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useRef, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PaymentDetails } from '@/domain/payments/model';
 import type { Locale } from '@/i18n/config';
 import { paymentDictionary } from '@/i18n/payments';
 import { Alert, Button, Input } from '@/components/ui/primitives';
+const subscribeToHydration = () => () => {};
+const hydratedSnapshot = () => true;
+const serverSnapshot = () => false;
 export function ProofUpload({ data, locale }: { data: PaymentDetails; locale: Locale }) {
+  const hydrated = useSyncExternalStore(subscribeToHydration, hydratedSnapshot, serverSnapshot);
   const t = paymentDictionary(locale),
     router = useRouter();
   const locked = useRef(false),
@@ -90,7 +94,7 @@ export function ProofUpload({ data, locale }: { data: PaymentDetails; locale: Lo
             label={t.file}
             required
             accept="application/pdf,image/jpeg,image/png"
-            disabled={busy}
+            disabled={busy || !hydrated}
             onChange={(e) => {
               setFile(e.target.files?.[0] ?? null);
               setError(false);
