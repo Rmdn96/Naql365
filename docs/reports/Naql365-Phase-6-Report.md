@@ -91,7 +91,7 @@ Mandatory bounded customer-safe reason, separately protected Finance note. Rejec
 
 ## V. Trip Start Gate
 
-Tested locally for missing method, pending transfer and cash. Driver/staff use the same database guard. Independent-connection confirm-vs-start and switch-vs-start harness added; remote results pending.
+Tested locally for missing method, pending transfer and cash. Driver/staff use the same database guard. Independent-connection confirm-vs-start and switch-vs-start passed in CI 35656720462. Hosted application assertions remain pending.
 
 ## W. Driver UX
 
@@ -135,7 +135,7 @@ Finance changes generate explicit transaction and bounded audit evidence. Generi
 
 ## AG. Concurrency
 
-`scripts/test-payment-concurrency.mjs` uses separate PostgreSQL connections for duplicate proof submission, duplicate cash confirmation, confirm-vs-reject, confirm-vs-dispatch and method-switch-vs-dispatch. Requires successful real CI execution; no PASS inferred from source alone.
+`scripts/test-payment-concurrency.mjs` uses separate PostgreSQL connections for duplicate proof submission, duplicate cash confirmation, confirm-vs-reject, confirm-vs-dispatch and method-switch-vs-dispatch. All five financial race groups passed in exact-HEAD Foundation CI 35656720462, alongside the existing Operations/Driver/Tracking concurrency suites.
 
 ## AH. SA Cash Journey
 
@@ -159,7 +159,7 @@ Database integration passes; real hosted application/storage journey pending.
 
 ## AM. Accessibility
 
-Semantic controls, labels and localized status/error messages implemented. Authenticated axe/mobile/keyboard checks not yet executed.
+Authenticated bank administration AR/EN axe checks passed. Mobile journey checks exposed a transient overflow during page update; stable-page diagnostics did not reproduce persistent overflow. Tests now await settled layout, without suppressing horizontal overflow checks. Checkout proof selection before hydration lost the React file-change event; input is now disabled until hydration and the hosted test waits for it to become usable. All affected journeys must pass on a rebuilt Preview before acceptance.
 
 ## AN. AR/EN
 
@@ -167,15 +167,15 @@ Centralized dictionaries and locale routing implemented. Hosted RTL/LTR verifica
 
 ## AO. Tests
 
-Local checkpoint: 30 test files / 146 tests PASS; strict typecheck PASS using official types; production build PASS. Formatting passed; final lint/E2E and expanded checks will be recorded after completion.
+Local checkpoint: 31 test files / 151 tests PASS, strict typecheck PASS using official types, 24 local browser checks PASS from the implementation checkpoint. Current hydration correction is under repeat build/CI/hosted verification.
 
 ## AP. CI
 
-Official type generation [35618884338](https://github.com/Rmdn96/Naql365/actions/runs/35618884338) PASS for schema checkpoint `fca8ad6f99b5da78dfea100c604279c3df1aeb65`. Types imported verbatim from its artifact. Foundation CI [35618884336](https://github.com/Rmdn96/Naql365/actions/runs/35618884336): quality PASS, fresh migrations/SQL PASS, operational concurrency assertions PASS but cleanup failed with FK 23503 because new Payment rows precede Order deletion. Cleanup order corrected; full rerun pending. This run is not overall PASS.
+Official type generation [35618884338](https://github.com/Rmdn96/Naql365/actions/runs/35618884338) PASS for schema checkpoint `fca8ad6f99b5da78dfea100c604279c3df1aeb65`. Types imported verbatim from its artifact. Foundation CI [35618884336](https://github.com/Rmdn96/Naql365/actions/runs/35618884336): quality PASS, fresh migrations/SQL PASS, operational concurrency assertions PASS but cleanup failed with FK 23503 because new Payment rows precede Order deletion. Cleanup order corrected. Subsequent exact-HEAD Foundation CI [35656720462](https://github.com/Rmdn96/Naql365/actions/runs/35656720462) PASS for b3dd3f440df134032013cd25ec42208b0057aa26: both quality/build and Supabase migrations/RLS jobs succeeded, including independent-connection concurrency and generated-type comparison. The earlier failed run is not counted as PASS.
 
 ## AQ. Hosted Preview
 
-No Phase 6 deployment yet. Staging migration/deployment waits for successful complete local/CI gates. Production untouched.
+Protected genuine Preview: https://naql365-staging-oa4z7ev7w-naql365.vercel.app, READY for source b3dd3f440df134032013cd25ec42208b0057aa26. Vercel target is Preview (API target null), project/source checked independently. Staging upgraded from 27 to 31 repository migrations on 2026-09-22; hosted SQL assertions and official generated-type comparison PASS, 59/59 public tables have RLS. Auth uses four exact Preview callbacks without wildcards. Hosted browser acceptance is in progress; deployment alone is not acceptance. Zero Production deployments and zero Production-scoped variables verified.
 
 ## AR. Regression
 
@@ -183,7 +183,7 @@ Operational SQL regression fixtures explicitly choose CASH through payment_comma
 
 ## AS. Cleanup
 
-No Phase 6 hosted fixtures created yet. Local SQL fixtures rollback/close their isolated database. Remote concurrency cleanup must pass including new financial dependencies before acceptance.
+First hosted acceptance attempt completed with failures in browser assertions and mobile layout; scoped synthetic fixture cleanup PASS. A diagnostic rerun is in progress. Independent cleanup audit after failed runs found zero rows in 28 business/Auth/Storage/replay groups and retained SA/EG configuration. Final cleanup and automation credential removal remain required. Local SQL fixtures rollback; CI concurrency cleanup PASS.
 
 ## AT. Files Changed
 
@@ -198,7 +198,7 @@ Migrations 28–31, payment domain/infrastructure/API and UI, customer acceptanc
 
 ## AV. Known Limitations
 
-Docker Desktop is unavailable locally; official Supabase CLI reconstruction/type generation uses the existing isolated GitHub workflow. No hosted Phase 6 evidence yet. PDF scanning not implemented; no compliance certification. This is a work-in-progress report, not a release approval.
+Docker Desktop is unavailable locally; official Supabase CLI reconstruction/type generation uses the existing isolated GitHub workflow. Hosted database evidence is available; hosted browser acceptance remains in progress. PDF scanning not implemented; no compliance certification. This is a work-in-progress report, not a release approval.
 
 ## AW. Deferred Items
 
@@ -206,58 +206,58 @@ Gateway/provider credentials, partial payments, refunds, settlements, statutory 
 
 ## AX. Acceptance Matrix
 
-| Gate                                 | Result  | Evidence                                                                         |
-| ------------------------------------ | ------- | -------------------------------------------------------------------------------- |
-| Git baseline                         | PASS    | Remote develop/main verified against accepted SHAs                               |
-| Gap analysis                         | PASS    | Committed before migrations; both policies approved                              |
-| Existing schema reuse                | PASS    | Extended original entities and authoritative dispatch                            |
-| Preliminary pricing                  | PARTIAL | Local regression; hosted pending                                                 |
-| Sales final Quote                    | PARTIAL | Local regression; hosted pending                                                 |
-| Quote acceptance                     | PARTIAL | Checkout routing implemented; hosted pending                                     |
-| Checkout                             | PARTIAL | Implemented, build/typecheck pass                                                |
-| CASH method                          | PARTIAL | Database integration passes; hosted pending                                      |
-| BANK_TRANSFER method                 | PARTIAL | Database integration passes; hosted pending                                      |
-| Cash remains unpaid until collection | PARTIAL | Database integration passes                                                      |
-| Cash execution allowed               | PARTIAL | Database guard tested; hosted pending                                            |
-| Bank account configuration           | PARTIAL | Privileged command/UI; hosted pending                                            |
-| SA/SAR bank isolation                | PARTIAL | Relational constraint; hosted pending                                            |
-| EG/EGP bank isolation                | PARTIAL | Relational constraint; hosted pending                                            |
-| Transfer proof                       | PARTIAL | Reservation/submission tested; hosted upload pending                             |
-| Private Storage                      | PARTIAL | Database policies; hosted expiry/denial pending                                  |
-| Proof ≠ Paid                         | PARTIAL | Integration passes                                                               |
-| Operational planning while pending   | PARTIAL | Engine unchanged; hosted pending                                                 |
-| Start Trip payment gate              | PARTIAL | Local guard passes; hosted/races pending                                         |
-| Driver blocked state                 | PARTIAL | UI/server projection implemented                                                 |
-| Finance queue                        | PARTIAL | Bounded projection/UI implemented                                                |
-| Finance confirmation                 | PARTIAL | Authorized transaction integration passes                                        |
-| Automatic execution unlock           | PARTIAL | Clearance integration passes                                                     |
-| Transfer rejection                   | PARTIAL | Required reason integration passes                                               |
-| Reupload/history                     | PARTIAL | Integration passes                                                               |
-| Cash confirmation                    | PARTIAL | Integration passes                                                               |
-| Payment transactions                 | PARTIAL | Immutable/idempotent integration passes                                          |
-| Invoice/receipt foundation           | PARTIAL | Snapshot/uniqueness integration passes                                           |
-| Customer isolation                   | PARTIAL | Local negatives; hosted pending                                                  |
-| Tenant isolation                     | PARTIAL | Local negatives; hosted pending                                                  |
-| Market isolation                     | PARTIAL | Constraints; expanded tests pending                                              |
-| RLS                                  | PARTIAL | Local tests and initial official SQL pass                                        |
-| Audit                                | PARTIAL | Bounded events implemented                                                       |
-| Notifications                        | PARTIAL | Existing infrastructure extended                                                 |
-| Concurrency                          | PARTIAL | New independent-connection harness awaits CI                                     |
-| SA Cash hosted journey               | BLOCKED | Await complete local/CI gates                                                    |
-| SA Transfer hosted journey           | BLOCKED | Await complete local/CI gates                                                    |
-| EG Cash hosted journey               | BLOCKED | Await complete local/CI gates                                                    |
-| EG Transfer hosted journey           | BLOCKED | Await complete local/CI gates                                                    |
-| Rejection/reupload journey           | PARTIAL | Hosted pending                                                                   |
-| AR/EN                                | PARTIAL | Dictionaries implemented                                                         |
-| Mobile                               | PARTIAL | Hosted acceptance pending                                                        |
-| Accessibility                        | PARTIAL | Hosted authenticated axe pending                                                 |
-| Migrations                           | PARTIAL | Fresh official reconstruction + populated27 local upgrade pass; final CI pending |
-| Generated types                      | PARTIAL | Official CLI artifact imported; final-head comparison pending                    |
-| Regression                           | PARTIAL | 146 local tests pass; hosted pending                                             |
-| CI                                   | PARTIAL | Corrected cleanup and new harness need rerun                                     |
-| Hosted Preview                       | BLOCKED | Not deployed before successful gates                                             |
-| Cleanup                              | PARTIAL | No hosted fixtures; remote fixture rerun pending                                 |
-| Scope compliance                     | PASS    | No merge/main/Production/Phase7 changes                                          |
+| Gate                                 | Result  | Evidence                                                                               |
+| ------------------------------------ | ------- | -------------------------------------------------------------------------------------- |
+| Git baseline                         | PASS    | Remote develop/main verified against accepted SHAs                                     |
+| Gap analysis                         | PASS    | Committed before migrations; both policies approved                                    |
+| Existing schema reuse                | PASS    | Extended original entities and authoritative dispatch                                  |
+| Preliminary pricing                  | PARTIAL | Local regression; hosted pending                                                       |
+| Sales final Quote                    | PARTIAL | Local regression; hosted pending                                                       |
+| Quote acceptance                     | PARTIAL | Checkout routing implemented; hosted pending                                           |
+| Checkout                             | PARTIAL | Implemented, build/typecheck pass                                                      |
+| CASH method                          | PARTIAL | Database integration passes; hosted pending                                            |
+| BANK_TRANSFER method                 | PARTIAL | Database integration passes; hosted pending                                            |
+| Cash remains unpaid until collection | PARTIAL | Database integration passes                                                            |
+| Cash execution allowed               | PARTIAL | Database guard tested; hosted pending                                                  |
+| Bank account configuration           | PARTIAL | Privileged command/UI; hosted pending                                                  |
+| SA/SAR bank isolation                | PARTIAL | Relational constraint; hosted pending                                                  |
+| EG/EGP bank isolation                | PARTIAL | Relational constraint; hosted pending                                                  |
+| Transfer proof                       | PARTIAL | Reservation/submission tested; hosted upload pending                                   |
+| Private Storage                      | PARTIAL | Database policies; hosted expiry/denial pending                                        |
+| Proof ≠ Paid                         | PARTIAL | Integration passes                                                                     |
+| Operational planning while pending   | PARTIAL | Engine unchanged; hosted pending                                                       |
+| Start Trip payment gate              | PARTIAL | Local guard passes; hosted/races pending                                               |
+| Driver blocked state                 | PARTIAL | UI/server projection implemented                                                       |
+| Finance queue                        | PARTIAL | Bounded projection/UI implemented                                                      |
+| Finance confirmation                 | PARTIAL | Authorized transaction integration passes                                              |
+| Automatic execution unlock           | PARTIAL | Clearance integration passes                                                           |
+| Transfer rejection                   | PARTIAL | Required reason integration passes                                                     |
+| Reupload/history                     | PARTIAL | Integration passes                                                                     |
+| Cash confirmation                    | PARTIAL | Integration passes                                                                     |
+| Payment transactions                 | PARTIAL | Immutable/idempotent integration passes                                                |
+| Invoice/receipt foundation           | PARTIAL | Snapshot/uniqueness integration passes                                                 |
+| Customer isolation                   | PARTIAL | Local negatives; hosted pending                                                        |
+| Tenant isolation                     | PARTIAL | Local negatives; hosted pending                                                        |
+| Market isolation                     | PARTIAL | Constraints; expanded tests pending                                                    |
+| RLS                                  | PARTIAL | Local tests and initial official SQL pass                                              |
+| Audit                                | PARTIAL | Bounded events implemented                                                             |
+| Notifications                        | PARTIAL | Existing infrastructure extended                                                       |
+| Concurrency                          | PASS    | Exact-HEAD CI 35656720462; all independent-connection financial and prior-phase suites |
+| SA Cash hosted journey               | BLOCKED | Await complete local/CI gates                                                          |
+| SA Transfer hosted journey           | BLOCKED | Await complete local/CI gates                                                          |
+| EG Cash hosted journey               | BLOCKED | Await complete local/CI gates                                                          |
+| EG Transfer hosted journey           | BLOCKED | Await complete local/CI gates                                                          |
+| Rejection/reupload journey           | PARTIAL | Hosted pending                                                                         |
+| AR/EN                                | PARTIAL | Dictionaries implemented                                                               |
+| Mobile                               | PARTIAL | Hosted acceptance pending                                                              |
+| Accessibility                        | PARTIAL | Hosted authenticated axe pending                                                       |
+| Migrations                           | PASS    | CI fresh reconstruction, populated27 upgrade, actual Staging27→31 and hosted SQL PASS  |
+| Generated types                      | PASS    | CI strict diff and hosted official CLI public schema comparison PASS                   |
+| Regression                           | PARTIAL | 146 local tests pass; hosted pending                                                   |
+| CI                                   | PASS    | 35656720462 PASS for b3dd3f4; final feature HEAD rerun still required                  |
+| Hosted Preview                       | BLOCKED | Not deployed before successful gates                                                   |
+| Cleanup                              | PARTIAL | No hosted fixtures; remote fixture rerun pending                                       |
+| Scope compliance                     | PASS    | No merge/main/Production/Phase7 changes                                                |
 
 ## AY. Final Decision
 
