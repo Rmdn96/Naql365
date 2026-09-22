@@ -169,6 +169,13 @@ for (const country of ['SA', 'EG'] as const)
       expect((await peer.rpc('payment_details', { p_order: orderId })).error).not.toBeNull();
       expect((await foreign.rpc('payment_details', { p_order: orderId })).error).not.toBeNull();
       expect((await peer.from('payments').select('id').eq('id', p.id)).data).toEqual([]);
+      const forged = await owner
+        .from('payments')
+        .update({ status: 'PAID' })
+        .eq('id', p.id)
+        .select('id');
+      expect(forged.error !== null || forged.data?.length === 0).toBe(true);
+      expect((await payment(orderId)).status).not.toBe('PAID');
       for (const role of ['sales', 'operations', 'saDriverA', 'otherFinance']) {
         const c = await principal(role);
         expect(
@@ -301,6 +308,17 @@ for (const country of ['SA', 'EG'] as const)
             .getByText('STAGING TEST ONLY', { exact: true })
             .or(page.getByText('حساب اختبار فقط', { exact: true })),
         ).toBeVisible();
+        await expect(page.locator('#transfer-proof-file')).toBeEnabled();
+        await page.locator('#transfer-proof-file').setInputFiles({
+          name: 'oversized.png',
+          mimeType: 'image/png',
+          buffer: Buffer.alloc(2097153),
+        });
+        await page.getByRole('button', { name: t.upload, exact: true }).click();
+        await expect(page.getByRole('alert').filter({ hasText: t.error })).toBeVisible();
+        expect(
+          (await admin.from('bank_transfer_attempts').select('id').eq('payment_id', p.id)).data,
+        ).toEqual([]);
         const png = await sharp({
           create: { width: 32, height: 16, channels: 3, background: '#ffffff' },
         })

@@ -159,7 +159,7 @@ Database integration passes; real hosted application/storage journey pending.
 
 ## AM. Accessibility
 
-Authenticated bank administration AR/EN axe checks passed. Mobile journey checks exposed a transient overflow during page update; stable-page diagnostics did not reproduce persistent overflow. Tests now await settled layout, without suppressing horizontal overflow checks. Checkout proof selection before hydration lost the React file-change event; input is now disabled until hydration and the hosted test waits for it to become usable. All affected journeys must pass on a rebuilt Preview before acceptance.
+Authenticated bank administration AR/EN axe checks passed. Mobile journey checks exposed overflowing Finance status navigation. DOM measurements identified the non-wrapping Finance navigation; filters now wrap with 44px touch targets and current-filter semantics. Horizontal overflow checks remain mandatory. Checkout proof selection before hydration lost the React file-change event; input is now disabled until hydration and the hosted test waits for it to become usable. All affected journeys must pass on a rebuilt Preview before acceptance.
 
 ## AN. AR/EN
 

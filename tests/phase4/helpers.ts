@@ -52,6 +52,10 @@ export async function logout(page: Page, locale: 'ar' | 'en' = 'ar') {
   await page.getByRole('button', { name: customerDictionary(locale).logout, exact: true }).click();
 }
 export async function axe(page: Page) {
+  const beforeLayout = await page.evaluate(() => ({
+    width: innerWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
   await expect(page.getByRole('main')).toHaveCount(1);
   const result = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
@@ -68,11 +72,6 @@ export async function axe(page: Page) {
       }),
     });
   expect(result.violations).toEqual([]);
-  await expect
-    .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), {
-      timeout: 5000,
-    })
-    .toBe(true);
   const layout = await page.evaluate(() => ({
     fits: document.documentElement.scrollWidth <= innerWidth,
     width: innerWidth,
@@ -94,9 +93,10 @@ export async function axe(page: Page) {
       })),
   }));
   if (!layout.fits)
-    test
-      .info()
-      .annotations.push({ type: 'safe-security-probe', description: JSON.stringify({ layout }) });
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: JSON.stringify({ beforeLayout, layout }),
+    });
   expect(layout.fits).toBe(true);
 }
 export async function principal(role: string) {

@@ -8,11 +8,16 @@ export async function verifyDriverAcceptance(phase) {
   if (![4, 5, 6].includes(phase)) throw Error('Unsupported acceptance phase');
   process.chdir(fileURLToPath(new URL('../../', import.meta.url)));
   const args = process.argv.slice(2);
-  if (args.some((arg) => arg !== '--session-only')) throw new Error('Unknown verification option');
+  if (
+    args.some((arg) => arg !== '--session-only' && !(phase === 6 && arg === '--payment-diagnostic'))
+  )
+    throw new Error('Unknown verification option');
   // Session-only is supplemental evidence; the default includes both execution journeys.
   const selectedTests = args.includes('--session-only')
     ? [`tests/phase${phase}/session.spec.ts`]
-    : [];
+    : args.includes('--payment-diagnostic')
+      ? ['--grep', 'SA CASH']
+      : [];
   const origin = process.env.STAGING_BASE_URL;
   if (
     !origin ||
@@ -208,6 +213,14 @@ export async function verifyDriverAcceptance(phase) {
           `select count(*)::integer as count from auth.users where id in (${ids})`,
         )[0]?.count;
         if (remaining !== 0) throw new Error('Fixture cleanup incomplete');
+      }
+      // Provisioning can fail before the first Auth identity exists. The organization
+      // is still owned by this run and must not survive that early failure.
+      if (ref && admin && users.length === 0) {
+        query(
+          ref,
+          `begin;delete from public.market_cities where organization_id='${otherOrg}';delete from public.market_regions where organization_id='${otherOrg}';delete from public.markets where organization_id='${otherOrg}';delete from public.audit_logs where organization_id='${otherOrg}';delete from public.organizations where id='${otherOrg}';commit;`,
+        );
       }
       console.log('Driver synthetic fixture cleanup PASS; existing catalogues retained');
     } catch {
