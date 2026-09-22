@@ -53,11 +53,46 @@ export async function logout(page: Page, locale: 'ar' | 'en' = 'ar') {
 }
 export async function axe(page: Page) {
   await expect(page.getByRole('main')).toHaveCount(1);
-  expect(
-    (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
-      .violations,
-  ).toEqual([]);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const result = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+    .analyze();
+  if (result.violations.length)
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: JSON.stringify({
+        axe: result.violations.map((v) => ({
+          id: v.id,
+          impact: v.impact,
+          count: v.nodes.length,
+        })),
+      }),
+    });
+  expect(result.violations).toEqual([]);
+  const layout = await page.evaluate(() => ({
+    fits: document.documentElement.scrollWidth <= innerWidth,
+    width: innerWidth,
+    overflow: [...document.querySelectorAll('body *')]
+      .filter(
+        (e) =>
+          e.getBoundingClientRect().right > innerWidth + 1 || e.getBoundingClientRect().left < -1,
+      )
+      .slice(0, 12)
+      .map((e) => ({
+        tag: e.tagName,
+        className: e.className,
+        width: Math.round(e.getBoundingClientRect().width),
+        left: Math.round(e.getBoundingClientRect().left),
+        right: Math.round(e.getBoundingClientRect().right),
+        parent: e.parentElement?.tagName,
+        parentClass: e.parentElement?.className,
+        grandparentClass: e.parentElement?.parentElement?.className,
+      })),
+  }));
+  if (!layout.fits)
+    test
+      .info()
+      .annotations.push({ type: 'safe-security-probe', description: JSON.stringify({ layout }) });
+  expect(layout.fits).toBe(true);
 }
 export async function principal(role: string) {
   const client = createClient(

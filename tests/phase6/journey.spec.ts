@@ -13,6 +13,7 @@ import {
   principal,
   op,
 } from '../phase4/helpers';
+import { dictionary } from '../../src/i18n/dictionaries';
 import { paymentDictionary } from '../../src/i18n/payments';
 import { customerDictionary } from '../../src/i18n/customer';
 import { driverDictionary } from '../../src/i18n/driver';
@@ -26,7 +27,25 @@ test('hosted bank configuration is privileged, localized and revisioned', async 
   expect(banks.data).toHaveLength(2);
   await login(page, 'finance', 'en');
   const denied = await page.goto('/en/portal/finance/banks');
-  expect(denied?.status()).toBe(404);
+  test.info().annotations.push({
+    type: 'safe-security-probe',
+    description: 'bank-page-denial-status=' + denied?.status(),
+  });
+  // App Router may stream the response before notFound; verify the denial content and RPC authority.
+  await expect(
+    page.getByRole('heading', { name: dictionary('en').notFound, exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('form')).toHaveCount(0);
+  await expect(page.locator('body')).not.toContainText('TEST-ONLY-');
+  const finance = await principal('finance');
+  expect(
+    (
+      await finance.rpc('has_permission', {
+        organization_id: org,
+        permission_code: 'finance.accounts.manage',
+      })
+    ).data,
+  ).toBe(false);
   await logout(page, 'en');
   await login(page, 'bankAdmin', 'en');
   await page.goto('/en/portal/finance/banks');
@@ -246,8 +265,31 @@ for (const country of ['SA', 'EG'] as const)
           mimeType: 'image/png',
           buffer: Buffer.from('not an image'),
         });
-        await page.getByRole('button', { name: t.upload, exact: true }).click();
-        await expect(page.getByRole('alert')).toContainText(t.error);
+        try {
+          await page.getByRole('button', { name: t.upload, exact: true }).click();
+        } catch (error) {
+          test.info().annotations.push({
+            type: 'safe-security-probe',
+            description: JSON.stringify({
+              uploadButtons: await page
+                .getByRole('button', { name: t.upload, exact: true })
+                .count(),
+              retryButtons: await page.getByRole('button', { name: t.retry, exact: true }).count(),
+              file: await page
+                .locator('#transfer-proof-file')
+                .evaluate((e: HTMLInputElement) => ({
+                  files: e.files?.length,
+                  disabled: e.disabled,
+                })),
+              uploadDisabled: await page
+                .getByRole('button', { name: t.upload, exact: true })
+                .isDisabled()
+                .catch(() => null),
+            }),
+          });
+          throw error;
+        }
+        await expect(page.getByRole('alert').filter({ hasText: t.error })).toBeVisible();
         expect(
           (await admin.from('bank_transfer_attempts').select('id').eq('payment_id', p.id)).data,
         ).toEqual([]);
@@ -407,6 +449,16 @@ for (const country of ['SA', 'EG'] as const)
       expect(receipts.error).toBeNull();
       expect(receipts.data).toHaveLength(1);
       expect(receipts.data![0]).toEqual({ total_minor: p.amount_minor, currency: p.currency });
+      const notices = await owner.from('notifications').select('event_code').eq('payment_id', p.id);
+      expect(notices.error).toBeNull();
+      expect(notices.data?.map((n) => n.event_code)).toContain(
+        method === 'CASH' ? 'CASH_RECEIVED' : 'TRANSFER_CONFIRMED',
+      );
+      if (method === 'BANK_TRANSFER')
+        expect(notices.data?.map((n) => n.event_code)).toContain('TRANSFER_REJECTED');
+      expect((await peer.from('notifications').select('id').eq('payment_id', p.id)).data).toEqual(
+        [],
+      );
       await logout(page, locale);
       await page.goto(`/${locale}/driver/login`);
       await page.locator('#driver-email').fill(identities[driverRole]!.email);

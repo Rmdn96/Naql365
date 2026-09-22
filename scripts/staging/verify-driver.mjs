@@ -24,11 +24,14 @@ export async function verifyDriverAcceptance(phase) {
   const users = [];
   const otherOrg = randomUUID();
   let ref, admin, org;
+  let stage = 'staging-allowlist';
   try {
     ref = stagingProject();
+    stage = 'catalogue';
     org = query(ref, 'select organization_id from private.customer_enrollment where singleton')[0]
       ?.organization_id;
     if (!org) throw new Error('Staging catalogue unavailable');
+    stage = 'api-key-discovery';
     const keys = JSON.parse(
       supabase(['projects', 'api-keys', '--project-ref', ref, '--reveal', '--output', 'json']),
     );
@@ -39,6 +42,7 @@ export async function verifyDriverAcceptance(phase) {
     admin = createClient(url, adminKey, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
+    stage = 'isolation-organization';
     query(
       ref,
       `insert into public.organizations(id,name) values('${otherOrg}','Driver isolation fixture');select private.provision_initial_market_catalogue('${otherOrg}');update public.markets set active=true where organization_id='${otherOrg}'`,
@@ -61,6 +65,7 @@ export async function verifyDriverAcceptance(phase) {
       ...(phase === 5 ? ['isolationDriver'] : []),
       ...(phase === 6 ? ['finance', 'otherFinance', 'bankAdmin'] : []),
     ]) {
+      stage = 'fixture-identity-' + label;
       const email = `naql365-phase${phase}-${label}-${randomUUID()}@example.test`,
         password = randomBytes(32).toString('base64url');
       const created = await admin.auth.admin.createUser({
@@ -94,6 +99,7 @@ export async function verifyDriverAcceptance(phase) {
         );
       }
     }
+    stage = 'bank-fixtures';
     if (phase === 6) {
       const count = query(
         ref,
@@ -106,6 +112,7 @@ export async function verifyDriverAcceptance(phase) {
         select organization_id,id,currency,'حساب اختبار فقط','STAGING TEST ONLY','مستفيد اختبار','TEST BENEFICIARY','TEST-ONLY-'||country_code,'${identities.bankAdmin.id}' from public.markets where organization_id='${org}' and active`,
       );
     }
+    stage = 'hosted-browser';
     const code = await new Promise((resolve) => {
       const child = spawn(
         process.execPath,
@@ -134,7 +141,7 @@ export async function verifyDriverAcceptance(phase) {
     });
     if (code !== 0) process.exitCode = 1;
   } catch {
-    console.error('Driver hosted acceptance failed; sensitive details withheld');
+    console.error('Hosted acceptance failed at ' + stage + '; sensitive details withheld');
     process.exitCode = 1;
   } finally {
     try {
