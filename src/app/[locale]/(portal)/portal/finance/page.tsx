@@ -47,10 +47,16 @@ export default async function Page({
       {bankAccess.status === 'authorized' && (
         <Link href={`/${locale}/portal/finance/banks`}>{t.bankAdmin}</Link>
       )}
-      <nav aria-label={t.finance}>
-        <Link href={`/${locale}/portal/finance`}>{t.finance}</Link>
+      <nav className="finance-filters" aria-label={t.finance}>
+        <Link href={`/${locale}/portal/finance`} aria-current={!status ? 'page' : undefined}>
+          {t.finance}
+        </Link>
         {paymentStates.map((s) => (
-          <Link key={s} href={`/${locale}/portal/finance?status=${s}`}>
+          <Link
+            key={s}
+            href={`/${locale}/portal/finance?status=${s}`}
+            aria-current={status === s ? 'page' : undefined}
+          >
             {t.states[s]}
           </Link>
         ))}
