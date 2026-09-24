@@ -79,11 +79,23 @@ export async function verifyDriverAcceptance(phase) {
         email_confirm: true,
         user_metadata: { role: 'SUPER_ADMIN' },
       });
-      if (created.error || !created.data.user) throw new Error('Fixture identity unavailable');
+      if (created.error || !created.data.user) {
+        console.error(
+          JSON.stringify({
+            fixtureAuthStatus: created.error?.status ?? null,
+            fixtureAuthCode:
+              created.error?.code && /^[a-z_]{1,80}$/.test(created.error.code)
+                ? created.error.code
+                : 'unavailable',
+          }),
+        );
+        throw new Error('Fixture identity unavailable');
+      }
       const id = created.data.user.id;
       users.push(id);
       identities[label] = { email, password, id };
       if (label !== 'customer') {
+        stage = 'fixture-membership-' + label;
         const tenant = ['other', 'otherDriver', 'otherFinance'].includes(label) ? otherOrg : org;
         const type = label === 'peer' ? 'customer' : label.includes('Driver') ? 'driver' : 'staff',
           role =

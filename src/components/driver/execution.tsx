@@ -13,6 +13,7 @@ import {
   type EventLocation,
 } from '@/domain/driver/model';
 import { Alert, Button, Input, Select } from '@/components/ui/primitives';
+import { useHydrated } from '@/components/ui/use-hydrated';
 
 async function post(url: string, body: FormData | object) {
   const response = await fetch(url, {
@@ -25,13 +26,14 @@ async function post(url: string, body: FormData | object) {
   return (await response.json()) as unknown;
 }
 function useFeedback(locale: Locale) {
+  const hydrated = useHydrated();
   const t = driverDictionary(locale),
     router = useRouter(),
     [busy, setBusy] = useState(false),
     [state, setState] = useState<'idle' | 'error' | 'success'>('idle');
   const lock = useRef(false);
   async function run(work: () => Promise<void>) {
-    if (lock.current) return;
+    if (!hydrated || lock.current) return;
     lock.current = true;
     setBusy(true);
     try {
@@ -46,7 +48,7 @@ function useFeedback(locale: Locale) {
     }
   }
   return {
-    busy,
+    busy: !hydrated || busy,
     run,
     feedback: (
       <>
@@ -58,7 +60,7 @@ function useFeedback(locale: Locale) {
         <Button
           type="button"
           variant="secondary"
-          disabled={busy}
+          disabled={!hydrated || busy}
           onClick={() => window.location.reload()}
         >
           {t.refresh}
@@ -68,6 +70,7 @@ function useFeedback(locale: Locale) {
   };
 }
 function useLocation(locale: Locale, id: string) {
+  const hydrated = useHydrated();
   const t = driverDictionary(locale),
     [enabled, setEnabled] = useState(false),
     [status, setStatus] = useState<'idle' | 'ready' | 'missing'>('idle');
@@ -109,6 +112,7 @@ function useLocation(locale: Locale, id: string) {
           <input
             id={id}
             type="checkbox"
+            disabled={!hydrated}
             checked={enabled}
             onChange={(e) => setEnabled(e.target.checked)}
           />

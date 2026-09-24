@@ -272,6 +272,10 @@ Gateway/provider credentials, partial payments, refunds, settlements, statutory 
 - Hydration correction passed 151 local tests, 24 desktop/mobile tests, build/lint/types/format and [CI 35988173482](https://github.com/Rmdn96/Naql365/actions/runs/35988173482) for `a506177015deda7083b6be5f455f1a42b27b6cf7`. Preview https://naql365-staging-9jjqolytt-naql365.vercel.app is genuine Preview/READY for that SHA.
 - The new delayed-script test initially unregistered its interception before pending requests completed. An isolated protected-page reproduction demonstrated 302/307 script responses and “already handled” route errors with that sequence. Keeping interception active until hydration completed produced twelve HTTP 200 script responses and zero route errors. The harness was corrected without changing deployment protection; its affected financial run is not accepted as PASS.
 
+- [CI 35990016957](https://github.com/Rmdn96/Naql365/actions/runs/35990016957) passed for `cb9a03d73c5129f18c02669f4510dd8247817282`. A subsequent hosted run failed during synthetic identity provisioning; cleanup succeeded. Provisioning now reports only bounded Auth status/code and a distinct membership stage.
+- The next run passed SA CASH end-to-end, including delayed-script Quote acceptance. SA BANK_TRANSFER reached authorized Finance confirmation but Driver Start did not send an execution command before hydration; the scenario failed and is not accepted. Driver execution feedback now shares the hydration guard. The delayed-script assertion is reused for the newly unlocked Driver Start action. This additional correction requires rebuilt Preview and complete hosted acceptance.
+- Full dependency audit (production and development) reported zero known vulnerabilities on 2026-09-24.
+
 ## AY. Final Decision
 
 PHASE 6 PARTIAL — NOT READY

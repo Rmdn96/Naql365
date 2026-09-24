@@ -5,6 +5,7 @@ import type { Page } from '@playwright/test';
 import { test, expect } from '../staging/fixtures';
 import {
   acceptedOrder,
+  openHydratedAction,
   admin,
   org,
   identities,
@@ -601,9 +602,8 @@ for (const country of ['SA', 'EG'] as const)
         .getByRole('button', { name: customerDictionary(locale).login, exact: true })
         .click();
       await expect(page).toHaveURL(new RegExp(`/${locale}/driver$`));
-      await page.goto(`/${locale}/driver/trips/${trip}`, { waitUntil: 'domcontentloaded' });
       if (method === 'BANK_TRANSFER') {
-        await expect(page.getByRole('button', { name: dt.startTrip, exact: true })).toBeEnabled();
+        await openHydratedAction(page, `/${locale}/driver/trips/${trip}`, dt.startTrip);
         await page.getByRole('button', { name: dt.startTrip, exact: true }).click();
         await expect
           .poll(

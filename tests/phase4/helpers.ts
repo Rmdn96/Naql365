@@ -145,6 +145,36 @@ export async function op(
   return result.data.id!;
 }
 
+export async function openHydratedAction(page: Page, url: string, label: string) {
+  // Exercise a real slow-script load: a visible SSR button must not accept a lost click.
+  let releaseScripts!: () => void;
+  const scriptsReady = new Promise<void>((resolve) => {
+    releaseScripts = resolve;
+  });
+  const scripts = /\/_next\/static\/.*\.js(?:\?.*)?$/;
+  const delayScripts = async (route: Route) => {
+    await scriptsReady;
+    await route.fallback();
+  };
+  await page.route(scripts, delayScripts);
+  try {
+    await page.goto(url, { waitUntil: 'commit' });
+    const accept = page.getByRole('button', { name: label, exact: true });
+    await expect(accept).toBeVisible();
+    await expect(accept).toBeDisabled();
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: 'action-disabled-until-hydration=true',
+    });
+    releaseScripts();
+    await expect(accept).toBeEnabled();
+  } finally {
+    releaseScripts();
+    await page.unrouteAll({ behavior: 'wait' });
+  }
+  await expect(page.getByRole('button', { name: label, exact: true })).toBeEnabled();
+}
+
 export async function acceptedOrder(
   page: Page,
   country: 'SA' | 'EG',
@@ -246,33 +276,7 @@ export async function acceptedOrder(
   const versionId = version.data!.quote_versions.find((v) => v.status === 'SENT')!.id;
   await logout(page);
   await login(page, customerRole);
-  // Exercise a real slow-script load: a visible SSR button must not accept a lost click.
-  let releaseScripts!: () => void;
-  const scriptsReady = new Promise<void>((resolve) => {
-    releaseScripts = resolve;
-  });
-  const scripts = /\/_next\/static\/.*\.js(?:\?.*)?$/;
-  const delayScripts = async (route: Route) => {
-    await scriptsReady;
-    await route.fallback();
-  };
-  await page.route(scripts, delayScripts);
-  try {
-    await page.goto(`/ar/account/quotes/${versionId}`, { waitUntil: 'commit' });
-    const accept = page.getByRole('button', { name: qt.accept, exact: true });
-    await expect(accept).toBeVisible();
-    await expect(accept).toBeDisabled();
-    test.info().annotations.push({
-      type: 'safe-security-probe',
-      description: 'quote-accept-disabled-until-hydration=true',
-    });
-    releaseScripts();
-    await expect(accept).toBeEnabled();
-  } finally {
-    releaseScripts();
-    await page.unrouteAll({ behavior: 'wait' });
-  }
-  await expect(page.getByRole('button', { name: qt.accept, exact: true })).toBeEnabled();
+  await openHydratedAction(page, `/ar/account/quotes/${versionId}`, qt.accept);
   page.once('dialog', (dialog) => void dialog.accept());
   await page.getByRole('button', { name: qt.accept, exact: true }).click();
   await expect(page.getByRole('button', { name: qt.accept, exact: true })).toBeHidden();
