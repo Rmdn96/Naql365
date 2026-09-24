@@ -64,6 +64,15 @@ export default async function Page({
           </ol>
         </section>
       )}
+      {clearance.method && (
+        <p>
+          {paymentDictionary(locale).method}:{' '}
+          {clearance.method === 'CASH'
+            ? paymentDictionary(locale).cash
+            : paymentDictionary(locale).transfer}
+        </p>
+      )}
+      {clearance.executionAllowed && <p>{paymentDictionary(locale).executionAllowed}</p>}
       {clearance.status && <Badge>{paymentDictionary(locale).states[clearance.status]}</Badge>}
       {!clearance.executionAllowed && <Alert>{paymentDictionary(locale).executionBlocked}</Alert>}
       <TripControls

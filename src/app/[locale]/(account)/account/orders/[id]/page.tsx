@@ -1,5 +1,7 @@
 import { InAppNotifications } from '@/components/tracking/notifications';
 import Link from 'next/link';
+import { getPayment } from '@/infrastructure/payments/service';
+import { formatMoney } from '@/domain/markets/model';
 import { paymentDictionary } from '@/i18n/payments';
 import { TrackingView } from '@/components/tracking/view';
 import { notFound, redirect } from 'next/navigation';
@@ -19,13 +21,16 @@ export default async function Page({
   if (!isLocale(locale)) notFound();
   const t = operationsDictionary(locale);
   let data;
+  let payment;
   try {
     data = await customerProgress(id);
+    payment = await getPayment(id);
   } catch (error) {
     if (error instanceof AppError && error.code === 'unauthenticated') redirect(`/${locale}/login`);
     if (error instanceof AppError && ['forbidden', 'not_found'].includes(error.code)) notFound();
     throw error;
   }
+  const pt = paymentDictionary(locale);
   return (
     <div className="container page">
       <h1>{t.tracking}</h1>
@@ -38,6 +43,27 @@ export default async function Page({
       </p>
       <Badge>{operationalStatus(data.status, locale)}</Badge>
       <p>{t.trackingHelp}</p>
+      <section aria-labelledby="payment-summary-title" className="card">
+        <h2 id="payment-summary-title">{pt.title}</h2>
+        <dl>
+          <dt>{pt.method}</dt>
+          <dd>
+            {payment.method === 'CASH'
+              ? pt.cash
+              : payment.method === 'BANK_TRANSFER'
+                ? pt.transfer
+                : pt.states.PENDING}
+          </dd>
+          <dt>{pt.status}</dt>
+          <dd>{pt.states[payment.status]}</dd>
+          <dt>{pt.total}</dt>
+          <dd>{formatMoney(payment.totalMinor, payment.currency, locale)}</dd>
+          <dt>{pt.currency}</dt>
+          <dd>
+            <bdi>{payment.currency}</bdi>
+          </dd>
+        </dl>
+      </section>
       <Link className="button button--primary" href={`/${locale}/account/orders/${id}/payment`}>
         {paymentDictionary(locale).title}
       </Link>

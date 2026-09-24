@@ -1,3 +1,4 @@
+import { hasSourceMapDirective } from '../helpers/source-map';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import type { Page } from '@playwright/test';
@@ -17,6 +18,37 @@ import { dictionary } from '../../src/i18n/dictionaries';
 import { paymentDictionary } from '../../src/i18n/payments';
 import { customerDictionary } from '../../src/i18n/customer';
 import { driverDictionary } from '../../src/i18n/driver';
+const scannedAssets = new Set<string>();
+async function financialAssets(page: Page) {
+  const origin = new URL(page.url()).origin;
+  const secret = process.env.STAGING_TEST_ADMIN_KEY;
+  expect(Boolean(secret)).toBe(true);
+  expect((await page.content()).includes(secret!)).toBe(false);
+  const sources = await page
+    .locator('script[src]')
+    .evaluateAll((nodes) => nodes.map((node) => (node as HTMLScriptElement).src));
+  expect(sources.length).toBeGreaterThan(0);
+  for (const source of sources) {
+    const url = new URL(source);
+    expect([origin, 'https://vercel.live']).toContain(url.origin);
+    if (scannedAssets.has(source)) continue;
+    const response = await fetch(source, {
+      headers:
+        url.origin === origin
+          ? { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET! }
+          : {},
+      signal: AbortSignal.timeout(30000),
+    });
+    expect(response.ok).toBe(true);
+    const body = await response.text();
+    expect(
+      body.includes(secret!) ||
+        /sb_secret_[A-Za-z0-9_-]{16,}/.test(body) ||
+        hasSourceMapDirective(body),
+    ).toBe(false);
+    scannedAssets.add(source);
+  }
+}
 test('hosted bank configuration is privileged, localized and revisioned', async ({ page }) => {
   const banks = await admin
     .from('bank_accounts')
@@ -50,6 +82,7 @@ test('hosted bank configuration is privileged, localized and revisioned', async 
   await login(page, 'bankAdmin', 'en');
   await page.goto('/en/portal/finance/banks', { waitUntil: 'domcontentloaded' });
   await axe(page);
+  await financialAssets(page);
   const bank = banks.data![0]!;
   const field = page.locator(`[id="${bank.id}-instructionsEn"]`);
   await field.fill('STAGING TEST ONLY. Transfer the exact accepted total.');
@@ -136,6 +169,7 @@ for (const country of ['SA', 'EG'] as const)
       await page.setViewportSize({ width: 390, height: 844 });
       expect(await page.locator('html').getAttribute('dir')).toBe(locale === 'ar' ? 'rtl' : 'ltr');
       await axe(page);
+      await financialAssets(page);
       await page
         .getByRole('button', { name: method === 'CASH' ? t.cash : t.transfer, exact: true })
         .click();
@@ -223,6 +257,19 @@ for (const country of ['SA', 'EG'] as const)
       });
       await op(page, 'assign', trip, { driverId: driver, vehicleId: vehicle });
       await op(page, 'ready', trip);
+      await page.goto(`/${locale}/portal/operations/trips/${trip}`, {
+        waitUntil: 'domcontentloaded',
+      });
+      await expect(
+        page.getByText(t.method + ': ' + (method === 'CASH' ? t.cash : t.transfer), {
+          exact: true,
+        }),
+      ).toBeVisible();
+      await expect(
+        page.getByText(method === 'CASH' ? t.executionAllowed : t.executionBlocked, {
+          exact: true,
+        }),
+      ).toBeVisible();
       if (method === 'BANK_TRANSFER') await op(page, 'dispatch', trip, {}, 400);
       await logout(page, locale);
       await page.goto(`/${locale}/driver/login`, { waitUntil: 'domcontentloaded' });
@@ -419,6 +466,7 @@ for (const country of ['SA', 'EG'] as const)
       await login(page, 'finance', locale);
       await page.goto(`/${locale}/portal/finance`, { waitUntil: 'domcontentloaded' });
       await axe(page);
+      await financialAssets(page);
       await page.getByRole('link', { name: before.data!.reference!, exact: true }).click();
       p = await payment(orderId);
       const action = method === 'CASH' ? 'confirm_cash' : 'confirm_transfer';
@@ -520,6 +568,15 @@ for (const country of ['SA', 'EG'] as const)
         waitUntil: 'domcontentloaded',
       });
       await expect(page.getByText(t.states.PAID, { exact: true })).toBeVisible();
+      await axe(page);
+      await page.goto(`/${locale}/account/orders/${orderId}`, { waitUntil: 'domcontentloaded' });
+      const summary = page.getByRole('region', { name: t.title });
+      await expect(summary.getByText(t.states.PAID, { exact: true })).toBeVisible();
+      await expect(
+        summary.getByText(method === 'CASH' ? t.cash : t.transfer, { exact: true }),
+      ).toBeVisible();
+      await expect(summary.getByText(p.currency, { exact: true })).toBeVisible();
+      await expect(page.locator('body')).not.toContainText('PRIVATE FINANCE TEST NOTE');
       await axe(page);
       test.info().annotations.push({
         type: 'phase6-evidence',
