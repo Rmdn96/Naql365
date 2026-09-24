@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { BrowserContext, Page } from '@playwright/test';
-import { test, expect } from '../staging/fixtures';
+import { test, expect, configureProtectedContext } from '../staging/fixtures';
 import { registerDriverJourneys, type DriverJourneyHook } from '../helpers/driver-journey';
 import {
   admin,
@@ -40,16 +40,7 @@ async function viewer(h: DriverJourneyHook, role: string) {
     .browser()!
     .newContext({ baseURL: h.baseURL, viewport: { width: 390, height: 844 } });
   contexts.push(c);
-  await c.route('**/*', async (route) => {
-    if (new URL(route.request().url()).origin === h.baseURL)
-      await route.continue({
-        headers: {
-          ...route.request().headers(),
-          'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET!,
-        },
-      });
-    else await route.continue();
-  });
+  await configureProtectedContext(c, h.baseURL);
   const p = await c.newPage();
   const evidence = { joined: false, changes: 0 };
   browserRealtime.set(p, evidence);
