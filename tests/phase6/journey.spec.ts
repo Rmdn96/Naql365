@@ -18,6 +18,63 @@ import { dictionary } from '../../src/i18n/dictionaries';
 import { paymentDictionary } from '../../src/i18n/payments';
 import { customerDictionary } from '../../src/i18n/customer';
 import { driverDictionary } from '../../src/i18n/driver';
+import { quotesDictionary } from '../../src/i18n/quotes';
+
+const commandStatuses = new WeakMap<Page, string[]>();
+test.beforeEach(async ({ page }) => {
+  const statuses: string[] = [];
+  commandStatuses.set(page, statuses);
+  page.on('response', (response) => {
+    const path = new URL(response.url()).pathname;
+    if (response.request().method() !== 'POST' || !path.startsWith('/api/')) return;
+    if (path === '/api/sales/pricing') {
+      const body = response.request().postDataJSON() as Record<string, unknown>;
+      test.info().annotations.push({
+        type: 'safe-security-probe',
+        description: JSON.stringify({
+          pricingInput: {
+            distancePositive: typeof body.distanceKm === 'number' && body.distanceKm > 0,
+            vehiclePresent:
+              typeof body.vehicleClassId === 'string' && body.vehicleClassId.length === 36,
+            workersValid:
+              typeof body.workerCount === 'number' &&
+              body.workerCount >= 1 &&
+              body.workerCount <= 50,
+          },
+          status: response.status(),
+        }),
+      });
+    }
+    const family = path.includes('quotes')
+      ? 'quote'
+      : path.includes('requests')
+        ? 'request'
+        : path.includes('payments')
+          ? 'payment'
+          : 'other';
+    statuses.push(`${family}:${response.status()}`);
+    if (statuses.length > 20) statuses.shift();
+  });
+});
+test.afterEach(async ({ page }, info) => {
+  if (info.status === info.expectedStatus || page.isClosed()) return;
+  // Only bounded codes and known UI-state booleans: no payloads, URLs or credentials.
+  info.annotations.push({
+    type: 'safe-security-probe',
+    description: JSON.stringify({
+      commands: commandStatuses.get(page),
+      quoteFailure: await page
+        .getByText(quotesDictionary('ar').actionFailed, { exact: true })
+        .isVisible(),
+      acceptVisible: await page
+        .getByRole('button', { name: quotesDictionary('ar').accept, exact: true })
+        .isVisible(),
+      wizardFailure: await page
+        .getByText(customerDictionary('ar').saveFailed, { exact: true })
+        .isVisible(),
+    }),
+  });
+});
 const scannedAssets = new Set<string>();
 async function financialAssets(page: Page) {
   const origin = new URL(page.url()).origin;

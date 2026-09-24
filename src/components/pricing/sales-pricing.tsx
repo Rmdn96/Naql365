@@ -1,4 +1,5 @@
 'use client';
+import { useHydrated } from '@/components/ui/use-hydrated';
 import { useState } from 'react';
 import type { Locale } from '@/i18n/config';
 import { quotesDictionary } from '@/i18n/quotes';
@@ -52,6 +53,7 @@ export function SalesPricing({
   evaluation: Evaluation | undefined;
   draft: Version | undefined;
 }) {
+  const hydrated = useHydrated();
   const t = quotesDictionary(locale),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(false);
@@ -109,6 +111,7 @@ export function SalesPricing({
         <p>{t.distanceHelp}</p>
         <div className="form-columns">
           <Input
+            disabled={!hydrated}
             id="distance"
             label={t.distanceKm}
             inputMode="decimal"
@@ -117,6 +120,7 @@ export function SalesPricing({
             required
           />
           <Input
+            disabled={!hydrated}
             id="source-note"
             label={t.sourceNote}
             value={note}
@@ -124,6 +128,7 @@ export function SalesPricing({
             onChange={(e) => setNote(e.target.value)}
           />
           <Select
+            disabled={!hydrated}
             id="vehicle"
             label={t.vehicle}
             value={vehicle}
@@ -136,6 +141,7 @@ export function SalesPricing({
             ))}
           </Select>
           <Input
+            disabled={!hydrated}
             id="workers"
             label={t.workers}
             type="number"
@@ -145,7 +151,7 @@ export function SalesPricing({
             onChange={(e) => setWorkers(e.target.value)}
           />
         </div>
-        <Button disabled={busy || !vehicle} onClick={calculate}>
+        <Button disabled={!hydrated || busy || !vehicle} onClick={calculate}>
           {t.calculate}
         </Button>
       </section>
@@ -183,6 +189,7 @@ export function SalesPricing({
               <h3>{t.internal}</h3>
               <div className="form-columns">
                 <Input
+                  disabled={!hydrated}
                   id="adjustment"
                   label={t.adjustment}
                   inputMode="decimal"
@@ -190,6 +197,7 @@ export function SalesPricing({
                   onChange={(e) => setAdjustment(e.target.value)}
                 />
                 <Input
+                  disabled={!hydrated}
                   id="adjustment-reason"
                   label={t.adjustmentReason}
                   value={reason}
@@ -197,6 +205,7 @@ export function SalesPricing({
                   onChange={(e) => setReason(e.target.value)}
                 />
                 <Input
+                  disabled={!hydrated}
                   id="validity"
                   label={t.validity}
                   type="number"
@@ -206,7 +215,7 @@ export function SalesPricing({
                   onChange={(e) => setHours(e.target.value)}
                 />
               </div>
-              <Button disabled={busy} onClick={createDraft}>
+              <Button disabled={!hydrated || busy} onClick={createDraft}>
                 {t.createDraft}
               </Button>
             </>
@@ -230,7 +239,10 @@ export function SalesPricing({
             <strong>{t.total}: </strong>
             <bdi>{formatMoney(draft.total_minor, draft.currency, locale)}</bdi>
           </p>
-          <Button disabled={busy} onClick={() => post(`/api/sales/quotes/${draft.id}/send`, {})}>
+          <Button
+            disabled={!hydrated || busy}
+            onClick={() => post(`/api/sales/quotes/${draft.id}/send`, {})}
+          >
             {t.sendQuote}
           </Button>
         </section>

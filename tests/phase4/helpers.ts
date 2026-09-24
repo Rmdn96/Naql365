@@ -5,7 +5,7 @@ import { test, expect } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { marketDate } from '../../src/domain/markets/model';
-import type { Page } from '@playwright/test';
+import type { Page, Route } from '@playwright/test';
 import type { OperationAction } from '../../src/domain/operations/model';
 function required(key: string) {
   const value = process.env[key];
@@ -246,7 +246,31 @@ export async function acceptedOrder(
   const versionId = version.data!.quote_versions.find((v) => v.status === 'SENT')!.id;
   await logout(page);
   await login(page, customerRole);
-  await page.goto(`/ar/account/quotes/${versionId}`, { waitUntil: 'domcontentloaded' });
+  // Exercise a real slow-script load: a visible SSR button must not accept a lost click.
+  let releaseScripts!: () => void;
+  const scriptsReady = new Promise<void>((resolve) => {
+    releaseScripts = resolve;
+  });
+  const scripts = /\/_next\/static\/.*\.js(?:\?.*)?$/;
+  const delayScripts = async (route: Route) => {
+    await scriptsReady;
+    await route.fallback();
+  };
+  await page.route(scripts, delayScripts);
+  try {
+    await page.goto(`/ar/account/quotes/${versionId}`, { waitUntil: 'commit' });
+    const accept = page.getByRole('button', { name: qt.accept, exact: true });
+    await expect(accept).toBeVisible();
+    await expect(accept).toBeDisabled();
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: 'quote-accept-disabled-until-hydration=true',
+    });
+  } finally {
+    releaseScripts();
+    await page.unroute(scripts, delayScripts);
+  }
+  await expect(page.getByRole('button', { name: qt.accept, exact: true })).toBeEnabled();
   page.once('dialog', (dialog) => void dialog.accept());
   await page.getByRole('button', { name: qt.accept, exact: true }).click();
   await expect(page.getByRole('button', { name: qt.accept, exact: true })).toBeHidden();

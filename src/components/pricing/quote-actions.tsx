@@ -1,4 +1,5 @@
 'use client';
+import { useHydrated } from '@/components/ui/use-hydrated';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { Locale } from '@/i18n/config';
@@ -13,6 +14,7 @@ export function QuoteActions({
   locale: Locale;
   quoteVersionId: string;
 }) {
+  const hydrated = useHydrated();
   const t = quotesDictionary(locale),
     router = useRouter(),
     [busy, setBusy] = useState(false),
@@ -46,6 +48,7 @@ export function QuoteActions({
     <section className="card stack" aria-label={t.quoteDetails}>
       {message && <Alert tone={message === t.actionFailed ? 'error' : 'success'}>{message}</Alert>}
       <Input
+        disabled={!hydrated}
         id="rejection-reason"
         label={t.rejectionReason}
         value={reason}
@@ -53,10 +56,10 @@ export function QuoteActions({
         onChange={(e) => setReason(e.target.value)}
       />
       <div className="actions">
-        <Button disabled={busy} onClick={() => respond('accept')}>
+        <Button disabled={!hydrated || busy} onClick={() => respond('accept')}>
           {t.accept}
         </Button>
-        <Button variant="secondary" disabled={busy} onClick={() => respond('reject')}>
+        <Button variant="secondary" disabled={!hydrated || busy} onClick={() => respond('reject')}>
           {t.reject}
         </Button>
       </div>

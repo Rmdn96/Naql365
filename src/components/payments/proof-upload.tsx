@@ -1,15 +1,13 @@
 'use client';
-import { useRef, useState, useSyncExternalStore } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PaymentDetails } from '@/domain/payments/model';
 import type { Locale } from '@/i18n/config';
 import { paymentDictionary } from '@/i18n/payments';
 import { Alert, Button, Input } from '@/components/ui/primitives';
-const subscribeToHydration = () => () => {};
-const hydratedSnapshot = () => true;
-const serverSnapshot = () => false;
+import { useHydrated } from '@/components/ui/use-hydrated';
 export function ProofUpload({ data, locale }: { data: PaymentDetails; locale: Locale }) {
-  const hydrated = useSyncExternalStore(subscribeToHydration, hydratedSnapshot, serverSnapshot);
+  const hydrated = useHydrated();
   const t = paymentDictionary(locale),
     router = useRouter();
   const locked = useRef(false),

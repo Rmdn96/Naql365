@@ -1,4 +1,5 @@
 'use client';
+import { useHydrated } from '@/components/ui/use-hydrated';
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { z } from 'zod';
@@ -19,6 +20,7 @@ export function Checkout({
   locale: Locale;
   finance?: boolean;
 }) {
+  const hydrated = useHydrated();
   const t = paymentDictionary(locale),
     router = useRouter();
   const locked = useRef(false),
@@ -98,13 +100,13 @@ export function Checkout({
           <h2>{t.choose}</h2>
           <div className="actions">
             <Button
-              disabled={busy || data.method === 'CASH'}
+              disabled={!hydrated || busy || data.method === 'CASH'}
               onClick={() => void act({ action: 'choose', payload: { method: 'CASH' } })}
             >
               {t.cash}
             </Button>
             <Button
-              disabled={busy || !data.bank || data.method === 'BANK_TRANSFER'}
+              disabled={!hydrated || busy || !data.bank || data.method === 'BANK_TRANSFER'}
               onClick={() => void act({ action: 'choose', payload: { method: 'BANK_TRANSFER' } })}
             >
               {t.transfer}
@@ -185,6 +187,7 @@ export function Checkout({
           <h2>{t.finance}</h2>
           <p>{t.confirmHelp}</p>
           <Input
+            disabled={!hydrated}
             id="payment-reference"
             label={t.reference}
             value={reference}
@@ -192,6 +195,7 @@ export function Checkout({
             onChange={(e) => setReference(e.target.value)}
           />
           <Input
+            disabled={!hydrated}
             id="payment-note"
             label={t.note}
             value={note}
@@ -199,7 +203,7 @@ export function Checkout({
             onChange={(e) => setNote(e.target.value)}
           />
           <Button
-            disabled={busy}
+            disabled={!hydrated || busy}
             onClick={() =>
               void act(
                 submitted
@@ -224,6 +228,7 @@ export function Checkout({
               }}
             >
               <Input
+                disabled={!hydrated}
                 id="payment-reason"
                 label={t.reason}
                 required
@@ -231,7 +236,7 @@ export function Checkout({
                 maxLength={500}
                 onChange={(e) => setReason(e.target.value)}
               />
-              <Button variant="secondary" disabled={busy || !reason.trim()}>
+              <Button variant="secondary" disabled={!hydrated || busy || !reason.trim()}>
                 {t.reject}
               </Button>
             </form>
@@ -248,7 +253,7 @@ export function Checkout({
           <p>{t.receiptHelp}</p>
         </Card>
       )}
-      <Button variant="secondary" disabled={busy} onClick={() => router.refresh()}>
+      <Button variant="secondary" disabled={!hydrated || busy} onClick={() => router.refresh()}>
         {t.refresh}
       </Button>
     </div>
