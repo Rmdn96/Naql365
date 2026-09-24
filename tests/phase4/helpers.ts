@@ -146,19 +146,21 @@ export async function op(
 }
 
 export async function openHydratedAction(page: Page, url: string, label: string) {
-  // Exercise a real slow-script load: a visible SSR button must not accept a lost click.
+  // Streamed SSR content may remain hidden until bootstrap; its controls must still be inert.
   await page.waitForLoadState('load');
   const releaseScripts = holdApplicationScripts(page);
   try {
     await page.goto(url, { waitUntil: 'commit' });
-    const accept = page.getByRole('button', { name: label, exact: true });
-    await expect(accept).toBeVisible();
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const accept = page.locator('button').filter({ hasText: new RegExp(`^\\s*${escaped}\\s*$`) });
+    await expect(accept).toBeAttached();
     await expect(accept).toBeDisabled();
     test.info().annotations.push({
       type: 'safe-security-probe',
-      description: 'action-disabled-until-hydration=true',
+      description: `action-disabled-until-hydration=true; server-action-visible=${await accept.isVisible()}`,
     });
     releaseScripts();
+    await expect(accept).toBeVisible();
     await expect(accept).toBeEnabled();
   } finally {
     releaseScripts();

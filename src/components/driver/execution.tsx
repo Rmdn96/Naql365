@@ -48,7 +48,8 @@ function useFeedback(locale: Locale) {
     }
   }
   return {
-    busy: !hydrated || busy,
+    busy,
+    ready: hydrated,
     run,
     feedback: (
       <>
@@ -155,7 +156,7 @@ export function DriverExecution({
     <section className="stack">
       {action === 'arrive' && location.field}
       <Button
-        disabled={feedback.busy || (action === 'dispatch' && !executionAllowed)}
+        disabled={!feedback.ready || feedback.busy || (action === 'dispatch' && !executionAllowed)}
         onClick={() =>
           void feedback.run(async () => {
             request.current ??= {
@@ -230,7 +231,7 @@ export function DriverIssueForm({ trip, locale }: { trip: DriverTrip; locale: Lo
           });
         }}
       >
-        <fieldset disabled={locked || feedback.busy} className="stack">
+        <fieldset disabled={!feedback.ready || locked || feedback.busy} className="stack">
           <Select id="issue-stop" label={t.stops} name="stopId" required>
             {trip.stops
               .filter((s) => s.status !== 'COMPLETED')
@@ -256,7 +257,9 @@ export function DriverIssueForm({ trip, locale }: { trip: DriverTrip; locale: Lo
             accept="image/png,image/jpeg"
           />
         </fieldset>
-        <Button disabled={feedback.busy}>{feedback.busy ? t.saving : t.sendIssue}</Button>
+        <Button disabled={!feedback.ready || feedback.busy}>
+          {feedback.busy ? t.saving : t.sendIssue}
+        </Button>
         {feedback.feedback}
       </form>
     </details>
@@ -332,7 +335,7 @@ export function DriverPodForm({ trip, locale }: { trip: DriverTrip; locale: Loca
           });
         }}
       >
-        <fieldset disabled={locked || feedback.busy} className="stack">
+        <fieldset disabled={!feedback.ready || locked || feedback.busy} className="stack">
           <Input id="pod-recipient" name="recipient" label={t.recipient} maxLength={120} required />
           <Input id="pod-notes" name="notes" label={t.notes} maxLength={500} />
           <p id="signature-help">{t.signatureHelp}</p>
@@ -371,7 +374,9 @@ export function DriverPodForm({ trip, locale }: { trip: DriverTrip; locale: Loca
           />
           {location.field}
         </fieldset>
-        <Button disabled={feedback.busy}>{feedback.busy ? t.saving : t.submitPod}</Button>
+        <Button disabled={!feedback.ready || feedback.busy}>
+          {feedback.busy ? t.saving : t.submitPod}
+        </Button>
         {feedback.feedback}
       </form>
     </section>

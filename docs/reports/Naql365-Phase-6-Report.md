@@ -279,6 +279,9 @@ Gateway/provider credentials, partial payments, refunds, settlements, statutory 
 - Driver readiness correction passed [CI 35991972623](https://github.com/Rmdn96/Naql365/actions/runs/35991972623) for `48076ca8c7ae79918225746ea5e2be9db89dbee1`; protected Preview https://naql365-staging-3yh1by0mo-naql365.vercel.app is READY for that source. SA CASH passed again. The delayed-script harness still conflicted with protected routing on its second navigation; script gating is now implemented inside the single existing protected context handler. An isolated two-navigation probe returned 24 HTTP 200 scripts and no route errors.
 - The Finance suspension test now waits for review-page readiness, explicitly verifies the suspended page denial, then reloads after membership restoration. It previously raced route rendering with suspension. No authorization rule was weakened. Final hosted acceptance remains outstanding.
 
+- [CI 35993822434](https://github.com/Rmdn96/Naql365/actions/runs/35993822434) passed for `c8a41c5a9d4a8cdf36134c4f5a9a7290a388a380`. The single-handler run passed bank configuration, SA CASH and EG CASH, including the strengthened Finance suspension/page-denial probe. Both transfer journeys stopped at the new pre-hydration Driver action assertion.
+- A controlled read-only Driver session probe found no Start-labelled button before scripts but the enabled Start button after scripts. Source inspection identified hydration readiness being conflated with command-busy state, causing the pre-hydration label to say Saving. Driver feedback now keeps readiness separate from in-flight mutation state, retaining the correct action label while disabled. Delayed-script checks inspect the SSR control before release, then require visibility and enabled state afterward. Final acceptance still requires the corrected deployed version; no failed transfer journey is counted as PASS.
+
 ## AY. Final Decision
 
 PHASE 6 PARTIAL — NOT READY
