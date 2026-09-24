@@ -259,6 +259,16 @@ Gateway/provider credentials, partial payments, refunds, settlements, statutory 
 | Cleanup                              | PARTIAL | No hosted fixtures; remote fixture rerun pending                                       |
 | Scope compliance                     | PASS    | No merge/main/Production/Phase7 changes                                                |
 
+## 2026-09-24 continuation evidence
+
+- Exact source `48a256e0d7f1e51b3ada11c778f136bfc51896f4` passed [CI 35984453892](https://github.com/Rmdn96/Naql365/actions/runs/35984453892), including both required jobs.
+- Rebuilt genuine protected Preview: https://naql365-staging-3b7p0k7jf-naql365.vercel.app, deployment `dpl_2UpkAmdGA1R5Uy8J3kA7HYTtPHPz`, READY, independently verified Preview classification and source. Four exact Staging Auth callbacks configured.
+- Final-run bank administration passed, but all four financial journeys stopped in predecessor request/pricing/acceptance steps. These runs do not establish payment acceptance. Two isolated diagnostics also failed; fixture cleanup passed after each run.
+- Safe diagnostics observed one pricing HTTP 400, then a successful pricing response on a later run followed by a visible enabled Quote acceptance button whose click produced no response command or error state. Controls could accept interaction before React hydration. A shared hydration guard now disables affected inputs/actions until their handlers are available. The hosted acceptance helper explicitly delays Next.js scripts and requires the SSR acceptance button to remain disabled before releasing scripts.
+- This correction still requires its own CI and rebuilt-Preview acceptance. No failed run is counted as PASS. Existing earlier hosted successes remain historical evidence only.
+- Bounded review of 200 serverless records plus error/5xx queries found zero 5xx, zero error records and no credential/auth-query patterns; this is a bounded sample, not an exhaustive log guarantee.
+- Secret-pattern scan passed for 309 tracked files; production dependency audit reported zero known vulnerabilities. Remote develop/main and required protections remained unchanged. Vercel Production deployments and Production-scoped variables remained zero.
+
 ## AY. Final Decision
 
 PHASE 6 PARTIAL — NOT READY
