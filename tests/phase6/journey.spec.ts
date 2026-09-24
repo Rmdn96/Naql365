@@ -532,6 +532,12 @@ for (const country of ['SA', 'EG'] as const)
       await axe(page);
       await financialAssets(page);
       await page.getByRole('link', { name: before.data!.reference!, exact: true }).click();
+      await expect(
+        page.getByRole('button', {
+          name: method === 'CASH' ? t.confirmCash : t.confirmTransfer,
+          exact: true,
+        }),
+      ).toBeVisible();
       p = await payment(orderId);
       const action = method === 'CASH' ? 'confirm_cash' : 'confirm_transfer';
       await command(
@@ -561,6 +567,10 @@ for (const country of ['SA', 'EG'] as const)
         { ...(attemptId ? { attemptId } : {}), amountMinor: p.amount_minor, currency: p.currency },
         403,
       );
+      await page.goto(`/${locale}/portal/finance/${orderId}`, { waitUntil: 'domcontentloaded' });
+      await expect(
+        page.getByRole('heading', { name: dictionary(locale).notFound, exact: true }),
+      ).toBeVisible();
       expect(
         (
           await admin
@@ -570,6 +580,7 @@ for (const country of ['SA', 'EG'] as const)
             .eq('organization_id', org)
         ).error,
       ).toBeNull();
+      await page.goto(`/${locale}/portal/finance/${orderId}`, { waitUntil: 'domcontentloaded' });
       await page
         .getByRole('button', {
           name: method === 'CASH' ? t.confirmCash : t.confirmTransfer,

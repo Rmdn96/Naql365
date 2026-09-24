@@ -1,11 +1,11 @@
 import AxeBuilder from '@axe-core/playwright';
 import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
-import { test, expect } from '../staging/fixtures';
+import { test, expect, holdApplicationScripts } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { marketDate } from '../../src/domain/markets/model';
-import type { Page, Route } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import type { OperationAction } from '../../src/domain/operations/model';
 function required(key: string) {
   const value = process.env[key];
@@ -147,16 +147,8 @@ export async function op(
 
 export async function openHydratedAction(page: Page, url: string, label: string) {
   // Exercise a real slow-script load: a visible SSR button must not accept a lost click.
-  let releaseScripts!: () => void;
-  const scriptsReady = new Promise<void>((resolve) => {
-    releaseScripts = resolve;
-  });
-  const scripts = /\/_next\/static\/.*\.js(?:\?.*)?$/;
-  const delayScripts = async (route: Route) => {
-    await scriptsReady;
-    await route.fallback();
-  };
-  await page.route(scripts, delayScripts);
+  await page.waitForLoadState('load');
+  const releaseScripts = holdApplicationScripts(page);
   try {
     await page.goto(url, { waitUntil: 'commit' });
     const accept = page.getByRole('button', { name: label, exact: true });
@@ -170,7 +162,6 @@ export async function openHydratedAction(page: Page, url: string, label: string)
     await expect(accept).toBeEnabled();
   } finally {
     releaseScripts();
-    await page.unrouteAll({ behavior: 'wait' });
   }
   await expect(page.getByRole('button', { name: label, exact: true })).toBeEnabled();
 }

@@ -276,6 +276,9 @@ Gateway/provider credentials, partial payments, refunds, settlements, statutory 
 - The next run passed SA CASH end-to-end, including delayed-script Quote acceptance. SA BANK_TRANSFER reached authorized Finance confirmation but Driver Start did not send an execution command before hydration; the scenario failed and is not accepted. Driver execution feedback now shares the hydration guard. The delayed-script assertion is reused for the newly unlocked Driver Start action. This additional correction requires rebuilt Preview and complete hosted acceptance.
 - Full dependency audit (production and development) reported zero known vulnerabilities on 2026-09-24.
 
+- Driver readiness correction passed [CI 35991972623](https://github.com/Rmdn96/Naql365/actions/runs/35991972623) for `48076ca8c7ae79918225746ea5e2be9db89dbee1`; protected Preview https://naql365-staging-3yh1by0mo-naql365.vercel.app is READY for that source. SA CASH passed again. The delayed-script harness still conflicted with protected routing on its second navigation; script gating is now implemented inside the single existing protected context handler. An isolated two-navigation probe returned 24 HTTP 200 scripts and no route errors.
+- The Finance suspension test now waits for review-page readiness, explicitly verifies the suspended page denial, then reloads after membership restoration. It previously raced route rendering with suspension. No authorization rule was weakened. Final hosted acceptance remains outstanding.
+
 ## AY. Final Decision
 
 PHASE 6 PARTIAL — NOT READY
