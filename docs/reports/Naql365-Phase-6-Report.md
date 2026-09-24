@@ -269,6 +269,9 @@ Gateway/provider credentials, partial payments, refunds, settlements, statutory 
 - Bounded review of 200 serverless records plus error/5xx queries found zero 5xx, zero error records and no credential/auth-query patterns; this is a bounded sample, not an exhaustive log guarantee.
 - Secret-pattern scan passed for 309 tracked files; production dependency audit reported zero known vulnerabilities. Remote develop/main and required protections remained unchanged. Vercel Production deployments and Production-scoped variables remained zero.
 
+- Hydration correction passed 151 local tests, 24 desktop/mobile tests, build/lint/types/format and [CI 35988173482](https://github.com/Rmdn96/Naql365/actions/runs/35988173482) for `a506177015deda7083b6be5f455f1a42b27b6cf7`. Preview https://naql365-staging-9jjqolytt-naql365.vercel.app is genuine Preview/READY for that SHA.
+- The new delayed-script test initially unregistered its interception before pending requests completed. An isolated protected-page reproduction demonstrated 302/307 script responses and “already handled” route errors with that sequence. Keeping interception active until hydration completed produced twelve HTTP 200 script responses and zero route errors. The harness was corrected without changing deployment protection; its affected financial run is not accepted as PASS.
+
 ## AY. Final Decision
 
 PHASE 6 PARTIAL — NOT READY

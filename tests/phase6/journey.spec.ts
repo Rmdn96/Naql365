@@ -26,6 +26,12 @@ test.beforeEach(async ({ page }) => {
   commandStatuses.set(page, statuses);
   page.on('response', (response) => {
     const path = new URL(response.url()).pathname;
+    if (response.request().resourceType() === 'script' && response.status() >= 400) {
+      test.info().annotations.push({
+        type: 'safe-security-probe',
+        description: `script-http-status=${response.status()}`,
+      });
+    }
     if (response.request().method() !== 'POST' || !path.startsWith('/api/')) return;
     if (path === '/api/sales/pricing') {
       const body = response.request().postDataJSON() as Record<string, unknown>;

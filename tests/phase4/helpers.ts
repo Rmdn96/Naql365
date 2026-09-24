@@ -266,9 +266,11 @@ export async function acceptedOrder(
       type: 'safe-security-probe',
       description: 'quote-accept-disabled-until-hydration=true',
     });
+    releaseScripts();
+    await expect(accept).toBeEnabled();
   } finally {
     releaseScripts();
-    await page.unroute(scripts, delayScripts);
+    await page.unrouteAll({ behavior: 'wait' });
   }
   await expect(page.getByRole('button', { name: qt.accept, exact: true })).toBeEnabled();
   page.once('dialog', (dialog) => void dialog.accept());

@@ -35,6 +35,17 @@ export default class SafeReporter implements Reporter {
         process.stdout.write(
           `Diagnostic category: ${kind}; source line: ${error.location?.line ?? 'unavailable'}\n`,
         );
+        for (const marker of [
+          'already handled',
+          'Target page, context or browser has been closed',
+          'Invalid InterceptionId',
+          'Invalid header',
+          'route.continue',
+          'route.fallback',
+        ]) {
+          if (error.message?.includes(marker))
+            process.stdout.write(`Diagnostic marker: ${marker}\n`);
+        }
       }
     }
   }
