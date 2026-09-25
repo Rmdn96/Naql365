@@ -837,3 +837,18 @@ dialog::backdrop {
   text-align: center;
   transform: translate(-50%, -50%);
 }
+
+.finance-filters {
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-block: 1rem;
+}
+.finance-filters a {
+  min-height: 44px;
+  padding-block: 0.5rem;
+  overflow-wrap: anywhere;
+}
+.finance-filters [aria-current] {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}

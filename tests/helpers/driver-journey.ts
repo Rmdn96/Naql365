@@ -59,13 +59,42 @@ async function uiAction(
   locale: 'ar' | 'en',
 ) {
   const before = (await tripState(tripId)).revision;
-  await page
-    .getByRole('button', {
-      name:
-        action === 'dispatch' ? driverDictionary(locale).startTrip : operationLabel(action, locale),
-      exact: true,
-    })
-    .click();
+  const button = page.getByRole('button', {
+    name:
+      action === 'dispatch' ? driverDictionary(locale).startTrip : operationLabel(action, locale),
+    exact: true,
+  });
+  try {
+    await button.click();
+  } catch (error) {
+    const state = await tripState(tripId);
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: JSON.stringify({
+        command: action,
+        clickFailure: [
+          'intercepts pointer events',
+          'not stable',
+          'not enabled',
+          'not visible',
+          'detached',
+        ].filter((marker) => error instanceof Error && error.message.includes(marker)),
+        tripState: state.status,
+        commandButtons: await button.count(),
+        visible: await button.isVisible().catch(() => false),
+        enabled: await button.isEnabled().catch(() => false),
+        retryVisible: await page
+          .getByText(driverDictionary(locale).retry, { exact: true })
+          .isVisible()
+          .catch(() => false),
+        loginRoute: new URL(page.url()).pathname.endsWith('/login'),
+        podState:
+          (await admin.from('trip_pods').select('state').eq('trip_id', tripId).maybeSingle()).data
+            ?.state ?? null,
+      }),
+    });
+    throw error;
+  }
   await expect.poll(async () => (await tripState(tripId)).revision).toBeGreaterThan(before);
   await page.reload();
 }

@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { getPaymentClearance } from '@/infrastructure/payments/service';
+import { paymentDictionary } from '@/i18n/payments';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { operationsDictionary, operationalStatus, operationLabel } from '@/i18n/operations';
@@ -9,7 +11,7 @@ import { issueCategories } from '@/domain/driver/model';
 import { ResolveIssue } from '@/components/operations/issues';
 import { PrivateEvidence } from '@/components/driver/execution';
 import { AppError } from '@/domain/shared/errors';
-import { Badge } from '@/components/ui/primitives';
+import { Alert, Badge } from '@/components/ui/primitives';
 import { TripPlanner } from '@/components/operations/planner';
 import { TripControls } from '@/components/operations/trip-controls';
 export const dynamic = 'force-dynamic';
@@ -30,6 +32,7 @@ export default async function Page({
     if (error instanceof AppError && ['forbidden', 'not_found'].includes(error.code)) notFound();
     throw error;
   }
+  const clearance = await getPaymentClearance(id);
   const issues = await operationalIssues(id),
     dt = driverDictionary(locale);
   return (
@@ -61,7 +64,23 @@ export default async function Page({
           </ol>
         </section>
       )}
-      <TripControls key={`controls-${data.trip.revision}`} locale={locale} data={data} />
+      {clearance.method && (
+        <p>
+          {paymentDictionary(locale).method}:{' '}
+          {clearance.method === 'CASH'
+            ? paymentDictionary(locale).cash
+            : paymentDictionary(locale).transfer}
+        </p>
+      )}
+      {clearance.executionAllowed && <p>{paymentDictionary(locale).executionAllowed}</p>}
+      {clearance.status && <Badge>{paymentDictionary(locale).states[clearance.status]}</Badge>}
+      {!clearance.executionAllowed && <Alert>{paymentDictionary(locale).executionBlocked}</Alert>}
+      <TripControls
+        key={`controls-${data.trip.revision}`}
+        locale={locale}
+        data={data}
+        executionAllowed={clearance.executionAllowed}
+      />
       <section>
         <h2>{dt.issues}</h2>
         {issues.map((issue) => {

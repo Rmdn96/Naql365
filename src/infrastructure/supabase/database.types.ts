@@ -202,6 +202,183 @@ export type Database = {
           },
         ]
       }
+      bank_accounts: {
+        Row: {
+          account_number: string | null
+          active: boolean
+          bank_name_ar: string
+          bank_name_en: string
+          beneficiary_ar: string
+          beneficiary_en: string
+          bic: string | null
+          created_at: string
+          created_by: string
+          currency: string
+          iban: string | null
+          id: string
+          instructions_ar: string
+          instructions_en: string
+          is_primary: boolean
+          market_id: string
+          organization_id: string
+          revision: number
+          updated_at: string
+        }
+        Insert: {
+          account_number?: string | null
+          active?: boolean
+          bank_name_ar: string
+          bank_name_en: string
+          beneficiary_ar: string
+          beneficiary_en: string
+          bic?: string | null
+          created_at?: string
+          created_by: string
+          currency: string
+          iban?: string | null
+          id?: string
+          instructions_ar?: string
+          instructions_en?: string
+          is_primary?: boolean
+          market_id: string
+          organization_id: string
+          revision?: number
+          updated_at?: string
+        }
+        Update: {
+          account_number?: string | null
+          active?: boolean
+          bank_name_ar?: string
+          bank_name_en?: string
+          beneficiary_ar?: string
+          beneficiary_en?: string
+          bic?: string | null
+          created_at?: string
+          created_by?: string
+          currency?: string
+          iban?: string | null
+          id?: string
+          instructions_ar?: string
+          instructions_en?: string
+          is_primary?: boolean
+          market_id?: string
+          organization_id?: string
+          revision?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_accounts_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_accounts_organization_id_market_id_currency_fkey"
+            columns: ["organization_id", "market_id", "currency"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id", "currency"]
+          },
+        ]
+      }
+      bank_transfer_attempts: {
+        Row: {
+          attempt_number: number
+          bank_account_id: string
+          bank_reference: string | null
+          bank_snapshot: Json
+          created_at: string
+          file_id: string
+          finance_note: string | null
+          id: string
+          market_id: string
+          organization_id: string
+          payment_id: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          state: string
+          submitted_at: string | null
+          submitted_by: string
+        }
+        Insert: {
+          attempt_number: number
+          bank_account_id: string
+          bank_reference?: string | null
+          bank_snapshot: Json
+          created_at?: string
+          file_id: string
+          finance_note?: string | null
+          id?: string
+          market_id: string
+          organization_id: string
+          payment_id: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          state?: string
+          submitted_at?: string | null
+          submitted_by: string
+        }
+        Update: {
+          attempt_number?: number
+          bank_account_id?: string
+          bank_reference?: string | null
+          bank_snapshot?: Json
+          created_at?: string
+          file_id?: string
+          finance_note?: string | null
+          id?: string
+          market_id?: string
+          organization_id?: string
+          payment_id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          state?: string
+          submitted_at?: string | null
+          submitted_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_transfer_attempts_organization_id_file_id_fkey"
+            columns: ["organization_id", "file_id"]
+            isOneToOne: false
+            referencedRelation: "file_objects"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "bank_transfer_attempts_organization_id_market_id_bank_acco_fkey"
+            columns: ["organization_id", "market_id", "bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "bank_transfer_attempts_organization_id_market_id_payment_i_fkey"
+            columns: ["organization_id", "market_id", "payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["organization_id", "market_id", "id"]
+          },
+          {
+            foreignKeyName: "bank_transfer_attempts_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_transfer_attempts_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       branches: {
         Row: {
           created_at: string
@@ -434,6 +611,7 @@ export type Database = {
           object_name: string
           organization_id: string
           owner_profile_id: string
+          purpose: string
           size_bytes: number | null
           updated_at: string
           upload_state: string
@@ -446,6 +624,7 @@ export type Database = {
           object_name?: string
           organization_id: string
           owner_profile_id: string
+          purpose?: string
           size_bytes?: number | null
           updated_at?: string
           upload_state?: string
@@ -458,6 +637,7 @@ export type Database = {
           object_name?: string
           organization_id?: string
           owner_profile_id?: string
+          purpose?: string
           size_bytes?: number | null
           updated_at?: string
           upload_state?: string
@@ -482,26 +662,81 @@ export type Database = {
       invoices: {
         Row: {
           created_at: string
+          currency: string | null
+          customer_id: string | null
           id: string
+          issued_at: string | null
+          issued_by: string | null
+          kind: string | null
+          market_id: string | null
           order_id: string
           organization_id: string
+          payment_id: string | null
+          reference: string | null
+          status: string | null
+          subtotal_minor: number | null
+          tax_amount_minor: number | null
+          tax_code: string | null
+          tax_label_ar: string | null
+          tax_label_en: string | null
+          tax_rate_bps: number | null
+          total_minor: number | null
           updated_at: string
         }
         Insert: {
           created_at?: string
+          currency?: string | null
+          customer_id?: string | null
           id?: string
+          issued_at?: string | null
+          issued_by?: string | null
+          kind?: string | null
+          market_id?: string | null
           order_id: string
           organization_id: string
+          payment_id?: string | null
+          reference?: string | null
+          status?: string | null
+          subtotal_minor?: number | null
+          tax_amount_minor?: number | null
+          tax_code?: string | null
+          tax_label_ar?: string | null
+          tax_label_en?: string | null
+          tax_rate_bps?: number | null
+          total_minor?: number | null
           updated_at?: string
         }
         Update: {
           created_at?: string
+          currency?: string | null
+          customer_id?: string | null
           id?: string
+          issued_at?: string | null
+          issued_by?: string | null
+          kind?: string | null
+          market_id?: string | null
           order_id?: string
           organization_id?: string
+          payment_id?: string | null
+          reference?: string | null
+          status?: string | null
+          subtotal_minor?: number | null
+          tax_amount_minor?: number | null
+          tax_code?: string | null
+          tax_label_ar?: string | null
+          tax_label_en?: string | null
+          tax_rate_bps?: number | null
+          total_minor?: number | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "invoices_issued_by_fkey"
+            columns: ["issued_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "invoices_organization_id_fkey"
             columns: ["organization_id"]
@@ -515,6 +750,27 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "orders"
             referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "invoices_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: true
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receipt_customer"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "receipt_market"
+            columns: ["organization_id", "market_id", "currency"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id", "currency"]
           },
         ]
       }
@@ -1001,6 +1257,7 @@ export type Database = {
           idempotency_key: string
           market_id: string | null
           organization_id: string
+          payment_id: string | null
           read_at: string | null
           recipient_profile_id: string
           template_id: string | null
@@ -1015,6 +1272,7 @@ export type Database = {
           idempotency_key: string
           market_id?: string | null
           organization_id: string
+          payment_id?: string | null
           read_at?: string | null
           recipient_profile_id: string
           template_id?: string | null
@@ -1029,6 +1287,7 @@ export type Database = {
           idempotency_key?: string
           market_id?: string | null
           organization_id?: string
+          payment_id?: string | null
           read_at?: string | null
           recipient_profile_id?: string
           template_id?: string | null
@@ -1063,6 +1322,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "notification_templates"
             referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "notifications_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "notifications_trip_id_fkey"
@@ -1297,33 +1563,68 @@ export type Database = {
       }
       payment_transactions: {
         Row: {
+          actor_id: string | null
+          amount_minor: number | null
+          attempt_id: string | null
           created_at: string
+          currency: string | null
+          event_code: string | null
           id: string
+          note: string | null
           organization_id: string
           payment_id: string
           provider: string
           provider_event_id: string
+          reference: string | null
           updated_at: string
         }
         Insert: {
+          actor_id?: string | null
+          amount_minor?: number | null
+          attempt_id?: string | null
           created_at?: string
+          currency?: string | null
+          event_code?: string | null
           id?: string
+          note?: string | null
           organization_id: string
           payment_id: string
           provider: string
           provider_event_id: string
+          reference?: string | null
           updated_at?: string
         }
         Update: {
+          actor_id?: string | null
+          amount_minor?: number | null
+          attempt_id?: string | null
           created_at?: string
+          currency?: string | null
+          event_code?: string | null
           id?: string
+          note?: string | null
           organization_id?: string
           payment_id?: string
           provider?: string
           provider_event_id?: string
+          reference?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "payment_transactions_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "bank_transfer_attempts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "payment_transactions_organization_id_fkey"
             columns: ["organization_id"]
@@ -1342,27 +1643,75 @@ export type Database = {
       }
       payments: {
         Row: {
+          amount_minor: number | null
+          confirmed_by: string | null
           created_at: string
+          currency: string | null
+          customer_id: string | null
           id: string
+          market_id: string | null
+          method: string | null
           order_id: string
           organization_id: string
+          paid_at: string | null
+          revision: number
+          status: string
           updated_at: string
         }
         Insert: {
+          amount_minor?: number | null
+          confirmed_by?: string | null
           created_at?: string
+          currency?: string | null
+          customer_id?: string | null
           id?: string
+          market_id?: string | null
+          method?: string | null
           order_id: string
           organization_id: string
+          paid_at?: string | null
+          revision?: number
+          status?: string
           updated_at?: string
         }
         Update: {
+          amount_minor?: number | null
+          confirmed_by?: string | null
           created_at?: string
+          currency?: string | null
+          customer_id?: string | null
           id?: string
+          market_id?: string | null
+          method?: string | null
           order_id?: string
           organization_id?: string
+          paid_at?: string | null
+          revision?: number
+          status?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "payment_customer"
+            columns: ["organization_id", "customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_market"
+            columns: ["organization_id", "market_id", "currency"]
+            isOneToOne: false
+            referencedRelation: "markets"
+            referencedColumns: ["organization_id", "id", "currency"]
+          },
+          {
+            foreignKeyName: "payments_confirmed_by_fkey"
+            columns: ["confirmed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "payments_organization_id_fkey"
             columns: ["organization_id"]
@@ -1373,7 +1722,7 @@ export type Database = {
           {
             foreignKeyName: "payments_organization_id_order_id_fkey"
             columns: ["organization_id", "order_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "orders"
             referencedColumns: ["organization_id", "id"]
           },
@@ -3355,6 +3704,17 @@ export type Database = {
         }
         Returns: Json
       }
+      configure_bank_account: {
+        Args: {
+          p_details: Json
+          p_id: string
+          p_market: string
+          p_mutation: string
+          p_org: string
+          p_revision: number
+        }
+        Returns: Json
+      }
       create_customer_request: {
         Args: { p_key: string; p_market_id: string }
         Returns: Json
@@ -3396,6 +3756,10 @@ export type Database = {
         Args: { p_offset?: number; p_view?: string }
         Returns: Json
       }
+      finance_queue: {
+        Args: { p_offset?: number; p_org: string; p_status?: string }
+        Returns: Json
+      }
       has_permission: {
         Args: { organization_id: string; permission_code: string }
         Returns: boolean
@@ -3426,6 +3790,18 @@ export type Database = {
         }
         Returns: Json
       }
+      payment_clearance: { Args: { p_trip: string }; Returns: Json }
+      payment_command: {
+        Args: {
+          p_action: string
+          p_mutation: string
+          p_order: string
+          p_payload?: Json
+          p_revision: number
+        }
+        Returns: Json
+      }
+      payment_details: { Args: { p_order: string }; Returns: Json }
       publish_trip_location: {
         Args: { p_location: Json; p_sample: string; p_trip: string }
         Returns: Json
@@ -3489,6 +3865,7 @@ export type Database = {
         Returns: Json
       }
       tracking_policy: { Args: never; Returns: Json }
+      transfer_proof_path: { Args: { p_attempt: string }; Returns: Json }
       trip_pod_command: {
         Args: {
           p_action: string

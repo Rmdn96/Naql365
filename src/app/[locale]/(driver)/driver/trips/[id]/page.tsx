@@ -1,4 +1,6 @@
 import { DriverTracking } from '@/components/tracking/driver';
+import { getPaymentClearance } from '@/infrastructure/payments/service';
+import { paymentDictionary } from '@/i18n/payments';
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { driverDictionary } from '@/i18n/driver';
@@ -23,8 +25,10 @@ export default async function Page({
   const { locale, id } = await params;
   if (!isLocale(locale)) notFound();
   let trip;
+  let clearance;
   try {
     trip = await getDriverTrip(id);
+    clearance = await getPaymentClearance(id);
   } catch (error) {
     return <DriverAccessError locale={locale} error={error} />;
   }
@@ -81,7 +85,17 @@ export default async function Page({
         ))}
       </ol>
       {!completed && (
-        <DriverExecution key={`execution-${trip.revision}`} trip={trip} locale={locale} />
+        <>
+          <DriverExecution
+            key={`execution-${trip.revision}`}
+            trip={trip}
+            locale={locale}
+            executionAllowed={clearance.executionAllowed}
+          />
+          {!clearance.executionAllowed && (
+            <Alert>{paymentDictionary(locale).executionBlocked}</Alert>
+          )}
+        </>
       )}
       <section>
         <h2>{t.issues}</h2>

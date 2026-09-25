@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
-import { test, expect } from '../staging/fixtures';
+import { test, expect, holdApplicationScripts } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { marketDate } from '../../src/domain/markets/model';
@@ -33,7 +33,7 @@ export const admin = createClient(
   },
 );
 export async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar') {
-  await page.goto(`/${locale}/login`);
+  await page.goto(`/${locale}/login`, { waitUntil: 'domcontentloaded' });
   await page.locator('#email').fill(identities[role]!.email);
   await page.locator('#password').fill(identities[role]!.password);
   await page.getByRole('button', { name: customerDictionary(locale).login, exact: true }).click();
@@ -48,16 +48,56 @@ export async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar'
   }
 }
 export async function logout(page: Page, locale: 'ar' | 'en' = 'ar') {
-  await page.goto(`/${locale}/account`);
+  await page.goto(`/${locale}/account`, { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: customerDictionary(locale).logout, exact: true }).click();
 }
 export async function axe(page: Page) {
+  const beforeLayout = await page.evaluate(() => ({
+    width: innerWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
   await expect(page.getByRole('main')).toHaveCount(1);
-  expect(
-    (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
-      .violations,
-  ).toEqual([]);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  const result = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+    .analyze();
+  if (result.violations.length)
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: JSON.stringify({
+        axe: result.violations.map((v) => ({
+          id: v.id,
+          impact: v.impact,
+          count: v.nodes.length,
+        })),
+      }),
+    });
+  expect(result.violations).toEqual([]);
+  const layout = await page.evaluate(() => ({
+    fits: document.documentElement.scrollWidth <= innerWidth,
+    width: innerWidth,
+    overflow: [...document.querySelectorAll('body *')]
+      .filter(
+        (e) =>
+          e.getBoundingClientRect().right > innerWidth + 1 || e.getBoundingClientRect().left < -1,
+      )
+      .slice(0, 12)
+      .map((e) => ({
+        tag: e.tagName,
+        className: e.className,
+        width: Math.round(e.getBoundingClientRect().width),
+        left: Math.round(e.getBoundingClientRect().left),
+        right: Math.round(e.getBoundingClientRect().right),
+        parent: e.parentElement?.tagName,
+        parentClass: e.parentElement?.className,
+        grandparentClass: e.parentElement?.parentElement?.className,
+      })),
+  }));
+  if (!layout.fits)
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: JSON.stringify({ beforeLayout, layout }),
+    });
+  expect(layout.fits).toBe(true);
 }
 export async function principal(role: string) {
   const client = createClient(
@@ -105,7 +145,35 @@ export async function op(
   return result.data.id!;
 }
 
-export async function acceptedOrder(page: Page, country: 'SA' | 'EG', customerRole = 'customer') {
+export async function openHydratedAction(page: Page, url: string, label: string) {
+  // Streamed SSR content may remain hidden until bootstrap; its controls must still be inert.
+  await page.waitForLoadState('load');
+  const releaseScripts = holdApplicationScripts(page);
+  try {
+    await page.goto(url, { waitUntil: 'commit' });
+    const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const accept = page.locator('button').filter({ hasText: new RegExp(`^\\s*${escaped}\\s*$`) });
+    await expect(accept).toBeAttached();
+    await expect(accept).toBeDisabled();
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: `action-disabled-until-hydration=true; server-action-visible=${await accept.isVisible()}`,
+    });
+    releaseScripts();
+    await expect(accept).toBeVisible();
+    await expect(accept).toBeEnabled();
+  } finally {
+    releaseScripts();
+  }
+  await expect(page.getByRole('button', { name: label, exact: true })).toBeEnabled();
+}
+
+export async function acceptedOrder(
+  page: Page,
+  country: 'SA' | 'EG',
+  customerRole = 'customer',
+  checkout: 'CASH' | null = 'CASH',
+) {
   const ct = customerDictionary('ar'),
     qt = quotesDictionary('ar');
   const marketResult = await admin
@@ -137,12 +205,12 @@ export async function acceptedOrder(page: Page, country: 'SA' | 'EG', customerRo
   await page.getByRole('button', { name: ct.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
   const requestId = page.url().split('/').at(-1)!;
-  await page.goto('/en/request/' + requestId);
+  await page.goto('/en/request/' + requestId, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   await expect(page.locator('main')).toContainText(market.name_en);
   await expect(page.locator('main')).toContainText(market.currency);
   await axe(page);
-  await page.goto('/ar/request/' + requestId);
+  await page.goto('/ar/request/' + requestId, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await page.locator('#service').selectOption({ label: 'نقل الأثاث' });
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
@@ -182,7 +250,7 @@ export async function acceptedOrder(page: Page, country: 'SA' | 'EG', customerRo
   await expect(page).toHaveURL(/account\/requests/);
   await logout(page);
   await login(page, 'sales');
-  await page.goto(`/ar/portal/quotes/${requestId}`);
+  await page.goto(`/ar/portal/quotes/${requestId}`, { waitUntil: 'domcontentloaded' });
   await page.locator('#distance').fill('18.750');
   await page.locator('#source-note').fill('Controlled verified road distance');
   await page.locator('#vehicle').selectOption({ label: 'شاحنة صغيرة' });
@@ -201,7 +269,7 @@ export async function acceptedOrder(page: Page, country: 'SA' | 'EG', customerRo
   const versionId = version.data!.quote_versions.find((v) => v.status === 'SENT')!.id;
   await logout(page);
   await login(page, customerRole);
-  await page.goto(`/ar/account/quotes/${versionId}`);
+  await openHydratedAction(page, `/ar/account/quotes/${versionId}`, qt.accept);
   page.once('dialog', (dialog) => void dialog.accept());
   await page.getByRole('button', { name: qt.accept, exact: true }).click();
   await expect(page.getByRole('button', { name: qt.accept, exact: true })).toBeHidden();
@@ -212,6 +280,11 @@ export async function acceptedOrder(page: Page, country: 'SA' | 'EG', customerRo
     .single();
   expect(order.error).toBeNull();
   const orderId = order.data!.id;
+  if (checkout) {
+    await page.goto(`/ar/account/orders/${orderId}/payment`, { waitUntil: 'domcontentloaded' });
+    await page.getByRole('button', { name: 'نقدًا', exact: true }).click();
+    await expect(page.getByText('النقد مستحق', { exact: true })).toBeVisible();
+  }
 
   return { market, cityId, orderId, requestId, versionId };
 }

@@ -13,6 +13,7 @@ import {
   type EventLocation,
 } from '@/domain/driver/model';
 import { Alert, Button, Input, Select } from '@/components/ui/primitives';
+import { useHydrated } from '@/components/ui/use-hydrated';
 
 async function post(url: string, body: FormData | object) {
   const response = await fetch(url, {
@@ -25,13 +26,14 @@ async function post(url: string, body: FormData | object) {
   return (await response.json()) as unknown;
 }
 function useFeedback(locale: Locale) {
+  const hydrated = useHydrated();
   const t = driverDictionary(locale),
     router = useRouter(),
     [busy, setBusy] = useState(false),
     [state, setState] = useState<'idle' | 'error' | 'success'>('idle');
   const lock = useRef(false);
   async function run(work: () => Promise<void>) {
-    if (lock.current) return;
+    if (!hydrated || lock.current) return;
     lock.current = true;
     setBusy(true);
     try {
@@ -47,6 +49,7 @@ function useFeedback(locale: Locale) {
   }
   return {
     busy,
+    ready: hydrated,
     run,
     feedback: (
       <>
@@ -58,7 +61,7 @@ function useFeedback(locale: Locale) {
         <Button
           type="button"
           variant="secondary"
-          disabled={busy}
+          disabled={!hydrated || busy}
           onClick={() => window.location.reload()}
         >
           {t.refresh}
@@ -68,6 +71,7 @@ function useFeedback(locale: Locale) {
   };
 }
 function useLocation(locale: Locale, id: string) {
+  const hydrated = useHydrated();
   const t = driverDictionary(locale),
     [enabled, setEnabled] = useState(false),
     [status, setStatus] = useState<'idle' | 'ready' | 'missing'>('idle');
@@ -109,6 +113,7 @@ function useLocation(locale: Locale, id: string) {
           <input
             id={id}
             type="checkbox"
+            disabled={!hydrated}
             checked={enabled}
             onChange={(e) => setEnabled(e.target.checked)}
           />
@@ -122,7 +127,15 @@ function useLocation(locale: Locale, id: string) {
     ),
   };
 }
-export function DriverExecution({ trip, locale }: { trip: DriverTrip; locale: Locale }) {
+export function DriverExecution({
+  trip,
+  locale,
+  executionAllowed,
+}: {
+  trip: DriverTrip;
+  locale: Locale;
+  executionAllowed: boolean;
+}) {
   const t = driverDictionary(locale),
     feedback = useFeedback(locale),
     location = useLocation(locale, 'arrival-location');
@@ -143,7 +156,7 @@ export function DriverExecution({ trip, locale }: { trip: DriverTrip; locale: Lo
     <section className="stack">
       {action === 'arrive' && location.field}
       <Button
-        disabled={feedback.busy}
+        disabled={!feedback.ready || feedback.busy || (action === 'dispatch' && !executionAllowed)}
         onClick={() =>
           void feedback.run(async () => {
             request.current ??= {
@@ -218,7 +231,7 @@ export function DriverIssueForm({ trip, locale }: { trip: DriverTrip; locale: Lo
           });
         }}
       >
-        <fieldset disabled={locked || feedback.busy} className="stack">
+        <fieldset disabled={!feedback.ready || locked || feedback.busy} className="stack">
           <Select id="issue-stop" label={t.stops} name="stopId" required>
             {trip.stops
               .filter((s) => s.status !== 'COMPLETED')
@@ -244,7 +257,9 @@ export function DriverIssueForm({ trip, locale }: { trip: DriverTrip; locale: Lo
             accept="image/png,image/jpeg"
           />
         </fieldset>
-        <Button disabled={feedback.busy}>{feedback.busy ? t.saving : t.sendIssue}</Button>
+        <Button disabled={!feedback.ready || feedback.busy}>
+          {feedback.busy ? t.saving : t.sendIssue}
+        </Button>
         {feedback.feedback}
       </form>
     </details>
@@ -320,7 +335,7 @@ export function DriverPodForm({ trip, locale }: { trip: DriverTrip; locale: Loca
           });
         }}
       >
-        <fieldset disabled={locked || feedback.busy} className="stack">
+        <fieldset disabled={!feedback.ready || locked || feedback.busy} className="stack">
           <Input id="pod-recipient" name="recipient" label={t.recipient} maxLength={120} required />
           <Input id="pod-notes" name="notes" label={t.notes} maxLength={500} />
           <p id="signature-help">{t.signatureHelp}</p>
@@ -359,7 +374,9 @@ export function DriverPodForm({ trip, locale }: { trip: DriverTrip; locale: Loca
           />
           {location.field}
         </fieldset>
-        <Button disabled={feedback.busy}>{feedback.busy ? t.saving : t.submitPod}</Button>
+        <Button disabled={!feedback.ready || feedback.busy}>
+          {feedback.busy ? t.saving : t.submitPod}
+        </Button>
         {feedback.feedback}
       </form>
     </section>

@@ -1,4 +1,5 @@
 'use client';
+import { useHydrated } from '@/components/ui/use-hydrated';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -49,6 +50,7 @@ async function responseJson(response: Response): Promise<unknown> {
   return result;
 }
 export function StartRequest({ locale, markets }: { locale: Locale; markets: Market[] }) {
+  const hydrated = useHydrated();
   const t = customerDictionary(locale),
     router = useRouter();
   const key = useRef<string | null>(null),
@@ -86,7 +88,7 @@ export function StartRequest({ locale, markets }: { locale: Locale; markets: Mar
         id="request-market"
         label={mt.market}
         value={marketId}
-        disabled={pending}
+        disabled={!hydrated || pending}
         onChange={(e) => {
           setMarketId(e.target.value);
           key.current = null;
@@ -99,7 +101,7 @@ export function StartRequest({ locale, markets }: { locale: Locale; markets: Mar
           </option>
         ))}
       </Select>
-      <Button onClick={start} disabled={pending || !marketId}>
+      <Button onClick={start} disabled={!hydrated || pending || !marketId}>
         {pending ? t.loading : t.start}
       </Button>
       {error && <Alert tone="error">{t.error}</Alert>}
@@ -108,6 +110,7 @@ export function StartRequest({ locale, markets }: { locale: Locale; markets: Mar
 }
 export function RequestWizard({ locale, initial }: { locale: Locale; initial: RequestDetails }) {
   const mt = marketDictionary(locale);
+  const hydrated = useHydrated();
   const t = customerDictionary(locale),
     router = useRouter();
   const [details, setDetails] = useState(initial),
@@ -434,7 +437,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
               <button
                 type="button"
                 aria-current={i === step ? 'step' : undefined}
-                disabled={busy || saveState === 'saving'}
+                disabled={!hydrated || busy || saveState === 'saving'}
                 onClick={() => void navigate(i)}
               >
                 <span>{i + 1}</span>
@@ -450,7 +453,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
       {saveState === 'conflict' ? (
         <Alert tone="error">
           {t.conflict}{' '}
-          <Button variant="secondary" onClick={() => void reload()} disabled={busy}>
+          <Button variant="secondary" onClick={() => void reload()} disabled={!hydrated || busy}>
             {t.reload}
           </Button>
         </Alert>
@@ -479,7 +482,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
           )}
         </Alert>
       )}
-      <fieldset className="wizard-fields" disabled={busy || saveState === 'conflict'}>
+      <fieldset className="wizard-fields" disabled={!hydrated || busy || saveState === 'conflict'}>
         {step === 0 && (
           <>
             <Select
@@ -786,18 +789,21 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
       <div className="wizard-actions">
         <Button
           variant="secondary"
-          disabled={step === 0 || busy || saveState === 'saving'}
+          disabled={!hydrated || step === 0 || busy || saveState === 'saving'}
           onClick={() => void navigate(step - 1)}
         >
           {t.back}
         </Button>
         {step < 7 ? (
-          <Button disabled={busy || saveState === 'saving'} onClick={() => void navigate(step + 1)}>
+          <Button
+            disabled={!hydrated || busy || saveState === 'saving'}
+            onClick={() => void navigate(step + 1)}
+          >
             {t.next}
           </Button>
         ) : (
           <Button
-            disabled={busy || saveState === 'saving' || saveState === 'conflict'}
+            disabled={!hydrated || busy || saveState === 'saving' || saveState === 'conflict'}
             onClick={() => void transition('submit')}
           >
             {busy ? t.submitting : t.submit}
@@ -807,7 +813,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
       <p className="muted">{t.savingHint}</p>
       <Button
         variant="secondary"
-        disabled={busy || saveState === 'saving'}
+        disabled={!hydrated || busy || saveState === 'saving'}
         onClick={() => void transition('cancel')}
       >
         {t.cancel}

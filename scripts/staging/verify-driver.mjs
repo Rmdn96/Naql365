@@ -5,14 +5,19 @@ import { createClient } from '@supabase/supabase-js';
 import { stagingProject, supabase, query } from './supabase.mjs';
 import { acquireHostedRun } from './exclusive-run.mjs';
 export async function verifyDriverAcceptance(phase) {
-  if (![4, 5].includes(phase)) throw Error('Unsupported driver acceptance phase');
+  if (![4, 5, 6].includes(phase)) throw Error('Unsupported acceptance phase');
   process.chdir(fileURLToPath(new URL('../../', import.meta.url)));
   const args = process.argv.slice(2);
-  if (args.some((arg) => arg !== '--session-only')) throw new Error('Unknown verification option');
+  if (
+    args.some((arg) => arg !== '--session-only' && !(phase === 6 && arg === '--payment-diagnostic'))
+  )
+    throw new Error('Unknown verification option');
   // Session-only is supplemental evidence; the default includes both execution journeys.
   const selectedTests = args.includes('--session-only')
     ? [`tests/phase${phase}/session.spec.ts`]
-    : [];
+    : args.includes('--payment-diagnostic')
+      ? ['--grep', 'SA CASH']
+      : [];
   const origin = process.env.STAGING_BASE_URL;
   if (
     !origin ||
@@ -24,11 +29,14 @@ export async function verifyDriverAcceptance(phase) {
   const users = [];
   const otherOrg = randomUUID();
   let ref, admin, org;
+  let stage = 'staging-allowlist';
   try {
     ref = stagingProject();
+    stage = 'catalogue';
     org = query(ref, 'select organization_id from private.customer_enrollment where singleton')[0]
       ?.organization_id;
     if (!org) throw new Error('Staging catalogue unavailable');
+    stage = 'api-key-discovery';
     const keys = JSON.parse(
       supabase(['projects', 'api-keys', '--project-ref', ref, '--reveal', '--output', 'json']),
     );
@@ -39,6 +47,7 @@ export async function verifyDriverAcceptance(phase) {
     admin = createClient(url, adminKey, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
+    stage = 'isolation-organization';
     query(
       ref,
       `insert into public.organizations(id,name) values('${otherOrg}','Driver isolation fixture');select private.provision_initial_market_catalogue('${otherOrg}');update public.markets set active=true where organization_id='${otherOrg}'`,
@@ -59,7 +68,9 @@ export async function verifyDriverAcceptance(phase) {
       'externalDriver',
       'sessionDriver',
       ...(phase === 5 ? ['isolationDriver'] : []),
+      ...(phase === 6 ? ['finance', 'otherFinance', 'bankAdmin'] : []),
     ]) {
+      stage = 'fixture-identity-' + label;
       const email = `naql365-phase${phase}-${label}-${randomUUID()}@example.test`,
         password = randomBytes(32).toString('base64url');
       const created = await admin.auth.admin.createUser({
@@ -68,27 +79,57 @@ export async function verifyDriverAcceptance(phase) {
         email_confirm: true,
         user_metadata: { role: 'SUPER_ADMIN' },
       });
-      if (created.error || !created.data.user) throw new Error('Fixture identity unavailable');
+      if (created.error || !created.data.user) {
+        console.error(
+          JSON.stringify({
+            fixtureAuthStatus: created.error?.status ?? null,
+            fixtureAuthCode:
+              created.error?.code && /^[a-z_]{1,80}$/.test(created.error.code)
+                ? created.error.code
+                : 'unavailable',
+          }),
+        );
+        throw new Error('Fixture identity unavailable');
+      }
       const id = created.data.user.id;
       users.push(id);
       identities[label] = { email, password, id };
       if (label !== 'customer') {
-        const tenant = label === 'other' || label === 'otherDriver' ? otherOrg : org;
+        stage = 'fixture-membership-' + label;
+        const tenant = ['other', 'otherDriver', 'otherFinance'].includes(label) ? otherOrg : org;
         const type = label === 'peer' ? 'customer' : label.includes('Driver') ? 'driver' : 'staff',
           role =
-            label === 'peer'
-              ? 'CUSTOMER'
-              : label.includes('Driver')
-                ? 'DRIVER'
-                : label === 'sales'
-                  ? 'SALES'
-                  : 'DISPATCHER';
+            label === 'bankAdmin'
+              ? 'SUPER_ADMIN'
+              : label === 'finance' || label === 'otherFinance'
+                ? 'FINANCE'
+                : label === 'peer'
+                  ? 'CUSTOMER'
+                  : label.includes('Driver')
+                    ? 'DRIVER'
+                    : label === 'sales'
+                      ? 'SALES'
+                      : 'DISPATCHER';
         query(
           ref,
           `begin;insert into public.organization_memberships(organization_id,profile_id,member_type) values('${tenant}','${id}','${type}');insert into public.user_roles(organization_id,profile_id,role_id) select '${tenant}','${id}',id from public.roles where code='${role}';${label === 'peer' ? `insert into public.customers(organization_id,profile_id) values('${org}','${id}');` : ''}commit;`,
         );
       }
     }
+    stage = 'bank-fixtures';
+    if (phase === 6) {
+      const count = query(
+        ref,
+        `select count(*)::integer n from public.bank_accounts where organization_id='${org}' and active and is_primary`,
+      )[0]?.n;
+      if (count !== 0) throw Error('Existing bank configuration must not be replaced by fixtures');
+      query(
+        ref,
+        `insert into public.bank_accounts(organization_id,market_id,currency,bank_name_ar,bank_name_en,beneficiary_ar,beneficiary_en,account_number,created_by)
+        select organization_id,id,currency,'حساب اختبار فقط','STAGING TEST ONLY','مستفيد اختبار','TEST BENEFICIARY','TEST-ONLY-'||country_code,'${identities.bankAdmin.id}' from public.markets where organization_id='${org}' and active`,
+      );
+    }
+    stage = 'hosted-browser';
     const code = await new Promise((resolve) => {
       const child = spawn(
         process.execPath,
@@ -117,7 +158,7 @@ export async function verifyDriverAcceptance(phase) {
     });
     if (code !== 0) process.exitCode = 1;
   } catch {
-    console.error('Driver hosted acceptance failed; sensitive details withheld');
+    console.error('Hosted acceptance failed at ' + stage + '; sensitive details withheld');
     process.exitCode = 1;
   } finally {
     try {
@@ -152,6 +193,13 @@ export async function verifyDriverAcceptance(phase) {
     delete from public.assignments where trip_id in(select id from cleanup_trips);
     delete from public.trips where id in(select id from cleanup_trips);delete from public.jobs where id in(select id from cleanup_jobs);
     delete from public.drivers where id in(select id from cleanup_resources where action='create_driver');delete from public.vehicles where id in(select id from cleanup_resources where action='create_vehicle');
+    delete from public.notifications where payment_id in(select id from public.payments where order_id in(select id from cleanup_orders));
+    delete from public.invoices where order_id in(select id from cleanup_orders);
+    delete from public.payment_transactions where payment_id in(select id from public.payments where order_id in(select id from cleanup_orders));
+    delete from public.bank_transfer_attempts where payment_id in(select id from public.payments where order_id in(select id from cleanup_orders));
+    delete from public.payments where order_id in(select id from cleanup_orders);
+    delete from private.payment_mutations where actor_id in (${ids});
+    delete from public.bank_accounts where created_by in (${ids});
     delete from private.operational_mutations where actor_id in (${ids});delete from public.orders where id in(select id from cleanup_orders);
     delete from public.quote_items where quote_version_id in(select id from cleanup_versions);delete from public.quote_pricing_details where quote_version_id in(select id from cleanup_versions);
     delete from public.quote_versions where id in(select id from cleanup_versions);delete from public.quotes where id in(select id from cleanup_quotes);
@@ -159,7 +207,10 @@ export async function verifyDriverAcceptance(phase) {
     delete from public.pricing_evaluations where request_id in(select id from cleanup_requests);delete from public.distance_snapshots where request_id in(select id from cleanup_requests);
     delete from public.request_attachments where request_id in(select id from cleanup_requests);delete from public.file_objects where owner_profile_id in (${ids});
     delete from public.request_additional_services where request_id in(select id from cleanup_requests);delete from public.request_locations where request_id in(select id from cleanup_requests);delete from public.request_items where request_id in(select id from cleanup_requests);delete from public.requests where id in(select id from cleanup_requests);
-    delete from public.customers where profile_id in (${ids});delete from public.user_roles where profile_id in (${ids});delete from public.organization_memberships where profile_id in (${ids});delete from public.audit_logs where actor_id in (${ids});commit;`,
+    delete from public.customers where profile_id in (${ids});delete from public.user_roles where profile_id in (${ids});delete from public.organization_memberships where profile_id in (${ids});delete from public.audit_logs where actor_id in (${ids});
+    do $$ begin
+     if exists(select 1 from public.payments where order_id in(select id from cleanup_orders)) or exists(select 1 from public.invoices where order_id in(select id from cleanup_orders)) or exists(select 1 from public.bank_transfer_attempts where submitted_by in (${ids})) or exists(select 1 from public.bank_accounts where created_by in (${ids})) or exists(select 1 from public.file_objects where owner_profile_id in (${ids})) or exists(select 1 from private.payment_mutations where actor_id in (${ids})) then raise exception 'Financial fixture cleanup incomplete';end if;
+    end $$;commit;`,
         );
         for (const id of users) {
           if ((await admin.auth.admin.deleteUser(id)).error)
@@ -174,6 +225,14 @@ export async function verifyDriverAcceptance(phase) {
           `select count(*)::integer as count from auth.users where id in (${ids})`,
         )[0]?.count;
         if (remaining !== 0) throw new Error('Fixture cleanup incomplete');
+      }
+      // Provisioning can fail before the first Auth identity exists. The organization
+      // is still owned by this run and must not survive that early failure.
+      if (ref && admin && users.length === 0) {
+        query(
+          ref,
+          `begin;delete from public.market_cities where organization_id='${otherOrg}';delete from public.market_regions where organization_id='${otherOrg}';delete from public.markets where organization_id='${otherOrg}';delete from public.audit_logs where organization_id='${otherOrg}';delete from public.organizations where id='${otherOrg}';commit;`,
+        );
       }
       console.log('Driver synthetic fixture cleanup PASS; existing catalogues retained');
     } catch {
