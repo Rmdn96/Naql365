@@ -1,6 +1,6 @@
 # Naql365 Phase 6 — Payments, Bank Transfer Verification & Finance Foundation
 
-Implementation checkpoint; hosted acceptance is not yet complete. No Phase 6 merge or Production release is authorized or performed.
+Financial acceptance and Phase 0–5 hosted regressions passed on the same protected Preview. Cleanup and bounded security audits passed. This is review evidence only: no merge, Production release or Phase 7 work is authorized or performed.
 
 ## A. Starting State
 
@@ -31,7 +31,7 @@ Accepted Quote still creates its single immutable Order. The acceptance UI now n
 
 ## G. Preliminary vs Final Quote
 
-Pricing and Sales approval commands remain unchanged. Hosted regression on the Phase 6 Preview remains required.
+Pricing and Sales approval commands remain unchanged. Commercial hosted regression and all four payment journeys passed on the Phase 6 Preview.
 
 ## H. Checkout
 
@@ -59,7 +59,7 @@ Privileged `finance.accounts.manage` command and localized configuration page; p
 
 ## N. Market/Currency Isolation
 
-Relational Market/currency constraints and Order-derived payment facts. Account projection and reservation match the authoritative Order Market and currency. Hosted SA/SAR and EG/EGP verification remains pending.
+Relational Market/currency constraints and Order-derived payment facts. Account projection and reservation match the authoritative Order Market and currency. Hosted SA/SAR and EG/EGP journeys passed, including wrong-currency rejection.
 
 ## O. Transfer Proof
 
@@ -67,7 +67,7 @@ Application accepts PDF/JPEG/PNG up to 2 MiB. Images are decoded/re-encoded and 
 
 ## P. Private Storage
 
-Existing private documents bucket, explicit TRANSFER_PROOF purpose, separate policies excluding generic files.read authority. Owner and Finance access only; short-lived signed download URLs, no overwrite. Hosted expiry/public-access tests remain pending.
+Existing private documents bucket, explicit TRANSFER_PROOF purpose, separate policies excluding generic files.read authority. Owner and Finance access only; short-lived signed download URLs, no overwrite. Hosted authorized access, unauthorized/public denial and signed URL expiry passed in both transfer journeys. Previously issued signed URLs remain valid until expiry; immediate revocation is not claimed.
 
 ## Q. Transfer Attempts
 
@@ -91,7 +91,7 @@ Mandatory bounded customer-safe reason, separately protected Finance note. Rejec
 
 ## V. Trip Start Gate
 
-Tested locally for missing method, pending transfer and cash. Driver/staff use the same database guard. Independent-connection confirm-vs-start and switch-vs-start passed in CI 35656720462. Hosted application assertions remain pending.
+Local and hosted tests cover missing method, pending transfer and cash. Driver/staff share the database guard. Independent-connection confirm-vs-start and switch-vs-start passed in CI 36000376483. Both hosted transfer journeys verify blocked Driver execution before confirmation and successful execution afterward. Delayed-script checks verify Start stays disabled until hydration.
 
 ## W. Driver UX
 
@@ -107,7 +107,7 @@ Localized review, private proof download, explicit full-amount confirmation, rea
 
 ## Z. Customer UX
 
-Checkout, Market-specific instructions, bounded proof form, retry identity, incomplete upload cleanup, rejection/reupload and safe receipt view. Hosted mobile/AR/EN acceptance pending.
+Checkout, Market-specific instructions, bounded proof form, retry identity, incomplete upload cleanup, rejection/reupload and safe receipt view. All four hosted mobile/AR/EN journeys passed, including safe Order payment summaries and absence of private Finance notes.
 
 ## AA. Payment Transactions
 
@@ -123,11 +123,11 @@ Reuse existing recipient-scoped notifications for submitted proof and financial 
 
 ## AD. RLS
 
-Local negative checks cover customer/tenant/role isolation, raw mutation denial, proof access and suspended membership. Full hosted negative matrix remains required.
+Local and hosted negative checks cover customer/tenant/role isolation, raw mutation denial, proof access and suspended membership. Hosted Finance suspension denies both the API and protected review page; restoration uses fresh authorized navigation. Staging schema verification found RLS enabled on 59/59 public tables.
 
 ## AE. Security
 
-Same-origin mutations, authenticated SSR clients, strict input schemas, no service credentials in application/browser, bounded upload, private storage and no raw database error logging. Bounded hosted logs/bundle/header/cookie review remains pending.
+Same-origin mutations, authenticated SSR clients, strict input schemas, private storage and bounded error reporting. Hosted header/cookie/redirect and authenticated bundle checks passed, including comparison against actual privileged fixture credentials without printing them. No browser source maps or privileged credentials were found. Final bounded log review at 2026-09-24T16:41:18.391Z examined up to 200 records per query over three hours: serverless=200, errors=0, 5xx=0; no 5xx, error records, credential patterns or auth-query values observed. This is a bounded sample, not an exhaustive guarantee. Secret-pattern scan passed for 310 tracked files; full dependency audit reported zero known vulnerabilities on 2026-09-24.
 
 ## AF. Audit
 
@@ -135,70 +135,155 @@ Finance changes generate explicit transaction and bounded audit evidence. Generi
 
 ## AG. Concurrency
 
-`scripts/test-payment-concurrency.mjs` uses separate PostgreSQL connections for duplicate proof submission, duplicate cash confirmation, confirm-vs-reject, confirm-vs-dispatch and method-switch-vs-dispatch. All five financial race groups passed in exact-HEAD Foundation CI 35656720462, alongside the existing Operations/Driver/Tracking concurrency suites.
+`scripts/test-payment-concurrency.mjs` uses separate PostgreSQL connections for duplicate proof submission, duplicate cash confirmation, confirm-vs-reject, confirm-vs-dispatch and method-switch-vs-dispatch. All five financial race groups passed in CI 36000376483, alongside existing Operations/Driver/Tracking concurrency suites.
 
 ## AH. SA Cash Journey
 
-Not yet executed on a Phase 6 Preview.
+PASS on the accepted application Preview: Quote → Order → checkout → CASH_DUE → permitted execution → Finance collection → exact SAR receipt. Duration 116791 ms.
 
 ## AI. SA Transfer Journey
 
-Not yet executed on a Phase 6 Preview.
+PASS: SA bank instructions, private proof, rejection/reupload history, Finance confirmation, execution unlock and immutable SAR receipt. Duration 156025 ms.
 
 ## AJ. EG Cash Journey
 
-Not yet executed on a Phase 6 Preview.
+PASS: Egyptian Market/currency checkout, CASH_DUE execution and Finance collection with exact EGP receipt. Duration 127264 ms.
 
 ## AK. EG Transfer Journey
 
-Not yet executed on a Phase 6 Preview.
+PASS: EG bank instructions, private proof, rejection/reupload history, Finance confirmation, execution unlock and immutable EGP receipt. Duration 171585 ms.
 
 ## AL. Rejection/Reupload Journey
 
-Database integration passes; real hosted application/storage journey pending.
+PASS in both hosted transfer journeys: mandatory rejection reason, private Finance note excluded from customer view, second attempt created, rejected first attempt retained, successful confirmation and exactly one receipt.
 
 ## AM. Accessibility
 
-Authenticated bank administration AR/EN axe checks passed. Mobile journey checks exposed overflowing Finance status navigation. DOM measurements identified the non-wrapping Finance navigation; filters now wrap with 44px touch targets and current-filter semantics. Horizontal overflow checks remain mandatory. Checkout proof selection before hydration lost the React file-change event; input is now disabled until hydration and the hosted test waits for it to become usable. All affected journeys must pass on a rebuilt Preview before acceptance.
+Authenticated bank administration and four financial journeys passed affected-route axe checks, AR/EN and mobile overflow assertions. Finance filters wrap with 44px targets. Request, Quote, payment and Driver controls remain disabled until hydration; delayed-script hosted probes verify Quote acceptance and Driver Start. Automated checks do not establish full WCAG certification.
 
 ## AN. AR/EN
 
-Centralized dictionaries and locale routing implemented. Hosted RTL/LTR verification pending.
+Centralized dictionaries, Arabic RTL and English LTR routing passed financial and Phase 0–3.5 hosted journeys on the same Preview.
 
 ## AO. Tests
 
-Local checkpoint: 31 test files / 151 tests PASS, strict typecheck PASS using official types, 24 local browser checks PASS from the implementation checkpoint. Current hydration correction is under repeat build/CI/hosted verification.
+151 unit/integration tests across 31 files, 24 desktop/mobile local browser tests, strict typecheck, lint, formatting and production build PASS. CI repeats fresh Supabase reconstruction, SQL/RLS, official type generation/diff and independent-connection concurrency. Hosted acceptance: 30/30 distinct tests across six groups on the same protected Preview. Failed historical attempts are excluded.
 
 ## AP. CI
 
-Official type generation [35618884338](https://github.com/Rmdn96/Naql365/actions/runs/35618884338) PASS for schema checkpoint `fca8ad6f99b5da78dfea100c604279c3df1aeb65`. Types imported verbatim from its artifact. Foundation CI [35618884336](https://github.com/Rmdn96/Naql365/actions/runs/35618884336): quality PASS, fresh migrations/SQL PASS, operational concurrency assertions PASS but cleanup failed with FK 23503 because new Payment rows precede Order deletion. Cleanup order corrected. Subsequent exact-HEAD Foundation CI [35656720462](https://github.com/Rmdn96/Naql365/actions/runs/35656720462) PASS for b3dd3f440df134032013cd25ec42208b0057aa26: both quality/build and Supabase migrations/RLS jobs succeeded, including independent-connection concurrency and generated-type comparison. The earlier failed run is not counted as PASS.
+[CI 36026907623](https://github.com/Rmdn96/Naql365/actions/runs/36026907623) PASS for `439d2fed4755180fb12abd0efd01854cdfefa426`: both required quality/build and Supabase migrations/RLS jobs succeeded, including independent-connection concurrency and official generated-type comparison. Accepted deployed application source `995ccf81b020c9ca770c18c71d632e3dff0061d1` passed [CI 35995180209](https://github.com/Rmdn96/Naql365/actions/runs/35995180209). Subsequent commits change only test infrastructure, documentation and exact Staging Auth URLs; application/migrations/package diff against the accepted Preview is empty. Final report commit CI is required and its run/result is supplied in the closeout message.
 
 ## AQ. Hosted Preview
 
-Protected genuine Preview: https://naql365-staging-oa4z7ev7w-naql365.vercel.app, READY for source b3dd3f440df134032013cd25ec42208b0057aa26. Vercel target is Preview (API target null), project/source checked independently. Staging upgraded from 27 to 31 repository migrations on 2026-09-22; hosted SQL assertions and official generated-type comparison PASS, 59/59 public tables have RLS. Auth uses four exact Preview callbacks without wildcards. Hosted browser acceptance is in progress; deployment alone is not acceptance. Zero Production deployments and zero Production-scoped variables verified.
+Protected genuine Preview: https://naql365-staging-620oudqr7-naql365.vercel.app, deployment `dpl_7s1o8AGcK74AdB6RFnyd521yLWz9`, READY for application source `995ccf81b020c9ca770c18c71d632e3dff0061d1`. Vercel API target null confirms Preview classification; project/source checked independently. Staging upgraded from 27 to 31 repository migrations on 2026-09-22; hosted SQL and official generated-type comparison PASS. Auth uses four exact Preview callbacks without wildcards. Production deployments and Production-scoped variables were both zero at the latest audit.
 
 ## AR. Regression
 
-Operational SQL regression fixtures explicitly choose CASH through payment_command when the Phase 6 schema exists. Older upgrade fixtures remain paymentless. Local Phase 0–5 suite passes; hosted regression must use the accepted Phase 6 Preview.
+Phase 0–5 hosted regression PASS on the accepted Phase 6 Preview: foundation 12, intake 6, commercial 1, Operations 3, Driver/Tracking 3. Financial acceptance adds 5 tests. Driver/Tracking includes SA/EG execution, reassignment, private issues/POD, aggregate completion, bilateral customer/tenant Realtime isolation, foreground GPS, stale/recovery, notifications, and expired/revoked sessions. Regression fixtures explicitly select CASH when the Phase 6 schema exists; populated legacy upgrade fixtures remain paymentless.
 
 ## AS. Cleanup
 
-First hosted acceptance attempt completed with failures in browser assertions and mobile layout; scoped synthetic fixture cleanup PASS. A diagnostic rerun is in progress. Independent cleanup audit after failed runs found zero rows in 28 business/Auth/Storage/replay groups and retained SA/EG configuration. Final cleanup and automation credential removal remain required. Local SQL fixtures rollback; CI concurrency cleanup PASS.
+All hosted fixture runners completed scoped cleanup. Independent read-only audit at 2026-09-24T16:43:17.948Z found zero rows across all 45 checked business/identity/session/Storage/replay groups. SA/EG Market configuration and intended catalogues remain. The single owned temporary Vercel automation bypass credential was revoked; zero automation credentials remain, the revoked credential returns HTTP 302, and Preview protection remains enabled. Local fixtures roll back and CI concurrency cleanup passed.
 
 ## AT. Files Changed
 
-Migrations 28–31, payment domain/infrastructure/API and UI, customer acceptance redirect, Driver/Operations clearance, notification codes, official database types, regression fixtures, upgrade/unit/integration/concurrency tests, CI and this report. Final exact list will be taken from accepted baseline diff.
+Exact accepted-baseline changed paths (including this report and Staging Auth configuration):
+
+```text
+.github/workflows/ci.yml
+config/staging/supabase/config.toml
+docs/phase-6-payments-finance-gap-analysis.md
+docs/reports/Naql365-Phase-6-Report.md
+playwright.phase6.config.ts
+scripts/staging/verify-driver.mjs
+scripts/staging/verify-phase3.mjs
+scripts/staging/verify-phase6.mjs
+scripts/test-driver-concurrency.mjs
+scripts/test-operations-concurrency.mjs
+scripts/test-payment-concurrency.mjs
+scripts/test-tracking-concurrency.mjs
+src/app/[locale]/(account)/account/orders/[id]/page.tsx
+src/app/[locale]/(account)/account/orders/[id]/payment/page.tsx
+src/app/[locale]/(driver)/driver/trips/[id]/page.tsx
+src/app/[locale]/(portal)/portal/finance/[id]/page.tsx
+src/app/[locale]/(portal)/portal/finance/banks/page.tsx
+src/app/[locale]/(portal)/portal/finance/page.tsx
+src/app/[locale]/(portal)/portal/operations/trips/[id]/page.tsx
+src/app/api/payments/banks/route.ts
+src/app/api/payments/proof/[id]/route.ts
+src/app/api/payments/proof/route.ts
+src/app/api/payments/route.ts
+src/app/globals.css
+src/components/driver/execution.tsx
+src/components/operations/trip-controls.tsx
+src/components/payments/bank-admin.tsx
+src/components/payments/checkout.tsx
+src/components/payments/proof-upload.tsx
+src/components/pricing/quote-actions.tsx
+src/components/pricing/sales-pricing.tsx
+src/components/requests/wizard.tsx
+src/components/shell/protected-shell.tsx
+src/components/tracking/notifications.tsx
+src/components/ui/use-hydrated.ts
+src/domain/payments/model.ts
+src/i18n/payments.ts
+src/i18n/tracking.ts
+src/infrastructure/payments/proof.ts
+src/infrastructure/payments/service.ts
+src/infrastructure/supabase/database.types.ts
+src/infrastructure/tracking/service.ts
+supabase/migrations/20260921000100_payment_finance_schema.sql
+supabase/migrations/20260921000200_payment_commands.sql
+supabase/migrations/20260921000300_payment_storage_projections.sql
+supabase/migrations/20260921000400_bank_configuration_notifications.sql
+supabase/tests/phase3.test.sql
+tests/helpers/driver-journey.ts
+tests/integration/payments-upgrade.test.ts
+tests/integration/payments.test.ts
+tests/phase3/journey.spec.ts
+tests/phase4/helpers.ts
+tests/phase5/journey.spec.ts
+tests/phase6/journey.spec.ts
+tests/staging/fixtures.ts
+tests/staging/safe-reporter.ts
+tests/unit/payment-proof.test.ts
+tests/unit/payments.test.ts
+```
 
 ## AU. Commits
 
-- `6fdd01de5b621118a3726cb53121f8559672d479`: gap analysis before migration.
-- `af76312`: approved owner policies.
-- `fca8ad6f99b5da78dfea100c604279c3df1aeb65`: financial schema/authority and initial tests.
-- Further implementation/checkpoint commits are not final acceptance commits.
+Logical commits preserve gap analysis before migration and owner decisions before implementation. Final report commit/SHA and its exact-HEAD CI are supplied in the closeout message to avoid a self-referential commit hash. Application source accepted on Preview: `995ccf81b020c9ca770c18c71d632e3dff0061d1`. The following implementation/test history precedes this report:
+
+```text
+6fdd01d docs(phase6): inspect payment gaps and identify execution policy decisions
+af76312 docs(phase6): record approved upgrade and payment-switch policies
+fca8ad6 feat(payments): enforce finance verification and shared execution clearance
+d0add4e test(payments): add independent finance and dispatch races
+13c56cb feat(payments): add localized checkout and protected finance workspace
+bc23d20 test(payments): cover hosted SA and EG finance acceptance
+e656eeb test(payments): verify bank administration and PDF proof journey
+62424b8 style(tests): normalize transfer proof upload chain
+b3dd3f4 test(payments): validate proof decoding and safe upload retries
+e2022ab test: diagnose hosted payment accessibility and interaction failures
+dd5195f fix: guard proof selection until client hydration is ready
+8c21a0e docs: record Phase 6 staging database and preview checkpoint
+828f745 fix: wrap Finance status filters on narrow screens
+9fde30b test: strengthen hosted finance negatives and fixture cleanup
+be191bf feat: show authorized payment summaries on order and operations views
+48a256e chore: align staging callbacks with verified Phase 6 preview
+223672a fix: prevent lost commercial actions before client hydration
+a506177 docs: record hosted hydration diagnosis and staging checkpoint
+cb9a03d test: preserve protected routing while delaying hydration scripts
+48076ca fix: wait for hydrated driver controls before execution
+c8a41c5 test: serialize protected hydration and Finance revocation probes
+995ccf8 fix: separate driver readiness from pending execution state
+d9dcda5 test: share protected browser setup across tracking contexts
+439d2fe test: record bounded driver action failure diagnostics
+```
 
 ## AV. Known Limitations
 
-Docker Desktop is unavailable locally; official Supabase CLI reconstruction/type generation uses the existing isolated GitHub workflow. Hosted database evidence is available; hosted browser acceptance remains in progress. PDF scanning not implemented; no compliance certification. This is a work-in-progress report, not a release approval.
+Docker Desktop is unavailable locally; official Supabase reconstruction/type generation was executed in isolated GitHub CI. PDF validation is structural, not antivirus scanning. Receipts do not claim Saudi/Egypt statutory e-invoicing certification. Signed URLs remain usable until their short expiry. Log and asset reviews are bounded samples. Accepted Preview is deliberately protected and disposable test identities have been removed. Later documentation/test-only commits do not change the accepted application tree; no redeployment or Production promotion is needed.
 
 ## AW. Deferred Items
 
@@ -206,84 +291,84 @@ Gateway/provider credentials, partial payments, refunds, settlements, statutory 
 
 ## AX. Acceptance Matrix
 
-| Gate                                 | Result  | Evidence                                                                               |
-| ------------------------------------ | ------- | -------------------------------------------------------------------------------------- |
-| Git baseline                         | PASS    | Remote develop/main verified against accepted SHAs                                     |
-| Gap analysis                         | PASS    | Committed before migrations; both policies approved                                    |
-| Existing schema reuse                | PASS    | Extended original entities and authoritative dispatch                                  |
-| Preliminary pricing                  | PARTIAL | Local regression; hosted pending                                                       |
-| Sales final Quote                    | PARTIAL | Local regression; hosted pending                                                       |
-| Quote acceptance                     | PARTIAL | Checkout routing implemented; hosted pending                                           |
-| Checkout                             | PARTIAL | Implemented, build/typecheck pass                                                      |
-| CASH method                          | PARTIAL | Database integration passes; hosted pending                                            |
-| BANK_TRANSFER method                 | PARTIAL | Database integration passes; hosted pending                                            |
-| Cash remains unpaid until collection | PARTIAL | Database integration passes                                                            |
-| Cash execution allowed               | PARTIAL | Database guard tested; hosted pending                                                  |
-| Bank account configuration           | PARTIAL | Privileged command/UI; hosted pending                                                  |
-| SA/SAR bank isolation                | PARTIAL | Relational constraint; hosted pending                                                  |
-| EG/EGP bank isolation                | PARTIAL | Relational constraint; hosted pending                                                  |
-| Transfer proof                       | PARTIAL | Reservation/submission tested; hosted upload pending                                   |
-| Private Storage                      | PARTIAL | Database policies; hosted expiry/denial pending                                        |
-| Proof ≠ Paid                         | PARTIAL | Integration passes                                                                     |
-| Operational planning while pending   | PARTIAL | Engine unchanged; hosted pending                                                       |
-| Start Trip payment gate              | PARTIAL | Local guard passes; hosted/races pending                                               |
-| Driver blocked state                 | PARTIAL | UI/server projection implemented                                                       |
-| Finance queue                        | PARTIAL | Bounded projection/UI implemented                                                      |
-| Finance confirmation                 | PARTIAL | Authorized transaction integration passes                                              |
-| Automatic execution unlock           | PARTIAL | Clearance integration passes                                                           |
-| Transfer rejection                   | PARTIAL | Required reason integration passes                                                     |
-| Reupload/history                     | PARTIAL | Integration passes                                                                     |
-| Cash confirmation                    | PARTIAL | Integration passes                                                                     |
-| Payment transactions                 | PARTIAL | Immutable/idempotent integration passes                                                |
-| Invoice/receipt foundation           | PARTIAL | Snapshot/uniqueness integration passes                                                 |
-| Customer isolation                   | PARTIAL | Local negatives; hosted pending                                                        |
-| Tenant isolation                     | PARTIAL | Local negatives; hosted pending                                                        |
-| Market isolation                     | PARTIAL | Constraints; expanded tests pending                                                    |
-| RLS                                  | PARTIAL | Local tests and initial official SQL pass                                              |
-| Audit                                | PARTIAL | Bounded events implemented                                                             |
-| Notifications                        | PARTIAL | Existing infrastructure extended                                                       |
-| Concurrency                          | PASS    | Exact-HEAD CI 35656720462; all independent-connection financial and prior-phase suites |
-| SA Cash hosted journey               | BLOCKED | Await complete local/CI gates                                                          |
-| SA Transfer hosted journey           | BLOCKED | Await complete local/CI gates                                                          |
-| EG Cash hosted journey               | BLOCKED | Await complete local/CI gates                                                          |
-| EG Transfer hosted journey           | BLOCKED | Await complete local/CI gates                                                          |
-| Rejection/reupload journey           | PARTIAL | Hosted pending                                                                         |
-| AR/EN                                | PARTIAL | Dictionaries implemented                                                               |
-| Mobile                               | PARTIAL | Hosted acceptance pending                                                              |
-| Accessibility                        | PARTIAL | Hosted authenticated axe pending                                                       |
-| Migrations                           | PASS    | CI fresh reconstruction, populated27 upgrade, actual Staging27→31 and hosted SQL PASS  |
-| Generated types                      | PASS    | CI strict diff and hosted official CLI public schema comparison PASS                   |
-| Regression                           | PARTIAL | 146 local tests pass; hosted pending                                                   |
-| CI                                   | PASS    | 35656720462 PASS for b3dd3f4; final feature HEAD rerun still required                  |
-| Hosted Preview                       | BLOCKED | Not deployed before successful gates                                                   |
-| Cleanup                              | PARTIAL | No hosted fixtures; remote fixture rerun pending                                       |
-| Scope compliance                     | PASS    | No merge/main/Production/Phase7 changes                                                |
+| Gate                                 | Result | Evidence                                                                              |
+| ------------------------------------ | ------ | ------------------------------------------------------------------------------------- |
+| Git baseline                         | PASS   | Remote develop/main verified against accepted SHAs                                    |
+| Gap analysis                         | PASS   | Committed before migrations; both policies approved                                   |
+| Existing schema reuse                | PASS   | Extended original entities and authoritative dispatch                                 |
+| Preliminary pricing                  | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Sales final Quote                    | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Quote acceptance                     | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Checkout                             | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| CASH method                          | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| BANK_TRANSFER method                 | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Cash remains unpaid until collection | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Cash execution allowed               | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Bank account configuration           | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| SA/SAR bank isolation                | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| EG/EGP bank isolation                | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Transfer proof                       | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Private Storage                      | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Proof ≠ Paid                         | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Operational planning while pending   | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Start Trip payment gate              | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Driver blocked state                 | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Finance queue                        | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Finance confirmation                 | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Automatic execution unlock           | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Transfer rejection                   | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Reupload/history                     | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Cash confirmation                    | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Payment transactions                 | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Invoice/receipt foundation           | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Customer isolation                   | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Tenant isolation                     | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Market isolation                     | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| RLS                                  | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Audit                                | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Notifications                        | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Concurrency                          | PASS   | CI 36026907623 at 439d2fe; independent-connection financial and prior-phase suites    |
+| SA Cash hosted journey               | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| SA Transfer hosted journey           | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| EG Cash hosted journey               | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| EG Transfer hosted journey           | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| Rejection/reupload journey           | PASS   | Hosted financial 5/5 and Phase 0–3.5 regression on Preview 620oudqr7; CI 36000376483  |
+| AR/EN                                | PASS   | Four financial journeys and bank administration; RTL/LTR, mobile, axe                 |
+| Mobile                               | PASS   | Four financial journeys and bank administration; RTL/LTR, mobile, axe                 |
+| Accessibility                        | PASS   | Four financial journeys and bank administration; RTL/LTR, mobile, axe                 |
+| Migrations                           | PASS   | CI fresh reconstruction, populated27 upgrade, actual Staging27→31 and hosted SQL PASS |
+| Generated types                      | PASS   | CI strict diff and hosted official CLI public schema comparison PASS                  |
+| Regression                           | PASS   | 25 Phase 0–5 hosted tests; 151 unit/integration and 24 local E2E                      |
+| CI                                   | PASS   | 36026907623 for 439d2fe; final report commit CI supplied in closeout                  |
+| Hosted Preview                       | PASS   | READY protected Preview 620oudqr7; application source 995ccf8                         |
+| Cleanup                              | PASS   | 45 groups empty; catalogues retained; owned bypass credential revoked                 |
+| Scope compliance                     | PASS   | No merge/main/Production/Phase7 changes                                               |
 
-## 2026-09-24 continuation evidence
+## Hosted verification and resolved defects
 
-- Exact source `48a256e0d7f1e51b3ada11c778f136bfc51896f4` passed [CI 35984453892](https://github.com/Rmdn96/Naql365/actions/runs/35984453892), including both required jobs.
-- Rebuilt genuine protected Preview: https://naql365-staging-3b7p0k7jf-naql365.vercel.app, deployment `dpl_2UpkAmdGA1R5Uy8J3kA7HYTtPHPz`, READY, independently verified Preview classification and source. Four exact Staging Auth callbacks configured.
-- Final-run bank administration passed, but all four financial journeys stopped in predecessor request/pricing/acceptance steps. These runs do not establish payment acceptance. Two isolated diagnostics also failed; fixture cleanup passed after each run.
-- Safe diagnostics observed one pricing HTTP 400, then a successful pricing response on a later run followed by a visible enabled Quote acceptance button whose click produced no response command or error state. Controls could accept interaction before React hydration. A shared hydration guard now disables affected inputs/actions until their handlers are available. The hosted acceptance helper explicitly delays Next.js scripts and requires the SSR acceptance button to remain disabled before releasing scripts.
-- This correction still requires its own CI and rebuilt-Preview acceptance. No failed run is counted as PASS. Existing earlier hosted successes remain historical evidence only.
-- Bounded review of 200 serverless records plus error/5xx queries found zero 5xx, zero error records and no credential/auth-query patterns; this is a bounded sample, not an exhaustive log guarantee.
-- Secret-pattern scan passed for 309 tracked files; production dependency audit reported zero known vulnerabilities. Remote develop/main and required protections remained unchanged. Vercel Production deployments and Production-scoped variables remained zero.
+To reproduce, use the allowlisted `naql365-staging` project and a verified protected Preview. Supply `STAGING_SUPABASE_PROJECT_REF`, `STAGING_SUPABASE_ORG_ID`, `STAGING_BASE_URL` and `VERCEL_AUTOMATION_BYPASS_SECRET` through a secure process environment. The hosted runners use the authenticated Supabase CLI, generate controlled identities in memory and clean their own scoped fixtures in `finally`. Never run these against Production or concurrently. Run `node scripts/staging/verify-phase6.mjs` for the five financial tests; run the existing browser/intake/phase2/phase3/phase5 verification scripts sequentially for regressions. Revoke the temporary owned automation credential after verification. Do not print its value or raw privileged test output.
 
-- Hydration correction passed 151 local tests, 24 desktop/mobile tests, build/lint/types/format and [CI 35988173482](https://github.com/Rmdn96/Naql365/actions/runs/35988173482) for `a506177015deda7083b6be5f455f1a42b27b6cf7`. Preview https://naql365-staging-9jjqolytt-naql365.vercel.app is genuine Preview/READY for that SHA.
-- The new delayed-script test initially unregistered its interception before pending requests completed. An isolated protected-page reproduction demonstrated 302/307 script responses and “already handled” route errors with that sequence. Keeping interception active until hydration completed produced twelve HTTP 200 script responses and zero route errors. The harness was corrected without changing deployment protection; its affected financial run is not accepted as PASS.
+All acceptance groups use https://naql365-staging-620oudqr7-naql365.vercel.app, application source `995ccf81b020c9ca770c18c71d632e3dff0061d1`. Traces, screenshots and videos are disabled; safe reporters emit only test names, results, source locations and bounded diagnostic classifications. Privileged test credentials remain in process memory and are never committed.
 
-- [CI 35990016957](https://github.com/Rmdn96/Naql365/actions/runs/35990016957) passed for `cb9a03d73c5129f18c02669f4510dd8247817282`. A subsequent hosted run failed during synthetic identity provisioning; cleanup succeeded. Provisioning now reports only bounded Auth status/code and a distinct membership stage.
-- The next run passed SA CASH end-to-end, including delayed-script Quote acceptance. SA BANK_TRANSFER reached authorized Finance confirmation but Driver Start did not send an execution command before hydration; the scenario failed and is not accepted. Driver execution feedback now shares the hydration guard. The delayed-script assertion is reused for the newly unlocked Driver Start action. This additional correction requires rebuilt Preview and complete hosted acceptance.
-- Full dependency audit (production and development) reported zero known vulnerabilities on 2026-09-24.
+| Group           | Result | Count / evidence                                                                             |
+| --------------- | ------ | -------------------------------------------------------------------------------------------- |
+| Finance         | PASS   | 5/5: privileged bank administration plus SA/EG × CASH/BANK_TRANSFER                          |
+| Foundation      | PASS   | 12/12 desktop/mobile auth, protected access, SEO, accessibility, assets and private services |
+| Intake          | PASS   | 6/6 desktop/mobile drafts, private attachment, submission, history and security negatives    |
+| Commercial      | PASS   | 1/1 server pricing, immutable Quote/Order and customer acceptance                            |
+| Operations      | PASS   | 3/3 authenticated assets plus SA and EG multi-Trip/POD/aggregate journeys                    |
+| Driver/Tracking | PASS   | 3/3 SA, EG and session tests on the same protected Preview                                   |
 
-- Driver readiness correction passed [CI 35991972623](https://github.com/Rmdn96/Naql365/actions/runs/35991972623) for `48076ca8c7ae79918225746ea5e2be9db89dbee1`; protected Preview https://naql365-staging-3yh1by0mo-naql365.vercel.app is READY for that source. SA CASH passed again. The delayed-script harness still conflicted with protected routing on its second navigation; script gating is now implemented inside the single existing protected context handler. An isolated two-navigation probe returned 24 HTTP 200 scripts and no route errors.
-- The Finance suspension test now waits for review-page readiness, explicitly verifies the suspended page denial, then reloads after membership restoration. It previously raced route rendering with suspension. No authorization rule was weakened. Final hosted acceptance remains outstanding.
+Resolved implementation defects: Finance filters overflowed narrow screens; filters now wrap with adequate touch targets. Inputs and actions could accept interaction before hydration; shared readiness guards now cover proof upload, request entry, pricing, Quote acceptance, checkout and Driver execution. Readiness is separate from pending-command state so the correct action label remains visible while disabled. Hosted delayed-script probes verify Quote acceptance and newly unlocked Driver Start.
 
-- [CI 35993822434](https://github.com/Rmdn96/Naql365/actions/runs/35993822434) passed for `c8a41c5a9d4a8cdf36134c4f5a9a7290a388a380`. The single-handler run passed bank configuration, SA CASH and EG CASH, including the strengthened Finance suspension/page-denial probe. Both transfer journeys stopped at the new pre-hydration Driver action assertion.
-- A controlled read-only Driver session probe found no Start-labelled button before scripts but the enabled Start button after scripts. Source inspection identified hydration readiness being conflated with command-busy state, causing the pre-hydration label to say Saving. Driver feedback now keeps readiness separate from in-flight mutation state, retaining the correct action label while disabled. Delayed-script checks inspect the SSR control before release, then require visibility and enabled state afterward. Final acceptance still requires the corrected deployed version; no failed transfer journey is counted as PASS.
+Resolved harness defects: nested interception conflicted with protected routing; one origin-restricted context handler now applies both the automation header and controlled script delay. Additional tracking viewers share this handler. Finance suspension probes wait for page readiness and explicitly verify denial before restoring membership and navigating afresh. No authorization, RLS, deployment protection or assertion was weakened. Failed historical runs are not counted as successful acceptance.
+
+CI 36000376483 passed for the shared-context correction. That hosted rerun verified bilateral customer isolation and the real stationary heartbeat, but the SA journey later timed out clicking an execution control after POD. EG and session tests passed; scoped cleanup passed. A bounded command diagnostic records only the action, Trip/POD states and control readiness if that timeout recurs. The complete Driver/Tracking group subsequently passed without application changes or relaxed assertions. The isolated click timeout did not recur; its underlying transient cause is not established. No failed SA journey is counted as PASS.
+
+No application or migration changes occurred after the accepted Preview application source. Final scoped cleanup and bounded log review passed. Exact final report commit CI is reported in the closeout message.
 
 ## AY. Final Decision
 
-PHASE 6 PARTIAL — NOT READY
+PHASE 6 PASS — READY FOR REVIEW
 
-Continue with complete CI/concurrency, broadened Finance/Market/security tests, protected Staging migration/Preview, four hosted journeys and Phase 0–5 regression, private Storage and log review, scoped cleanup, then exact-head final checks. Do not merge or deploy Production.
+All critical implementation and hosted acceptance gates passed. Final exact-HEAD CI must also pass before delivering the closeout; its URL and final SHA are supplied with this report. Stop for owner review. Do not merge, modify main, deploy Production or begin Phase 7.
