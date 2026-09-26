@@ -174,7 +174,9 @@ test('anonymous creation is opt-in, globally bounded and uses the shared scoped 
     await db.query("select set_config('request.headers',$1,false)", [
       JSON.stringify({ 'x-naql365-guest': first.token }),
     ]);
-    await expect(db.query('select * from public.requests')).rejects.toThrow();
+    expect((await db.query<{ id: string }>('select id from public.requests')).rows).toEqual([
+      { id: first.request.id },
+    ]);
     const mutate = async (
       id: string,
       action: string,
@@ -204,4 +206,80 @@ test('anonymous creation is opt-in, globally bounded and uses the shared scoped 
   }
   const rows = await db.query<{ n: number }>('select count(*)::int n from auth.users');
   expect(rows.rows[0]!.n).toBe(0);
+});
+
+test('guest request files enforce reservations, private storage, owner isolation and immutable completion', async () => {
+  await db.query('update private.guest_policy set creations_per_hour=4 where organization_id=$1', [
+    org,
+  ]);
+  await db.exec('set role anon');
+  try {
+    const start = async () =>
+      (
+        await db.query<{ r: { token: string; request: { id: string } } }>(
+          "select public.start_guest_request('SA') r",
+        )
+      ).rows[0]!.r;
+    const a = await start(),
+      b = await start(),
+      file = randomUUID();
+    const use = async (secret: string) =>
+      db.query("select set_config('request.headers',$1,false)", [
+        JSON.stringify({ 'x-naql365-guest': secret }),
+      ]);
+    const command = async (
+      operation: string,
+      mime: string | null = null,
+      size: number | null = null,
+    ) =>
+      (
+        await db.query<{ r: { path: string; state: string } }>(
+          'select public.request_file_command($1,$2,$3,$4,$5) r',
+          [operation, a.request.id, file, mime, size],
+        )
+      ).rows[0]!.r;
+    await use(a.token);
+    await expect(command('reserve', 'application/pdf', 8)).rejects.toThrow('Invalid image');
+    await expect(command('reserve', 'image/png', 3145729)).rejects.toThrow('Invalid image');
+    const reserved = await command('reserve', 'image/png', 8);
+    await expect(command('finalize')).rejects.toThrow('Upload incomplete');
+    await db.exec("select set_config('storage.operation','object.upload',false)");
+    await expect(
+      db.query(
+        "insert into storage.objects(bucket_id,name,metadata) values('attachments',$1,$2::jsonb)",
+        [reserved.path, JSON.stringify({ mimetype: 'image/png', size: 9 })],
+      ),
+    ).rejects.toThrow();
+    await db.query(
+      "insert into storage.objects(bucket_id,name,metadata) values('attachments',$1,$2::jsonb)",
+      [reserved.path, JSON.stringify({ mimetype: 'image/png', size: 8 })],
+    );
+    expect((await command('finalize')).state).toBe('ready');
+    await db.exec("select set_config('storage.operation','object.get_authenticated',false)");
+    expect(
+      (await db.query('select id from storage.objects where name=$1', [reserved.path])).rows,
+    ).toHaveLength(1);
+    await use(b.token);
+    expect(
+      (await db.query('select id from storage.objects where name=$1', [reserved.path])).rows,
+    ).toHaveLength(0);
+    expect(
+      (await db.query('select id from public.file_objects where id=$1', [file])).rows,
+    ).toHaveLength(0);
+    await expect(command('remove')).rejects.toThrow('Request unavailable');
+    await use('');
+    expect(
+      (await db.query('select id from storage.objects where name=$1', [reserved.path])).rows,
+    ).toHaveLength(0);
+    await use(a.token);
+    await db.exec("select set_config('storage.operation','object.upload',false)");
+    await expect(
+      db.query(
+        "insert into storage.objects(bucket_id,name,metadata) values('attachments',$1,$2::jsonb)",
+        [reserved.path, JSON.stringify({ mimetype: 'image/png', size: 8 })],
+      ),
+    ).rejects.toThrow();
+  } finally {
+    await db.exec('reset role');
+  }
 });

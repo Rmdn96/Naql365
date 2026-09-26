@@ -104,7 +104,7 @@ select public.test_assert((select count(*)=0 from storage.objects),'suspended st
 reset role;
 set local role anon;
 do $$ begin
- begin perform * from public.requests; raise exception 'anonymous read succeeded'; exception when insufficient_privilege then null; end;
+ if exists(select 1 from public.requests) then raise exception 'anonymous request data leaked without a grant'; end if;
  begin perform public.has_permission('20000000-0000-4000-8000-000000000001','portal.access'); raise exception 'anonymous RPC succeeded'; exception when insufficient_privilege then null; end;
 end $$;
 reset role;

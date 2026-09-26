@@ -425,22 +425,25 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          identity_kind: string
           organization_id: string
-          profile_id: string
+          profile_id: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           id?: string
+          identity_kind?: string
           organization_id: string
-          profile_id: string
+          profile_id?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           id?: string
+          identity_kind?: string
           organization_id?: string
-          profile_id?: string
+          profile_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -3760,6 +3763,7 @@ export type Database = {
         Args: { p_offset?: number; p_org: string; p_status?: string }
         Returns: Json
       }
+      guest_access_state: { Args: never; Returns: Json }
       has_permission: {
         Args: { organization_id: string; permission_code: string }
         Returns: boolean
@@ -3854,6 +3858,7 @@ export type Database = {
         Returns: Json
       }
       send_quote: { Args: { p_quote_version_id: string }; Returns: Json }
+      start_guest_request: { Args: { p_country: string }; Returns: Json }
       tracking_feed: {
         Args: {
           p_driver?: string
