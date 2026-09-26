@@ -15,10 +15,12 @@ export function Checkout({
   data,
   locale,
   finance = false,
+  guest = false,
 }: {
   data: PaymentDetails;
   locale: Locale;
   finance?: boolean;
+  guest?: boolean;
 }) {
   const hydrated = useHydrated();
   const t = paymentDictionary(locale),
@@ -31,6 +33,7 @@ export function Checkout({
     [note, setNote] = useState(''),
     [reason, setReason] = useState('');
   const money = (minor: number) => formatMoney(minor, data.currency, locale);
+  const api = guest ? '/api/guest/payments' : '/api/payments';
   async function act(command: Pick<Command, 'action' | 'payload'>) {
     if (locked.current) return;
     locked.current = true;
@@ -40,7 +43,7 @@ export function Checkout({
     if (pending.current?.intent !== intent)
       pending.current = { intent, mutationId: crypto.randomUUID() };
     try {
-      const result = await fetch('/api/payments', {
+      const result = await fetch(api, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -63,7 +66,7 @@ export function Checkout({
   }
   async function proof(id: string) {
     try {
-      const response = await fetch(`/api/payments/proof/${id}`, { cache: 'no-store' });
+      const response = await fetch(`${api}/proof/${id}`, { cache: 'no-store' });
       if (!response.ok) throw new Error();
       const body: unknown = await response.json();
       if (!body || typeof body !== 'object' || !('url' in body) || typeof body.url !== 'string')
@@ -106,7 +109,9 @@ export function Checkout({
               {t.cash}
             </Button>
             <Button
-              disabled={!hydrated || busy || !data.bank || data.method === 'BANK_TRANSFER'}
+              disabled={
+                !hydrated || busy || !data.transferAvailable || data.method === 'BANK_TRANSFER'
+              }
               onClick={() => void act({ action: 'choose', payload: { method: 'BANK_TRANSFER' } })}
             >
               {t.transfer}
@@ -159,7 +164,7 @@ export function Checkout({
       {!finance &&
         data.method === 'BANK_TRANSFER' &&
         ['AWAITING_TRANSFER_PROOF', 'TRANSFER_REJECTED'].includes(data.status) && (
-          <ProofUpload key={data.revision} data={data} locale={locale} />
+          <ProofUpload key={data.revision} data={data} locale={locale} guest={guest} />
         )}
       {data.attempts.length > 0 && (
         <Card>

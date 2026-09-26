@@ -2,13 +2,16 @@ import 'server-only';
 import { fileAccessInput } from '@/domain/shared/validation';
 import { AppError } from '@/domain/shared/errors';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
+import { guestSessionClient } from '@/infrastructure/guest/session';
 
-export async function signedFileUrl(input: unknown): Promise<string> {
+export async function signedFileUrl(input: unknown, guest = false): Promise<string> {
   const parsed = fileAccessInput.safeParse(input);
   if (!parsed.success) throw new AppError('validation', 'Invalid file identifier');
-  const client = await createSupabaseServerClient();
-  const { data: user, error: authError } = await client.auth.getUser();
-  if (authError || !user.user) throw new AppError('unauthenticated', 'Authentication required');
+  const client = guest ? await guestSessionClient() : await createSupabaseServerClient();
+  if (!guest) {
+    const { data: user, error: authError } = await client.auth.getUser();
+    if (authError || !user.user) throw new AppError('unauthenticated', 'Authentication required');
+  }
   // Caller supplies an identifier, never an arbitrary bucket or path. Both lookups are RLS-scoped.
   const { data: file, error } = await client
     .from('file_objects')

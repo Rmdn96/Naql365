@@ -42,6 +42,7 @@ export const paymentDetails = z.object({
   status: z.enum(paymentStates),
   executionAllowed: z.boolean(),
   canSwitch: z.boolean(),
+  transferAvailable: z.boolean(),
   bank: bankInstructions.nullable(),
   attempts: z
     .array(

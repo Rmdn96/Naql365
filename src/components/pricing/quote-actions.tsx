@@ -10,9 +10,11 @@ import { z } from 'zod';
 export function QuoteActions({
   locale,
   quoteVersionId,
+  guest = false,
 }: {
   locale: Locale;
   quoteVersionId: string;
+  guest?: boolean;
 }) {
   const hydrated = useHydrated();
   const t = quotesDictionary(locale),
@@ -24,25 +26,36 @@ export function QuoteActions({
     if (!window.confirm(action === 'accept' ? t.confirmAccept : t.confirmReject)) return;
     setBusy(true);
     setMessage(undefined);
-    const response = await fetch(`/api/customer/quotes/${quoteVersionId}/respond`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, idempotencyKey: crypto.randomUUID(), reason }),
-    });
-    if (!response.ok) {
-      setMessage(t.actionFailed);
-      setBusy(false);
-      return;
-    }
-    setMessage(action === 'accept' ? t.accepted : t.rejected);
-    if (action === 'accept') {
-      const result = z.object({ order_id: z.uuid() }).safeParse(await response.json());
-      if (result.success) {
-        router.push(`/${locale}/account/orders/${result.data.order_id}/payment`);
+    try {
+      const response = await fetch(
+        `/api/${guest ? 'guest' : 'customer'}/quotes/${quoteVersionId}/respond`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action, idempotencyKey: crypto.randomUUID(), reason }),
+        },
+      );
+      if (!response.ok) {
+        setMessage(t.actionFailed);
+        setBusy(false);
         return;
       }
+      setMessage(action === 'accept' ? t.accepted : t.rejected);
+      if (action === 'accept') {
+        const result = z.object({ order_id: z.uuid() }).safeParse(await response.json());
+        if (result.success) {
+          router.push(
+            `/${locale}/${guest ? 'guest' : 'account'}/orders/${result.data.order_id}/payment`,
+          );
+          return;
+        }
+      }
+      window.location.reload();
+    } catch {
+      setMessage(t.actionFailed);
+    } finally {
+      setBusy(false);
     }
-    window.location.reload();
   }
   return (
     <section className="card stack" aria-label={t.quoteDetails}>

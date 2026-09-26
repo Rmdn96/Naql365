@@ -108,7 +108,15 @@ export function StartRequest({ locale, markets }: { locale: Locale; markets: Mar
     </>
   );
 }
-export function RequestWizard({ locale, initial }: { locale: Locale; initial: RequestDetails }) {
+export function RequestWizard({
+  locale,
+  initial,
+  guest = false,
+}: {
+  locale: Locale;
+  initial: RequestDetails;
+  guest?: boolean;
+}) {
   const mt = marketDictionary(locale);
   const hydrated = useHydrated();
   const t = customerDictionary(locale),
@@ -134,7 +142,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
       json: string;
     } | null>(null);
   const title = useRef<HTMLHeadingElement>(null);
-  const endpoint = `/api/customer/requests/${initial.request.id}`;
+  const endpoint = `/api/${guest ? 'guest' : 'customer'}/requests/${initial.request.id}`;
   const change = (update: RequestDraft) => {
     draftRef.current = update;
     setDraft(update);
@@ -310,13 +318,13 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
             }),
           );
       }
-      router.push(`/${locale}/account/requests/${result.id}`);
+      router.push(`/${locale}/${guest ? 'guest' : 'account'}/requests/${result.id}`);
       router.refresh();
     } catch (e) {
       setError(e instanceof RequestFailure && e.code === 'conflict' ? t.conflict : t.error);
       const latest = await refresh().catch(() => null);
       if (latest && latest.request.status !== 'DRAFT')
-        router.push(`/${locale}/account/requests/${latest.request.id}`);
+        router.push(`/${locale}/${guest ? 'guest' : 'account'}/requests/${latest.request.id}`);
     } finally {
       setBusy(false);
     }
@@ -428,7 +436,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
       <p>{mt.fixed}</p>
       <div className="wizard-top">
         <p className="eyebrow">Naql365 · {t.request}</p>
-        <Link href={`/${locale}/account/requests`}>{t.myRequests}</Link>
+        {!guest && <Link href={`/${locale}/account/requests`}>{t.myRequests}</Link>}
       </div>
       <nav aria-label={t.progress}>
         <ol className="wizard-progress">
@@ -775,6 +783,7 @@ export function RequestWizard({ locale, initial }: { locale: Locale; initial: Re
               services={details.services}
               options={details.options}
               attachments={details.attachments}
+              guest={guest}
             />
             <div className="customer-links">
               {steps.slice(0, 7).map((key, i) => (

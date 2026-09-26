@@ -21,6 +21,20 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: '/:locale(ar|en)/guest/:path*',
+        headers: [
+          { key: 'Referrer-Policy', value: 'no-referrer' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
+        ],
+      },
+      {
+        source: '/api/guest/:path*',
+        headers: [
+          { key: 'Referrer-Policy', value: 'no-referrer' },
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
+        ],
+      },
+      {
         source: '/:locale(ar|en)/driver/:path*',
         headers: [
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(self)' },

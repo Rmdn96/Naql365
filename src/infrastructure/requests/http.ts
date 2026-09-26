@@ -7,7 +7,7 @@ import { appUrl } from '@/infrastructure/config/server-env';
 export function checkOrigin(request: Request) {
   assertSameOrigin(request.headers.get('origin'), appUrl().origin);
 }
-export async function readEvidenceForm(request: Request): Promise<FormData> {
+export async function readEvidenceForm(request: Request, maxBytes = 2200000): Promise<FormData> {
   const reader = request.body?.getReader();
   if (!reader) throw new AppError('validation', 'Body required');
   const chunks: Uint8Array[] = [];
@@ -17,7 +17,7 @@ export async function readEvidenceForm(request: Request): Promise<FormData> {
       const part = await reader.read();
       if (part.done) break;
       length += part.value.length;
-      if (length > 2200000) {
+      if (length > maxBytes) {
         await reader.cancel();
         throw new AppError('validation', 'Evidence too large');
       }
@@ -87,6 +87,7 @@ export async function apiResult(run: () => Promise<unknown>) {
       forbidden: 403,
       not_found: 404,
       conflict: 409,
+      rate_limited: 429,
       network: 503,
       internal: 500,
     };

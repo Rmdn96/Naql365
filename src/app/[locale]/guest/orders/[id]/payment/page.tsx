@@ -1,9 +1,9 @@
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
-import { customerProgress } from '@/infrastructure/operations/service';
+import { paymentDictionary } from '@/i18n/payments';
 import { getPayment } from '@/infrastructure/payments/service';
 import { AppError } from '@/domain/shared/errors';
-import { OrderProgress } from '@/components/orders/progress';
+import { Checkout } from '@/components/payments/checkout';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({
@@ -13,13 +13,18 @@ export default async function Page({
 }) {
   const { locale, id } = await params;
   if (!isLocale(locale)) notFound();
-  let data, payment;
+  let data;
   try {
-    [data, payment] = await Promise.all([customerProgress(id, false), getPayment(id, false)]);
+    data = await getPayment(id, true);
   } catch (error) {
-    if (error instanceof AppError && error.code === 'unauthenticated') redirect(`/${locale}/login`);
+    if (error instanceof AppError && error.code === 'unauthenticated') redirect(`/${locale}/guest`);
     if (error instanceof AppError && ['forbidden', 'not_found'].includes(error.code)) notFound();
     throw error;
   }
-  return <OrderProgress data={data} payment={payment} locale={locale} guest={false} />;
+  return (
+    <div className="container page">
+      <h1>{paymentDictionary(locale).title}</h1>
+      <Checkout data={data} locale={locale} guest />
+    </div>
+  );
 }

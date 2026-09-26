@@ -5,6 +5,7 @@ import { calculatePriceInput, createQuoteInput, quoteResponseInput } from '@/dom
 import { portalAccess } from '@/infrastructure/identity/access';
 import { customerClient } from '@/infrastructure/requests/service';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
+import { guestSessionClient } from '@/infrastructure/guest/session';
 
 function pricingError(code: string): never {
   if (code === '42501') throw new AppError('forbidden', 'Commercial access denied');
@@ -134,8 +135,8 @@ export async function sendQuote(quoteVersionId: string) {
   return data;
 }
 
-export async function customerQuotes() {
-  const { client } = await customerClient();
+export async function customerQuotes(guest = false) {
+  const client = guest ? await guestSessionClient() : (await customerClient()).client;
   const { data, error } = await client
     .from('quotes')
     .select(
@@ -147,9 +148,13 @@ export async function customerQuotes() {
   return data;
 }
 
-export async function customerQuoteDetails(quoteVersionId: string, recordView = true) {
+export async function customerQuoteDetails(
+  quoteVersionId: string,
+  recordView = true,
+  guest = false,
+) {
   z.uuid().parse(quoteVersionId);
-  const { client } = await customerClient(recordView);
+  const client = guest ? await guestSessionClient() : (await customerClient(recordView)).client;
   if (recordView) {
     const viewed = await client.rpc('view_customer_quote', { p_quote_version_id: quoteVersionId });
     if (viewed.error) pricingError(viewed.error.code);
@@ -166,10 +171,10 @@ export async function customerQuoteDetails(quoteVersionId: string, recordView = 
   return data;
 }
 
-export async function respondToQuote(quoteVersionId: string, input: unknown) {
+export async function respondToQuote(quoteVersionId: string, input: unknown, guest = false) {
   z.uuid().parse(quoteVersionId);
   const command = quoteResponseInput.parse(input);
-  const { client } = await customerClient(true);
+  const client = guest ? await guestSessionClient() : (await customerClient(true)).client;
   const { data, error } = await client.rpc('respond_to_quote', {
     p_quote_version_id: quoteVersionId,
     p_action: command.action,

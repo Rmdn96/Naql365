@@ -15,11 +15,11 @@ export default async function Page({
   if (!isLocale(locale)) notFound();
   let data, payment;
   try {
-    [data, payment] = await Promise.all([customerProgress(id, false), getPayment(id, false)]);
+    [data, payment] = await Promise.all([customerProgress(id, true), getPayment(id, true)]);
   } catch (error) {
-    if (error instanceof AppError && error.code === 'unauthenticated') redirect(`/${locale}/login`);
+    if (error instanceof AppError && error.code === 'unauthenticated') redirect(`/${locale}/guest`);
     if (error instanceof AppError && ['forbidden', 'not_found'].includes(error.code)) notFound();
     throw error;
   }
-  return <OrderProgress data={data} payment={payment} locale={locale} guest={false} />;
+  return <OrderProgress data={data} payment={payment} locale={locale} guest={true} />;
 }

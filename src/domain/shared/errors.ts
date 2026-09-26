@@ -4,6 +4,7 @@ export type ErrorCode =
   | 'forbidden'
   | 'not_found'
   | 'conflict'
+  | 'rate_limited'
   | 'network'
   | 'internal';
 export class AppError extends Error {
