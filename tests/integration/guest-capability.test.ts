@@ -223,7 +223,7 @@ test('guest request files enforce reservations, private storage, owner isolation
     const a = await start(),
       b = await start(),
       file = randomUUID();
-    const use = async (secret: string) =>
+    const selectGuestContext = async (secret: string) =>
       db.query("select set_config('request.headers',$1,false)", [
         JSON.stringify({ 'x-naql365-guest': secret }),
       ]);
@@ -238,7 +238,7 @@ test('guest request files enforce reservations, private storage, owner isolation
           [operation, a.request.id, file, mime, size],
         )
       ).rows[0]!.r;
-    await use(a.token);
+    await selectGuestContext(a.token);
     await expect(command('reserve', 'application/pdf', 8)).rejects.toThrow('Invalid image');
     await expect(command('reserve', 'image/png', 3145729)).rejects.toThrow('Invalid image');
     const reserved = await command('reserve', 'image/png', 8);
@@ -259,7 +259,7 @@ test('guest request files enforce reservations, private storage, owner isolation
     expect(
       (await db.query('select id from storage.objects where name=$1', [reserved.path])).rows,
     ).toHaveLength(1);
-    await use(b.token);
+    await selectGuestContext(b.token);
     expect(
       (await db.query('select id from storage.objects where name=$1', [reserved.path])).rows,
     ).toHaveLength(0);
@@ -267,11 +267,11 @@ test('guest request files enforce reservations, private storage, owner isolation
       (await db.query('select id from public.file_objects where id=$1', [file])).rows,
     ).toHaveLength(0);
     await expect(command('remove')).rejects.toThrow('Request unavailable');
-    await use('');
+    await selectGuestContext('');
     expect(
       (await db.query('select id from storage.objects where name=$1', [reserved.path])).rows,
     ).toHaveLength(0);
-    await use(a.token);
+    await selectGuestContext(a.token);
     await db.exec("select set_config('storage.operation','object.upload',false)");
     await expect(
       db.query(

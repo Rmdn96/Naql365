@@ -609,11 +609,12 @@ export type Database = {
         Row: {
           bucket_id: string
           created_at: string
+          guest_customer_id: string | null
           id: string
           mime_type: string | null
           object_name: string
           organization_id: string
-          owner_profile_id: string
+          owner_profile_id: string | null
           purpose: string
           size_bytes: number | null
           updated_at: string
@@ -622,11 +623,12 @@ export type Database = {
         Insert: {
           bucket_id: string
           created_at?: string
+          guest_customer_id?: string | null
           id?: string
           mime_type?: string | null
           object_name?: string
           organization_id: string
-          owner_profile_id: string
+          owner_profile_id?: string | null
           purpose?: string
           size_bytes?: number | null
           updated_at?: string
@@ -635,17 +637,25 @@ export type Database = {
         Update: {
           bucket_id?: string
           created_at?: string
+          guest_customer_id?: string | null
           id?: string
           mime_type?: string | null
           object_name?: string
           organization_id?: string
-          owner_profile_id?: string
+          owner_profile_id?: string | null
           purpose?: string
           size_bytes?: number | null
           updated_at?: string
           upload_state?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "file_guest_customer_fk"
+            columns: ["organization_id", "guest_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "file_objects_organization_id_fkey"
             columns: ["organization_id"]
@@ -3764,6 +3774,37 @@ export type Database = {
         Returns: Json
       }
       guest_access_state: { Args: never; Returns: Json }
+      guest_catalogue_visible: { Args: { p_org: string }; Returns: boolean }
+      guest_customer_visible: {
+        Args: { p_customer: string; p_org: string }
+        Returns: boolean
+      }
+      guest_preliminary_price: { Args: never; Returns: Json }
+      guest_quote_version_visible: {
+        Args: { p_org: string; p_version: string }
+        Returns: boolean
+      }
+      guest_quote_visible: {
+        Args: { p_org: string; p_quote: string }
+        Returns: boolean
+      }
+      guest_request_file_visible: {
+        Args: { p_file: string; p_org: string }
+        Returns: boolean
+      }
+      guest_request_storage: {
+        Args: {
+          p_bucket: string
+          p_metadata?: Json
+          p_operation: string
+          p_path: string
+        }
+        Returns: boolean
+      }
+      guest_request_visible: {
+        Args: { p_org: string; p_request: string }
+        Returns: boolean
+      }
       has_permission: {
         Args: { organization_id: string; permission_code: string }
         Returns: boolean
@@ -3806,6 +3847,7 @@ export type Database = {
         Returns: Json
       }
       payment_details: { Args: { p_order: string }; Returns: Json }
+      public_market_catalogue: { Args: never; Returns: Json }
       publish_trip_location: {
         Args: { p_location: Json; p_sample: string; p_trip: string }
         Returns: Json
