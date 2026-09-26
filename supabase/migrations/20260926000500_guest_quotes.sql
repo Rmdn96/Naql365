@@ -18,6 +18,9 @@ grant select(id,version,status,currency,tax_label_ar,tax_label_en,final_subtotal
 grant select(component_code,label_ar,label_en,quantity,unit_amount_minor,total_amount_minor,position,quote_version_id)
  on public.quote_items to anon;
 grant select(id,reference,accepted_at,request_id,accepted_quote_version_id) on public.orders to anon;
+-- Composite FK columns are required for PostgREST's existing nested relationship queries.
+grant select(organization_id,market_id) on public.quotes,public.quote_versions,public.quote_items,public.orders to anon;
+grant select(quote_id) on public.orders to anon;
 create policy guest_quotes_read on public.quotes for select to anon using(public.guest_quote_visible(organization_id,id));
 create policy guest_quote_versions_read on public.quote_versions for select to anon using(public.guest_quote_version_visible(organization_id,id));
 create policy guest_quote_items_read on public.quote_items for select to anon using(public.guest_quote_version_visible(organization_id,quote_version_id));

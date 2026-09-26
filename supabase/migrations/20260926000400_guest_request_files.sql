@@ -21,7 +21,7 @@ end $$;
 revoke all on function private.validate_guest_file_owner() from public,anon,authenticated;
 create trigger file_guest_owner before insert or update on public.file_objects
  for each row execute function private.validate_guest_file_owner();
-grant select(bucket_id,object_name) on public.file_objects to anon;
+grant select(organization_id,bucket_id,object_name) on public.file_objects to anon;
 
 create function public.guest_request_storage(p_bucket text,p_path text,p_operation text,p_metadata jsonb default null)
  returns boolean language plpgsql security definer set search_path='' as $$

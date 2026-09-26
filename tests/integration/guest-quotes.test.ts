@@ -143,8 +143,39 @@ test('guest accepts an immutable staff-priced Quote through the existing exactly
   expect(accepted.status).toBe('ACCEPTED');
   expect(await accept()).toEqual(accepted);
   expect((await db.query('select id from public.orders')).rows).toHaveLength(1);
+  const cash = (
+    await db.query<{ r: { status: string; executionAllowed: boolean } }>(
+      'select public.payment_command($1,\'choose\',$2,0,\'{"method":"CASH"}\') r',
+      [accepted.order_id, randomUUID()],
+    )
+  ).rows[0]!.r;
+  expect(cash.status).toBe('CASH_DUE');
+  expect(cash.executionAllowed).toBe(true);
+  await expect(
+    db.query("select public.payment_command($1,'confirm_cash',$2,1,'{}')", [
+      accepted.order_id,
+      randomUUID(),
+    ]),
+  ).rejects.toThrow();
+  const progress = (
+    await db.query<{ r: Record<string, unknown> }>('select public.customer_order_progress($1) r', [
+      accepted.order_id,
+    ])
+  ).rows[0]!.r;
+  expect(progress.id).toBe(accepted.order_id);
+  expect(Object.keys(progress).sort()).toEqual([
+    'completedAt',
+    'id',
+    'market',
+    'reference',
+    'status',
+    'trips',
+  ]);
   await guest(b.token);
   expect((await db.query('select id from public.orders')).rows).toHaveLength(0);
+  await expect(
+    db.query('select public.customer_order_progress($1)', [accepted.order_id]),
+  ).rejects.toThrow('Order unavailable');
 });
 test('guest rejection creates no Order and capability audit does not store secrets', async () => {
   const journey = await newJourney(),
@@ -166,4 +197,131 @@ test('guest rejection creates no Order and capability audit does not store secre
   expect(audit).toHaveLength(1);
   expect(audit[0]!.metadata.guest_grant_id).toBeTypeOf('string');
   expect(JSON.stringify(audit)).not.toContain(journey.token);
+});
+
+test('guest transfer proof stays private and only Finance can reject or confirm it', async () => {
+  const journey = await newJourney(),
+    other = await newJourney();
+  const version = await prepareQuote(journey.request.id);
+  await db.query('select public.send_quote($1)', [version]);
+  await guest(journey.token);
+  const order = (
+    await db.query<{ r: { order_id: string } }>(
+      "select public.respond_to_quote($1,'accept',$2,null) r",
+      [version, randomUUID()],
+    )
+  ).rows[0]!.r.order_id;
+  const details = async () =>
+    (await db.query<{ r: Record<string, unknown> }>('select public.payment_details($1) r', [order]))
+      .rows[0]!.r;
+  const command = async (
+    action: string,
+    revision: number,
+    payload: Record<string, unknown>,
+    mutation = randomUUID(),
+  ) =>
+    (
+      await db.query<{ r: Record<string, unknown> }>(
+        'select public.payment_command($1,$2,$3,$4,$5::jsonb) r',
+        [order, action, mutation, revision, JSON.stringify(payload)],
+      )
+    ).rows[0]!.r;
+  const finance = randomUUID();
+  await db.exec('reset role');
+  await db.query("insert into auth.users(id,email) values($1,'phase7-finance@example.invalid')", [
+    finance,
+  ]);
+  await db.query(
+    "insert into public.organization_memberships(organization_id,profile_id,member_type) values($1,$2,'staff')",
+    [org, finance],
+  );
+  await db.query(
+    "insert into public.user_roles(organization_id,profile_id,role_id) select $1,$2,id from public.roles where code='FINANCE'",
+    [org, finance],
+  );
+  await db.query(
+    `insert into public.bank_accounts(organization_id,market_id,currency,bank_name_ar,bank_name_en,beneficiary_ar,beneficiary_en,account_number,created_by)
+    select organization_id,market_id,currency,'اختبار فقط','STAGING TEST ONLY','اختبار','TEST ONLY','TEST-ONLY-0000',$2 from public.orders where id=$1`,
+    [order, finance],
+  );
+  const asFinance = async () => {
+    await db.exec('reset role');
+    await db.query(
+      "select set_config('request.jwt.claim.sub',$1,false),set_config('request.headers','{}',false)",
+      [finance],
+    );
+    await db.exec('set role authenticated');
+  };
+  await guest(journey.token);
+  expect((await details()).bank).toBeNull();
+  const mutation = randomUUID();
+  const chosen = await command('choose', 0, { method: 'BANK_TRANSFER' }, mutation);
+  expect(chosen.status).toBe('AWAITING_TRANSFER_PROOF');
+  expect(await command('choose', 0, { method: 'BANK_TRANSFER' }, mutation)).toEqual(chosen);
+  expect((await details()).bank).not.toBeNull();
+  await expect(command('confirm_cash', 1, { amountMinor: 0, currency: 'SAR' })).rejects.toThrow();
+  let reserve = await command('reserve', 1, { fileId: randomUUID(), mime: 'image/png', size: 100 });
+  await db.exec("select set_config('storage.operation','object.upload',false)");
+  const upload = async (size = 100) =>
+    db.query(
+      "insert into storage.objects(bucket_id,name,metadata) values('documents',$1,$2::jsonb)",
+      [reserve.path, JSON.stringify({ size, mimetype: 'image/png' })],
+    );
+  await expect(upload(101)).rejects.toThrow();
+  await guest(other.token);
+  await expect(upload()).rejects.toThrow();
+  await expect(details()).rejects.toThrow();
+  await guest(journey.token);
+  await upload();
+  expect((await command('submit', 2, { attemptId: reserve.attemptId })).status).toBe(
+    'UNDER_REVIEW',
+  );
+  await expect(
+    command('confirm_transfer', 3, {
+      attemptId: reserve.attemptId,
+      amountMinor: 0,
+      currency: 'SAR',
+    }),
+  ).rejects.toThrow();
+  expect(
+    (await db.query('select public.transfer_proof_path($1)', [reserve.attemptId])).rows,
+  ).toHaveLength(1);
+  for (const token of ['', other.token]) {
+    await guest(token);
+    expect(
+      (await db.query("select id from storage.objects where bucket_id='documents'")).rows,
+    ).toHaveLength(0);
+    await expect(
+      db.query('select public.transfer_proof_path($1)', [reserve.attemptId]),
+    ).rejects.toThrow();
+  }
+  await asFinance();
+  await command('reject_transfer', 3, {
+    attemptId: reserve.attemptId,
+    reason: 'TEST unreadable proof',
+    note: 'TEST private Finance note',
+  });
+  await guest(journey.token);
+  expect(JSON.stringify(await details())).toContain('TEST unreadable proof');
+  expect(JSON.stringify(await details())).not.toContain('TEST private Finance note');
+  reserve = await command('reserve', 4, { fileId: randomUUID(), mime: 'image/png', size: 100 });
+  await upload();
+  await command('submit', 5, { attemptId: reserve.attemptId });
+  const total = (await details()).totalMinor;
+  await asFinance();
+  await expect(
+    command('confirm_transfer', 6, {
+      attemptId: reserve.attemptId,
+      amountMinor: total,
+      currency: 'EGP',
+    }),
+  ).rejects.toThrow();
+  await command('confirm_transfer', 6, {
+    attemptId: reserve.attemptId,
+    amountMinor: total,
+    currency: 'SAR',
+  });
+  await guest(journey.token);
+  expect((await details()).status).toBe('PAID');
+  await expect(db.query('select * from public.payment_transactions')).rejects.toThrow();
 });
