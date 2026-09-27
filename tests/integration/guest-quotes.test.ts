@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, expect, test } from 'vitest';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { foundationDatabase } from '../helpers/database.mjs';
 import { blankDraft } from '@/domain/requests/intake';
@@ -21,6 +21,75 @@ beforeAll(async () => {
 }, 30000);
 afterAll(async () => {
   await db.close();
+});
+test('initial creation replay retains one journey and cannot resurrect a revoked grant', async () => {
+  await guest();
+  const secret = `g1_${randomBytes(32).toString('hex')}`;
+  const create = async () =>
+    (
+      await db.query<{ r: { request: { id: string }; token: string } }>(
+        'select public.start_guest_request($1,$2) r',
+        ['SA', secret],
+      )
+    ).rows[0]!.r;
+  const a = await create(),
+    b = await create();
+  expect(b).toEqual(a);
+  await db.exec('reset role');
+  expect(
+    (
+      await db.query('select id from private.guest_access_grants where request_id=$1', [
+        a.request.id,
+      ])
+    ).rows,
+  ).toHaveLength(1);
+  await db.query(
+    'update private.guest_access_grants set revoked_at=clock_timestamp() where request_id=$1',
+    [a.request.id],
+  );
+  await guest();
+  await expect(create()).rejects.toThrow('Creation capability unavailable');
+});
+test('invalid exchanges consume a committed budget and expired grants cannot exchange', async () => {
+  const journey = await newJourney();
+  const exchange = async () =>
+    (
+      await db.query<{ r: { allowed: boolean; limited: boolean } }>(
+        'select public.guest_exchange_attempt() r',
+      )
+    ).rows[0]!.r;
+  await guest(journey.token);
+  expect((await exchange()).allowed).toBe(true);
+  await db.exec('reset role');
+  const expired = `g1_${randomBytes(32).toString('hex')}`;
+  await db.query(
+    'update private.guest_access_grants set revoked_at=clock_timestamp() where request_id=$1',
+    [journey.request.id],
+  );
+  await db.query(
+    `insert into private.guest_access_grants(organization_id,customer_id,request_id,verifier,created_at,expires_at)
+   select organization_id,customer_id,id,sha256(convert_to($2,'UTF8')),clock_timestamp()-interval '2 days',clock_timestamp()-interval '1 day' from public.requests where id=$1`,
+    [journey.request.id, expired],
+  );
+  await guest(expired);
+  expect((await exchange()).allowed).toBe(false);
+  await expect(db.query('select public.guest_access_state()')).rejects.toThrow();
+  await guest('not-a-capability');
+  expect((await exchange()).allowed).toBe(false);
+  await db.exec('reset role');
+  const budget = (
+    await db.query<{ used: number }>(
+      "select used from private.guest_rate_budgets where organization_id=$1 and scope='exchange' order by window_start desc limit 1",
+      [org],
+    )
+  ).rows[0]!.used;
+  expect(budget).toBeGreaterThanOrEqual(3);
+  await db.query(
+    "update private.guest_rate_budgets set used=300 where organization_id=$1 and scope='exchange' and window_start=date_trunc('minute',clock_timestamp())",
+    [org],
+  );
+  await guest();
+  expect((await exchange()).limited).toBe(true);
 });
 async function guest(token = '') {
   await db.exec('reset role');
