@@ -292,6 +292,8 @@ export type Database = {
           created_at: string
           file_id: string
           finance_note: string | null
+          guest_customer_id: string | null
+          guest_grant_id: string | null
           id: string
           market_id: string
           organization_id: string
@@ -301,7 +303,7 @@ export type Database = {
           reviewed_by: string | null
           state: string
           submitted_at: string | null
-          submitted_by: string
+          submitted_by: string | null
         }
         Insert: {
           attempt_number: number
@@ -311,6 +313,8 @@ export type Database = {
           created_at?: string
           file_id: string
           finance_note?: string | null
+          guest_customer_id?: string | null
+          guest_grant_id?: string | null
           id?: string
           market_id: string
           organization_id: string
@@ -320,7 +324,7 @@ export type Database = {
           reviewed_by?: string | null
           state?: string
           submitted_at?: string | null
-          submitted_by: string
+          submitted_by?: string | null
         }
         Update: {
           attempt_number?: number
@@ -330,6 +334,8 @@ export type Database = {
           created_at?: string
           file_id?: string
           finance_note?: string | null
+          guest_customer_id?: string | null
+          guest_grant_id?: string | null
           id?: string
           market_id?: string
           organization_id?: string
@@ -339,7 +345,7 @@ export type Database = {
           reviewed_by?: string | null
           state?: string
           submitted_at?: string | null
-          submitted_by?: string
+          submitted_by?: string | null
         }
         Relationships: [
           {
@@ -376,6 +382,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfer_guest_customer_fk"
+            columns: ["organization_id", "guest_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
@@ -3803,6 +3816,15 @@ export type Database = {
       }
       guest_request_visible: {
         Args: { p_org: string; p_request: string }
+        Returns: boolean
+      }
+      guest_transfer_storage: {
+        Args: {
+          p_action: string
+          p_bucket: string
+          p_metadata?: Json
+          p_path: string
+        }
         Returns: boolean
       }
       has_permission: {
