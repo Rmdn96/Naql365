@@ -8,12 +8,30 @@ import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { guestSessionClient } from '@/infrastructure/guest/session';
 
 function pricingError(code: string): never {
+  if (code === 'PT429') throw new AppError('rate_limited', 'Please try again later');
   if (code === '42501') throw new AppError('forbidden', 'Commercial access denied');
   if (code === '40001' || code === '23505')
     throw new AppError('conflict', 'Commercial state changed');
   if (['22023', '22P02', '23514', '55000'].includes(code))
     throw new AppError('validation', 'Commercial action is not valid');
   throw new AppError('internal', 'Commercial operation unavailable');
+}
+
+export async function guestPreliminaryPrice() {
+  const client = await guestSessionClient();
+  const result = await client.rpc('guest_preliminary_price');
+  if (result.error) pricingError(result.error.code);
+  return z
+    .discriminatedUnion('state', [
+      z.object({ state: z.literal('WAITING_FOR_REVIEW') }),
+      z.object({
+        state: z.literal('PRELIMINARY'),
+        subtotalMinor: z.number().int().nonnegative(),
+        currency: z.enum(['SAR', 'EGP']),
+        calculatedAt: z.string(),
+      }),
+    ])
+    .parse(result.data);
 }
 
 async function salesClient(permission: 'pricing.calculate' | 'quotes.manage', writable = false) {

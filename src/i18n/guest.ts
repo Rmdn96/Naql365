@@ -21,6 +21,8 @@ const ar = {
   cancelled: 'تم إلغاء المسودة',
   home: 'الرئيسية',
   reference: 'رقم الطلب',
+  preliminary: 'السعر المبدئي قبل الضريبة',
+  preliminaryHelp: 'هذا تقدير مبدئي. يصلك العرض النهائي بعد مراجعة فريق المبيعات.',
 };
 const en: typeof ar = {
   title: 'Request a service',
@@ -46,5 +48,7 @@ const en: typeof ar = {
   cancelled: 'Draft cancelled',
   home: 'Home',
   reference: 'Request reference',
+  preliminary: 'Preliminary price before tax',
+  preliminaryHelp: 'This is an initial estimate. Your final quote follows the Sales review.',
 };
 export const guestDictionary = (locale: Locale) => (locale === 'ar' ? ar : en);

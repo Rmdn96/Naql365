@@ -3,15 +3,21 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { guestSecret, guestContinuationPath, secretFromFragment } from '@/domain/guest/capability';
-import { publicCountry } from '@/domain/markets/public-contact';
+import { publicCountry, type PublicCountry } from '@/domain/markets/public-contact';
 import { guestDictionary } from '@/i18n/guest';
 import type { Locale } from '@/i18n/config';
 import { Button, Select, Alert } from '@/components/ui/primitives';
 
-export function GuestStart({ locale }: { locale: Locale }) {
+export function GuestStart({
+  locale,
+  initialCountry = 'SA',
+}: {
+  locale: Locale;
+  initialCountry?: PublicCountry;
+}) {
   const t = guestDictionary(locale),
     router = useRouter();
-  const [country, setCountry] = useState('SA'),
+  const [country, setCountry] = useState(initialCountry),
     [pending, setPending] = useState(false),
     [error, setError] = useState(false);
   const [journey, setJourney] = useState<{ token: string; request: { id: string } } | null>(null),
@@ -69,7 +75,7 @@ export function GuestStart({ locale }: { locale: Locale }) {
             id="guest-country"
             label={t.country}
             value={country}
-            onChange={(e) => setCountry(e.target.value)}
+            onChange={(e) => setCountry(publicCountry.parse(e.target.value))}
             disabled={pending}
           >
             <option value="SA">{t.sa}</option>
@@ -89,17 +95,20 @@ export function GuestExchange({ locale }: { locale: Locale }) {
   const router = useRouter(),
     t = guestDictionary(locale);
   const secret = useRef<string | null>(null),
+    invalidFragment = useRef(false),
     started = useRef(false);
   const [failed, setFailed] = useState(false);
   const exchange = useCallback(async () => {
     setFailed(false);
     try {
-      if (!secret.current) throw new Error('unavailable');
-      const response = await fetch('/api/guest/exchange', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: secret.current }),
-      });
+      if (invalidFragment.current) throw new Error('unavailable');
+      const response = secret.current
+        ? await fetch('/api/guest/exchange', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: secret.current }),
+          })
+        : await fetch('/api/guest/session', { cache: 'no-store' });
       if (!response.ok) throw new Error('unavailable');
       const { requestId } = z.object({ requestId: z.uuid() }).parse(await response.json());
       secret.current = null;
@@ -112,6 +121,7 @@ export function GuestExchange({ locale }: { locale: Locale }) {
     if (started.current) return;
     started.current = true;
     secret.current = secretFromFragment(window.location.hash);
+    invalidFragment.current = Boolean(window.location.hash) && secret.current === null;
     // Remove the capability before fetching any journey data. Never place it in a query/path.
     window.history.replaceState(null, '', window.location.pathname);
     void exchange();

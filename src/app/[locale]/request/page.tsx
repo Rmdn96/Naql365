@@ -7,6 +7,7 @@ import { StartRequest } from '@/components/requests/wizard';
 import { GuestStart } from '@/components/guest/access';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
+import { selectedPublicCountry } from '@/infrastructure/markets/public';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -14,7 +15,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   const signedIn = getPublicEnv()
     ? (await (await createSupabaseServerClient()).auth.getUser()).data.user
     : null;
-  if (!signedIn) return <GuestStart locale={locale} />;
+  if (!signedIn)
+    return <GuestStart locale={locale} initialCountry={await selectedPublicCountry()} />;
   await customerPage(locale);
   const t = customerDictionary(locale);
   return (

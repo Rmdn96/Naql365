@@ -7,7 +7,7 @@ import { RequestWizard } from '@/components/requests/wizard';
 import { RequestSummary } from '@/components/requests/summary';
 import { Alert } from '@/components/ui/primitives';
 import Link from 'next/link';
-import { customerQuotes } from '@/infrastructure/pricing/service';
+import { customerQuotes, guestPreliminaryPrice } from '@/infrastructure/pricing/service';
 import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { formatMoney } from '@/domain/markets/model';
 
@@ -42,7 +42,7 @@ export default async function Page({
         <RequestWizard locale={locale} initial={details} guest />
       </section>
     );
-  const quotes = await customerQuotes(true);
+  const [quotes, preliminary] = await Promise.all([customerQuotes(true), guestPreliminaryPrice()]);
   const qt = quotesDictionary(locale);
   return (
     <section className="container page">
@@ -53,6 +53,15 @@ export default async function Page({
         </p>
       )}
       {details.request.status === 'SUBMITTED' && <p>{t.review}</p>}
+      {preliminary.state === 'PRELIMINARY' && (
+        <article className="card">
+          <h2>{t.preliminary}</h2>
+          <p>
+            <strong>{formatMoney(preliminary.subtotalMinor, preliminary.currency, locale)}</strong>
+          </p>
+          <p>{t.preliminaryHelp}</p>
+        </article>
+      )}
       {(quotes ?? []).flatMap((quote) =>
         quote.quote_versions.map((version) => (
           <article className="card" key={version.id}>

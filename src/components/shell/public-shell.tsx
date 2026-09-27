@@ -1,9 +1,15 @@
 import Link from 'next/link';
 import { dictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
+import { publicDictionary } from '@/i18n/public';
+import { selectedPublicCountry } from '@/infrastructure/markets/public';
+import { MarketSelector } from './market-selector';
+import { PublicContact } from './public-contact';
 
-export function Header({ locale }: { locale: Locale }) {
+export async function Header({ locale }: { locale: Locale }) {
   const t = dictionary(locale);
+  const p = publicDictionary(locale);
+  const country = await selectedPublicCountry();
   const other = locale === 'ar' ? 'en' : 'ar';
   return (
     <>
@@ -23,8 +29,21 @@ export function Header({ locale }: { locale: Locale }) {
             </span>
           </Link>
           <nav aria-label={t.home}>
-            <Link href={`/${locale}/account`} prefetch={false}>
-              {t.account}
+            <Link className="desktop-nav" href={`/${locale}#services`}>
+              {p.services}
+            </Link>
+            <Link className="desktop-nav" href={`/${locale}#how`}>
+              {p.how}
+            </Link>
+            <Link className="desktop-nav" href={`/${locale}#tracking`}>
+              {p.track}
+            </Link>
+            <MarketSelector country={country} locale={locale} />
+            <Link className="desktop-nav" href={`/${locale}/login`} prefetch={false}>
+              {p.signIn}
+            </Link>
+            <Link className="button button--primary header-request" href={`/${locale}/request`}>
+              {p.request}
             </Link>
             <Link className="language-link" href={`/${other}`} lang={other} hrefLang={other}>
               {t.language}
@@ -36,13 +55,20 @@ export function Header({ locale }: { locale: Locale }) {
     </>
   );
 }
-export function Footer({ locale }: { locale: Locale }) {
+export async function Footer({ locale }: { locale: Locale }) {
   const t = dictionary(locale);
+  const p = publicDictionary(locale);
+  const country = await selectedPublicCountry();
   return (
     <footer className="site-footer">
       <div className="container footer-inner">
         <p>{t.rights}</p>
         <nav aria-label={t.positioning}>
+          <Link href={`/${locale}/request`}>{p.request}</Link>
+          <Link href={`/${locale}/login`} prefetch={false}>
+            {p.signIn}
+          </Link>
+          <Link href={`/${locale}#contact`}>{p.contact}</Link>
           <Link href={`/${locale}/portal`} prefetch={false}>
             {t.portal}
           </Link>
@@ -51,6 +77,7 @@ export function Footer({ locale }: { locale: Locale }) {
           </Link>
         </nav>
       </div>
+      <PublicContact country={country} locale={locale} />
     </footer>
   );
 }
