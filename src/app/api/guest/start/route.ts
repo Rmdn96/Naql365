@@ -13,11 +13,12 @@ export async function POST(request: Request) {
   return apiResult(async () => {
     checkOrigin(request);
     const input = z
-      .object({ country: publicCountry })
+      .object({ country: publicCountry, creationToken: guestSecret })
       .strict()
       .parse(await readJson(request));
     const { data, error } = await guestDatabase().rpc('start_guest_request', {
       p_country: input.country,
+      p_creation_token: input.creationToken,
     });
     if (error) guestDatabaseError(error.code);
     const result = z.object({ token: guestSecret, request: commandResult }).parse(data);

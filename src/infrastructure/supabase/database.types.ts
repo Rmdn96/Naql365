@@ -3792,6 +3792,7 @@ export type Database = {
         Args: { p_customer: string; p_org: string }
         Returns: boolean
       }
+      guest_exchange_attempt: { Args: never; Returns: Json }
       guest_preliminary_price: { Args: never; Returns: Json }
       guest_quote_version_visible: {
         Args: { p_org: string; p_version: string }
@@ -3926,7 +3927,10 @@ export type Database = {
         Returns: Json
       }
       send_quote: { Args: { p_quote_version_id: string }; Returns: Json }
-      start_guest_request: { Args: { p_country: string }; Returns: Json }
+      start_guest_request: {
+        Args: { p_country: string; p_creation_token?: string }
+        Returns: Json
+      }
       tracking_feed: {
         Args: {
           p_driver?: string

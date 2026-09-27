@@ -38,14 +38,18 @@ export function guestDatabaseError(code: string): never {
 }
 
 const accessState = z.object({ requestId: z.uuid(), expiresAt: z.iso.datetime({ offset: true }) });
-export async function exchangeGuestSecret(token: string) {
-  const client = guestDatabase(guestSecret.parse(token));
-  const { data, error } = await client.rpc('guest_access_state');
+export async function exchangeGuestSecret(token: unknown) {
+  const parsed = guestSecret.safeParse(token);
+  const client = guestDatabase(parsed.success ? parsed.data : undefined);
+  const { data, error } = await client.rpc('guest_exchange_attempt');
   if (error) guestDatabaseError(error.code);
+  const decision = z.object({ allowed: z.boolean(), limited: z.boolean() }).parse(data);
+  if (decision.limited) throw new AppError('rate_limited', 'Please retry later');
+  if (!decision.allowed || !parsed.success) throw new AppError('forbidden', 'Journey unavailable');
   const state = accessState.parse(data);
   const remaining = Math.floor((Date.parse(state.expiresAt) - Date.now()) / 1000);
   if (remaining <= 0) throw new AppError('forbidden', 'Journey unavailable');
-  (await cookies()).set(cookieName(), token, {
+  (await cookies()).set(cookieName(), parsed.data, {
     httpOnly: true,
     secure: appUrl().protocol === 'https:',
     sameSite: 'strict',

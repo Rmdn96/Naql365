@@ -23,16 +23,27 @@ export function GuestStart({
   const [journey, setJourney] = useState<{ token: string; request: { id: string } } | null>(null),
     [copied, setCopied] = useState(false);
   const busy = useRef(false);
+  const creation = useRef<{ country: string; token: string } | null>(null);
   async function start() {
     if (busy.current) return;
     busy.current = true;
     setPending(true);
     setError(false);
     try {
+      if (creation.current?.country !== country) {
+        const bytes = crypto.getRandomValues(new Uint8Array(32));
+        creation.current = {
+          country,
+          token: `g1_${Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')}`,
+        };
+      }
       const response = await fetch('/api/guest/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ country: publicCountry.parse(country) }),
+        body: JSON.stringify({
+          country: publicCountry.parse(country),
+          creationToken: creation.current.token,
+        }),
       });
       if (!response.ok) throw new Error('unavailable');
       setJourney(
