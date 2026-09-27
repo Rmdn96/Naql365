@@ -17,7 +17,7 @@ The existing Request initializer, save/submit commands, eight-step wizard, Quote
 
 Preliminary pricing remains server-authoritative and waits for Sales-verified road distance. Guest UI exposes the safe preliminary projection when available; it does not invent an instant route price. Quote acceptance preserves exactly-one Order and immutable commercial facts. Guest tracking uses the accepted safe status projection; guest live-map presentation is off. Registered tracking remains available under existing permissions.
 
-Migration 39 adds explicit `guest.links.manage` permission for SUPER_ADMIN, SALES and OPERATIONS. Inspection does not reveal a token; replacement atomically revokes the prior grant and issues a new one; revocation and replacement record grant IDs only. The shared grant-first locking order is retained. **Staff UI and independent-connection rotation races remain unfinished.**
+Migration 39 adds explicit `guest.links.manage` permission for SUPER_ADMIN, SALES and OPERATIONS. Inspection does not reveal a token; replacement atomically revokes the prior grant and issues a new one; revocation and replacement record grant IDs only. The shared grant-first locking order is retained. Sales now has an explicit replacement/revocation control with an ephemeral copy action. The secret is not rendered as text or sent to WhatsApp. Independent-connection rotation races and hosted staff UI verification remain unfinished.
 
 ## K–M. Registered regression, WhatsApp and Market selection
 
@@ -55,11 +55,11 @@ Repository now contains 39 migrations (31 accepted + eight additive Phase 7 migr
 
 Evidence available:
 
-- Full local unit/integration suite: 167 tests passed before link-management addition; subsequent guest commercial/link tests passed separately. Final full-suite run is still required.
+- Full local unit/integration suite: 168 tests passed after link-management addition, including suspended and cross-tenant staff denial. Final full-suite run remains required after subsequent changes.
 - Local guest/registered payment integration: exact authority, private proof, rejection/reupload and immutable acceptance covered.
 - Local browser suite: original 24 tests plus four new public tests. Two new tests initially selected both the application alert and Next's route announcer; narrowed the locator to `main`. Four new tests then passed. Existing 24 had passed in the initial run; final combined run remains required.
 - Formatting, lint, strict typecheck, secret-pattern scan and optimized build have passed at intermediate checkpoints. They must be rerun for final HEAD.
-- CI `36243476082` for `1c7537ac0884fcd5fb18e3eb164ebc24d523f45b`: application quality job PASS; database job failed at generated-type diff. No errors were ignored. Official types workflow `36243476085` PASS; its 38-migration artifact was imported. Migration 39 now requires a fresh official artifact and exact-HEAD CI.
+- CI `36243476082` for `1c7537ac0884fcd5fb18e3eb164ebc24d523f45b`: application quality job PASS; database job failed at generated-type diff. No errors were ignored. Official types workflow `36243476085` PASS; its 38-migration artifact was imported. Official workflow `36320835712` reconstructed all 39 migrations successfully; its exact generated types were imported. CI `36320835689` passed the full application quality job, including browser tests; database checks failed only on the then-uncommitted types diff. Exact updated-HEAD CI is pending.
 - No accepted Phase 7 Preview URL yet. The previous phase's Preview is not Phase 7 evidence.
 
 ## AJ–AL. Production runbook, release blockers and cleanup
@@ -76,7 +76,7 @@ Changed areas: additive migrations, guest domain/infrastructure/routes, shared R
 
 Outstanding implementation/acceptance work, in order:
 
-1. Finish initial creation retry safety, staff link inspection/replacement UI and same-origin copy workflow; verify expiry/revocation and abuse negatives comprehensively.
+1. Finish initial creation retry safety; verify the implemented staff link inspection/replacement/copy workflow in hosted tests and independent-connection races; complete expiry/revocation and abuse negatives.
 2. Implement bounded manual EG destination types/selection (Vodafone Cash/InstaPay) in the existing privileged Finance configuration and attempt snapshot; Copy IBAN; synthetic test values only.
 3. Complete Quick Quote preselection, safe analytics integration, launch presentation controls, legal-page technical structure and customer-safe navigation/copy review.
 4. Add real independent-connection guest acceptance/revocation/payment races to CI. Re-run populated 31-migration upgrade and preserve historical snapshots/files.
@@ -132,7 +132,7 @@ PASS here is limited to the evidence explicitly described. Any combined hosted r
 | Bank reject/reupload           | PARTIAL | Local integration PASS; hosted pending                                   |
 | WhatsApp hosted test           | BLOCKED | No Phase 7 accepted Preview                                              |
 | Migrations                     | PARTIAL | Local reconstruction/upgrade; final official/hosted verification pending |
-| Generated types                | PARTIAL | Official 38-migration artifact imported; 39 pending                      |
+| Generated types                | PARTIAL | Official 39-migration artifact imported; updated-HEAD CI pending         |
 | Regression                     | PARTIAL | Local intermediate results; final/hosted pending                         |
 | CI                             | PARTIAL | Previous quality PASS; final HEAD pending                                |
 | Protected Preview              | BLOCKED | Not deployed for Phase 7                                                 |

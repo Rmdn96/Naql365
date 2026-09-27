@@ -3841,6 +3841,10 @@ export type Database = {
         }
         Returns: Json
       }
+      manage_guest_link: {
+        Args: { p_action: string; p_request: string }
+        Returns: Json
+      }
       onboard_customer: {
         Args: { p_locale: string; p_name: string; p_phone: string }
         Returns: string

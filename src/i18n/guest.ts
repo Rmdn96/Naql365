@@ -23,6 +23,12 @@ const ar = {
   reference: 'رقم الطلب',
   preliminary: 'السعر المبدئي قبل الضريبة',
   preliminaryHelp: 'هذا تقدير مبدئي. يصلك العرض النهائي بعد مراجعة فريق المبيعات.',
+  staffTitle: 'رابط عميل ضيف',
+  staffHelp:
+    'أصدر رابطًا جديدًا بعد التحقق من العميل عبر قنوات العمل المعتمدة. سيُلغى الرابط السابق فورًا. لا تنسخ الرابط إلى الملاحظات أو السجلات.',
+  replaceLink: 'إصدار رابط بديل',
+  revokeLink: 'إلغاء الوصول بالرابط',
+  revoked: 'أُلغي الوصول. يمكن إصدار رابط بديل عند الحاجة.',
 };
 const en: typeof ar = {
   title: 'Request a service',
@@ -50,5 +56,11 @@ const en: typeof ar = {
   reference: 'Request reference',
   preliminary: 'Preliminary price before tax',
   preliminaryHelp: 'This is an initial estimate. Your final quote follows the Sales review.',
+  staffTitle: 'Guest customer link',
+  staffHelp:
+    'Issue a replacement after verifying the customer through approved business channels. This immediately revokes the previous link. Never paste the link into notes or logs.',
+  replaceLink: 'Issue replacement link',
+  revokeLink: 'Revoke link access',
+  revoked: 'Link access revoked. Issue a replacement when needed.',
 };
 export const guestDictionary = (locale: Locale) => (locale === 'ar' ? ar : en);
