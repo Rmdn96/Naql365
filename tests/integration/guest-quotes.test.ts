@@ -325,3 +325,81 @@ test('guest transfer proof stays private and only Finance can reject or confirm 
   expect((await details()).status).toBe('PAID');
   await expect(db.query('select * from public.payment_transactions')).rejects.toThrow();
 });
+
+test('staff replacement revokes old access and never exposes or stores an existing secret', async () => {
+  const journey = await newJourney();
+  await expect(
+    db.query("select public.manage_guest_link($1,'replace')", [journey.request.id]),
+  ).rejects.toThrow();
+  await db.exec('reset role');
+  await db.query("select set_config('request.jwt.claim.sub',$1,false)", [sales]);
+  await db.exec('set role authenticated');
+  const inspect = (
+    await db.query<{ r: Record<string, unknown> }>(
+      "select public.manage_guest_link($1,'inspect') r",
+      [journey.request.id],
+    )
+  ).rows[0]!.r;
+  expect(inspect.active).toBe(true);
+  expect(inspect.token).toBeUndefined();
+  const replacement = (
+    await db.query<{ r: { token: string } }>("select public.manage_guest_link($1,'replace') r", [
+      journey.request.id,
+    ])
+  ).rows[0]!.r.token;
+  expect(replacement).toMatch(/^g1_[a-f0-9]{64}$/);
+  expect(replacement).not.toBe(journey.token);
+  await guest(journey.token);
+  await expect(db.query('select public.guest_access_state()')).rejects.toThrow();
+  await guest(replacement);
+  expect((await db.query('select public.guest_access_state()')).rows).toHaveLength(1);
+  await db.exec('reset role');
+  const grants = (
+    await db.query('select * from private.guest_access_grants where request_id=$1', [
+      journey.request.id,
+    ])
+  ).rows;
+  expect(JSON.stringify(grants)).not.toContain(replacement);
+  expect(grants).toHaveLength(2);
+  await db.query("select set_config('request.jwt.claim.sub',$1,false)", [sales]);
+  await db.exec('set role authenticated');
+  await db.query("select public.manage_guest_link($1,'revoke')", [journey.request.id]);
+  await guest(replacement);
+  await expect(db.query('select public.guest_access_state()')).rejects.toThrow();
+  await db.exec('reset role');
+  await db.query(
+    "update public.organization_memberships set status='suspended' where organization_id=$1 and profile_id=$2",
+    [org, sales],
+  );
+  await db.query("select set_config('request.jwt.claim.sub',$1,false)", [sales]);
+  await db.exec('set role authenticated');
+  await expect(
+    db.query("select public.manage_guest_link($1,'replace')", [journey.request.id]),
+  ).rejects.toThrow();
+  await db.exec('reset role');
+  await db.query(
+    "update public.organization_memberships set status='active' where organization_id=$1 and profile_id=$2",
+    [org, sales],
+  );
+  const stranger = randomUUID(),
+    tenant = randomUUID();
+  await db.query("insert into public.organizations(id,name) values($1,'TEST unrelated tenant')", [
+    tenant,
+  ]);
+  await db.query("insert into auth.users(id,email) values($1,'phase7-unrelated@example.invalid')", [
+    stranger,
+  ]);
+  await db.query(
+    "insert into public.organization_memberships(organization_id,profile_id,member_type) values($1,$2,'staff')",
+    [tenant, stranger],
+  );
+  await db.query(
+    "insert into public.user_roles(organization_id,profile_id,role_id) select $1,$2,id from public.roles where code='SALES'",
+    [tenant, stranger],
+  );
+  await db.query("select set_config('request.jwt.claim.sub',$1,false)", [stranger]);
+  await db.exec('set role authenticated');
+  await expect(
+    db.query("select public.manage_guest_link($1,'replace')", [journey.request.id]),
+  ).rejects.toThrow();
+});
