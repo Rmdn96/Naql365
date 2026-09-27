@@ -51,9 +51,14 @@ No Phase 7 hosted journey has run and no Phase 7 Staging migration has been appl
 
 ## AF–AI. Migrations, tests, CI and protected Preview
 
-Repository now contains 39 migrations (31 accepted + eight additive Phase 7 migrations). Accepted Phase 0–6 migrations were not rewritten. The Phase 7 projection grants were corrected for existing composite PostgREST relationships before any hosted application.
+Repository now contains 42 migrations (31 accepted + eleven additive Phase 7 migrations). Accepted Phase 0–6 migrations were not rewritten. The Phase 7 projection grants were corrected for existing composite PostgREST relationships before any hosted application.
 
 Evidence available:
+
+- Continuation on 27 September: migration 40 serializes creation retries using a browser-generated 256-bit capability, storing only its verifier. Replays return the same journey; revoked/expired grants cannot be resurrected. Migration 41 commits invalid exchange attempts against a bounded organization-wide budget (300/minute). This aggregate limit intentionally trades availability for abuse protection; it is not a per-IP defense. Browser retry state is held in memory and does not survive closing the page.
+- Migration 42 extends existing privileged transfer configuration with BANK, VODAFONE_CASH and INSTAPAY. Wallet destinations require EG/EGP. Customer selection is scoped to the accepted Order's organization/Market/currency, freezes after a proof attempt, and each proof preserves the destination type and instructions. No historical snapshot is rewritten. Local tests cover privileged configuration, cross-Market rejection, selection, frozen history and private instructions. The shared checkout includes Copy IBAN. Hosted EG acceptance remains pending.
+- Full local suite after migration 42: 171 tests / 37 files PASS. Typecheck and lint PASS after importing authoritative 42-migration types from successful workflow `36336025201`. Final release checks remain required after outstanding implementation.
+- CI `36335343973` and `36336025183`: application quality jobs PASS. Database jobs executed SQL/RLS and real independent-connection guest creation/acceptance/revocation/rotation/proof races successfully, then failed only at the generated-types diff. Types were imported from official successful workflows; these runs are not claimed as complete CI PASS. Exact next-HEAD CI is required.
 
 - Full local unit/integration suite: 168 tests passed after link-management addition, including suspended and cross-tenant staff denial. Final full-suite run remains required after subsequent changes.
 - Local guest/registered payment integration: exact authority, private proof, rejection/reupload and immutable acceptance covered.
@@ -76,10 +81,10 @@ Changed areas: additive migrations, guest domain/infrastructure/routes, shared R
 
 Outstanding implementation/acceptance work, in order:
 
-1. Finish initial creation retry safety; verify the implemented staff link inspection/replacement/copy workflow in hosted tests and independent-connection races; complete expiry/revocation and abuse negatives.
-2. Implement bounded manual EG destination types/selection (Vodafone Cash/InstaPay) in the existing privileged Finance configuration and attempt snapshot; Copy IBAN; synthetic test values only.
+1. Verify implemented creation retries, exchange abuse controls and staff link inspection/replacement/copy in hosted tests. Local expiry/revocation and independent-connection races pass.
+2. Verify implemented EG destination selection/snapshots and Copy IBAN in hosted acceptance; synthetic values only.
 3. Complete Quick Quote preselection, safe analytics integration, launch presentation controls, legal-page technical structure and customer-safe navigation/copy review.
-4. Add real independent-connection guest acceptance/revocation/payment races to CI. Re-run populated 31-migration upgrade and preserve historical snapshots/files.
+4. Retain passing independent-connection guest races in final CI. Re-run populated 31-migration upgrade and preserve historical snapshots/files after remaining migrations.
 5. Import final authoritative types, run all local/CI gates, then apply to Staging and deploy a genuine protected Preview.
 6. Execute both full guest hosted journeys, negative/security/Storage/expiry/log/bundle checks, registered Phase 0–6 regression, all required responsive/a11y/visual checks; clean all fixtures and owned bypasses.
 7. Update every acceptance entry with actual evidence and final exact-HEAD CI before requesting owner review.

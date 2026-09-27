@@ -16,6 +16,8 @@ it('rejects forged scope, totals and status fields in checkout', () => {
     { method: 'CARD' },
     { method: 'CASH', amountMinor: 1 },
     { method: 'BANK_TRANSFER', bankId: id },
+    { method: 'CASH', destinationId: id },
+    { method: 'BANK_TRANSFER', destinationId: 'not-an-id' },
   ])
     expect(paymentCommand.safeParse({ ...command, payload }).success).toBe(false);
 });
@@ -68,6 +70,24 @@ it('bank configuration derives currency and requires a usable account identifier
     },
   };
   expect(bankConfiguration.safeParse(command).success).toBe(true);
+  expect(
+    bankConfiguration.safeParse({
+      ...command,
+      details: { ...command.details, destinationType: 'VODAFONE_CASH' },
+    }).success,
+  ).toBe(true);
+  expect(
+    bankConfiguration.safeParse({
+      ...command,
+      details: { ...command.details, destinationType: 'INSTAPAY', bic: 'TESTTEST' },
+    }).success,
+  ).toBe(false);
+  expect(
+    bankConfiguration.safeParse({
+      ...command,
+      details: { ...command.details, destinationType: 'OTHER' },
+    }).success,
+  ).toBe(false);
   expect(
     bankConfiguration.safeParse({ ...command, details: { ...command.details, currency: 'SAR' } })
       .success,

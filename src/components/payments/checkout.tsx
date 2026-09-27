@@ -29,6 +29,7 @@ export function Checkout({
     pending = useRef<{ intent: string; mutationId: string } | null>(null);
   const [busy, setBusy] = useState(false),
     [feedback, setFeedback] = useState<'error' | 'success' | null>(null);
+  const [copiedIban, setCopiedIban] = useState(false);
   const [reference, setReference] = useState(''),
     [note, setNote] = useState(''),
     [reason, setReason] = useState('');
@@ -108,14 +109,24 @@ export function Checkout({
             >
               {t.cash}
             </Button>
-            <Button
-              disabled={
-                !hydrated || busy || !data.transferAvailable || data.method === 'BANK_TRANSFER'
-              }
-              onClick={() => void act({ action: 'choose', payload: { method: 'BANK_TRANSFER' } })}
-            >
-              {t.transfer}
-            </Button>
+            {data.destinations.map((destination) => (
+              <Button
+                key={destination.id}
+                disabled={
+                  !hydrated ||
+                  busy ||
+                  (data.method === 'BANK_TRANSFER' && data.bank?.id === destination.id)
+                }
+                onClick={() =>
+                  void act({
+                    action: 'choose',
+                    payload: { method: 'BANK_TRANSFER', destinationId: destination.id },
+                  })
+                }
+              >
+                {t.transfer} · {locale === 'ar' ? destination.nameAr : destination.nameEn}
+              </Button>
+            ))}
           </div>
         </Card>
       )}
@@ -136,6 +147,22 @@ export function Checkout({
                     <dt>{t.iban}</dt>
                     <dd>
                       <bdi>{data.bank.iban}</bdi>
+                      <Button
+                        variant="secondary"
+                        disabled={!hydrated}
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(
+                              data.bank!.iban!.replace(/\s/g, ''),
+                            );
+                            setCopiedIban(true);
+                          } catch {
+                            setFeedback('error');
+                          }
+                        }}
+                      >
+                        {copiedIban ? t.copiedIban : t.copyIban}
+                      </Button>
                     </dd>
                   </>
                 )}

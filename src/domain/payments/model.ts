@@ -9,7 +9,9 @@ export const paymentStates = [
   'PAID',
 ] as const;
 const money = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
+export const transferDestinationType = z.enum(['BANK', 'VODAFONE_CASH', 'INSTAPAY']);
 export const bankInstructions = z.object({
+  destinationType: transferDestinationType.default('BANK'),
   id: z.uuid(),
   revision: z.number().int(),
   currency: z.enum(['SAR', 'EGP']),
@@ -43,6 +45,14 @@ export const paymentDetails = z.object({
   executionAllowed: z.boolean(),
   canSwitch: z.boolean(),
   transferAvailable: z.boolean(),
+  destinations: z.array(
+    z.object({
+      id: z.uuid(),
+      type: transferDestinationType,
+      nameAr: z.string(),
+      nameEn: z.string(),
+    }),
+  ),
   bank: bankInstructions.nullable(),
   attempts: z
     .array(
@@ -83,7 +93,9 @@ export const paymentCommand = z.discriminatedUnion('action', [
   z.strictObject({
     ...base,
     action: z.literal('choose'),
-    payload: z.strictObject({ method: z.enum(paymentMethods) }),
+    payload: z
+      .strictObject({ method: z.enum(paymentMethods), destinationId: z.uuid().optional() })
+      .refine((p) => p.method === 'BANK_TRANSFER' || !p.destinationId),
   }),
   z.strictObject({
     ...base,
@@ -151,6 +163,7 @@ export const bankConfiguration = z.strictObject({
   mutationId: z.uuid(),
   details: z
     .strictObject({
+      destinationType: transferDestinationType.default('BANK'),
       bankNameAr: z.string().trim().min(1).max(120),
       bankNameEn: z.string().trim().min(1).max(120),
       beneficiaryAr: z.string().trim().min(1).max(160),
@@ -166,5 +179,9 @@ export const bankConfiguration = z.strictObject({
     .refine((d) => Boolean(d.iban || d.accountNumber), {
       path: ['accountNumber'],
       message: 'Account required',
+    })
+    .refine((d) => d.destinationType === 'BANK' || Boolean(d.accountNumber && !d.iban && !d.bic), {
+      path: ['accountNumber'],
+      message: 'Transfer destination required; bank-only fields must be empty',
     }),
 });

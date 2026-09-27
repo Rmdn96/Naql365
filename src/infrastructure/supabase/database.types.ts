@@ -214,6 +214,7 @@ export type Database = {
           created_at: string
           created_by: string
           currency: string
+          destination_type: string
           iban: string | null
           id: string
           instructions_ar: string
@@ -235,6 +236,7 @@ export type Database = {
           created_at?: string
           created_by: string
           currency: string
+          destination_type?: string
           iban?: string | null
           id?: string
           instructions_ar?: string
@@ -256,6 +258,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           currency?: string
+          destination_type?: string
           iban?: string | null
           id?: string
           instructions_ar?: string
@@ -1670,6 +1673,7 @@ export type Database = {
       payments: {
         Row: {
           amount_minor: number | null
+          bank_account_id: string | null
           confirmed_by: string | null
           created_at: string
           currency: string | null
@@ -1686,6 +1690,7 @@ export type Database = {
         }
         Insert: {
           amount_minor?: number | null
+          bank_account_id?: string | null
           confirmed_by?: string | null
           created_at?: string
           currency?: string | null
@@ -1702,6 +1707,7 @@ export type Database = {
         }
         Update: {
           amount_minor?: number | null
+          bank_account_id?: string | null
           confirmed_by?: string | null
           created_at?: string
           currency?: string | null
@@ -1723,6 +1729,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_destination_scope"
+            columns: ["organization_id", "market_id", "bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
           {
             foreignKeyName: "payment_market"

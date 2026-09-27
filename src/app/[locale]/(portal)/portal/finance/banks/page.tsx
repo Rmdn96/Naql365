@@ -4,6 +4,7 @@ import { paymentDictionary } from '@/i18n/payments';
 import { getBankConfiguration } from '@/infrastructure/payments/service';
 import { portalAccess } from '@/infrastructure/identity/access';
 import { BankForm } from '@/components/payments/bank-admin';
+import { transferDestinationType } from '@/domain/payments/model';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
@@ -28,6 +29,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             revision: b.revision,
             marketId: b.market_id,
             details: {
+              destinationType: transferDestinationType.parse(b.destination_type),
               bankNameAr: b.bank_name_ar,
               bankNameEn: b.bank_name_en,
               beneficiaryAr: b.beneficiary_ar,
