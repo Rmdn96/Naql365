@@ -3896,6 +3896,10 @@ export type Database = {
         Args: { p_notification: string }
         Returns: undefined
       }
+      record_mvp_event: {
+        Args: { p_context: string; p_country: string; p_event: string }
+        Returns: undefined
+      }
       report_driver_issue: {
         Args: {
           p_category: string

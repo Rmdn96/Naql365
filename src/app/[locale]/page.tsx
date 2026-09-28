@@ -35,6 +35,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   if (!isLocale(locale)) notFound();
   const [country, catalogue] = await Promise.all([selectedPublicCountry(), publicCatalogue()]);
   const services = catalogue.find((m) => m.country === country)?.services ?? [];
+  const cities = catalogue.find((m) => m.country === country)?.cities ?? [];
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -51,7 +52,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
       />
-      <Landing locale={locale} country={country} services={services} />
+      <Landing locale={locale} country={country} services={services} cities={cities} />
     </>
   );
 }

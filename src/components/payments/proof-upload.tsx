@@ -6,6 +6,7 @@ import type { Locale } from '@/i18n/config';
 import { paymentDictionary } from '@/i18n/payments';
 import { Alert, Button, Input } from '@/components/ui/primitives';
 import { useHydrated } from '@/components/ui/use-hydrated';
+import { recordMvpEvent } from '@/components/public/analytics';
 export function ProofUpload({
   data,
   locale,
@@ -45,6 +46,7 @@ export function ProofUpload({
       const result = await fetch(api, { method: 'POST', body: form });
       if (!result.ok) throw new Error();
       ids.current = null;
+      recordMvpEvent('transfer_proof_submitted', data.country, 'checkout');
       setFile(null);
       router.refresh();
     } catch {

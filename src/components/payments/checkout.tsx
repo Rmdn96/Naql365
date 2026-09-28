@@ -9,6 +9,7 @@ import { paymentDictionary } from '@/i18n/payments';
 import { Alert, Badge, Button, Card, Input } from '@/components/ui/primitives';
 import { ProofUpload } from './proof-upload';
 import { formatMoney } from '@/domain/markets/model';
+import { recordMvpEvent } from '@/components/public/analytics';
 
 type Command = z.infer<typeof paymentCommand>;
 export function Checkout({
@@ -55,6 +56,8 @@ export function Checkout({
         }),
       });
       if (!result.ok) throw new Error();
+      if (command.action === 'choose')
+        recordMvpEvent('payment_method_selected', data.country, 'checkout');
       pending.current = null;
       setFeedback('success');
       router.refresh();
@@ -124,7 +127,10 @@ export function Checkout({
                   })
                 }
               >
-                {t.transfer} · {locale === 'ar' ? destination.nameAr : destination.nameEn}
+                {t.transfer}
+                {data.destinations.length > 1
+                  ? ` · ${locale === 'ar' ? destination.nameAr : destination.nameEn}`
+                  : ''}
               </Button>
             ))}
           </div>

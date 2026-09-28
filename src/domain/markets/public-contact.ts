@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const publicCountry = z.enum(['SA', 'EG']);
+export const marketCookie = 'naql365_market';
 export type PublicCountry = z.infer<typeof publicCountry>;
 
 // Intentionally public contact configuration. Payment destinations are never read here.
@@ -11,7 +12,7 @@ export const marketContact = {
 
 const requestReference = z
   .string()
-  .regex(/^N365-[0-9]{6}-[0-9]{6,}$/)
+  .regex(/^(O-)?N365-[0-9]{6}-[0-9]{6,}$/)
   .max(40);
 
 export function whatsappUrl(

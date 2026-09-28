@@ -1,10 +1,31 @@
 'use client';
 import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
+import { recordMvpEvent } from '@/components/public/analytics';
 import { whatsappUrl, type PublicCountry } from '@/domain/markets/public-contact';
 import type { Locale } from '@/i18n/config';
 import { publicDictionary } from '@/i18n/public';
 export function PublicContact({ country, locale }: { country: PublicCountry; locale: Locale }) {
   const pathname = usePathname();
+  useEffect(() => {
+    if (/^\/(ar|en)\/(portal|driver)(\/|$)/.test(pathname)) return;
+    function recordClick(event: MouseEvent) {
+      const anchor = event.target instanceof Element ? event.target.closest('a') : null;
+      if (!anchor || new URL(anchor.href).hostname !== 'wa.me') return;
+      const context = pathname.includes('/payment')
+        ? 'checkout'
+        : pathname.includes('/quotes')
+          ? 'quote'
+          : pathname.includes('/orders')
+            ? 'tracking'
+            : pathname.includes('/request')
+              ? 'request'
+              : 'home';
+      recordMvpEvent('whatsapp_clicked', anchor.dataset.marketCountry ?? country, context);
+    }
+    document.addEventListener('click', recordClick);
+    return () => document.removeEventListener('click', recordClick);
+  }, [pathname, country]);
   if (/^\/(ar|en)\/(portal|driver)(\/|$)/.test(pathname)) return null;
   return (
     <a

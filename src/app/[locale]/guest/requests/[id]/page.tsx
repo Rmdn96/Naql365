@@ -10,12 +10,16 @@ import Link from 'next/link';
 import { customerQuotes, guestPreliminaryPrice } from '@/infrastructure/pricing/service';
 import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { formatMoney } from '@/domain/markets/model';
+import { quickEntry } from '@/domain/requests/quick-entry';
+import { MvpView } from '@/components/public/analytics';
 
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { locale, id } = await params;
   if (!isLocale(locale)) notFound();
@@ -39,7 +43,12 @@ export default async function Page({
   if (details.request.status === 'DRAFT')
     return (
       <section className="container page">
-        <RequestWizard locale={locale} initial={details} guest />
+        <RequestWizard
+          locale={locale}
+          initial={details}
+          guest
+          preselection={quickEntry.safeParse(await searchParams).data}
+        />
       </section>
     );
   const [quotes, preliminary] = await Promise.all([customerQuotes(true), guestPreliminaryPrice()]);
@@ -55,6 +64,11 @@ export default async function Page({
       {details.request.status === 'SUBMITTED' && <p>{t.review}</p>}
       {preliminary.state === 'PRELIMINARY' && (
         <article className="card">
+          <MvpView
+            event="preliminary_quote_viewed"
+            market={details.market.country_code}
+            context="request"
+          />
           <h2>{t.preliminary}</h2>
           <p>
             <strong>{formatMoney(preliminary.subtotalMinor, preliminary.currency, locale)}</strong>

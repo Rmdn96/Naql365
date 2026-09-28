@@ -17,6 +17,8 @@ import { RequestSummary } from './summary';
 import type { Market } from '@/domain/markets/model';
 import { marketDate, normalizeMarketPhone } from '@/domain/markets/model';
 import { marketDictionary } from '@/i18n/markets';
+import { recordMvpEvent } from '@/components/public/analytics';
+import { prefillQuickEntry, quickEntryQuery, type QuickEntry } from '@/domain/requests/quick-entry';
 
 const steps = [
   'service',
@@ -49,7 +51,15 @@ async function responseJson(response: Response): Promise<unknown> {
     );
   return result;
 }
-export function StartRequest({ locale, markets }: { locale: Locale; markets: Market[] }) {
+export function StartRequest({
+  locale,
+  markets,
+  preselection,
+}: {
+  locale: Locale;
+  markets: Market[];
+  preselection?: QuickEntry | undefined;
+}) {
   const hydrated = useHydrated();
   const t = customerDictionary(locale),
     router = useRouter();
@@ -57,7 +67,9 @@ export function StartRequest({ locale, markets }: { locale: Locale; markets: Mar
     busy = useRef(false);
   const [pending, setPending] = useState(false),
     [error, setError] = useState(false);
-  const [marketId, setMarketId] = useState('');
+  const [marketId, setMarketId] = useState(
+    markets.find((m) => m.country_code === preselection?.country)?.id ?? '',
+  );
   const mt = marketDictionary(locale);
   async function start() {
     if (busy.current || !marketId) return;
@@ -75,7 +87,12 @@ export function StartRequest({ locale, markets }: { locale: Locale; markets: Mar
           }),
         ),
       );
-      router.push(`/${locale}/request/${result.id}`);
+      recordMvpEvent(
+        'request_started',
+        markets.find((m) => m.id === marketId)?.country_code ?? '',
+        'request',
+      );
+      router.push(`/${locale}/request/${result.id}${quickEntryQuery(preselection)}`);
     } catch {
       setError(true);
       setPending(false);
@@ -112,17 +129,33 @@ export function RequestWizard({
   locale,
   initial,
   guest = false,
+  preselection,
 }: {
   locale: Locale;
   initial: RequestDetails;
   guest?: boolean;
+  preselection?: QuickEntry | undefined;
 }) {
   const mt = marketDictionary(locale);
   const hydrated = useHydrated();
   const t = customerDictionary(locale),
     router = useRouter();
+  const [startingDraft] = useState(() =>
+    prefillQuickEntry(
+      initial.payload,
+      preselection,
+      {
+        country: initial.market.country_code,
+        revision: initial.request.revision,
+        services: initial.services,
+        cities: initial.cities ?? [],
+        coverage: initial.coverage ?? [],
+      },
+      locale,
+    ),
+  );
   const [details, setDetails] = useState(initial),
-    [draft, setDraft] = useState(initial.payload),
+    [draft, setDraft] = useState(startingDraft),
     [step, setStep] = useState(0);
   const [saveState, setSaveState] = useState<
     'saved' | 'unsaved' | 'saving' | 'saveFailed' | 'conflict'
@@ -130,7 +163,7 @@ export function RequestWizard({
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [missing, setMissing] = useState<string[]>([]);
-  const draftRef = useRef(initial.payload),
+  const draftRef = useRef(startingDraft),
     saved = useRef(JSON.stringify(initial.payload)),
     revision = useRef(initial.request.revision),
     saving = useRef(false),
@@ -318,6 +351,8 @@ export function RequestWizard({
             }),
           );
       }
+      if (operation === 'submit')
+        recordMvpEvent('request_completed', initial.market.country_code, 'request');
       router.push(`/${locale}/${guest ? 'guest' : 'account'}/requests/${result.id}`);
       router.refresh();
     } catch (e) {

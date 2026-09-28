@@ -1,4 +1,8 @@
 import Link from 'next/link';
+import { MvpView } from '@/components/public/analytics';
+import { launchFlags } from '@/infrastructure/config/launch';
+import { whatsappUrl } from '@/domain/markets/public-contact';
+import { publicDictionary } from '@/i18n/public';
 import type { Locale } from '@/i18n/config';
 import type { customerProgress } from '@/infrastructure/operations/service';
 import type { PaymentDetails } from '@/domain/payments/model';
@@ -24,6 +28,7 @@ export function OrderProgress({
   const pt = paymentDictionary(locale);
   return (
     <div className="container page">
+      <MvpView event="tracking_viewed" market={payment.country} context="tracking" />
       <h1>{t.tracking}</h1>
       <p>
         {locale === 'ar' ? data.market.nameAr : data.market.nameEn} ·{' '}
@@ -32,6 +37,13 @@ export function OrderProgress({
       <p>
         <bdi>{data.reference}</bdi>
       </p>
+      <a
+        href={whatsappUrl(payment.country, locale, data.reference ?? undefined)}
+        data-market-country={payment.country}
+        rel="noreferrer"
+      >
+        {publicDictionary(locale).whatsapp}
+      </a>
       <Badge>{operationalStatus(data.status, locale)}</Badge>
       <p>{t.trackingHelp}</p>
       <section aria-labelledby="payment-summary-title" className="card">
@@ -61,7 +73,9 @@ export function OrderProgress({
       >
         {paymentDictionary(locale).title}
       </Link>
-      {!guest && <TrackingView locale={locale} orderId={id} />}
+      {!guest && launchFlags().customerLiveTracking && (
+        <TrackingView locale={locale} orderId={id} />
+      )}
       {!guest && <InAppNotifications locale={locale} />}
       {data.trips.length ? (
         <ul className="request-list">

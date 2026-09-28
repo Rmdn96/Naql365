@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { Select, Button } from '@/components/ui/primitives';
+import { MvpView } from './analytics';
 import type { Locale } from '@/i18n/config';
 import { publicDictionary } from '@/i18n/public';
 import { whatsappUrl, type PublicCountry } from '@/domain/markets/public-contact';
@@ -21,16 +23,19 @@ export function Landing({
   locale,
   country,
   services,
+  cities,
 }: {
   locale: Locale;
   country: PublicCountry;
   services: { id: string; nameAr: string; nameEn: string }[];
+  cities: { id: string; nameAr: string; nameEn: string }[];
 }) {
   const t = publicDictionary(locale),
     request = `/${locale}/request`,
     wa = whatsappUrl(country, locale);
   return (
     <div className="launch-page">
+      <MvpView event="homepage_viewed" market={country} context="home" />
       <section className="launch-hero">
         <div className="container launch-hero-grid">
           <div className="launch-hero-copy">
@@ -76,9 +81,41 @@ export function Landing({
           <h2 id="quick-title">{t.quickTitle}</h2>
           <p>{t.quickBody}</p>
         </div>
-        <Link href={request} className="button button--primary">
-          {t.quickAction}
-        </Link>
+        {services.length && cities.length ? (
+          <form action={request} method="get" className="stack">
+            <input type="hidden" name="country" value={country} />
+            <Select id="quick-service" name="service" label={t.services} required defaultValue="">
+              <option value="">{t.services}</option>
+              {services.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {locale === 'ar' ? s.nameAr : s.nameEn}
+                </option>
+              ))}
+            </Select>
+            {(['pickupCity', 'deliveryCity'] as const).map((name, i) => (
+              <Select
+                key={name}
+                id={`quick-${name}`}
+                name={name}
+                label={i === 0 ? t.pickup : t.delivery}
+                required
+                defaultValue=""
+              >
+                <option value="">{i === 0 ? t.pickup : t.delivery}</option>
+                {cities.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {locale === 'ar' ? c.nameAr : c.nameEn}
+                  </option>
+                ))}
+              </Select>
+            ))}
+            <Button>{t.quickAction}</Button>
+          </form>
+        ) : (
+          <Link href={request} className="button button--primary">
+            {t.quickAction}
+          </Link>
+        )}
       </section>
       <section id="services" className="container launch-section">
         <p className="eyebrow">{t.services}</p>

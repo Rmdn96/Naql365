@@ -50,7 +50,7 @@ EG configuration fields:
 - Market: EG; currency: EGP.
 - Methods required: Vodafone Cash and InstaPay.
 - Destination and beneficiary: `[owner-verified values entered privately]`.
-- **Current implementation checkpoint:** explicit typed wallet destination selection is unfinished. Do not simulate support by changing a bank label, entering values early or declaring this gate ready. Finalize and test the privileged configuration and selection path before release.
+- Create two separate configurations through `/{locale}/portal/finance/banks`: select Egypt, then destination type VODAFONE_CASH or INSTAPAY. Enter the privately verified destination in Account number; leave IBAN/BIC blank. Set localized labels and beneficiary, activate the intended options, and choose at most one primary default. Save through the privileged form; do not insert configuration through customer APIs. Verify each option separately using synthetic Staging values before authorized Production setup.
 
 Verify authorized checkout reveals only its Market's selected transfer instructions after BANK_TRANSFER selection. Check Copy IBAN behavior, private proof upload, rejection/reupload, exact amount/currency Finance confirmation and unchanged execution clearance. CASH selection must never mean collected/PAID. No gateway credentials or automatic wallet reconciliation are part of this release.
 
@@ -59,6 +59,9 @@ Verify authorized checkout reveals only its Market's selected transfer instructi
 - Keep attachments, proofs and POD private. Verify short-lived signed access and unauthorized denial. Do not make buckets public to fix a failed upload.
 - Review the final hostname, DNS records and certificates with the owner before changes. Avoid domain reassignment or Preview promotion until the release plan explicitly authorizes it.
 - Publish Privacy/Terms only after approved content is available and reviewed. Do not publish invented legal assurances or placeholder legal text.
+  The technical routes are `/{locale}/legal/privacy` and `/{locale}/legal/terms`. Add reviewed AR/EN title, paragraphs and the approval reference as `approvedRevision` in `src/content/legal.json`. Null entries return 404 and have no footer link. Content approval remains a Production release blocker.
+- `LAUNCH_CUSTOMER_LIVE_TRACKING` is a server-only presentation flag (`true`/`false`, default false). It controls the existing registered-customer live view; status tracking always remains available. Guest live coordinates remain excluded. This flag does not grant tracking authority or disable DB/RLS checks. Test the enabled registered view separately during regression.
+- Funnel telemetry retains only daily event/Market/context counts in `private.mvp_funnel_counts`, with 90-day retention on ingestion and a 600/minute organization limit. It is approximate, user-reportable product telemetry, never commercial/audit evidence. No identity, IP, URL, guest capability or financial destination is collected. Operators can inspect aggregate counts through privileged database access; no public metrics query is exposed.
 - Execute the approved Vercel Production deployment only after all entry gates pass. Confirm deployment classification, source SHA and Production-only environment bindings. Do not reuse a Staging deployment as Production evidence.
 - Verify canonical/hreflang, robots/sitemap, CSP and security headers. Public indexing is a release decision; guest/account/payment/portal routes stay noindex and private. Guest secrets remain URL fragments exchanged for HttpOnly cookies, never request paths or analytics properties.
 

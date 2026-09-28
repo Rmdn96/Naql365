@@ -7,13 +7,17 @@ import { publicCountry, type PublicCountry } from '@/domain/markets/public-conta
 import { guestDictionary } from '@/i18n/guest';
 import type { Locale } from '@/i18n/config';
 import { Button, Select, Alert } from '@/components/ui/primitives';
+import { quickEntryQuery, type QuickEntry } from '@/domain/requests/quick-entry';
+import { recordMvpEvent } from '@/components/public/analytics';
 
 export function GuestStart({
   locale,
   initialCountry = 'SA',
+  preselection,
 }: {
   locale: Locale;
   initialCountry?: PublicCountry;
+  preselection?: QuickEntry | undefined;
 }) {
   const t = guestDictionary(locale),
     router = useRouter();
@@ -46,6 +50,7 @@ export function GuestStart({
         }),
       });
       if (!response.ok) throw new Error('unavailable');
+      recordMvpEvent('request_started', country, 'request');
       setJourney(
         z
           .object({ token: guestSecret, request: z.object({ id: z.uuid() }) })
@@ -76,7 +81,13 @@ export function GuestStart({
       {journey ? (
         <>
           <Button onClick={copy}>{copied ? t.copied : t.copy}</Button>{' '}
-          <Button onClick={() => router.push(`/${locale}/guest/requests/${journey.request.id}`)}>
+          <Button
+            onClick={() =>
+              router.push(
+                `/${locale}/guest/requests/${journey.request.id}${quickEntryQuery(preselection)}`,
+              )
+            }
+          >
             {t.proceed}
           </Button>
         </>

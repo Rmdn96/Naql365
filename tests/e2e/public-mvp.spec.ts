@@ -1,4 +1,20 @@
 import { test, expect } from '@playwright/test';
+test('telemetry rejects private properties and unavailable legal copy stays unpublished', async ({
+  request,
+}) => {
+  const invalid = await request.post('/api/public/analytics', {
+    headers: { Origin: 'http://127.0.0.1:3000' },
+    data: { event: 'homepage_viewed', market: 'SA', context: 'home', token: 'not-a-credential' },
+  });
+  expect(invalid.status()).toBe(400);
+  const crossOrigin = await request.post('/api/public/analytics', {
+    headers: { Origin: 'https://invalid.example' },
+    data: { event: 'homepage_viewed', market: 'SA', context: 'home' },
+  });
+  expect(crossOrigin.status()).toBe(403);
+  expect((await request.get('/ar/legal/privacy')).status()).toBe(404);
+  expect((await request.get('/en/legal/terms')).status()).toBe(404);
+});
 test('public country switch updates WhatsApp and guest request without a login wall', async ({
   page,
 }) => {

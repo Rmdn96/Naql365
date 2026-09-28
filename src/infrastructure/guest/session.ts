@@ -7,6 +7,7 @@ import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { appUrl } from '@/infrastructure/config/server-env';
 import { guestCookieName, guestSecret } from '@/domain/guest/capability';
 import { AppError } from '@/domain/shared/errors';
+import { publicCountry, marketCookie } from '@/domain/markets/public-contact';
 
 export function guestDatabase(token?: string) {
   const env = getPublicEnv();
@@ -49,6 +50,20 @@ export async function exchangeGuestSecret(token: unknown) {
   const state = accessState.parse(data);
   const remaining = Math.floor((Date.parse(state.expiresAt) - Date.now()) / 1000);
   if (remaining <= 0) throw new AppError('forbidden', 'Journey unavailable');
+  const request = await client
+    .from('requests')
+    .select('markets(country_code)')
+    .eq('id', state.requestId)
+    .single();
+  if (request.error) guestDatabaseError(request.error.code);
+  const country = publicCountry.parse(request.data?.markets?.country_code);
+  (await cookies()).set(marketCookie, country, {
+    httpOnly: true,
+    secure: appUrl().protocol === 'https:',
+    sameSite: 'strict',
+    path: '/',
+    maxAge: 31536000,
+  });
   (await cookies()).set(cookieName(), parsed.data, {
     httpOnly: true,
     secure: appUrl().protocol === 'https:',

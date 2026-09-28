@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { legalContent } from '@/domain/legal/content';
 import { dictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
 import { publicDictionary } from '@/i18n/public';
@@ -69,6 +70,14 @@ export async function Footer({ locale }: { locale: Locale }) {
             {p.signIn}
           </Link>
           <Link href={`/${locale}#contact`}>{p.contact}</Link>
+          {(['privacy', 'terms'] as const).map((kind) => {
+            const copy = legalContent(kind, locale);
+            return copy ? (
+              <Link key={kind} href={`/${locale}/legal/${kind}`}>
+                {copy.title}
+              </Link>
+            ) : null;
+          })}
           <Link href={`/${locale}/portal`} prefetch={false}>
             {t.portal}
           </Link>

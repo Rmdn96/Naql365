@@ -158,7 +158,7 @@ export async function customerQuotes(guest = false) {
   const { data, error } = await client
     .from('quotes')
     .select(
-      'id,reference,request_id,requests(reference,markets(name_ar,name_en,timezone),services(name_ar,name_en)),quote_versions(id,version,status,final_subtotal_minor,vat_amount_minor,total_minor,currency,expires_at,sent_at)',
+      'id,reference,request_id,requests(reference,markets(name_ar,name_en,timezone,country_code),services(name_ar,name_en)),quote_versions(id,version,status,final_subtotal_minor,vat_amount_minor,total_minor,currency,expires_at,sent_at)',
     )
     .order('created_at', { ascending: false })
     .limit(100);
@@ -180,7 +180,7 @@ export async function customerQuoteDetails(
   const { data, error } = await client
     .from('quote_versions')
     .select(
-      'id,version,status,currency,tax_label_ar,tax_label_en,final_subtotal_minor,vat_rate_bps,vat_amount_minor,total_minor,expires_at,sent_at,viewed_at,accepted_at,rejected_at,distance_km,distance_source,quotes(reference,request_id,requests(reference,markets(name_ar,name_en,timezone),services(name_ar,name_en),request_locations(kind,city))),quote_items(component_code,label_ar,label_en,quantity,unit_amount_minor,total_amount_minor,position),orders!orders_parent_market_fk(id,reference,accepted_at)',
+      'id,version,status,currency,tax_label_ar,tax_label_en,final_subtotal_minor,vat_rate_bps,vat_amount_minor,total_minor,expires_at,sent_at,viewed_at,accepted_at,rejected_at,distance_km,distance_source,quotes(reference,request_id,requests(reference,markets(name_ar,name_en,timezone,country_code),services(name_ar,name_en),request_locations(kind,city))),quote_items(component_code,label_ar,label_en,quantity,unit_amount_minor,total_amount_minor,position),orders!orders_parent_market_fk(id,reference,accepted_at)',
     )
     .eq('id', quoteVersionId)
     .maybeSingle();

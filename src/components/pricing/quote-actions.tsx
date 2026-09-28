@@ -6,15 +6,18 @@ import type { Locale } from '@/i18n/config';
 import { quotesDictionary } from '@/i18n/quotes';
 import { Alert, Button, Input } from '@/components/ui/primitives';
 import { z } from 'zod';
+import { recordMvpEvent } from '@/components/public/analytics';
 
 export function QuoteActions({
   locale,
   quoteVersionId,
   guest = false,
+  country,
 }: {
   locale: Locale;
   quoteVersionId: string;
   guest?: boolean;
+  country: string;
 }) {
   const hydrated = useHydrated();
   const t = quotesDictionary(locale),
@@ -41,6 +44,7 @@ export function QuoteActions({
         return;
       }
       setMessage(action === 'accept' ? t.accepted : t.rejected);
+      recordMvpEvent(action === 'accept' ? 'quote_accepted' : 'quote_rejected', country, 'quote');
       if (action === 'accept') {
         const result = z.object({ order_id: z.uuid() }).safeParse(await response.json());
         if (result.success) {

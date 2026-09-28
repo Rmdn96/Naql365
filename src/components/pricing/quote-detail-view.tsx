@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { MvpView } from '@/components/public/analytics';
 import type { Locale } from '@/i18n/config';
 import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import type { customerQuoteDetails } from '@/infrastructure/pricing/service';
@@ -19,6 +20,11 @@ export function QuoteDetailView({
   const request = quote.quotes?.requests;
   return (
     <div className="container page narrow">
+      <MvpView
+        event="final_quote_viewed"
+        market={request?.markets?.country_code ?? ''}
+        context="quote"
+      />
       <Link
         href={
           guest
@@ -110,7 +116,12 @@ export function QuoteDetailView({
         </dd>
       </dl>
       {(quote.status === 'SENT' || quote.status === 'VIEWED') && (
-        <QuoteActions locale={locale} quoteVersionId={quote.id} guest={guest} />
+        <QuoteActions
+          locale={locale}
+          quoteVersionId={quote.id}
+          guest={guest}
+          country={request?.markets?.country_code ?? ''}
+        />
       )}
     </div>
   );
