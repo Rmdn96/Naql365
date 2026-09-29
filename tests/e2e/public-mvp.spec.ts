@@ -1,4 +1,26 @@
 import { test, expect } from '@playwright/test';
+
+test('guest start waits for client handlers before accepting a click', async ({ page }) => {
+  let release!: () => void;
+  const ready = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route('**/_next/static/**', async (route) => {
+    if (route.request().resourceType() === 'script') await ready;
+    await route.continue();
+  });
+  try {
+    await page.goto('/en/request', { waitUntil: 'commit' });
+    const start = page.getByRole('button', { name: 'Start request', exact: true });
+    await expect(start).toBeDisabled();
+    await expect(page.locator('#guest-country')).toBeDisabled();
+    release();
+    await expect(start).toBeEnabled();
+    await expect(page.locator('#guest-country')).toBeEnabled();
+  } finally {
+    release();
+  }
+});
 test('telemetry rejects private properties and unavailable legal copy stays unpublished', async ({
   request,
 }) => {

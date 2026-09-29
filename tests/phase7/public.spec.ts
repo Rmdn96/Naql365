@@ -1,6 +1,7 @@
 import { test, expect } from '../staging/fixtures';
 import { axe } from '../phase4/helpers';
 import { publicDictionary } from '../../src/i18n/public';
+import { dictionary } from '../../src/i18n/dictionaries';
 
 for (const locale of ['ar', 'en'] as const) {
   test(`${locale} hosted public MVP responsive accessibility, SEO and market contact`, async ({
@@ -14,7 +15,7 @@ for (const locale of ['ar', 'en'] as const) {
     await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
     await expect(page.locator('link[rel="alternate"][hreflang="ar"]')).toHaveCount(1);
     await expect(page.locator('link[rel="alternate"][hreflang="en"]')).toHaveCount(1);
-    expect(await page.title()).toContain('Naql365');
+    expect(await page.title()).toContain(dictionary(locale).brand);
     for (const country of ['SA', 'EG']) {
       await page.getByLabel(t.country).selectOption(country);
       await expect(page.locator('.floating-contact')).toHaveAttribute(

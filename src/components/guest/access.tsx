@@ -9,6 +9,7 @@ import type { Locale } from '@/i18n/config';
 import { Button, Select, Alert } from '@/components/ui/primitives';
 import { quickEntryQuery, type QuickEntry } from '@/domain/requests/quick-entry';
 import { recordMvpEvent } from '@/components/public/analytics';
+import { useHydrated } from '@/components/ui/use-hydrated';
 
 export function GuestStart({
   locale,
@@ -19,6 +20,7 @@ export function GuestStart({
   initialCountry?: PublicCountry;
   preselection?: QuickEntry | undefined;
 }) {
+  const hydrated = useHydrated();
   const t = guestDictionary(locale),
     router = useRouter();
   const [country, setCountry] = useState(initialCountry),
@@ -98,12 +100,12 @@ export function GuestStart({
             label={t.country}
             value={country}
             onChange={(e) => setCountry(publicCountry.parse(e.target.value))}
-            disabled={pending}
+            disabled={!hydrated || pending}
           >
             <option value="SA">{t.sa}</option>
             <option value="EG">{t.eg}</option>
           </Select>
-          <Button onClick={start} disabled={pending}>
+          <Button onClick={start} disabled={!hydrated || pending}>
             {pending ? t.opening : t.start}
           </Button>
         </>

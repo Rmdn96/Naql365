@@ -5,7 +5,9 @@ import type { Locale } from '@/i18n/config';
 import { guestDictionary } from '@/i18n/guest';
 import { guestSecret, guestContinuationPath } from '@/domain/guest/capability';
 import { Button, Card, Alert } from '@/components/ui/primitives';
+import { useHydrated } from '@/components/ui/use-hydrated';
 export function StaffGuestLink({ locale, requestId }: { locale: Locale; requestId: string }) {
+  const hydrated = useHydrated();
   const t = guestDictionary(locale),
     locked = useRef(false);
   const [busy, setBusy] = useState(false),
@@ -57,10 +59,10 @@ export function StaffGuestLink({ locale, requestId }: { locale: Locale; requestI
       {error && <Alert tone="error">{t.error}</Alert>}
       {revoked && <p role="status">{t.revoked}</p>}
       <div className="actions">
-        <Button disabled={busy} onClick={() => void act('replace')}>
+        <Button disabled={!hydrated || busy} onClick={() => void act('replace')}>
           {t.replaceLink}
         </Button>
-        <Button disabled={busy} variant="secondary" onClick={() => void act('revoke')}>
+        <Button disabled={!hydrated || busy} variant="secondary" onClick={() => void act('revoke')}>
           {t.revokeLink}
         </Button>
         {secret && <Button onClick={() => void copy()}>{copied ? t.copied : t.copy}</Button>}
