@@ -42,12 +42,20 @@ for (const locale of ['ar', 'en'] as const) {
     }
     await page.keyboard.press('Tab');
     expect(await page.evaluate(() => document.activeElement !== document.body)).toBe(true);
-    const robots = await page.context().request.get('/robots.txt');
-    expect(robots.status()).toBe(200);
-    expect(await robots.text()).toMatch(/Disallow: \/\s/);
-    const sitemap = await page.context().request.get('/sitemap.xml');
-    expect(sitemap.status()).toBe(200);
-    expect(await sitemap.text()).not.toContain('/guest');
-    expect((await page.context().request.get(`/${locale}/legal/privacy`)).status()).toBe(404);
+    const resources = await page.evaluate(
+      async (locale) =>
+        Promise.all(
+          ['/robots.txt', '/sitemap.xml', `/${locale}/legal/privacy`].map(async (path) => {
+            const response = await fetch(path);
+            return { status: response.status, text: await response.text() };
+          }),
+        ),
+      locale,
+    );
+    expect(resources[0]!.status).toBe(200);
+    expect(resources[0]!.text).toMatch(/Disallow: \/\s/);
+    expect(resources[1]!.status).toBe(200);
+    expect(resources[1]!.text).not.toContain('/guest');
+    expect(resources[2]!.status).toBe(404);
   });
 }
