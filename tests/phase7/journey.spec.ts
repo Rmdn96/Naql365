@@ -14,7 +14,7 @@ for (const country of ['SA', 'EG'] as const)
     browser,
     baseURL,
   }) => {
-    const staffContext = await browser.newContext();
+    const staffContext = await browser.newContext({ baseURL });
     await configureProtectedContext(staffContext, baseURL);
     const staff = await staffContext.newPage();
     try {
@@ -206,7 +206,7 @@ for (const country of ['SA', 'EG'] as const)
   });
 
 test('guest rejects sent Quote without creating an Order', async ({ page, browser, baseURL }) => {
-  const context = await browser.newContext();
+  const context = await browser.newContext({ baseURL });
   await configureProtectedContext(context, baseURL);
   try {
     const journey = await guestQuote(page, await context.newPage(), 'SA');
