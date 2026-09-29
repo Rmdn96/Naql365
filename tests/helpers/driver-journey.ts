@@ -18,7 +18,7 @@ import { customerDictionary } from '../../src/i18n/customer';
 import { dictionary } from '../../src/i18n/dictionaries';
 import { operationLabel } from '../../src/i18n/operations';
 import { hasSourceMapDirective } from '../helpers/source-map';
-async function driverLogin(page: Page, label: string, locale: 'ar' | 'en') {
+export async function driverLogin(page: Page, label: string, locale: 'ar' | 'en') {
   await page.goto(`/${locale}/driver/login`);
   await page.locator('#driver-email').fill(identities[label]!.email);
   await page.locator('#driver-password').fill(identities[label]!.password);
@@ -52,7 +52,7 @@ async function tripState(id: string) {
   expect(row.error).toBeNull();
   return row.data!;
 }
-async function uiAction(
+export async function uiAction(
   page: Page,
   tripId: string,
   action: 'dispatch' | 'arrive' | 'start_service' | 'complete_stop' | 'depart' | 'complete_trip',
