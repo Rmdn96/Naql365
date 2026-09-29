@@ -14,6 +14,7 @@ for (const country of ['SA', 'EG'] as const)
     browser,
     baseURL,
   }) => {
+    if (!baseURL) throw Error('Verified Preview origin required');
     const staffContext = await browser.newContext({ baseURL });
     await configureProtectedContext(staffContext, baseURL);
     const staff = await staffContext.newPage();
@@ -206,6 +207,7 @@ for (const country of ['SA', 'EG'] as const)
   });
 
 test('guest rejects sent Quote without creating an Order', async ({ page, browser, baseURL }) => {
+  if (!baseURL) throw Error('Verified Preview origin required');
   const context = await browser.newContext({ baseURL });
   await configureProtectedContext(context, baseURL);
   try {
