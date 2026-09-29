@@ -2,6 +2,21 @@
 
 **Implementation checkpoint; not final acceptance.** This is the canonical report. Update it in place as remaining work is verified. No Production release or merge is authorized by this report.
 
+## 29 September continuation — current evidence
+
+This section supersedes the older implementation checkpoint below; hosted acceptance is still in progress.
+
+- Current tested source: `43ab3a2260b8bbf3f8938bb05c678491de2b8332`. Full CI [36556662562](https://github.com/Rmdn96/Naql365/actions/runs/36556662562) PASS, including independent-connection concurrency, fresh migrations, RLS and exact generated types.
+- Local validation: 176 unit/integration tests in 40 files PASS; 30 browser tests PASS; formatting, lint, strict types, secret scan and build PASS. Production dependency audit reports zero vulnerabilities.
+- Total migrations: **44**. Staging upgraded from the accepted 31; exact ledger, SQL assertions and generated public schema types PASS. RLS enabled on all 59 public tables. Earlier accepted migrations remain unchanged.
+- Protected candidate Preview: https://naql365-staging-o00hmi43d-naql365.vercel.app, `dpl_3AzEHEiNP1c5QnqBC6beZen5YubB`, independently verified READY / Preview for the source above. This is not yet final hosted acceptance.
+- Staging Auth uses this exact origin with four exact localized callback URLs, no wildcard. Vercel has zero Production deployments and no Production-scoped variables.
+- Quick Quote catalogue/preselection, EG transfer destinations, private aggregate funnel telemetry, opt-in registered live-tracking presentation, and approved-content-only legal routes are implemented. Unpublished legal routes now return a real HTTP 404 before streaming.
+- Hosted tests now cover guest SA CASH and EG transfer/rejection/reupload through Driver/POD completion, link replacement/revocation, capability isolation, concurrent creation replay, public AR/EN accessibility and four viewport widths. These are test definitions, not PASS claims until executed.
+- The fixture runner records only scoped IDs and one-way capability verifiers before request creation, enabling cleanup after a lost HTTP response. Hosted fixture/automation credential cleanup remains pending execution evidence.
+- Remaining: complete hosted journeys/security/visual checks, registered Phase 0–6 regression on the same accepted Preview, bounded runtime review, explicit cleanup, final report and final-HEAD CI. Main/develop/Production/Phase 8 remain untouched.
+- First hosted run: **2 PASS / 4 FAIL**, not accepted. The capability-isolation/concurrent-creation test and English public checks passed. Three journeys timed out at the first guest-start click; the client-only button lacked the existing hydration guard. The Arabic public test incorrectly expected the English brand in the localized title. Scoped fixture cleanup passed. Both causes are being corrected and the complete suite must be rerun; no downstream journey acceptance is inferred.
+
 ## A–C. Starting state, Git baseline and gap analysis
 
 - Branch: `feature/phase-7-mvp-launch-guest-brand`.
