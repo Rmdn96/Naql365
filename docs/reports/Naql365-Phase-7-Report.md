@@ -6,6 +6,10 @@
 
 This section supersedes the older implementation checkpoint below; hosted acceptance is still in progress.
 
+- Updated source `5ff24bdadc89e59acd96589da62fdca2b40de811`: CI [36589983451](https://github.com/Rmdn96/Naql365/actions/runs/36589983451) PASS, local E2E **32 PASS** including delayed-hydration controls. Candidate https://naql365-staging-hcp52bipi-naql365.vercel.app (`dpl_gWukANJGCWNGfk7QrgZGkhKGcgiH`) independently READY / Preview.
+- Updated Phase 7 hosted suite: **6 PASS**. SA guest CASH and EG guest InstaPay TEST transfer both completed Request → Quote → Payment → internal Driver → POD → completed Order without registration. EG included Finance rejection/reupload/confirmation and private signed proof expiry. Quote rejection created no Order. Both locales passed public accessibility/responsive/SEO/contact checks. Capability isolation and duplicate creation passed. Final cleanup and full registered regressions are separate gates.
+- Staging guest policy is now intended bounded configuration, enabled through `scripts/staging/configure-guest.mjs --apply`; existing expiry/quota are preserved. Acceptance temporarily raises the creation quota and restores it afterward.
+
 - Current tested source: `43ab3a2260b8bbf3f8938bb05c678491de2b8332`. Full CI [36556662562](https://github.com/Rmdn96/Naql365/actions/runs/36556662562) PASS, including independent-connection concurrency, fresh migrations, RLS and exact generated types.
 - Local validation: 176 unit/integration tests in 40 files PASS; 30 browser tests PASS; formatting, lint, strict types, secret scan and build PASS. Production dependency audit reports zero vulnerabilities.
 - Total migrations: **44**. Staging upgraded from the accepted 31; exact ledger, SQL assertions and generated public schema types PASS. RLS enabled on all 59 public tables. Earlier accepted migrations remain unchanged.
