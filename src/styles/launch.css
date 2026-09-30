@@ -237,6 +237,13 @@
   gap: 16px;
   font-weight: 700;
 }
+.route-motif--journey {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-block: 24px;
+}
+.route-motif--journey li {
+  overflow-wrap: anywhere;
+}
 .route-motif li:not(:last-child)::after {
   content: '';
   position: absolute;

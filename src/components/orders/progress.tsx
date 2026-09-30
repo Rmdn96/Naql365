@@ -12,6 +12,7 @@ import { formatMoney } from '@/domain/markets/model';
 import { paymentDictionary } from '@/i18n/payments';
 import { operationsDictionary, operationalStatus } from '@/i18n/operations';
 import { Badge, EmptyState } from '@/components/ui/primitives';
+import { RouteMotif } from '@/components/ui/route-motif';
 export function OrderProgress({
   data,
   payment,
@@ -46,6 +47,14 @@ export function OrderProgress({
       </a>
       <Badge>{operationalStatus(data.status, locale)}</Badge>
       <p>{t.trackingHelp}</p>
+      {data.trips.length > 0 && (
+        <RouteMotif
+          journey
+          labels={data.trips.map(
+            (trip) => `${trip.reference ?? ''} · ${operationalStatus(trip.status, locale)}`,
+          )}
+        />
+      )}
       <section aria-labelledby="payment-summary-title" className="card">
         <h2 id="payment-summary-title">{pt.title}</h2>
         <dl>

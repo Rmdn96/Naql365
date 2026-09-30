@@ -603,6 +603,8 @@ dialog::backdrop {
   height: 1.5rem;
   margin-inline-end: 0.5rem;
   background: #e5ebf2;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #c3eaf1;
 }
 .wizard-progress button[aria-current] {
   border-color: #075cc9;

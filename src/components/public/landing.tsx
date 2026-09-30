@@ -4,21 +4,8 @@ import { MvpView } from './analytics';
 import type { Locale } from '@/i18n/config';
 import { publicDictionary } from '@/i18n/public';
 import { whatsappUrl, type PublicCountry } from '@/domain/markets/public-contact';
+import { RouteMotif } from '@/components/ui/route-motif';
 
-export function RouteMotif({ labels }: { labels: string[] }) {
-  return (
-    <ol className="route-motif">
-      {labels.map((label, index) => (
-        <li key={label}>
-          <span className="route-node" aria-hidden="true">
-            {index + 1}
-          </span>
-          <span>{label}</span>
-        </li>
-      ))}
-    </ol>
-  );
-}
 export function Landing({
   locale,
   country,

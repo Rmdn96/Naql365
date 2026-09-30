@@ -12,6 +12,8 @@ import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { formatMoney } from '@/domain/markets/model';
 import { quickEntry } from '@/domain/requests/quick-entry';
 import { MvpView } from '@/components/public/analytics';
+import { RouteMotif } from '@/components/ui/route-motif';
+import { customerDictionary } from '@/i18n/customer';
 
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({
@@ -62,6 +64,13 @@ export default async function Page({
         </p>
       )}
       {details.request.status === 'SUBMITTED' && <p>{t.review}</p>}
+      <RouteMotif
+        journey
+        labels={[
+          `${customerDictionary(locale).pickup}: ${details.payload.pickup.city}`,
+          `${customerDictionary(locale).delivery}: ${details.payload.delivery.city}`,
+        ]}
+      />
       {preliminary.state === 'PRELIMINARY' && (
         <article className="card">
           <MvpView
