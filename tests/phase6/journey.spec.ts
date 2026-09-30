@@ -79,6 +79,13 @@ test.afterEach(async ({ page }, info) => {
       wizardFailure: await page
         .getByText(customerDictionary('ar').saveFailed, { exact: true })
         .isVisible(),
+      proofInput: await page
+        .locator('#transfer-proof-file')
+        .evaluate((input: HTMLInputElement) => ({
+          disabled: input.disabled,
+          selected: Boolean(input.files?.length),
+        }))
+        .catch(() => null),
     }),
   });
 });
@@ -509,6 +516,8 @@ for (const country of ['SA', 'EG'] as const)
           page.getByText('Please upload a readable transfer proof', { exact: true }),
         ).toBeVisible();
         await expect(page.locator('body')).not.toContainText('PRIVATE FINANCE TEST NOTE');
+        // setInputFiles can populate a disabled SSR input; wait for the real interactive control.
+        await expect(page.locator('#transfer-proof-file')).toBeEnabled();
         await page.locator('#transfer-proof-file').setInputFiles({
           name: country === 'EG' ? 'replacement.pdf' : 'replacement.png',
           mimeType: country === 'EG' ? 'application/pdf' : 'image/png',
