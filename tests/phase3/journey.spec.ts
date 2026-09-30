@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { createClient } from '@supabase/supabase-js';
 import sharp from 'sharp';
 import { randomUUID } from 'node:crypto';
-import { test, expect } from '../staging/fixtures';
+import { test, expect, holdApplicationScripts } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 import { dictionary } from '../../src/i18n/dictionaries';
 import { quotesDictionary } from '../../src/i18n/quotes';
@@ -310,7 +310,16 @@ for (const country of ['SA', 'EG'] as const)
     for (const trip of [trip1, trip2]) {
       await op(page, 'plan', trip, plan);
       if (trip === trip1) {
-        await page.goto('/ar/portal/operations/trips/' + trip);
+        const release = holdApplicationScripts(page);
+        try {
+          await page.goto('/ar/portal/operations/trips/' + trip, { waitUntil: 'commit' });
+          await expect(page.locator('#planned-start')).toBeDisabled();
+          await expect(page.locator('#planned-end')).toBeDisabled();
+          release();
+          await expect(page.locator('#planned-start')).toBeEnabled();
+        } finally {
+          release();
+        }
         await page.locator('#planned-start').fill('2027-01-15T10:00');
         await page.locator('#planned-end').fill('2027-01-15T12:00');
         await page.getByRole('button', { name: ot.savePlan, exact: true }).click();
