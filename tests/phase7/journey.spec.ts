@@ -1,6 +1,6 @@
 import { test, expect, configureProtectedContext } from '../staging/fixtures';
-import { guestQuote, acceptGuest, executeDelivery } from './helpers';
-import { admin, login, axe, principal } from '../phase4/helpers';
+import { guestQuote, acceptGuest, executeDelivery, guestResponsiveCheck } from './helpers';
+import { admin, login, principal } from '../phase4/helpers';
 import { paymentDictionary } from '../../src/i18n/payments';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { guestDictionary } from '../../src/i18n/guest';
@@ -16,6 +16,7 @@ for (const country of ['SA', 'EG'] as const)
   }) => {
     if (!baseURL) throw Error('Verified Preview origin required');
     const staffContext = await browser.newContext({ baseURL });
+    await staffContext.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: baseURL });
     await configureProtectedContext(staffContext, baseURL);
     const staff = await staffContext.newPage();
     try {
@@ -31,10 +32,7 @@ for (const country of ['SA', 'EG'] as const)
           .eq('id', order)
           .single()
       ).data;
-      for (const width of [360, 390, 768, 1440]) {
-        await page.setViewportSize({ width, height: 900 });
-        await axe(page);
-      }
+      await guestResponsiveCheck(page);
       await page.setViewportSize({ width: 390, height: 844 });
       const guest = createClient(
         process.env.STAGING_TEST_API_URL!,
@@ -152,7 +150,7 @@ for (const country of ['SA', 'EG'] as const)
       }
       await executeDelivery(staff, order, country, journey.market.id, journey.cityId);
       await page.goto(`/${locale}/guest/orders/${order}`);
-      await axe(page);
+      await guestResponsiveCheck(page);
       const progress = await guest.rpc('customer_order_progress', { p_order_id: order });
       expect(progress.error).toBeNull();
       expect(progress.data.status).toBe('COMPLETED');
@@ -189,6 +187,10 @@ for (const country of ['SA', 'EG'] as const)
         .getByRole('button', { name: guestDictionary(locale).replaceLink, exact: true })
         .click();
       const replaced = (await (await replacement).json()) as { token: string };
+      await staff.getByRole('button', { name: guestDictionary(locale).copy, exact: true }).click();
+      await expect(
+        staff.getByRole('button', { name: guestDictionary(locale).copied, exact: true }),
+      ).toBeVisible();
       expect((await guest.rpc('guest_access_state')).error).not.toBeNull();
       await page.goto(`/${locale}/guest#${replaced.token}`);
       await expect(page).toHaveURL(new RegExp(`/guest/requests/${journey.requestId}$`));

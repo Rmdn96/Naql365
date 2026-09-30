@@ -12,6 +12,15 @@ import { marketDate } from '../../src/domain/markets/model';
 import { driverLogin, uiAction } from '../helpers/driver-journey';
 import sharp from 'sharp';
 
+export async function guestResponsiveCheck(page: Page) {
+  const viewport = page.viewportSize();
+  for (const width of [360, 390, 768, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await axe(page);
+  }
+  if (viewport) await page.setViewportSize(viewport);
+}
+
 export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') {
   const locale = country === 'SA' ? 'ar' : 'en';
   const ct = customerDictionary(locale),
@@ -70,6 +79,14 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   const response = await responsePromise;
   expect(response.status()).toBe(200);
   const result = (await response.json()) as { token: string; request: { id: string } };
+  const cookie = (await page.context().cookies()).find(
+    (item) => item.name === '__Host-naql365_guest',
+  );
+  expect(
+    Boolean(
+      cookie?.secure && cookie.httpOnly && cookie.sameSite === 'Strict' && cookie.path === '/',
+    ),
+  ).toBe(true);
   if (!/^[a-f0-9-]{36}$/.test(result.request.id) || !process.env.STAGING_PHASE7_FIXTURE_LEDGER)
     throw Error('Missing guest fixture ledger');
   appendFileSync(
@@ -80,7 +97,7 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   await page.getByRole('button', { name: gt.proceed, exact: true }).click();
   await expect(page.locator('#service')).toHaveValue(service);
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
-  await axe(page);
+  await guestResponsiveCheck(page);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
   for (const kind of ['pickup', 'delivery']) {
     await expect(page.locator(`#${kind}-city`)).toHaveValue(cityId);
@@ -140,7 +157,7 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   ).data!;
   const versionId = quote.quote_versions.find((v) => v.status === 'SENT')!.id;
   await page.goto(`/${locale}/guest/quotes/${versionId}`);
-  await axe(page);
+  await guestResponsiveCheck(page);
   return {
     locale: locale as 'ar' | 'en',
     country,
