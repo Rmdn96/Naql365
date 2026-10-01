@@ -10,9 +10,10 @@ insert into auth.users(id,raw_user_meta_data) values
  ('10000000-0000-4000-8000-000000000003','{}'),
  ('10000000-0000-4000-8000-000000000004','{}'),
  ('10000000-0000-4000-8000-000000000005','{}');
-select public.test_assert((select count(*)=5 from public.profiles),'registration creates profiles');
-select public.test_assert((select count(*)=0 from public.user_roles),'metadata cannot assign roles');
-select public.test_assert((select count(*)=0 from public.organization_memberships),'metadata cannot assign tenants');
+-- Scope enrollment assertions to these five identities; hosted projects may retain other accounts.
+select public.test_assert((select count(*)=5 from public.profiles where id between '10000000-0000-4000-8000-000000000001'::uuid and '10000000-0000-4000-8000-000000000005'::uuid),'registration creates profiles');
+select public.test_assert((select count(*)=0 from public.user_roles where profile_id between '10000000-0000-4000-8000-000000000001'::uuid and '10000000-0000-4000-8000-000000000005'::uuid),'metadata cannot assign roles');
+select public.test_assert((select count(*)=0 from public.organization_memberships where profile_id between '10000000-0000-4000-8000-000000000001'::uuid and '10000000-0000-4000-8000-000000000005'::uuid),'metadata cannot assign tenants');
 insert into public.organizations(id,name) values ('20000000-0000-4000-8000-000000000001','Test A'),('20000000-0000-4000-8000-000000000002','Test B');
 -- Explicit synthetic catalogue for this rollback-only fixture; no production coverage.
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code)
@@ -30,21 +31,22 @@ insert into public.organization_memberships(organization_id,profile_id,member_ty
  ('20000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000005','staff');
 insert into public.user_roles(organization_id,profile_id,role_id)
  select organization_id,profile_id,r.id from public.organization_memberships m join public.roles r on
- r.code=case when m.member_type='customer' then 'CUSTOMER' else 'SUPER_ADMIN' end;
+ r.code=case when m.member_type='customer' then 'CUSTOMER' else 'SUPER_ADMIN' end
+ where m.organization_id in ('20000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000002');
 insert into public.customers(id,organization_id,profile_id) values
  ('30000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001'),
  ('30000000-0000-4000-8000-000000000002','20000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000002'),
  ('30000000-0000-4000-8000-000000000003','20000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000003');
-insert into public.requests(id,organization_id,customer_id,market_id) select id,organization_id,id,md5(organization_id::text||'SA')::uuid from public.customers;
-insert into public.request_items(organization_id,request_id) select organization_id,id from public.requests;
-insert into public.file_objects(id,organization_id,owner_profile_id,bucket_id) select id,organization_id,profile_id,'attachments' from public.customers;
-insert into storage.objects(bucket_id,name) select bucket_id,object_name from public.file_objects;
-insert into public.quotes(id,organization_id,request_id) select id,organization_id,id from public.requests;
+insert into public.requests(id,organization_id,customer_id,market_id) select id,organization_id,id,md5(organization_id::text||'SA')::uuid from public.customers where organization_id in ('20000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000002');
+insert into public.request_items(organization_id,request_id) select organization_id,id from public.requests where organization_id in ('20000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000002');
+insert into public.file_objects(id,organization_id,owner_profile_id,bucket_id) select id,organization_id,profile_id,'attachments' from public.customers where organization_id in ('20000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000002');
+insert into storage.objects(bucket_id,name) select bucket_id,object_name from public.file_objects where organization_id in ('20000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000002');
+insert into public.quotes(id,organization_id,request_id) select id,organization_id,id from public.requests where organization_id in ('20000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000002');
 insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,accepted_at,distance_km,distance_source,distance_verified_at,currency)
- select id,organization_id,id,1,'ACCEPTED',now(),now()+interval '1 day',now(),1,'MANUAL_VERIFIED',now(),'SAR' from public.quotes;
+ select id,organization_id,id,1,'ACCEPTED',now(),now()+interval '1 day',now(),1,'MANUAL_VERIFIED',now(),'SAR' from public.quotes where organization_id in ('20000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000002');
 insert into public.quote_versions(id,organization_id,quote_id,version,currency) values ('40000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001',2,'SAR');
 insert into public.orders(organization_id,quote_id,accepted_quote_version_id,idempotency_key,currency) values ('20000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','test-acceptance','SAR');
-insert into public.jobs(id,organization_id,order_id) select '50000000-0000-4000-8000-000000000001',organization_id,id from public.orders;
+insert into public.jobs(id,organization_id,order_id) select '50000000-0000-4000-8000-000000000001',organization_id,id from public.orders where organization_id in ('20000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000002');
 insert into public.trips(id,organization_id,job_id) values
  ('60000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000001','50000000-0000-4000-8000-000000000001'),
  ('60000000-0000-4000-8000-000000000002','20000000-0000-4000-8000-000000000001','50000000-0000-4000-8000-000000000001');
