@@ -88,3 +88,24 @@ Run `node scripts/staging/configure-tracking.mjs --apply` with the approved Stag
 Deploy with the supported Vercel Preview target after CI, independently verify target/source/READY and protection, then update only the exact Staging Auth origin/callback allowlist. No map or routing API credentials are needed for the disclosed OpenStreetMap raster viewport; ETA is explicitly unavailable. See the canonical Phase 5 report for the accepted Preview and executed evidence.
 
 Run `node scripts/staging/verify-phase5.mjs` against that verified protected origin using a temporary automation credential held only in the process environment. Do not overlap fixture runners. It exercises the complete SA/EG Driver journeys with real browser GPS and actual Supabase Realtime subscriptions. Run foundation/intake/commercial/Operations regressions serially on the same Preview. Cleanup must remove synthetic identities, operational/commercial data, files, latest locations, private samples/sessions and owned notifications; retain intended catalogues and retention configuration. Revoke the temporary Preview automation credential last.
+
+## Phase 7 guest setup and acceptance
+
+The accepted Phase 6 schema has 31 migrations; Phase 7 adds thirteen, for **44**. Require full feature CI before upgrading the allowlisted Staging project. Do not reset the hosted database. Verify the exact migration ledger, all SQL/RLS assertions and authoritative generated schema types using `node scripts/staging/verify-database.mjs`. The populated Phase 6 upgrade test separately compares historical identities and commercial snapshots before/after.
+
+Run `node scripts/staging/configure-guest.mjs --apply` with the existing explicit Staging project/organization guard variables. It enables the enrolled organization's guest policy while preserving an existing expiry/quota; defaults are 30 days and 30 creations/hour. This privileged procedure must never be pointed at Production during Phase 7. Acceptance temporarily raises the bounded creation quota and restores the prior configuration.
+
+Independently verify a genuine protected READY Preview and its source SHA. Preview environment scopes must reference Staging only. Synchronize the exact origin and four localized callbacks in `config/staging/supabase/config.toml`; apply/diff Auth configuration with the approved CLI login. Do not allow arbitrary wildcard redirects. The final candidate and status belong in the canonical Phase 7 report.
+
+With `STAGING_BASE_URL`, `STAGING_SUPABASE_PROJECT_REF`, `STAGING_SUPABASE_ORG_ID` and a temporary `VERCEL_AUTOMATION_BYPASS_SECRET` supplied securely to the process, run these serially:
+
+1. `node scripts/staging/verify-phase7.mjs` — guest SA CASH / EG TEST transfer to delivery, rejection, isolation, public AR/EN and responsive accessibility.
+2. `node scripts/staging/verify-phase6.mjs` — registered Finance, CASH/transfer, proof rejection/reupload, execution clearance and private receipts.
+3. `node scripts/staging/verify-browser.mjs` — foundation Auth/session/logout, private Storage, suspension and public security.
+4. `node scripts/staging/verify-intake.mjs` — registered intake, private attachments and authorization.
+5. `node scripts/staging/verify-phase2.mjs` — commercial pricing/Quote/acceptance.
+6. `node scripts/staging/verify-phase3.mjs` — multi-Trip operations, Market isolation and POD.
+7. `node scripts/staging/verify-phase5.mjs` — internal Driver, foreground GPS, Realtime, notifications and session regression. Enable the existing `LAUNCH_CUSTOMER_LIVE_TRACKING=true` flag only on the regression Preview build/runtime; guest live coordinates remain excluded.
+8. `node scripts/staging/verify-guest-capabilities.mjs` — positive, expired, revoked and revoked-creation replay probes, with scoped cleanup.
+
+Never overlap these runners: they share authoritative configuration and cleanup. Inspect a stale lock's PID before removing it. Runners retain intended catalogues and remove their synthetic identities, grants, business rows, files and Storage objects. Verify aggregate residual counts independently, review bounded logs/assets, then revoke only the positively identified temporary automation credential. Screenshots are restricted to public pages; traces/video/private screenshots remain disabled. TEST transfer destinations never use owner Production values.

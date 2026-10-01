@@ -1,171 +1,241 @@
 # Naql365 Phase 7 — MVP launch, guest ordering and visual experience
 
-**Implementation checkpoint; not final acceptance.** This is the canonical report. Update it in place as remaining work is verified. No Production release or merge is authorized by this report.
+Canonical acceptance report, updated 1 October 2026. **Acceptance is in progress; no merge or Production release is authorized.** This revision replaces earlier implementation checkpoints and retains material failed-run evidence below.
 
-## 29 September continuation — current evidence
+## A. Starting state
 
-This section supersedes the older implementation checkpoint below; hosted acceptance is still in progress.
+Phase 6 was protected-merged, with 31 migrations. Work continued without restarting the completed gap analysis or rebuilding accepted domains.
 
-- Updated source `5ff24bdadc89e59acd96589da62fdca2b40de811`: CI [36589983451](https://github.com/Rmdn96/Naql365/actions/runs/36589983451) PASS, local E2E **32 PASS** including delayed-hydration controls. Candidate https://naql365-staging-hcp52bipi-naql365.vercel.app (`dpl_gWukANJGCWNGfk7QrgZGkhKGcgiH`) independently READY / Preview.
-- Updated Phase 7 hosted suite: **6 PASS**. SA guest CASH and EG guest InstaPay TEST transfer both completed Request → Quote → Payment → internal Driver → POD → completed Order without registration. EG included Finance rejection/reupload/confirmation and private signed proof expiry. Quote rejection created no Order. Both locales passed public accessibility/responsive/SEO/contact checks. Capability isolation and duplicate creation passed. Final cleanup and full registered regressions are separate gates.
-- Staging guest policy is now intended bounded configuration, enabled through `scripts/staging/configure-guest.mjs --apply`; existing expiry/quota are preserved. Acceptance temporarily raises the creation quota and restores it afterward.
+## B. Git baseline
 
-- Current tested source: `43ab3a2260b8bbf3f8938bb05c678491de2b8332`. Full CI [36556662562](https://github.com/Rmdn96/Naql365/actions/runs/36556662562) PASS, including independent-connection concurrency, fresh migrations, RLS and exact generated types.
-- Local validation: 176 unit/integration tests in 40 files PASS; 30 browser tests PASS; formatting, lint, strict types, secret scan and build PASS. Production dependency audit reports zero vulnerabilities.
-- Total migrations: **44**. Staging upgraded from the accepted 31; exact ledger, SQL assertions and generated public schema types PASS. RLS enabled on all 59 public tables. Earlier accepted migrations remain unchanged.
-- Protected candidate Preview: https://naql365-staging-o00hmi43d-naql365.vercel.app, `dpl_3AzEHEiNP1c5QnqBC6beZen5YubB`, independently verified READY / Preview for the source above. This is not yet final hosted acceptance.
-- Staging Auth uses this exact origin with four exact localized callback URLs, no wildcard. Vercel has zero Production deployments and no Production-scoped variables.
-- Quick Quote catalogue/preselection, EG transfer destinations, private aggregate funnel telemetry, opt-in registered live-tracking presentation, and approved-content-only legal routes are implemented. Unpublished legal routes now return a real HTTP 404 before streaming.
-- Hosted tests now cover guest SA CASH and EG transfer/rejection/reupload through Driver/POD completion, link replacement/revocation, capability isolation, concurrent creation replay, public AR/EN accessibility and four viewport widths. These are test definitions, not PASS claims until executed.
-- The fixture runner records only scoped IDs and one-way capability verifiers before request creation, enabling cleanup after a lost HTTP response. Hosted fixture/automation credential cleanup remains pending execution evidence.
-- Remaining: complete hosted journeys/security/visual checks, registered Phase 0–6 regression on the same accepted Preview, bounded runtime review, explicit cleanup, final report and final-HEAD CI. Main/develop/Production/Phase 8 remain untouched.
-- First hosted run: **2 PASS / 4 FAIL**, not accepted. The capability-isolation/concurrent-creation test and English public checks passed. Three journeys timed out at the first guest-start click; the client-only button lacked the existing hydration guard. The Arabic public test incorrectly expected the English brand in the localized title. Scoped fixture cleanup passed. Both causes are being corrected and the complete suite must be rerun; no downstream journey acceptance is inferred.
+Branch: `feature/phase-7-mvp-launch-guest-brand`. Develop remains `24f1a4c6a3b8027a6ce89aaf72c8c3bb5fd6fbd9`; main remains `184ac2374a7e9611b4b265efc7dac21b57b7a2b1`. Both are protected. Required independent approval, stale-review dismissal, both required CI jobs and enforced admin protection remain unchanged; force pushes are disabled. Nothing has been merged in this phase.
 
-## A–C. Starting state, Git baseline and gap analysis
+## C. MVP gap analysis
 
-- Branch: `feature/phase-7-mvp-launch-guest-brand`.
-- Accepted remote develop: `24f1a4c6a3b8027a6ce89aaf72c8c3bb5fd6fbd9`; 31 migrations.
-- Main: `184ac2374a7e9611b4b265efc7dac21b57b7a2b1`, unchanged in remote-ref checks.
-- Gap analysis: `docs/phase-7-mvp-launch-gap-analysis.md`, committed as `435fcb4` before any Phase 7 migration. Completed analysis is preserved.
+`docs/phase-7-mvp-launch-gap-analysis.md` was committed as `435fcb4` before any migration. The smallest safe extension is a scoped guest capability around existing Customer/Request/Quote/Order/Payment/Tracking authority, rather than a parallel guest engine.
 
-## D–J. Guest architecture, security, Request, Quote, Order, payment and tracking
+## D. Guest architecture
 
-A GUEST Customer has no Auth identity, profile, role or membership. A private grant binds organization, customer and one Request journey. Only a SHA-256 verifier is stored; issuance provides a high-entropy `g1_` bearer secret once. Expiry is constrained/configurable and revocation permanent. A fragment-based continuation URL exchanges the secret for a Secure/HttpOnly/SameSite cookie on HTTPS. The fragment is removed before fetching journey data. Requests use a separate publishable-key Supabase client carrying the capability, never a service-role key or fabricated Auth identity.
+GUEST Customers have no Auth identity/profile/membership/role. One private grant binds organization, Customer and Request journey. Shared server/database commands authorize that context independently of registered RBAC. Guest services use an isolated publishable-key client; no service-role key or fabricated Auth user is used by the application.
 
-The existing Request initializer, save/submit commands, eight-step wizard, Quote response transaction, payment commands, private evidence pipeline and status-only tracking projection are reused. Anonymous raw writes remain denied. Grant checks are independent of ordinary RBAC; `has_permission` is not weakened. CASH remains due until Finance collection; a transfer proof remains unverified until Finance confirms the exact amount/currency. Payment instructions are hidden until BANK_TRANSFER selection, with a separate non-sensitive availability flag.
+## E. Guest security token
 
-Preliminary pricing remains server-authoritative and waits for Sales-verified road distance. Guest UI exposes the safe preliminary projection when available; it does not invent an instant route price. Quote acceptance preserves exactly-one Order and immutable commercial facts. Guest tracking uses the accepted safe status projection; guest live-map presentation is off. Registered tracking remains available under existing permissions.
+Secrets contain 32 cryptographically random bytes, with canonical versioned encoding. Only SHA-256 verifiers are stored. Expiry is configurable within 1–90 days, revocation is permanent, and privileged replacement revokes the old grant transactionally. Continuation links use fragments, cleared before API access, then Secure/HttpOnly/SameSite=Strict host-only cookies on HTTPS. References and UUIDs are not credentials. Staff inspection does not disclose raw secrets; ephemeral copy is available only after authorized replacement. Grant-first locking serializes mutations against revocation/rotation.
 
-Migration 39 adds explicit `guest.links.manage` permission for SUPER_ADMIN, SALES and OPERATIONS. Inspection does not reveal a token; replacement atomically revokes the prior grant and issues a new one; revocation and replacement record grant IDs only. The shared grant-first locking order is retained. Sales now has an explicit replacement/revocation control with an ephemeral copy action. The secret is not rendered as text or sent to WhatsApp. Independent-connection rotation races and hosted staff UI verification remain unfinished.
+## F. Guest Request
 
-## K–M. Registered regression, WhatsApp and Market selection
+The existing eight-step wizard, validation, autosave, private attachments and submission transaction are reused without registration. Creation uses a browser-generated 256-bit replay capability; duplicate submissions return the same journey and cannot resurrect revoked/expired access. In-memory retry state does not survive closing the page. The customer receives the existing N365 reference and a private continuation-link copy action.
 
-Existing registered services default to the original authenticated client. Guest adapters are selected only by dedicated server routes. Local existing integration/SQL tests pass at the recorded checkpoint; registered hosted regression on the Phase 7 Preview has not run.
+## G. Guest Quote
 
-Public contact values live in one intentional public Market configuration, separate from Finance data. The selected SA/EG country updates WhatsApp and the initial guest Request country; locale remains independent. Reference messages accept a bounded reference format and never arbitrary text or secret URLs. Local desktop/mobile browser tests verify country switching and entering Request without a login wall. Reference-aware hosted verification is pending.
+The safe preliminary projection uses authoritative pricing after staff verifies the required road distance; Quick Quote does not invent an instant routing price. This preserves the approved MANUAL_VERIFIED distance authority. Sent final versions, expiry, customer-safe amounts/tax/currency and accept/reject use existing commands. No internal adjustment reason or pricing administration is disclosed.
 
-## N–T. Brand, Homepage, mobile, tokens, Quick Quote, navigation and flags
+## H. Guest Order
 
-The public page now uses navy/blue/cyan, a reusable route motif, product-status illustration explicitly labeled as illustrative, clear Request CTA, active service catalogue, four-step explanation, tracking preview, business section, useful FAQ and final CTA. Alexandria and Inter use Next font self-hosting. No stock-photo dependency or animation library was added. Layout uses server components with small interactive Market/contact controls.
+Existing transactional/idempotent acceptance creates exactly one Order per accepted Quote Version. Commercial facts come from the immutable accepted snapshot. Guest rejection creates no Order.
 
-Services come from active Market/service coverage, never invented offerings. The current Quick Quote section enters the real Request flow; inline location/service preselection remains to be finished. Guest live location is not presented; a general launch presentation-flag configuration is not complete. Legal-page structure and approved content gates remain pending. Existing operational systems are preserved.
+## I. Guest payment
 
-## U–X. SEO, analytics, security and abuse
+CASH and BANK_TRANSFER reuse Phase 6 authority. Guests cannot mark CASH paid or verify a transfer. EG transfer configuration extends the existing privileged account model with Vodafone Cash/InstaPay destinations; Market/currency relationships and proof snapshots are enforced. Destination changes freeze after proof submission. Only synthetic TEST configuration is used on Staging. Instructions are returned only during authorized transfer checkout. Copy IBAN remains supported; no owner financial values were added to configuration, fixtures or documentation.
 
-Localized canonical/hreflang and WebSite structured data remain. Guest pages/API carry noindex/noarchive and no-referrer headers; existing CSP and same-origin mutations remain. Local exchange test proves predictable references cannot authorize access and are removed from the fragment before any network request.
+## J. Guest tracking
 
-Strict analytics event validation admits a finite event/Market/context vocabulary only; the actual collector and complete funnel instrumentation remain unfinished. Do not claim analytics acceptance from the schema alone.
+The same safe own-Order projection follows preparation, Trip/Stop progression and POD/completion. Guest tracking is status-only; precise coordinates, Driver identity, private issues, assignment history and Finance notes remain excluded. Refresh obtains authoritative state rather than a separate tracking truth.
 
-Private grant/rate tables have RLS and no anonymous table permissions. Per-organization creation quota and per-grant mutation/upload quotas execute authoritatively in PostgreSQL. Request bodies and proof streams are bounded. Image normalization and existing private PDF handling are reused; no malware-scanning claim is made. Initial anonymous creation retry recovery and bounded invalid-exchange abuse handling need completion/review before acceptance.
+## K. Registered customer regression
 
-## Y–Z. Performance and accessibility
+Registered adapters continue using accepted SSR Auth and authorization. Full hosted foundation/intake/commercial/Operations/Driver/tracking/Finance regression is currently running serially on the candidate below. It is not yet PASS.
 
-An optimized local build passed before the latest preliminary-price display addition. There is no video Hero, heavy animation dependency or unconditional guest map. Final build/page-size comparison remains required.
+## L. WhatsApp SA/EG
 
-Local AR/EN Homepage checks at 360, 390, 768 and 1440 pixels found zero horizontal overflow and zero axe WCAG A/AA-tagged violations after fixing a text-link distinction and English footer overflow. This is not WCAG certification. Authenticated guest Quote/Checkout/Tracking and hosted visual/a11y acceptance remain pending. Local screenshots are outside Git in the workspace `work/phase7-{ar,en}-{390,1440}.png`; they contain public synthetic presentation only.
+One intentionally public Market contact configuration supplies each country's display/destination. Selected country determines the single floating contact action. Messages contain generic text or a bounded safe reference, never a capability, proof URL, payment destination or location. Hosted country-switch and reference-message checks PASS.
 
-## AA–AE. Hosted journeys, rejection/reupload, WhatsApp and regression
+## M. Market selector
 
-No Phase 7 hosted journey has run and no Phase 7 Staging migration has been applied at this checkpoint. Local integration tests prove guest Quote accept/reject, CASH due, private transfer upload, Finance-only reject/confirm, reupload and wrong-currency denial. They do not replace the required SA/EG browser-to-database completion journeys on one protected Preview.
+Country and locale are independent. AR/EN each support SA/EG. Catalogue IDs, service/city availability, Request initialization and payment context remain Market-authoritative. Exchanging a journey link restores its Market selection.
 
-## AF–AI. Migrations, tests, CI and protected Preview
+## N. Brand system
 
-Repository now contains 42 migrations (31 accepted + eleven additive Phase 7 migrations). Accepted Phase 0–6 migrations were not rewritten. The Phase 7 projection grants were corrected for existing composite PostgREST relationships before any hosted application.
+Deep Navy, Electric Blue, Cyan and soft backgrounds form one restrained product identity. Alexandria/Inter use Next font loading. Product-route illustrations are explicitly illustrative, with no invented customer data or stock-truck dependency.
 
-Evidence available:
+## O. Homepage
 
-- Continuation on 27 September: migration 40 serializes creation retries using a browser-generated 256-bit capability, storing only its verifier. Replays return the same journey; revoked/expired grants cannot be resurrected. Migration 41 commits invalid exchange attempts against a bounded organization-wide budget (300/minute). This aggregate limit intentionally trades availability for abuse protection; it is not a per-IP defense. Browser retry state is held in memory and does not survive closing the page.
-- Migration 42 extends existing privileged transfer configuration with BANK, VODAFONE_CASH and INSTAPAY. Wallet destinations require EG/EGP. Customer selection is scoped to the accepted Order's organization/Market/currency, freezes after a proof attempt, and each proof preserves the destination type and instructions. No historical snapshot is rewritten. Local tests cover privileged configuration, cross-Market rejection, selection, frozen history and private instructions. The shared checkout includes Copy IBAN. Hosted EG acceptance remains pending.
-- Full local suite after migration 42: 171 tests / 37 files PASS. Typecheck and lint PASS after importing authoritative 42-migration types from successful workflow `36336025201`. Final release checks remain required after outstanding implementation.
-- CI `36335343973` and `36336025183`: application quality jobs PASS. Database jobs executed SQL/RLS and real independent-connection guest creation/acceptance/revocation/rotation/proof races successfully, then failed only at the generated-types diff. Types were imported from official successful workflows; these runs are not claimed as complete CI PASS. Exact next-HEAD CI is required.
+Header, Hero, active services, How It Works, safe tracking demonstration, business CTA, concrete benefits, FAQ and final CTA are implemented. Request is primary; Sign In is secondary. Real payment instructions are absent from public content.
 
-- Full local unit/integration suite: 168 tests passed after link-management addition, including suspended and cross-tenant staff denial. Final full-suite run remains required after subsequent changes.
-- Local guest/registered payment integration: exact authority, private proof, rejection/reupload and immutable acceptance covered.
-- Local browser suite: original 24 tests plus four new public tests. Two new tests initially selected both the application alert and Next's route announcer; narrowed the locator to `main`. Four new tests then passed. Existing 24 had passed in the initial run; final combined run remains required.
-- Formatting, lint, strict typecheck, secret-pattern scan and optimized build have passed at intermediate checkpoints. They must be rerun for final HEAD.
-- CI `36243476082` for `1c7537ac0884fcd5fb18e3eb164ebc24d523f45b`: application quality job PASS; database job failed at generated-type diff. No errors were ignored. Official types workflow `36243476085` PASS; its 38-migration artifact was imported. Official workflow `36320835712` reconstructed all 39 migrations successfully; its exact generated types were imported. CI `36320835689` passed the full application quality job, including browser tests; database checks failed only on the then-uncommitted types diff. Exact updated-HEAD CI is pending.
-- No accepted Phase 7 Preview URL yet. The previous phase's Preview is not Phase 7 evidence.
+## P. Mobile UX
 
-## AJ–AL. Production runbook, release blockers and cleanup
+Hosted guest Request, Quote, checkout and tracking are checked at 360/390/768/1440 pixels. Public AR/EN checks cover the same widths. Mobile and desktop public screenshots were inspected for layout/cohesion; no horizontal overflow was observed. Private screenshots, traces and video are disabled.
 
-See `docs/production-launch-runbook.md`. It contains placeholders and privileged configuration steps, not owner financial values. Production domain, resources/secrets, coverage, pricing, taxes, private payment instructions, legal copy and authorized people remain separate release gates.
+## Q. Design tokens
 
-No disposable Phase 7 hosted fixtures or bypass credentials have been created. Local PGlite fixtures are isolated and closed by the tests. Final hosted cleanup cannot pass until hosted fixtures have actually been created, exercised and removed. No Production deployment/configuration was performed; main/develop were not modified.
+Shared typography, semantic controls, borders, shadows and restrained card radii preserve accessible focus and contrast. Wizard progress nodes, confirmation pickup/delivery and authoritative tracking Trip statuses reuse the route identity; they do not invent completed milestones.
 
-## AM–AP. Files, commits, known limitations and deferred items
+## R. Quick Quote
 
-Logical checkpoints: `435fcb4` gap analysis; `fed0c33` guest capability; `432dad6` public-contact/privacy schemas; `6e1b85d` projections/private attachments; `f43353e` shared Quote authority; `d8f205d` official types/lint helper; `33d19e0` guest payment/tracking authority; `1c7537a` shared guest journey UI. Further commits are listed by `git log` on the feature branch; this checkpoint is not a final feature SHA.
+Active service and covered pickup/delivery city IDs enter the shared wizard. Preselection is validated against the chosen Market, applied only to a pristine draft and never overwrites an existing draft. Additional detail and verified distance are still needed for authoritative pricing.
 
-Changed areas: additive migrations, guest domain/infrastructure/routes, shared Request/Quote/Payment/Tracking views, public Market/contact/landing components, localized copy/styles/fonts, integration and browser tests, official generated database types and launch documentation. Next dev generated `AGENTS.md`/`CLAUDE.md`; these contain framework guidance only.
+## S. Public navigation
 
-Outstanding implementation/acceptance work, in order:
+Localized Services/How It Works/Track/Contact, country/language selection and Request CTA simplify navigation. Tracking explains use of the private link; reference-only lookup is not introduced. Unapproved legal routes are unpublished and not linked.
 
-1. Verify implemented creation retries, exchange abuse controls and staff link inspection/replacement/copy in hosted tests. Local expiry/revocation and independent-connection races pass.
-2. Verify implemented EG destination selection/snapshots and Copy IBAN in hosted acceptance; synthetic values only.
-3. Complete Quick Quote preselection, safe analytics integration, launch presentation controls, legal-page technical structure and customer-safe navigation/copy review.
-4. Retain passing independent-connection guest races in final CI. Re-run populated 31-migration upgrade and preserve historical snapshots/files after remaining migrations.
-5. Import final authoritative types, run all local/CI gates, then apply to Staging and deploy a genuine protected Preview.
-6. Execute both full guest hosted journeys, negative/security/Storage/expiry/log/bundle checks, registered Phase 0–6 regression, all required responsive/a11y/visual checks; clean all fixtures and owned bypasses.
-7. Update every acceptance entry with actual evidence and final exact-HEAD CI before requesting owner review.
+## T. Feature flags
 
-No refunds/cancellation engine, gateway, wallet API, automated WhatsApp/SMS, account claiming, new routing provider, Production launch or Phase 8 has been implemented.
+`LAUNCH_CUSTOMER_LIVE_TRACKING` is server-only, default false, and controls the registered live-view presentation without changing RLS. It is enabled only in this regression Preview's build/runtime to exercise accepted Phase 5 behavior. Guest live-map access is deliberately excluded. Advanced internal engines were retained.
+
+## U. SEO
+
+Hosted public metadata, canonical/hreflang, structured information, crawler policy and sitemap checks PASS. Non-production indexing is blocked; secure guest/account/payment/portal surfaces are excluded. Legal technical routes return genuine HTTP 404 until owner-approved AR/EN content exists, without public placeholder copy.
+
+## V. Analytics
+
+Finite event/country/context inputs update private daily aggregate counters, with 90-day retention and an ingestion budget. No token, URL, PII, financial destination, proof or location field exists. Funnel and WhatsApp instrumentation are implemented. These approximate counters are not an accounting or unique-customer source of truth.
+
+## W. RLS/security
+
+All 59 public tables have RLS. Guest capability policies scope one organization/Customer/Request-derived journey and private files; ordinary RBAC and Finance/Operations permissions remain authoritative. Hosted own/other-journey denial, malformed/random/reference/UUID denial, staff-command denial and Finance mutation denial PASS in Phase 7. Final repeated database verification passed on 1 October; registered regression on the corrected Preview remains in progress.
+
+## X. Abuse protection
+
+Privileged guest creation defaults off in migrations. Staging is intentionally enabled at 30-day expiry / 30 creations per hour; acceptance temporarily raises the quota and restores it. Database budgets cover creation, capability mutation (60/minute), upload (60/hour), exchange (300/minute per organization) and aggregate analytics (600/minute). Body/file/count limits and safe image processing are retained. This is not per-IP protection or CAPTCHA; organization-wide limits can affect legitimate availability during abuse. Creation replay and real independent-connection race checks pass CI.
+
+## Y. Performance
+
+Server-rendered public/catalogue and authoritative secure pages avoid a parallel client fetching engine. No new animation library, video Hero or eager guest map is added. Current optimized build passes; the local run compiled in 11.9 seconds. A bounded union of 16 JavaScript assets discovered across five public/login/guest-entry pages was 1,029,161 decoded bytes, not a single-page initial-load measure. No field Core Web Vitals claim is made.
+
+## Z. Accessibility
+
+Hosted public and guest secure surfaces pass axe checks at four viewport widths, with AR RTL / EN LTR, labeled controls, visible focus, semantic landmarks and keyboard checks. This is automated smoke coverage plus visual review, not full WCAG certification.
+
+## AA. SA guest journey
+
+On the current Preview: anonymous Arabic SA Request → Sales-verified preliminary/final Quote → accept → exactly one SAR Order → CASH_DUE → internal Driver/Stop execution → final POD → completed Order PASS. No registration; immutable commercial facts remain unchanged.
+
+## AB. EG guest journey
+
+On the same Preview: anonymous English EG Request → Quote → accepted EGP Order → synthetic InstaPay transfer instructions → private proof → Finance rejection/reupload/confirmation → internal Driver/POD → completed Order PASS. No Saudi currency/timezone/resource assumption was substituted.
+
+## AC. Payment rejection/reupload
+
+Guest EG rejection, safe customer reason, replacement proof, Finance confirmation and private signed proof expiry PASS. Registered Finance regression is still running after correcting a test hydration race; no financial rule was weakened.
+
+## AD. WhatsApp acceptance
+
+SA/EG switch, correct destination, safe reference-aware text and absence of guest token PASS. Public pages do not expose payment instructions.
+
+## AE. Regression
+
+Local Phase 0–6 regression: 176 unit/integration tests across 40 files and 32 desktop/mobile browser tests PASS. Hosted Foundation (12), registered Intake (6), Pricing/Quote (1), Finance (5), and guest (6) suites passed on the recorded Preview. Operations exposed the planner hydration defect below; Driver/tracking regression has not yet run. A new candidate and affected acceptance remain required.
+
+## AF. Migrations
+
+**44 total: 31 accepted + 13 additive Phase 7 migrations.** Accepted migration files are unchanged. Fresh reconstruction, populated 31-migration upgrade preserving identities and commercial snapshots, official generated types, SQL/RLS and independent-connection concurrency PASS in CI. Staging was upgraded without a reset; exact ledger/schema assertions and generated schema types matched. No seed business data or manual schema workaround was introduced.
+
+## AG. Tests and material failed runs
+
+Formatting, lint, strict types, unit/integration, build, local E2E and tracked/history secret-pattern scans PASS. The complete dependency audit discovered lint-only brace-expansion advisories. Compatible patches 1.1.18 → 1.1.21 and 5.0.9 → 5.0.12 were applied in the lockfile; no top-level dependency changed. Full npm audit now reports zero vulnerabilities. The production dependency graph is unchanged. Advisory: https://github.com/advisories/GHSA-q2hr-2g5m-vwhr. CI executes real independent-connection Operations/Driver/tracking/payment/guest harnesses. Guest races cover creation replay, acceptance/exactly-one Order, acceptance vs revocation, rotation, mutation vs revocation and proof retries.
+
+Earlier hosted Phase 7 run had 2 PASS / 4 FAIL: unhydrated first-click controls and a localized-title expectation were corrected, then all six tests passed. A later registered SA transfer test timed out at replacement upload: setInputFiles populated a disabled SSR input before its handler existed, so no upload POST was made and the button remained disabled. The replacement test now waits for the real interactive control, as its initial uploads already did; application authorization/payment behavior was not relaxed. The failed run cleaned up and stopped the sequence. The rerun passed all five Finance scenarios. Operations then exposed a real planner hydration defect: the first scheduled-start edit was lost before handlers were ready while the scheduled-end edit persisted. The planner now disables its fieldset until hydration, with a hosted delayed-script regression. SA Operations failed and EG passed in that run; fixture cleanup passed. A new candidate must verify this fix and complete same-Preview regression. Failures are not relabeled PASS.
+
+## AH. CI
+
+Application source `c3fd27566aad1af89f7c417392f7bbd97292ced6`: [36719267294](https://github.com/Rmdn96/Naql365/actions/runs/36719267294) PASS. Updated hosted test/Auth configuration `0a7f6d0693c71ff8b6ce9742b4d556010fd62191`: [36721015488](https://github.com/Rmdn96/Naql365/actions/runs/36721015488) PASS. Both required jobs succeeded. Candidate `e249377b76de4bc7d57b8e35890af081e5d3e408`: [36833898067](https://github.com/Rmdn96/Naql365/actions/runs/36833898067) PASS, including both required jobs. Security patch `2d39d1d`: [36838210557](https://github.com/Rmdn96/Naql365/actions/runs/36838210557) PASS. Final report revision CI remains required.
+
+## AI. Protected Preview
+
+[Candidate Preview](https://naql365-staging-9s73vfobh-naql365.vercel.app): `dpl_7ANrTtkuqboUSJ3YNnxYWBuH2c7o`, independently verified READY / Preview, source `2d39d1d9031b2aeb9614310f54c1cc3fafcf052a`. Includes the Next.js 16.3.6 security patch, the planner hydration fix and scoped SQL test setup. Full sequential acceptance began with Operations on 1 October. Supabase Auth has four exact localized callbacks for this origin and no wildcards. Supabase remains the allowlisted independent Staging project. Five HTML pages and 16 discovered assets (1,029,161 decoded bytes) showed no scanned credential pattern; sibling source-map probes returned none, nonce CSP/security headers are present, and unauthorized Vercel access returns 302. This is a bounded scan, not an exhaustive security certification. Final runtime-log review and acceptance remain pending.
+
+## AJ. Production launch runbook
+
+`docs/production-launch-runbook.md` documents guarded resources/migrations/Auth, Market/coverage/pricing/tax, privileged private transfer configuration, staff/Driver provisioning, Storage/domain/environment, smoke and rollback. Actual owner financial values are excluded. Privacy/Terms technical structure requires approved legal content before publication.
+
+## AK. Remaining Production blockers
+
+Explicit release authorization; protected reviewed release commit; final domain/DNS; separate Production resources/secrets; approved coverage/services/pricing/taxes; privileged real private payment configuration; legal content; authorized staff/Driver provisioning and operational smoke/rollback sign-off. Application acceptance does not authorize any of these actions.
+
+## AL. Cleanup
+
+Current Phase 7 guest suite cleanup PASS, preserving intended catalogues. Complete registered-suite cleanup, independent fixture-residue checks and revocation of the positively identified temporary Vercel automation credential are pending. The prior unpatched Preview passed 3 Operations and 6 guest tests with cleanup. Its Finance runner was interrupted after two tests; a stale lock with an absent owner and 16 positively identified fixture Auth identities was recovered using the runner?s scoped cleanup SQL. Cleanup passed and unrelated records were preserved. This incomplete run is not final regression evidence. Two positively identified orphan browser-test Auth identities with no memberships, Customers, files or sessions were removed on 1 October. Unattributed existing Staging identities/Requests were preserved; cleanup must be scoped to owned fixtures, not global table emptiness. No Production cleanup or modification is performed.
+
+## AM. Files changed
+
+117 files differ from accepted develop at the application-source checkpoint. Areas: thirteen additive migrations and SQL assertions; official DB types; guest capability/session/routes/adapters; shared Request/Quote/payment/tracking presentation; public catalogue/contact/brand/copy/fonts/styles; bounded aggregate analytics; launch/legal flags/content structure; local/hosted/concurrency tests; Staging configuration and documentation. Review the full feature diff for the authoritative filename list. No accepted migration, main or Production data changed.
+
+## AN. Commits
+
+Gap analysis `435fcb4`; scoped capability/shared engines and isolated adapters across logical commits; retry/exchange budgets and private transfer destinations; public catalogue/telemetry/legal foundation; hydration correction `42c3078`; hosted viewport/cookie/copy checks `ab7b3da`; shared route motif `c3fd275`; registered replacement-proof test guard and exact Preview Auth configuration `0a7f6d0`. Final feature SHA will be reported after final documentation/CI; no giant replacement commit or force push is used.
+
+### Newly indexed Next.js security advisory ? 2026-10-01
+
+The fresh npm audit reported critical GHSA-vcvr-r3jv-pc5j against Next.js 16.3.4 (the advisory database was updated on 30 September). The maintainer scopes exposure to attacker-controlled SVG passed into Node.js next/og ImageResponse; repository inspection found no ImageResponse/next/og use. Nevertheless, commit `2d39d1d` pins Next.js and matching eslint-config-next to the documented fixed patch 16.3.6. React, TypeScript, domain code and migrations remain unchanged. Lockfile audit reports zero vulnerabilities after the patch. Patch CI [36838210557](https://github.com/Rmdn96/Naql365/actions/runs/36838210557), local formatting/secrets/lint/types/176 tests/build/32 E2E all passed. The new protected Preview is READY; full hosted acceptance is running before final acceptance; the 16.3.4 candidate's successful evidence is historical, not final. Reference: https://github.com/advisories/GHSA-vcvr-r3jv-pc5j.
+
+### Hosted SQL fixture isolation correction ? 2026-10-01
+
+The populated Staging rerun exposed two legacy test setup assumptions: Foundation counted all profiles/memberships and copied all business rows, while Phase 2 assigned roles across all memberships. Commit `e249377` scopes only privileged fixture setup and enrollment assertions to each test's synthetic identities/organizations. RLS assertions remain unfiltered and unchanged. No migration, application policy or existing Staging record was changed. All five rollback SQL suites passed against the populated project; 176 local tests passed. The 2026-10-01 hosted follow-up verified all 44 migration versions, all five SQL suites, RLS on all 59 public tables, official generated public-schema types, positive/revoked/expired capability handling and replay denial. Capability probe cleanup passed. Hosted Preview acceptance remains in progress.
+
+## AO. Known limitations
+
+Manual verified road distance remains necessary before pricing. No automated link delivery, identity claiming, routing provider or payment reconciliation exists. Link possession confers scoped access until expiry/revocation; reissue requires trusted staff verification outside the application. Browser creation retries are memory-only. Organization-wide abuse budgets have an availability tradeoff. Guest tracking is status-only. Telemetry is approximate. Automated accessibility and bounded asset/log inspection are not certification/exhaustive audits. Final legal/Production configuration remains owner-controlled.
+
+## AP. Deferred items
+
+No refund/cancellation engine, gateway/cards/mada/Apple Pay, wallet API, automated WhatsApp/SMS, account claiming by contact text, route optimization, background GPS, native app, accounting GL/statutory invoicing, marketplace, international SA↔EG freight, AI, Production or Phase 8.
 
 ## AQ. Acceptance matrix
 
-PASS here is limited to the evidence explicitly described. Any combined hosted requirement remains PARTIAL or BLOCKED.
+PASS is limited to executed evidence. Full hosted regression, final audits and cleanup are still required.
 
-| Gate                           | Result  | Evidence / remaining work                                                |
-| ------------------------------ | ------- | ------------------------------------------------------------------------ |
-| Git baseline                   | PASS    | Accepted develop and main refs checked; feature branch isolated          |
-| Gap analysis                   | PASS    | Committed before migrations                                              |
-| Guest request                  | PARTIAL | Shared local commands/UI; hosted journey pending                         |
-| Guest token security           | PARTIAL | Hash, expiry, revocation/local tests; concurrency/hosted pending         |
-| Reference ≠ authorization      | PASS    | Unit/SQL and local browser rejection                                     |
-| Guest preliminary quote        | PARTIAL | Safe projection/UI; hosted pending                                       |
-| Guest final Quote              | PARTIAL | Shared local authority; hosted pending                                   |
-| Guest accept/reject            | PARTIAL | Local immutable acceptance/rejection; independent connections pending    |
-| Guest Order                    | PARTIAL | Local exactly-one behavior; hosted pending                               |
-| Guest CASH                     | PARTIAL | Local due/Finance-only behavior; hosted pending                          |
-| Guest BANK_TRANSFER            | PARTIAL | Local proof/review; EG destination configuration unfinished              |
-| Guest proof privacy            | PARTIAL | Local Storage RLS; hosted signed URL/expiry pending                      |
-| Guest tracking                 | PARTIAL | Shared status projection; operational hosted journey pending             |
-| Customer isolation             | PARTIAL | Local RLS negatives; full hosted matrix pending                          |
-| Registered customer regression | PARTIAL | Existing local tests; hosted Phase 0–6 pending                           |
-| SA WhatsApp                    | PASS    | Canonical public config and local browser destination                    |
-| EG WhatsApp                    | PASS    | Canonical public config and local browser destination                    |
-| Market switching               | PARTIAL | Public contact/request country local PASS; full hosted flows pending     |
-| Homepage redesign              | PARTIAL | Local visual/a11y checks; hosted review pending                          |
-| Hero                           | PARTIAL | Local rendered CTA/illustrative motif; hosted pending                    |
-| Quick Quote                    | PARTIAL | Enters shared Request; inline preselection unfinished                    |
-| Services                       | PARTIAL | Active catalogue query; hosted actual-catalogue check pending            |
-| How It Works                   | PASS    | Four localized customer-facing steps                                     |
-| Tracking preview               | PASS    | Explicit illustrative status presentation                                |
-| Route visual motif             | PARTIAL | Homepage reusable motif; journey integration incomplete                  |
-| Mobile UX                      | PARTIAL | Public eight viewport/locale checks; secure pages pending                |
-| AR/EN                          | PARTIAL | Public/shared guest copy; full hosted flows pending                      |
-| RTL/LTR                        | PARTIAL | Public local checks; hosted pending                                      |
-| SEO                            | PARTIAL | Local public/guest guards; hosted pending                                |
-| Analytics privacy              | PARTIAL | Strict schema only; collector/instrumentation unfinished                 |
-| Abuse protection               | PARTIAL | DB quotas/body bounds; further abuse/retry gates pending                 |
-| RLS                            | PARTIAL | Local database tests; hosted Phase 7 pending                             |
-| Security negatives             | PARTIAL | Local subset; final hosted matrix pending                                |
-| Performance                    | PARTIAL | Intermediate build; final measurement pending                            |
-| Accessibility                  | PARTIAL | Public local axe PASS; secure hosted pages pending                       |
-| SA guest hosted journey        | BLOCKED | Not executed; implementation/gates unfinished                            |
-| EG guest hosted journey        | BLOCKED | Not executed; destination support unfinished                             |
-| Bank reject/reupload           | PARTIAL | Local integration PASS; hosted pending                                   |
-| WhatsApp hosted test           | BLOCKED | No Phase 7 accepted Preview                                              |
-| Migrations                     | PARTIAL | Local reconstruction/upgrade; final official/hosted verification pending |
-| Generated types                | PARTIAL | Official 39-migration artifact imported; updated-HEAD CI pending         |
-| Regression                     | PARTIAL | Local intermediate results; final/hosted pending                         |
-| CI                             | PARTIAL | Previous quality PASS; final HEAD pending                                |
-| Protected Preview              | BLOCKED | Not deployed for Phase 7                                                 |
-| Production runbook             | PARTIAL | Prepared; update final commands/configuration after completion           |
-| Cleanup                        | PARTIAL | No hosted fixtures yet; final cleanup verification pending               |
-| Scope compliance               | PASS    | No main/Production/Phase 8 actions                                       |
+| Gate                           | Result  | Evidence                                                                                   |
+| ------------------------------ | ------- | ------------------------------------------------------------------------------------------ |
+| Git baseline                   | PASS    | Remote refs and unchanged protected develop/main                                           |
+| Gap analysis                   | PASS    | 435fcb4 before migrations                                                                  |
+| Guest request                  | PASS    | Both hosted anonymous journeys                                                             |
+| Guest token security           | PASS    | Hosted isolation/rotation/revocation; 2026-10-01 expiry/replay probe and cleanup; CI races |
+| Reference ≠ authorization      | PASS    | Hosted malformed/reference/UUID denial                                                     |
+| Guest preliminary quote        | PASS    | Shared server-authoritative projection after verified distance                             |
+| Guest final Quote              | PASS    | Hosted SA/EG Sales review and sent snapshot                                                |
+| Guest accept/reject            | PASS    | Hosted acceptance/rejection; CI independent races                                          |
+| Guest Order                    | PASS    | Exactly one Order, immutable commercial facts                                              |
+| Guest CASH                     | PASS    | SA due state through completion; no guest confirmation                                     |
+| Guest BANK_TRANSFER            | PASS    | EG TEST InstaPay checkout/Finance verification                                             |
+| Guest proof privacy            | PASS    | Private proof, unauthorized denial, signed expiry                                          |
+| Guest tracking                 | PASS    | Safe progression and completed Order                                                       |
+| Customer isolation             | PASS    | Hosted scoped capabilities/negative commands; CI RLS                                       |
+| Registered customer regression | PARTIAL | Complete hosted rerun pending                                                              |
+| SA WhatsApp                    | PASS    | Hosted selected Market destination                                                         |
+| EG WhatsApp                    | PASS    | Hosted selected Market destination                                                         |
+| Market switching               | PASS    | AR/EN public and guest country context                                                     |
+| Homepage redesign              | PASS    | Hosted public screenshots/DOM review                                                       |
+| Hero                           | PASS    | Primary Request CTA and illustrative product route                                         |
+| Quick Quote                    | PASS    | Valid catalogue preselection into shared Request                                           |
+| Services                       | PASS    | Selected Market active catalogue                                                           |
+| How It Works                   | PASS    | Four localized customer-facing steps                                                       |
+| Tracking preview               | PASS    | Explicit illustration, no real customer data                                               |
+| Route visual motif             | PASS    | Public motif, wizard nodes, confirmation/tracking                                          |
+| Mobile UX                      | PASS    | Secure/public 360/390/768/1440 axe/overflow checks                                         |
+| AR/EN                          | PASS    | SA Arabic / EG English and both public locales                                             |
+| RTL/LTR                        | PASS    | Hosted direction/layout checks                                                             |
+| SEO                            | PASS    | Hosted metadata/canonical/hreflang/crawlers/noindex                                        |
+| Analytics privacy              | PASS    | Finite private aggregates, negative payload tests                                          |
+| Abuse protection               | PASS    | Server/database limits and CI retry/race negatives                                         |
+| RLS                            | PASS    | 2026-10-01 populated Staging: five SQL suites; all 59 public tables RLS-enabled            |
+| Security negatives             | PARTIAL | Guest PASS; complete registered/expiry review pending                                      |
+| Performance                    | PASS    | Build and bounded asset review; no field CWV claim                                         |
+| Accessibility                  | PASS    | Hosted public/guest axe, responsive and keyboard smoke                                     |
+| SA guest hosted journey        | PASS    | Current Preview through Driver/POD/completion                                              |
+| EG guest hosted journey        | PASS    | Current Preview through transfer/Driver/POD/completion                                     |
+| Bank reject/reupload           | PASS    | Guest EG; registered regression is separate                                                |
+| WhatsApp hosted test           | PASS    | Country switch/reference safety                                                            |
+| Migrations                     | PASS    | 44; fresh/upgrade/ledger; accepted 31 unchanged                                            |
+| Generated types                | PASS    | Official CI exact file and hosted schema match                                             |
+| Regression                     | PARTIAL | Local PASS; full hosted rerun pending                                                      |
+| CI                             | PARTIAL | Source/test CI PASS; final feature revision pending                                        |
+| Protected Preview              | PASS    | READY genuine Preview, Staging-only, access protection                                     |
+| Production runbook             | PASS    | Safe privileged procedure/placeholders, release blockers                                   |
+| Cleanup                        | PARTIAL | Guest suite cleanup PASS; final residue/bypass cleanup pending                             |
+| Scope compliance               | PASS    | No merge, main/Production/Phase 8 action                                                   |
 
-## AR. Current decision
+## AR. Final decision
 
 **PHASE 7 PARTIAL — NOT READY**
 
-This is an unfinished implementation checkpoint, not an owner-approval request. Continue the listed work without restarting the gap analysis or replacing accepted foundations. Do not merge or deploy Production.
+This is an acceptance checkpoint, not a request to merge or release. Continue full hosted regression, capability expiry/database/log audits, cleanup and final feature CI before updating the decision. Do not merge, deploy Production, modify main or start Phase 8.
