@@ -74,4 +74,4 @@ Verify authorized checkout reveals only its Market's selected transfer instructi
 
 ## Unresolved Production blockers
 
-Final approved domain/DNS, Production resources and secrets, active service coverage, real rules/taxes, real private payment configuration, legal copy, staff/Driver provisioning and release authorization are not fulfilled by this document. Phase 7 hosted acceptance is also unfinished at this checkpoint.
+Final approved domain/DNS, Production resources and secrets, active service coverage, real rules/taxes, real private payment configuration, legal copy, staff/Driver provisioning and release authorization are not fulfilled by this document. Phase 7 hosted acceptance evidence is recorded in the canonical report; final acceptance is blocked by the unresolved development dependency advisory documented there.

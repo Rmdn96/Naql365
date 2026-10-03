@@ -1,6 +1,6 @@
 # Naql365 Phase 7 — MVP launch, guest ordering and visual experience
 
-Canonical acceptance report, updated 1 October 2026. **Acceptance is in progress; no merge or Production release is authorized.** This revision replaces earlier implementation checkpoints and retains material failed-run evidence below.
+Canonical acceptance report, updated 3 October 2026. **Hosted acceptance is complete; an unresolved development-tool dependency advisory prevents final PASS. No merge or Production release is authorized.** This revision replaces earlier implementation checkpoints and retains material failed-run evidence below.
 
 ## A. Starting state
 
@@ -92,7 +92,7 @@ Finite event/country/context inputs update private daily aggregate counters, wit
 
 ## W. RLS/security
 
-All 59 public tables have RLS. Guest capability policies scope one organization/Customer/Request-derived journey and private files; ordinary RBAC and Finance/Operations permissions remain authoritative. Hosted own/other-journey denial, malformed/random/reference/UUID denial, staff-command denial and Finance mutation denial PASS in Phase 7. Final repeated database verification passed on 1 October; registered regression on the corrected Preview remains in progress.
+All 59 public tables have RLS. Guest capability policies scope one organization/Customer/Request-derived journey and private files; ordinary RBAC and Finance/Operations permissions remain authoritative. Hosted own/other-journey denial, malformed/random/reference/UUID denial, staff-command denial and Finance mutation denial PASS in Phase 7. Final repeated database verification passed on 1 October; registered regression on the corrected Preview passed.
 
 ## X. Abuse protection
 
@@ -116,7 +116,7 @@ On the same Preview: anonymous English EG Request → Quote → accepted EGP Ord
 
 ## AC. Payment rejection/reupload
 
-Guest EG rejection, safe customer reason, replacement proof, Finance confirmation and private signed proof expiry PASS. Registered Finance regression is still running after correcting a test hydration race; no financial rule was weakened.
+Guest EG rejection, safe customer reason, replacement proof, Finance confirmation and private signed proof expiry PASS. All five registered Finance scenarios passed, including SA/EG CASH and BANK_TRANSFER; no financial rule was weakened.
 
 ## AD. WhatsApp acceptance
 
@@ -124,7 +124,7 @@ SA/EG switch, correct destination, safe reference-aware text and absence of gues
 
 ## AE. Regression
 
-Local Phase 0–6 regression: 176 unit/integration tests across 40 files and 32 desktop/mobile browser tests PASS. Hosted Foundation (12), registered Intake (6), Pricing/Quote (1), Finance (5), and guest (6) suites passed on the recorded Preview. Operations exposed the planner hydration defect below; Driver/tracking regression has not yet run. A new candidate and affected acceptance remain required.
+The same protected, security-patched Preview passed all 36 hosted tests across seven serial suites: Operations/Markets 3, guest MVP 6, registered Finance 5, Foundation/Auth/Storage 12, registered Intake 6, Pricing/Quote 1, and Driver/live tracking/notifications 3. Every suite recorded scoped cleanup PASS. Both SA and EG completed their guest and internal-Driver journeys. Local regression passed 176 unit/integration tests across 40 files and 32 desktop/mobile E2E tests. The 3 October supplemental Foundation run refreshes bounded runtime-log evidence after the original run's logs aged out; all 12 tests and cleanup passed. Sanitized results, durations, database checks, asset/log review and cleanup are committed in [Naql365-Phase-7-Evidence.json](Naql365-Phase-7-Evidence.json).
 
 ## AF. Migrations
 
@@ -132,17 +132,17 @@ Local Phase 0–6 regression: 176 unit/integration tests across 40 files and 32 
 
 ## AG. Tests and material failed runs
 
-Formatting, lint, strict types, unit/integration, build, local E2E and tracked/history secret-pattern scans PASS. The complete dependency audit discovered lint-only brace-expansion advisories. Compatible patches 1.1.18 → 1.1.21 and 5.0.9 → 5.0.12 were applied in the lockfile; no top-level dependency changed. Full npm audit now reports zero vulnerabilities. The production dependency graph is unchanged. Advisory: https://github.com/advisories/GHSA-q2hr-2g5m-vwhr. CI executes real independent-connection Operations/Driver/tracking/payment/guest harnesses. Guest races cover creation replay, acceptance/exactly-one Order, acceptance vs revocation, rotation, mutation vs revocation and proof retries.
+Formatting, lint, strict types, unit/integration, build, local E2E and tracked/history secret-pattern scans PASS. The complete dependency audit discovered lint-only brace-expansion advisories. Compatible patches 1.1.18 → 1.1.21 and 5.0.9 → 5.0.12 were applied in the lockfile; no top-level dependency changed. Those fixes produced a clean audit on 1 October. The 3 October full audit instead reports five high development-only findings through the single unpatched braces advisory below; production-only audit remains clean. The Next.js runtime was separately patched to 16.3.6, and the final Preview matches that runtime dependency graph. Advisory: https://github.com/advisories/GHSA-q2hr-2g5m-vwhr. CI executes real independent-connection Operations/Driver/tracking/payment/guest harnesses. Guest races cover creation replay, acceptance/exactly-one Order, acceptance vs revocation, rotation, mutation vs revocation and proof retries.
 
-Earlier hosted Phase 7 run had 2 PASS / 4 FAIL: unhydrated first-click controls and a localized-title expectation were corrected, then all six tests passed. A later registered SA transfer test timed out at replacement upload: setInputFiles populated a disabled SSR input before its handler existed, so no upload POST was made and the button remained disabled. The replacement test now waits for the real interactive control, as its initial uploads already did; application authorization/payment behavior was not relaxed. The failed run cleaned up and stopped the sequence. The rerun passed all five Finance scenarios. Operations then exposed a real planner hydration defect: the first scheduled-start edit was lost before handlers were ready while the scheduled-end edit persisted. The planner now disables its fieldset until hydration, with a hosted delayed-script regression. SA Operations failed and EG passed in that run; fixture cleanup passed. A new candidate must verify this fix and complete same-Preview regression. Failures are not relabeled PASS.
+Earlier hosted Phase 7 run had 2 PASS / 4 FAIL: unhydrated first-click controls and a localized-title expectation were corrected, then all six tests passed. A later registered SA transfer test timed out at replacement upload: setInputFiles populated a disabled SSR input before its handler existed, so no upload POST was made and the button remained disabled. The replacement test now waits for the real interactive control, as its initial uploads already did; application authorization/payment behavior was not relaxed. The failed run cleaned up and stopped the sequence. The rerun passed all five Finance scenarios. Operations then exposed a real planner hydration defect: the first scheduled-start edit was lost before handlers were ready while the scheduled-end edit persisted. The planner now disables its fieldset until hydration, with a hosted delayed-script regression. SA Operations failed and EG passed in that run; fixture cleanup passed. The final security-patched Preview passed both delayed-script Operations journeys and all 36 hosted tests. Failures are not relabeled PASS.
 
 ## AH. CI
 
-Application source `c3fd27566aad1af89f7c417392f7bbd97292ced6`: [36719267294](https://github.com/Rmdn96/Naql365/actions/runs/36719267294) PASS. Updated hosted test/Auth configuration `0a7f6d0693c71ff8b6ce9742b4d556010fd62191`: [36721015488](https://github.com/Rmdn96/Naql365/actions/runs/36721015488) PASS. Both required jobs succeeded. Candidate `e249377b76de4bc7d57b8e35890af081e5d3e408`: [36833898067](https://github.com/Rmdn96/Naql365/actions/runs/36833898067) PASS, including both required jobs. Security patch `2d39d1d`: [36838210557](https://github.com/Rmdn96/Naql365/actions/runs/36838210557) PASS. Final report revision CI remains required.
+Deployed application source `2d39d1d9031b2aeb9614310f54c1cc3fafcf052a`: [36838210557](https://github.com/Rmdn96/Naql365/actions/runs/36838210557) PASS. Documentation/Auth checkpoint `bc8752bb61e9a124c335ec0f5d968a9c4115ad97`: [36876207982](https://github.com/Rmdn96/Naql365/actions/runs/36876207982) PASS. Both required jobs include fresh migrations, official types, SQL/RLS, independent-connection concurrency and application checks. Final delivery commit/run is reported with the handoff after verification; documentation and exact Auth-origin changes do not change deployed application code. npm's full dependency audit is reported separately and is NOT claimed green.
 
 ## AI. Protected Preview
 
-[Candidate Preview](https://naql365-staging-9s73vfobh-naql365.vercel.app): `dpl_7ANrTtkuqboUSJ3YNnxYWBuH2c7o`, independently verified READY / Preview, source `2d39d1d9031b2aeb9614310f54c1cc3fafcf052a`. Includes the Next.js 16.3.6 security patch, the planner hydration fix and scoped SQL test setup. Full sequential acceptance began with Operations on 1 October. Supabase Auth has four exact localized callbacks for this origin and no wildcards. Supabase remains the allowlisted independent Staging project. Five HTML pages and 16 discovered assets (1,029,161 decoded bytes) showed no scanned credential pattern; sibling source-map probes returned none, nonce CSP/security headers are present, and unauthorized Vercel access returns 302. This is a bounded scan, not an exhaustive security certification. Final runtime-log review and acceptance remain pending.
+[Verified Preview](https://naql365-staging-9s73vfobh-naql365.vercel.app): `dpl_7ANrTtkuqboUSJ3YNnxYWBuH2c7o`, independently verified READY / Preview, source `2d39d1d9031b2aeb9614310f54c1cc3fafcf052a`. Includes the Next.js 16.3.6 security patch, the planner hydration fix and scoped SQL test setup. Full sequential acceptance completed on 1 October with 36 PASS. Supabase Auth has four exact localized callbacks for this origin and no wildcards. Supabase remains the allowlisted independent Staging project. Five HTML pages and 16 discovered assets (1,029,161 decoded bytes) showed no scanned credential pattern; sibling source-map probes returned none, nonce CSP/security headers are present, and unauthorized Vercel access returns 302. This is a bounded scan, not an exhaustive security certification. A 3 October supplemental Auth/Storage run provided fresh logs: bounded 50-record serverless sample had no 5xx, error records, credential patterns or sensitive Auth query values; separate error and 5xx queries were empty. Original full-run logs were no longer returned, so this is explicitly a supplemental bounded review, not an exhaustive full-run log audit.
 
 ## AJ. Production launch runbook
 
@@ -154,23 +154,23 @@ Explicit release authorization; protected reviewed release commit; final domain/
 
 ## AL. Cleanup
 
-Current Phase 7 guest suite cleanup PASS, preserving intended catalogues. Complete registered-suite cleanup, independent fixture-residue checks and revocation of the positively identified temporary Vercel automation credential are pending. The prior unpatched Preview passed 3 Operations and 6 guest tests with cleanup. Its Finance runner was interrupted after two tests; a stale lock with an absent owner and 16 positively identified fixture Auth identities was recovered using the runner?s scoped cleanup SQL. Cleanup passed and unrelated records were preserved. This incomplete run is not final regression evidence. Two positively identified orphan browser-test Auth identities with no memberships, Customers, files or sessions were removed on 1 October. Unattributed existing Staging identities/Requests were preserved; cleanup must be scoped to owned fixtures, not global table emptiness. No Production cleanup or modification is performed.
+All seven full-run suites recorded scoped cleanup PASS. Independent 3 October comparison found zero owned fixture Auth identities, zero Storage objects and no divergence from pre-existing records after accounting for two separately removed orphan browser fixture identities. Orders, Quotes, payments, proofs, operational resources, POD, tracking samples/sessions and notifications are empty. One pre-existing account, two Customers/Requests and one guest grant were preserved; they were not attributed to this test run. Existing-account session counts are excluded from equality checks because sessions may refresh. SA/EG catalogues remain active. The 12-test supplemental run also cleaned up. One positively identified temporary Vercel automation credential was revoked; zero remain, the old credential returns 302, and Preview protection remains enabled. The earlier interrupted Finance run was recovered using its exact 16 fixture identities and isolated organization, not a global delete. No Production data was modified.
 
 ## AM. Files changed
 
-117 files differ from accepted develop at the application-source checkpoint. Areas: thirteen additive migrations and SQL assertions; official DB types; guest capability/session/routes/adapters; shared Request/Quote/payment/tracking presentation; public catalogue/contact/brand/copy/fonts/styles; bounded aggregate analytics; launch/legal flags/content structure; local/hosted/concurrency tests; Staging configuration and documentation. Review the full feature diff for the authoritative filename list. No accepted migration, main or Production data changed.
+The complete changed-file list is available from `git diff --name-only 24f1a4c6a3b8027a6ce89aaf72c8c3bb5fd6fbd9...HEAD`. Areas: thirteen additive migrations and SQL assertions; official DB types; guest capability/session/routes/adapters; shared Request/Quote/payment/tracking presentation; public catalogue/contact/brand/copy/fonts/styles; bounded aggregate analytics; launch/legal flags/content structure; local/hosted/concurrency tests; Staging configuration and documentation. Review the full feature diff for the authoritative filename list. No accepted migration, main or Production data changed.
 
 ## AN. Commits
 
-Gap analysis `435fcb4`; scoped capability/shared engines and isolated adapters across logical commits; retry/exchange budgets and private transfer destinations; public catalogue/telemetry/legal foundation; hydration correction `42c3078`; hosted viewport/cookie/copy checks `ab7b3da`; shared route motif `c3fd275`; registered replacement-proof test guard and exact Preview Auth configuration `0a7f6d0`. Final feature SHA will be reported after final documentation/CI; no giant replacement commit or force push is used.
+Gap analysis `435fcb4`; scoped capability/shared engines and isolated adapters across logical commits; retry/exchange budgets and private transfer destinations; public catalogue/telemetry/legal foundation; hydration correction `42c3078`; hosted viewport/cookie/copy checks `ab7b3da`; shared route motif `c3fd275`; registered replacement-proof test guard and exact Preview Auth configuration `0a7f6d0`. Security patch `2d39d1d`, scoped SQL fixtures `e249377`, final Preview Auth `968072b`, and acceptance checkpoint `bc8752b` preserve the reviewable history. Final delivery SHA/run is supplied with the handoff; no giant replacement commit or force push is used.
 
-### Newly indexed Next.js security advisory ? 2026-10-01
+### Newly indexed Next.js security advisory - 2026-10-01
 
-The fresh npm audit reported critical GHSA-vcvr-r3jv-pc5j against Next.js 16.3.4 (the advisory database was updated on 30 September). The maintainer scopes exposure to attacker-controlled SVG passed into Node.js next/og ImageResponse; repository inspection found no ImageResponse/next/og use. Nevertheless, commit `2d39d1d` pins Next.js and matching eslint-config-next to the documented fixed patch 16.3.6. React, TypeScript, domain code and migrations remain unchanged. Lockfile audit reports zero vulnerabilities after the patch. Patch CI [36838210557](https://github.com/Rmdn96/Naql365/actions/runs/36838210557), local formatting/secrets/lint/types/176 tests/build/32 E2E all passed. The new protected Preview is READY; full hosted acceptance is running before final acceptance; the 16.3.4 candidate's successful evidence is historical, not final. Reference: https://github.com/advisories/GHSA-vcvr-r3jv-pc5j.
+The fresh npm audit reported critical GHSA-vcvr-r3jv-pc5j against Next.js 16.3.4 (the advisory database was updated on 30 September). The maintainer scopes exposure to attacker-controlled SVG passed into Node.js next/og ImageResponse; repository inspection found no ImageResponse/next/og use. Nevertheless, commit `2d39d1d` pins Next.js and matching eslint-config-next to the documented fixed patch 16.3.6. React, TypeScript, domain code and migrations remain unchanged. The 1 October lockfile audit reported zero vulnerabilities after the patch; the newer 3 October development-only advisory is recorded separately below. Patch CI [36838210557](https://github.com/Rmdn96/Naql365/actions/runs/36838210557), local formatting/secrets/lint/types/176 tests/build/32 E2E all passed. The new protected Preview is READY; all 36 hosted tests passed on the patched Preview; the 16.3.4 candidate's successful evidence is historical, not final. Reference: https://github.com/advisories/GHSA-vcvr-r3jv-pc5j.
 
 ### Hosted SQL fixture isolation correction ? 2026-10-01
 
-The populated Staging rerun exposed two legacy test setup assumptions: Foundation counted all profiles/memberships and copied all business rows, while Phase 2 assigned roles across all memberships. Commit `e249377` scopes only privileged fixture setup and enrollment assertions to each test's synthetic identities/organizations. RLS assertions remain unfiltered and unchanged. No migration, application policy or existing Staging record was changed. All five rollback SQL suites passed against the populated project; 176 local tests passed. The 2026-10-01 hosted follow-up verified all 44 migration versions, all five SQL suites, RLS on all 59 public tables, official generated public-schema types, positive/revoked/expired capability handling and replay denial. Capability probe cleanup passed. Hosted Preview acceptance remains in progress.
+The populated Staging rerun exposed two legacy test setup assumptions: Foundation counted all profiles/memberships and copied all business rows, while Phase 2 assigned roles across all memberships. Commit `e249377` scopes only privileged fixture setup and enrollment assertions to each test's synthetic identities/organizations. RLS assertions remain unfiltered and unchanged. No migration, application policy or existing Staging record was changed. All five rollback SQL suites passed against the populated project; 176 local tests passed. The 2026-10-01 hosted follow-up verified all 44 migration versions, all five SQL suites, RLS on all 59 public tables, official generated public-schema types, positive/revoked/expired capability handling and replay denial. Capability probe cleanup passed. Hosted Preview acceptance passed all 36 tests.
 
 ## AO. Known limitations
 
@@ -182,60 +182,68 @@ No refund/cancellation engine, gateway/cards/mada/Apple Pay, wallet API, automat
 
 ## AQ. Acceptance matrix
 
-PASS is limited to executed evidence. Full hosted regression, final audits and cleanup are still required.
+PASS is limited to executed evidence. Hosted/runtime gates passed; the unpatched development dependency finding remains PARTIAL and prevents final acceptance.
 
-| Gate                           | Result  | Evidence                                                                                   |
-| ------------------------------ | ------- | ------------------------------------------------------------------------------------------ |
-| Git baseline                   | PASS    | Remote refs and unchanged protected develop/main                                           |
-| Gap analysis                   | PASS    | 435fcb4 before migrations                                                                  |
-| Guest request                  | PASS    | Both hosted anonymous journeys                                                             |
-| Guest token security           | PASS    | Hosted isolation/rotation/revocation; 2026-10-01 expiry/replay probe and cleanup; CI races |
-| Reference ≠ authorization      | PASS    | Hosted malformed/reference/UUID denial                                                     |
-| Guest preliminary quote        | PASS    | Shared server-authoritative projection after verified distance                             |
-| Guest final Quote              | PASS    | Hosted SA/EG Sales review and sent snapshot                                                |
-| Guest accept/reject            | PASS    | Hosted acceptance/rejection; CI independent races                                          |
-| Guest Order                    | PASS    | Exactly one Order, immutable commercial facts                                              |
-| Guest CASH                     | PASS    | SA due state through completion; no guest confirmation                                     |
-| Guest BANK_TRANSFER            | PASS    | EG TEST InstaPay checkout/Finance verification                                             |
-| Guest proof privacy            | PASS    | Private proof, unauthorized denial, signed expiry                                          |
-| Guest tracking                 | PASS    | Safe progression and completed Order                                                       |
-| Customer isolation             | PASS    | Hosted scoped capabilities/negative commands; CI RLS                                       |
-| Registered customer regression | PARTIAL | Complete hosted rerun pending                                                              |
-| SA WhatsApp                    | PASS    | Hosted selected Market destination                                                         |
-| EG WhatsApp                    | PASS    | Hosted selected Market destination                                                         |
-| Market switching               | PASS    | AR/EN public and guest country context                                                     |
-| Homepage redesign              | PASS    | Hosted public screenshots/DOM review                                                       |
-| Hero                           | PASS    | Primary Request CTA and illustrative product route                                         |
-| Quick Quote                    | PASS    | Valid catalogue preselection into shared Request                                           |
-| Services                       | PASS    | Selected Market active catalogue                                                           |
-| How It Works                   | PASS    | Four localized customer-facing steps                                                       |
-| Tracking preview               | PASS    | Explicit illustration, no real customer data                                               |
-| Route visual motif             | PASS    | Public motif, wizard nodes, confirmation/tracking                                          |
-| Mobile UX                      | PASS    | Secure/public 360/390/768/1440 axe/overflow checks                                         |
-| AR/EN                          | PASS    | SA Arabic / EG English and both public locales                                             |
-| RTL/LTR                        | PASS    | Hosted direction/layout checks                                                             |
-| SEO                            | PASS    | Hosted metadata/canonical/hreflang/crawlers/noindex                                        |
-| Analytics privacy              | PASS    | Finite private aggregates, negative payload tests                                          |
-| Abuse protection               | PASS    | Server/database limits and CI retry/race negatives                                         |
-| RLS                            | PASS    | 2026-10-01 populated Staging: five SQL suites; all 59 public tables RLS-enabled            |
-| Security negatives             | PARTIAL | Guest PASS; complete registered/expiry review pending                                      |
-| Performance                    | PASS    | Build and bounded asset review; no field CWV claim                                         |
-| Accessibility                  | PASS    | Hosted public/guest axe, responsive and keyboard smoke                                     |
-| SA guest hosted journey        | PASS    | Current Preview through Driver/POD/completion                                              |
-| EG guest hosted journey        | PASS    | Current Preview through transfer/Driver/POD/completion                                     |
-| Bank reject/reupload           | PASS    | Guest EG; registered regression is separate                                                |
-| WhatsApp hosted test           | PASS    | Country switch/reference safety                                                            |
-| Migrations                     | PASS    | 44; fresh/upgrade/ledger; accepted 31 unchanged                                            |
-| Generated types                | PASS    | Official CI exact file and hosted schema match                                             |
-| Regression                     | PARTIAL | Local PASS; full hosted rerun pending                                                      |
-| CI                             | PARTIAL | Source/test CI PASS; final feature revision pending                                        |
-| Protected Preview              | PASS    | READY genuine Preview, Staging-only, access protection                                     |
-| Production runbook             | PASS    | Safe privileged procedure/placeholders, release blockers                                   |
-| Cleanup                        | PARTIAL | Guest suite cleanup PASS; final residue/bypass cleanup pending                             |
-| Scope compliance               | PASS    | No merge, main/Production/Phase 8 action                                                   |
+| Gate                           | Result | Evidence                                                                                   |
+| ------------------------------ | ------ | ------------------------------------------------------------------------------------------ |
+| Git baseline                   | PASS   | Remote refs and unchanged protected develop/main                                           |
+| Gap analysis                   | PASS   | 435fcb4 before migrations                                                                  |
+| Guest request                  | PASS   | Both hosted anonymous journeys                                                             |
+| Guest token security           | PASS   | Hosted isolation/rotation/revocation; 2026-10-01 expiry/replay probe and cleanup; CI races |
+| Reference ≠ authorization      | PASS   | Hosted malformed/reference/UUID denial                                                     |
+| Guest preliminary quote        | PASS   | Shared server-authoritative projection after verified distance                             |
+| Guest final Quote              | PASS   | Hosted SA/EG Sales review and sent snapshot                                                |
+| Guest accept/reject            | PASS   | Hosted acceptance/rejection; CI independent races                                          |
+| Guest Order                    | PASS   | Exactly one Order, immutable commercial facts                                              |
+| Guest CASH                     | PASS   | SA due state through completion; no guest confirmation                                     |
+| Guest BANK_TRANSFER            | PASS   | EG TEST InstaPay checkout/Finance verification                                             |
+| Guest proof privacy            | PASS   | Private proof, unauthorized denial, signed expiry                                          |
+| Guest tracking                 | PASS   | Safe progression and completed Order                                                       |
+| Customer isolation             | PASS   | Hosted scoped capabilities/negative commands; CI RLS                                       |
+| Registered customer regression | PASS   | 36-test full hosted run, including registered Intake/Finance/Auth                          |
+| SA WhatsApp                    | PASS   | Hosted selected Market destination                                                         |
+| EG WhatsApp                    | PASS   | Hosted selected Market destination                                                         |
+| Market switching               | PASS   | AR/EN public and guest country context                                                     |
+| Homepage redesign              | PASS   | Hosted public screenshots/DOM review                                                       |
+| Hero                           | PASS   | Primary Request CTA and illustrative product route                                         |
+| Quick Quote                    | PASS   | Valid catalogue preselection into shared Request                                           |
+| Services                       | PASS   | Selected Market active catalogue                                                           |
+| How It Works                   | PASS   | Four localized customer-facing steps                                                       |
+| Tracking preview               | PASS   | Explicit illustration, no real customer data                                               |
+| Route visual motif             | PASS   | Public motif, wizard nodes, confirmation/tracking                                          |
+| Mobile UX                      | PASS   | Secure/public 360/390/768/1440 axe/overflow checks                                         |
+| AR/EN                          | PASS   | SA Arabic / EG English and both public locales                                             |
+| RTL/LTR                        | PASS   | Hosted direction/layout checks                                                             |
+| SEO                            | PASS   | Hosted metadata/canonical/hreflang/crawlers/noindex                                        |
+| Analytics privacy              | PASS   | Finite private aggregates, negative payload tests                                          |
+| Abuse protection               | PASS   | Server/database limits and CI retry/race negatives                                         |
+| RLS                            | PASS   | 2026-10-01 populated Staging: five SQL suites; all 59 public tables RLS-enabled            |
+| Security negatives             | PASS   | Hosted guest/registered/Driver negatives, capability expiry/revocation and private Storage |
+| Performance                    | PASS   | Build and bounded asset review; no field CWV claim                                         |
+| Accessibility                  | PASS   | Hosted public/guest axe, responsive and keyboard smoke                                     |
+| SA guest hosted journey        | PASS   | Current Preview through Driver/POD/completion                                              |
+| EG guest hosted journey        | PASS   | Current Preview through transfer/Driver/POD/completion                                     |
+| Bank reject/reupload           | PASS   | Guest EG; registered regression is separate                                                |
+| WhatsApp hosted test           | PASS   | Country switch/reference safety                                                            |
+| Migrations                     | PASS   | 44; fresh/upgrade/ledger; accepted 31 unchanged                                            |
+| Generated types                | PASS   | Official CI exact file and hosted schema match                                             |
+| Regression                     | PASS   | 176 local tests, 32 local E2E, 36 full hosted tests on one Preview                         |
+| CI                             | PASS   | Both required jobs PASS for deployed source and documentation checkpoint                   |
+| Protected Preview              | PASS   | READY genuine Preview, Staging-only, access protection                                     |
+| Production runbook             | PASS   | Safe privileged procedure/placeholders, release blockers                                   |
+| Cleanup                        | PASS   | Every runner cleanup PASS; independent owned-fixture comparison; final bypass evidence     |
+| Scope compliance               | PASS   | No merge, main/Production/Phase 8 action                                                   |
+
+### Development dependency review - unresolved
+
+On 3 October, `npm audit --audit-level=low` exited 1 with five high findings arising from one dependency chain: eslint-config-next 16.3.6 -> @next/eslint-plugin-next -> fast-glob -> micromatch -> braces 3.0.3. `npm audit --omit=dev --audit-level=low` exited 0 with zero findings. [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm), updated 2 October, lists no patched version. The issue is stack exhaustion from deeply nested patterns; this project's dependency is development tooling, not a runtime input path. No exploitability claim beyond that inventory is made. npm proposes a breaking downgrade to eslint-config-next 14.2.35; that is not applied. No audit suppression, framework downgrade or unreviewed fork is introduced. A supported upstream remediation, or an explicit owner-approved and documented scoped risk disposition, is required before this gate can close.
+
+| Gate                         | Result  | Evidence                                                                                |
+| ---------------------------- | ------- | --------------------------------------------------------------------------------------- |
+| Dependency security closeout | PARTIAL | Unpatched development-only GHSA-vfj7-8cjw-p6xm; full audit exits 1; runtime audit clean |
 
 ## AR. Final decision
 
 **PHASE 7 PARTIAL — NOT READY**
 
-This is an acceptance checkpoint, not a request to merge or release. Continue full hosted regression, capability expiry/database/log audits, cleanup and final feature CI before updating the decision. Do not merge, deploy Production, modify main or start Phase 8.
+Application and hosted acceptance are complete. Final PASS is withheld because the new development dependency advisory has no supported patch and no owner risk disposition. Preserve the verified Preview and evidence; resolve that finding before owner launch review. Production configuration/legal/release blockers remain separate. Do not merge, deploy Production, modify main or start Phase 8.

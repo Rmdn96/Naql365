@@ -1,0 +1,589 @@
+{
+  "recordedAt": "2026-10-03T07:39:49.067Z",
+  "preview": {
+    "url": "https://naql365-staging-9s73vfobh-naql365.vercel.app",
+    "id": "dpl_7ANrTtkuqboUSJ3YNnxYWBuH2c7o",
+    "classification": "Preview",
+    "state": "READY",
+    "sha": "2d39d1d9031b2aeb9614310f54c1cc3fafcf052a",
+    "branch": "feature/phase-7-mvp-launch-guest-brand"
+  },
+  "fullHosted": {
+    "passed": 36,
+    "suites": [
+      "Operations and Markets regression",
+      "Phase 7 guest acceptance",
+      "Phase 6 Finance regression",
+      "Foundation authentication regression",
+      "Registered request intake regression",
+      "Pricing and Quote regression",
+      "Driver, live tracking and notifications regression"
+    ],
+    "cases": [
+      {
+        "test": "hosted-phase3 > assets.spec.ts > authenticated operations assets preserve server-only secret boundaries",
+        "durationMs": 18947
+      },
+      {
+        "test": "hosted-phase3 > journey.spec.ts > hosted SA intake to multi-trip dispatch, private POD and whole-Order completion",
+        "durationMs": 348970
+      },
+      {
+        "test": "hosted-phase3 > journey.spec.ts > hosted EG intake to multi-trip dispatch, private POD and whole-Order completion",
+        "durationMs": 345374
+      },
+      {
+        "test": "hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration",
+        "durationMs": 108647
+      },
+      {
+        "test": "hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration",
+        "durationMs": 174374
+      },
+      {
+        "test": "hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order",
+        "durationMs": 75657
+      },
+      {
+        "test": "hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact",
+        "durationMs": 9424
+      },
+      {
+        "test": "hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact",
+        "durationMs": 8675
+      },
+      {
+        "test": "hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed",
+        "durationMs": 5851
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > hosted bank configuration is privileged, localized and revisioned",
+        "durationMs": 31577
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > SA CASH: hosted checkout, Finance, execution clearance, isolation and receipt",
+        "durationMs": 202734
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > SA BANK_TRANSFER: hosted checkout, Finance, execution clearance, isolation and receipt",
+        "durationMs": 203803
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > EG CASH: hosted checkout, Finance, execution clearance, isolation and receipt",
+        "durationMs": 266725
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > EG BANK_TRANSFER: hosted checkout, Finance, execution clearance, isolation and receipt",
+        "durationMs": 238492
+      },
+      {
+        "test": "desktop > auth.spec.ts > real customer login, server session, staff denial and logout",
+        "durationMs": 17202
+      },
+      {
+        "test": "desktop > public.spec.ts > ar hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2663
+      },
+      {
+        "test": "desktop > public.spec.ts > en hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2251
+      },
+      {
+        "test": "desktop > public.spec.ts > hosted routing, crawler policy and callback rejection",
+        "durationMs": 6920
+      },
+      {
+        "test": "desktop > public.spec.ts > hosted browser assets contain no privileged test secrets or source maps",
+        "durationMs": 3937
+      },
+      {
+        "test": "desktop > security.spec.ts > hosted customer isolation, private file capability and suspended routing",
+        "durationMs": 88118
+      },
+      {
+        "test": "mobile > auth.spec.ts > real customer login, server session, staff denial and logout",
+        "durationMs": 15009
+      },
+      {
+        "test": "mobile > public.spec.ts > ar hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2473
+      },
+      {
+        "test": "mobile > public.spec.ts > en hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2652
+      },
+      {
+        "test": "mobile > public.spec.ts > hosted routing, crawler policy and callback rejection",
+        "durationMs": 6735
+      },
+      {
+        "test": "mobile > public.spec.ts > hosted browser assets contain no privileged test secrets or source maps",
+        "durationMs": 3781
+      },
+      {
+        "test": "mobile > security.spec.ts > hosted customer isolation, private file capability and suspended routing",
+        "durationMs": 89511
+      },
+      {
+        "test": "desktop > journey.spec.ts > customer persists a bilingual request through private image, review, submit and history",
+        "durationMs": 63405
+      },
+      {
+        "test": "desktop > journey.spec.ts > customer direct APIs reject IDOR, mass assignment, stale writes and suspended membership",
+        "durationMs": 18195
+      },
+      {
+        "test": "desktop > journey.spec.ts > draft cancellation removes private images and prevents further edits",
+        "durationMs": 20200
+      },
+      {
+        "test": "mobile > journey.spec.ts > customer persists a bilingual request through private image, review, submit and history",
+        "durationMs": 80429
+      },
+      {
+        "test": "mobile > journey.spec.ts > customer direct APIs reject IDOR, mass assignment, stale writes and suspended membership",
+        "durationMs": 24790
+      },
+      {
+        "test": "mobile > journey.spec.ts > draft cancellation removes private images and prevents further edits",
+        "durationMs": 22732
+      },
+      {
+        "test": "hosted-phase2 > journey.spec.ts > hosted commercial journey enforces pricing, lifecycle, isolation and accessibility",
+        "durationMs": 98671
+      },
+      {
+        "test": "hosted-phase5 > journey.spec.ts > hosted SA authenticated Driver execution, reassignment, issues, private POD and tracking",
+        "durationMs": 670261
+      },
+      {
+        "test": "hosted-phase5 > journey.spec.ts > hosted EG authenticated Driver execution, reassignment, issues, private POD and tracking",
+        "durationMs": 413854
+      },
+      {
+        "test": "hosted-phase5 > session.spec.ts > hosted Driver session expiry, route revocation and keyboard login in both locales",
+        "durationMs": 40443
+      }
+    ]
+  },
+  "supplementalHosted": {
+    "passed": 12,
+    "purpose": "Fresh bounded Auth/Storage runtime-log review after original run logs aged out",
+    "cases": [
+      {
+        "test": "desktop > auth.spec.ts > real customer login, server session, staff denial and logout",
+        "durationMs": 24733
+      },
+      {
+        "test": "desktop > public.spec.ts > ar hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2603
+      },
+      {
+        "test": "desktop > public.spec.ts > en hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2699
+      },
+      {
+        "test": "desktop > public.spec.ts > hosted routing, crawler policy and callback rejection",
+        "durationMs": 6204
+      },
+      {
+        "test": "desktop > public.spec.ts > hosted browser assets contain no privileged test secrets or source maps",
+        "durationMs": 3990
+      },
+      {
+        "test": "desktop > security.spec.ts > hosted customer isolation, private file capability and suspended routing",
+        "durationMs": 86316
+      },
+      {
+        "test": "mobile > auth.spec.ts > real customer login, server session, staff denial and logout",
+        "durationMs": 15001
+      },
+      {
+        "test": "mobile > public.spec.ts > ar hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2417
+      },
+      {
+        "test": "mobile > public.spec.ts > en hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2782
+      },
+      {
+        "test": "mobile > public.spec.ts > hosted routing, crawler policy and callback rejection",
+        "durationMs": 5428
+      },
+      {
+        "test": "mobile > public.spec.ts > hosted browser assets contain no privileged test secrets or source maps",
+        "durationMs": 3089
+      },
+      {
+        "test": "mobile > security.spec.ts > hosted customer isolation, private file capability and suspended routing",
+        "durationMs": 84181
+      }
+    ]
+  },
+  "local": {
+    "unitIntegration": 176,
+    "testFiles": 40,
+    "e2e": 32,
+    "format": "PASS",
+    "secretScan": "PASS",
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "build": "PASS"
+  },
+  "database": {
+    "checkedAt": "2026-10-01T08:03:16.026Z",
+    "migrations": 44,
+    "sql": "PASS",
+    "rls": "PASS",
+    "officialPublicSchemaTypes": "PASS",
+    "positiveRevokedExpiredReplay": "PASS",
+    "probeCleanup": "PASS"
+  },
+  "browserSecurity": {
+    "deployment": "dpl_7ANrTtkuqboUSJ3YNnxYWBuH2c7o",
+    "checkedAt": "2026-10-01T14:22:40.589Z",
+    "pages": [
+      {
+        "path": "/ar",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      },
+      {
+        "path": "/en",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      },
+      {
+        "path": "/ar/guest",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      },
+      {
+        "path": "/en/login",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      },
+      {
+        "path": "/ar/driver/login",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      }
+    ],
+    "assetCount": 16,
+    "assetBytes": 1029161,
+    "credentialPatternFound": false,
+    "publicSourceMaps": 0,
+    "unauthenticatedProtectionStatus": 302,
+    "method": "Public HTML and discovered same-origin JavaScript assets; credential-pattern scan, sibling source-map probes; no private responses persisted."
+  },
+  "runtimeLogReview": {
+    "deployment": "dpl_7ANrTtkuqboUSJ3YNnxYWBuH2c7o",
+    "checkedAt": "2026-10-03T07:38:15.072Z",
+    "evidence": [
+      {
+        "scope": "serverless",
+        "records": 50,
+        "http5xx": 0,
+        "paymentRequests": 0,
+        "errorRecords": 0,
+        "credentialPatternFound": false,
+        "authQueryValueObserved": false,
+        "markers": []
+      },
+      {
+        "scope": "errors",
+        "records": 0,
+        "http5xx": 0,
+        "paymentRequests": 0,
+        "errorRecords": 0,
+        "credentialPatternFound": false,
+        "authQueryValueObserved": false,
+        "markers": []
+      },
+      {
+        "scope": "5xx",
+        "records": 0,
+        "http5xx": 0,
+        "paymentRequests": 0,
+        "errorRecords": 0,
+        "credentialPatternFound": false,
+        "authQueryValueObserved": false,
+        "markers": []
+      }
+    ]
+  },
+  "cleanup": {
+    "project": "zuvyfeflkzlciuaauxba",
+    "checkedAt": "2026-10-03T07:38:11.875Z",
+    "counts": [
+      {
+        "count": 1,
+        "kind": "profiles"
+      },
+      {
+        "count": 1,
+        "kind": "organization_memberships"
+      },
+      {
+        "count": 1,
+        "kind": "user_roles"
+      },
+      {
+        "count": 2,
+        "kind": "customers"
+      },
+      {
+        "count": 2,
+        "kind": "request_locations"
+      },
+      {
+        "count": 0,
+        "kind": "request_items"
+      },
+      {
+        "count": 0,
+        "kind": "request_attachments"
+      },
+      {
+        "count": 0,
+        "kind": "request_additional_services"
+      },
+      {
+        "count": 0,
+        "kind": "quote_items"
+      },
+      {
+        "count": 0,
+        "kind": "quote_pricing_details"
+      },
+      {
+        "count": 0,
+        "kind": "pricing_evaluations"
+      },
+      {
+        "count": 0,
+        "kind": "pricing_evaluation_components"
+      },
+      {
+        "count": 0,
+        "kind": "distance_snapshots"
+      },
+      {
+        "count": 0,
+        "kind": "trip_stops"
+      },
+      {
+        "count": 0,
+        "kind": "trip_stop_dependencies"
+      },
+      {
+        "count": 0,
+        "kind": "trip_events"
+      },
+      {
+        "count": 2,
+        "kind": "requests"
+      },
+      {
+        "count": 0,
+        "kind": "quotes"
+      },
+      {
+        "count": 0,
+        "kind": "quote_versions"
+      },
+      {
+        "count": 0,
+        "kind": "orders"
+      },
+      {
+        "count": 0,
+        "kind": "jobs"
+      },
+      {
+        "count": 0,
+        "kind": "trips"
+      },
+      {
+        "count": 0,
+        "kind": "trip_pods"
+      },
+      {
+        "count": 0,
+        "kind": "assignments"
+      },
+      {
+        "count": 0,
+        "kind": "drivers"
+      },
+      {
+        "count": 0,
+        "kind": "vehicles"
+      },
+      {
+        "count": 0,
+        "kind": "file_objects"
+      },
+      {
+        "count": 0,
+        "kind": "issues"
+      },
+      {
+        "count": 0,
+        "kind": "issue_photos"
+      },
+      {
+        "count": 0,
+        "kind": "trip_event_locations"
+      },
+      {
+        "count": 0,
+        "kind": "trip_live_locations"
+      },
+      {
+        "count": 0,
+        "kind": "notifications"
+      },
+      {
+        "count": 0,
+        "kind": "payments"
+      },
+      {
+        "count": 0,
+        "kind": "payment_transactions"
+      },
+      {
+        "count": 0,
+        "kind": "invoices"
+      },
+      {
+        "count": 0,
+        "kind": "bank_transfer_attempts"
+      },
+      {
+        "count": 0,
+        "kind": "bank_accounts"
+      },
+      {
+        "count": 1,
+        "kind": "guest_access_grants"
+      },
+      {
+        "count": 0,
+        "kind": "tracking_sessions"
+      },
+      {
+        "count": 0,
+        "kind": "location_samples"
+      },
+      {
+        "count": 0,
+        "kind": "completed_trip_assignments"
+      },
+      {
+        "count": 0,
+        "kind": "driver_mutations"
+      },
+      {
+        "count": 0,
+        "kind": "payment_mutations"
+      },
+      {
+        "count": 3,
+        "kind": "auth_sessions"
+      },
+      {
+        "count": 1,
+        "kind": "auth_users"
+      },
+      {
+        "count": 0,
+        "kind": "storage_objects"
+      }
+    ],
+    "retainedMarkets": [
+      {
+        "active": true,
+        "cities": 2,
+        "country_code": "EG",
+        "currency": "EGP",
+        "timezone": "Africa/Cairo"
+      },
+      {
+        "active": true,
+        "cities": 2,
+        "country_code": "SA",
+        "currency": "SAR",
+        "timezone": "Asia/Riyadh"
+      }
+    ],
+    "ownedFixtureIdentities": 0,
+    "preservedSnapshotAt": "2026-09-30T14:17:46.146Z",
+    "unattributedRecordsPreserved": true,
+    "sessionCountExcluded": "Existing unrelated account may retain/refresh sessions",
+    "divergences": []
+  },
+  "automationCleanup": {
+    "revokedCount": 1,
+    "allRevoked": true,
+    "remainingAutomationCredentials": 0,
+    "revokedCredentialResponseStatus": 302,
+    "protection": {
+      "deploymentType": "all_except_custom_domains"
+    }
+  },
+  "gitProtection": {
+    "checkedAt": "2026-10-03T07:30:30.051Z",
+    "develop": "24f1a4c6a3b8027a6ce89aaf72c8c3bb5fd6fbd9",
+    "main": "184ac2374a7e9611b4b265efc7dac21b57b7a2b1",
+    "developProtected": true,
+    "mainProtected": true,
+    "protectionUnchanged": true,
+    "requiredApprovals": 1,
+    "staleApprovalsDismissed": true,
+    "requiredChecks": ["Lint, types, tests and production build", "Supabase migrations and RLS"],
+    "adminsEnforced": true,
+    "forcePushAllowed": false
+  },
+  "runtimeEquivalence": {
+    "previewSource": "2d39d1d9031b2aeb9614310f54c1cc3fafcf052a",
+    "applicationUnchanged": true,
+    "runtimeDependencyGraphUnchanged": true,
+    "runtimeDependencyGraphSha256": "466494f3bb90afda77336641db7a30d363ae6ad34209872444c0a59af70c2c29",
+    "patchedDevelopmentPackages": [
+      "brace-expansion 1.1.18 -> 1.1.21",
+      "brace-expansion 5.0.9 -> 5.0.12"
+    ]
+  },
+  "dependencyAudit": {
+    "checkedAt": "2026-10-03",
+    "productionFindings": 0,
+    "productionExitCode": 0,
+    "allDependenciesExitCode": 1,
+    "highFindings": 5,
+    "rootAdvisory": "GHSA-vfj7-8cjw-p6xm",
+    "scope": "development-only eslint-config-next -> @next/eslint-plugin-next -> fast-glob -> micromatch -> braces 3.0.3",
+    "patchedVersionAvailable": false,
+    "status": "PARTIAL; not suppressed"
+  },
+  "applicationCI": {
+    "sha": "2d39d1d9031b2aeb9614310f54c1cc3fafcf052a",
+    "run": 36838210557,
+    "result": "PASS"
+  },
+  "checkpointCI": {
+    "sha": "bc8752bb61e9a124c335ec0f5d968a9c4115ad97",
+    "run": 36876207982,
+    "result": "PASS"
+  }
+}
