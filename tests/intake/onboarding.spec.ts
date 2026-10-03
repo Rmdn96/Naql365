@@ -36,7 +36,12 @@ test('fresh activated customer gets profile feedback, persists after refresh and
   await page.locator('#name').fill('Synthetic activated customer');
   await page.locator('#phone').fill('invalid');
   await page.getByRole('button', { name: t.saveProfile, exact: true }).click();
-  await expect(page.getByRole('alert')).toContainText(t.profileValidation);
+  await expect(
+    page
+      .locator('form')
+      .filter({ has: page.locator('#name') })
+      .getByRole('alert'),
+  ).toContainText(t.profileValidation);
   await expect(page.locator('#phone')).toHaveAttribute('aria-invalid', 'true');
   await page.locator('#phone').fill('+966500000001');
   await page.getByRole('button', { name: t.saveProfile, exact: true }).click();
