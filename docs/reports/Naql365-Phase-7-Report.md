@@ -1,6 +1,6 @@
 # Naql365 Phase 7 — MVP launch, guest ordering and visual experience
 
-Canonical acceptance report, updated 3 October 2026. **Hosted acceptance is complete; an unresolved development-tool dependency advisory prevents final PASS. No merge or Production release is authorized.** This revision replaces earlier implementation checkpoints and retains material failed-run evidence below.
+Canonical acceptance report, updated 3 October 2026. **Phase 7 acceptance and separate Staging SUPER_ADMIN provisioning are complete. Dependency security closeout: PASS — scoped owner risk acceptance. No merge or Production release is authorized.** This revision replaces earlier implementation checkpoints and retains material failed-run evidence below.
 
 ## A. Starting state
 
@@ -244,7 +244,7 @@ On 3 October, `npm audit --audit-level=low` exited 1 with five high findings ari
 
 ## AR. Final decision
 
-**PHASE 7 PARTIAL — NOT READY**
+**Historical checkpoint: PHASE 7 PARTIAL — NOT READY (superseded by final admin closeout below).**
 
 Previous application and hosted acceptance remain historical evidence. The registered onboarding defect is now fixed and its required regressions pass. Final PASS is withheld solely for the requested administrative provisioning, blocked by existing immutable customer identity and membership rules. The dependency advisory has explicit scoped owner risk acceptance. Production configuration/legal/release blockers remain separate. Do not merge, deploy Production, modify main or start Phase 8.
 
@@ -286,6 +286,36 @@ The nominated account is confirmed, has a profile and active CUSTOMER membership
 
 Files changed in this follow-up: customer Server Actions; account page/shell; profile form; request-country guidance; AR/EN dictionary; intake fixture runner; new onboarding test; customer-auth unit tests; safe guest proof diagnostics; Staging Auth callback config; canonical report/evidence. No migration added.
 
-**PHASE 7 PARTIAL — NOT READY**
+**Historical checkpoint: PHASE 7 PARTIAL — NOT READY (superseded by final admin closeout below).**
 
 No merge, main change, Production deployment or Phase 8 work. Stop for owner resolution of administrative identity provisioning.
+
+## Final separate SUPER_ADMIN closeout — 3 October 2026
+
+Owner approved a separate administrative identity, `abo.sabara0@gmail.com`. The owner created/confirmed it and entered the password interactively. No secret was collected, persisted or exported by this closeout. Exact Auth UUID was verified against normalized email and confirmation; profile existed, with no membership, role or Customer conflict. A trusted transactional operator provisioned one active staff membership in Naql365 Staging and one canonical SUPER_ADMIN user_role. Normal identity/role/audit triggers remained enabled. No email-based application authorization or direct permission grant was added.
+
+SUPER_ADMIN inherits all 25 intended staff permissions. The two catalogue exclusions are account.access and driver.access, intentionally not staff authority. Authenticated database RLS-context checks returned those exact permissions, the one intended organization, SA/EG Markets, services and authorized audit visibility. No application source or migration changed.
+
+Hosted read-only smoke used the owner’s actual authenticated browser session on the existing protected Preview. AR and EN staff portal, Sales/Quote review, Operations/Dispatch board, Driver/Vehicle controls and bank destination configuration rendered successfully. AR Finance queue rendered successfully. SA/EG options were available. The customer account route correctly denied the staff identity. No password, JWT, cookie, magic link or authorization header was extracted. Bounded runtime logs: 50 records, no error/5xx/credential markers; separate error and 5xx queries empty.
+
+Scope limits: this is access/provisioning smoke, not a rerun of business mutations. The accepted repository has no standalone organization/staff-role administration screens or general Market/service/coverage editor; these are NOT claimed as tested UI. Their existing permission/catalogue/RLS authority was inspected. There is no eligible submitted guest Request after fixture cleanup, so no guest-link token was issued/rotated on real data; guest.links.manage is verified in the canonical authenticated permission checks, with existing Phase 7 guest-link acceptance retained. No extra admin UI or privileged mutation was invented during closeout.
+
+The original `Abo.sabara@gmail.com` identity is unchanged: one ACCOUNT Customer, active CUSTOMER membership, CUSTOMER role only, and both existing Requests match the before snapshot including IDs/status/update timestamps. No detachment, deletion or staff permission was applied to it.
+
+Final gates: 44 unchanged migrations; hosted database assertions/RLS/official generated types and capability expiry/revocation probes PASS, probe cleanup PASS. No temporary automation bypass remains (zero); owner’s intended Auth session/account remain. main/develop unchanged; no Production deployment/configuration or Phase 8 work. Application Preview source remains 3a5227feaf6f034660ccfc6c9bf82657cb1a38c9, byte-identical application to final documentation HEAD. Exact final SHA and CI are supplied in handoff.
+
+| Final closeout gate                       | Result                              | Evidence                                                  |
+| ----------------------------------------- | ----------------------------------- | --------------------------------------------------------- |
+| Confirmed separate admin identity/profile | PASS                                | Owner signup and confirmation; exact Auth UUID checked    |
+| Canonical staff/SUPER_ADMIN               | PASS                                | One active membership, one role, 25 intended permissions  |
+| Implemented hosted admin access           | PASS                                | Actual owner session AR/EN pages; limits explicitly above |
+| Customer preservation                     | PASS                                | Customer, membership, roles and two Requests unchanged    |
+| Database/RLS/types                        | PASS                                | Hosted repeat; 44 migrations unchanged                    |
+| Scoped dependency risk                    | PASS — scoped owner risk acceptance | GHSA-vfj7-8cjw-p6xm only; audit not suppressed            |
+| Credentials/Production/scope              | PASS                                | Zero temporary bypasses; no Production or source changes  |
+
+## Final decision (authoritative)
+
+**PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW**
+
+This is readiness for owner release review, not Production authorization. The separate Production configuration/legal/release checklist remains applicable. Do not merge, modify main, deploy Production or start Phase 8.

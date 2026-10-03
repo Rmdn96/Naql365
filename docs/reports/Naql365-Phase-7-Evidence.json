@@ -1150,5 +1150,231 @@
       "result": "PASS"
     },
     "finalDecision": "PHASE 7 PARTIAL — NOT READY"
-  }
+  },
+  "adminCloseout": {
+    "checkedAt": "2026-10-03T14:49:42.968Z",
+    "provisioning": {
+      "checkedAt": "2026-10-03T14:44:06.170Z",
+      "email": "abo.sabara0@gmail.com",
+      "id": "7c61b160-ec94-4bd6-874c-ebd4459588f0",
+      "organization": "a179182a-fa47-40ff-aea1-f849ef62de6d",
+      "confirmed": true,
+      "profileExists": true,
+      "evidence": [
+        {
+          "catalogue_permissions": 27,
+          "granted_permissions": 25,
+          "member_type": "staff",
+          "membership_count": 1,
+          "role_count": 1,
+          "roles": ["SUPER_ADMIN"],
+          "status": "active"
+        }
+      ]
+    },
+    "rls": [
+      {
+        "verification": {
+          "audit_visible": 4629,
+          "markets": ["EG", "SA"],
+          "membership_visible": 1,
+          "organizations": 1,
+          "permissions": [
+            {
+              "allowed": true,
+              "code": "portal.access"
+            },
+            {
+              "allowed": true,
+              "code": "users.manage"
+            },
+            {
+              "allowed": true,
+              "code": "audit.read"
+            },
+            {
+              "allowed": true,
+              "code": "customers.read"
+            },
+            {
+              "allowed": true,
+              "code": "requests.read"
+            },
+            {
+              "allowed": true,
+              "code": "files.read"
+            },
+            {
+              "allowed": true,
+              "code": "fleet.read"
+            },
+            {
+              "allowed": true,
+              "code": "services.read"
+            },
+            {
+              "allowed": true,
+              "code": "quotes.read"
+            },
+            {
+              "allowed": true,
+              "code": "orders.read"
+            },
+            {
+              "allowed": true,
+              "code": "trips.read"
+            },
+            {
+              "allowed": true,
+              "code": "finance.read"
+            },
+            {
+              "allowed": true,
+              "code": "notifications.manage"
+            },
+            {
+              "allowed": true,
+              "code": "quality.read"
+            },
+            {
+              "allowed": true,
+              "code": "support.read"
+            },
+            {
+              "allowed": false,
+              "code": "driver.access"
+            },
+            {
+              "allowed": false,
+              "code": "account.access"
+            },
+            {
+              "allowed": true,
+              "code": "pricing.calculate"
+            },
+            {
+              "allowed": true,
+              "code": "quotes.manage"
+            },
+            {
+              "allowed": true,
+              "code": "operations.manage"
+            },
+            {
+              "allowed": true,
+              "code": "dispatch.manage"
+            },
+            {
+              "allowed": true,
+              "code": "fleet.manage"
+            },
+            {
+              "allowed": true,
+              "code": "pod.read"
+            },
+            {
+              "allowed": true,
+              "code": "markets.manage"
+            },
+            {
+              "allowed": true,
+              "code": "finance.verify"
+            },
+            {
+              "allowed": true,
+              "code": "finance.accounts.manage"
+            },
+            {
+              "allowed": true,
+              "code": "guest.links.manage"
+            }
+          ],
+          "services": 5
+        }
+      }
+    ],
+    "preservation": {
+      "checkedAt": "2026-10-03T14:48:29.588Z",
+      "customerPreserved": true,
+      "customerRoles": ["CUSTOMER"],
+      "customerRecords": 1,
+      "requestCount": 2,
+      "temporaryBypasses": 0,
+      "protection": {
+        "deploymentType": "all_except_custom_domains"
+      }
+    },
+    "database": {
+      "checkedAt": "2026-10-03T14:48:39.155Z",
+      "migrations": 44,
+      "sql": "PASS",
+      "rls": "PASS",
+      "officialPublicSchemaTypes": "PASS",
+      "positiveRevokedExpiredReplay": "PASS",
+      "probeCleanup": "PASS"
+    },
+    "runtime": {
+      "deployment": "dpl_yCmDZL8GV4KKgUwdfXRfL8g8JkG9",
+      "checkedAt": "2026-10-03T14:49:01.376Z",
+      "evidence": [
+        {
+          "scope": "serverless",
+          "records": 50,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "errors",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "5xx",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        }
+      ]
+    },
+    "hosted": {
+      "result": "PASS for implemented administration surfaces",
+      "method": "Owner-created and confirmed identity, owner password login; existing in-app browser session. No password/token/cookie was read or exported.",
+      "preview": "https://naql365-staging-4amvwuc0p-naql365.vercel.app",
+      "surfaces": [
+        "AR/EN staff portal",
+        "AR/EN Sales/Quote review",
+        "AR/EN Operations/Dispatch/Drivers/Vehicles and SA/EG selectors",
+        "AR Finance queue",
+        "AR/EN privileged bank/transfer destination configuration",
+        "AR customer account correctly denied"
+      ],
+      "notClaimed": [
+        "No standalone organization/staff-role admin UI exists in accepted source",
+        "No standalone Market/service/coverage editor exists in accepted source",
+        "Guest-link mutation not exercised: no eligible submitted guest request; canonical guest.links.manage permission verified under authenticated RLS context",
+        "No business data was created or modified for this read-only smoke"
+      ],
+      "permissions": {
+        "granted": 25,
+        "catalogue": 27,
+        "expectedExcluded": ["account.access", "driver.access"]
+      },
+      "unexpectedAuthorizationDenial": false
+    },
+    "finalDecision": "PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW"
+  },
+  "finalDecision": "PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW"
 }
