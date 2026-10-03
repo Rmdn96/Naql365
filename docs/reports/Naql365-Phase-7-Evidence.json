@@ -597,7 +597,7 @@
     "result": "PASS"
   },
   "onboardingCloseout": {
-    "status": "IN PROGRESS — release blocker",
+    "status": "Onboarding PASS; administrative provisioning BLOCKED",
     "reproduction": {
       "before": [
         {
@@ -664,6 +664,491 @@
         }
       ],
       "refreshName": true
-    }
+    },
+    "checkedAt": "2026-10-03T09:31:01.428Z",
+    "preview": {
+      "url": "https://naql365-staging-4amvwuc0p-naql365.vercel.app",
+      "id": "dpl_yCmDZL8GV4KKgUwdfXRfL8g8JkG9",
+      "classification": "Preview",
+      "state": "READY",
+      "sha": "3a5227feaf6f034660ccfc6c9bf82657cb1a38c9",
+      "branch": "feature/phase-7-mvp-launch-guest-brand"
+    },
+    "fixCommits": ["dc6cd69", "3a5227feaf6f034660ccfc6c9bf82657cb1a38c9"],
+    "local": {
+      "unitIntegration": 177,
+      "e2e": 32,
+      "format": "PASS",
+      "lint": "PASS",
+      "typecheck": "PASS",
+      "build": "PASS",
+      "secrets": "PASS"
+    },
+    "hosted": {
+      "registeredAndActivation": [
+        {
+          "test": "desktop > journey.spec.ts > customer persists a bilingual request through private image, review, submit and history",
+          "durationMs": 67608
+        },
+        {
+          "test": "desktop > journey.spec.ts > customer direct APIs reject IDOR, mass assignment, stale writes and suspended membership",
+          "durationMs": 18338
+        },
+        {
+          "test": "desktop > journey.spec.ts > draft cancellation removes private images and prevents further edits",
+          "durationMs": 16650
+        },
+        {
+          "test": "desktop > onboarding.spec.ts > fresh activated customer gets profile feedback, persists after refresh and enters request flow",
+          "durationMs": 16483
+        },
+        {
+          "test": "mobile > journey.spec.ts > customer persists a bilingual request through private image, review, submit and history",
+          "durationMs": 53345
+        },
+        {
+          "test": "mobile > journey.spec.ts > customer direct APIs reject IDOR, mass assignment, stale writes and suspended membership",
+          "durationMs": 17539
+        },
+        {
+          "test": "mobile > journey.spec.ts > draft cancellation removes private images and prevents further edits",
+          "durationMs": 16646
+        },
+        {
+          "test": "mobile > onboarding.spec.ts > fresh activated customer gets profile feedback, persists after refresh and enters request flow",
+          "durationMs": 14764
+        }
+      ],
+      "guestAndFinance": [
+        {
+          "test": "hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration",
+          "durationMs": 115293
+        },
+        {
+          "test": "hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration",
+          "durationMs": 135300
+        },
+        {
+          "test": "hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order",
+          "durationMs": 43541
+        },
+        {
+          "test": "hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact",
+          "durationMs": 9967
+        },
+        {
+          "test": "hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact",
+          "durationMs": 11717
+        },
+        {
+          "test": "hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed",
+          "durationMs": 4958
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > hosted bank configuration is privileged, localized and revisioned",
+          "durationMs": 20952
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > SA CASH: hosted checkout, Finance, execution clearance, isolation and receipt",
+          "durationMs": 121239
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > SA BANK_TRANSFER: hosted checkout, Finance, execution clearance, isolation and receipt",
+          "durationMs": 154626
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > EG CASH: hosted checkout, Finance, execution clearance, isolation and receipt",
+          "durationMs": 134736
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > EG BANK_TRANSFER: hosted checkout, Finance, execution clearance, isolation and receipt",
+          "durationMs": 160662
+        }
+      ],
+      "totalPassed": 19,
+      "activationMethod": "Fresh unconfirmed synthetic signup via Supabase Admin generateLink; actual activation link opened in browser, confirmed status verified, password login; no real mailbox delivery claim.",
+      "initialGuestFailure": "Initial EG two-second signed URL read failed without recorded HTTP status; diagnostic rerun passed with HTTP 200 at 523/570ms and expiry denial. No security policy or TTL changed."
+    },
+    "database": {
+      "checkedAt": "2026-10-03T08:24:37.813Z",
+      "migrations": 44,
+      "sql": "PASS",
+      "rls": "PASS",
+      "officialPublicSchemaTypes": "PASS",
+      "positiveRevokedExpiredReplay": "PASS",
+      "probeCleanup": "PASS"
+    },
+    "security": {
+      "deployment": "dpl_yCmDZL8GV4KKgUwdfXRfL8g8JkG9",
+      "checkedAt": "2026-10-03T09:09:58.168Z",
+      "pages": [
+        {
+          "path": "/ar",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        },
+        {
+          "path": "/en",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        },
+        {
+          "path": "/ar/guest",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        },
+        {
+          "path": "/en/login",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        },
+        {
+          "path": "/ar/driver/login",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        }
+      ],
+      "assetCount": 16,
+      "assetBytes": 1031297,
+      "credentialPatternFound": false,
+      "publicSourceMaps": 0,
+      "unauthenticatedProtectionStatus": 302,
+      "method": "Public HTML and discovered same-origin JavaScript assets; credential-pattern scan, sibling source-map probes; no private responses persisted."
+    },
+    "runtime": {
+      "deployment": "dpl_yCmDZL8GV4KKgUwdfXRfL8g8JkG9",
+      "checkedAt": "2026-10-03T09:29:04.049Z",
+      "evidence": [
+        {
+          "scope": "serverless",
+          "records": 50,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "errors",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "5xx",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        }
+      ]
+    },
+    "environments": {
+      "checkedAt": "2026-10-03T09:21:24.944Z",
+      "productionDeployments": 0,
+      "productionEnvCount": 0,
+      "protection": {
+        "deploymentType": "all_except_custom_domains"
+      },
+      "environmentNames": [
+        {
+          "name": "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+          "scopes": ["preview"]
+        },
+        {
+          "name": "NEXT_PUBLIC_SUPABASE_URL",
+          "scopes": ["preview"]
+        },
+        {
+          "name": "STAGING_AUTH_SMOKE_ENABLED",
+          "scopes": ["preview"]
+        },
+        {
+          "name": "APP_ENV",
+          "scopes": ["preview"]
+        }
+      ]
+    },
+    "cleanup": {
+      "project": "zuvyfeflkzlciuaauxba",
+      "checkedAt": "2026-10-03T09:28:38.332Z",
+      "counts": [
+        {
+          "count": 1,
+          "kind": "profiles"
+        },
+        {
+          "count": 1,
+          "kind": "organization_memberships"
+        },
+        {
+          "count": 1,
+          "kind": "user_roles"
+        },
+        {
+          "count": 2,
+          "kind": "customers"
+        },
+        {
+          "count": 2,
+          "kind": "request_locations"
+        },
+        {
+          "count": 0,
+          "kind": "request_items"
+        },
+        {
+          "count": 0,
+          "kind": "request_attachments"
+        },
+        {
+          "count": 0,
+          "kind": "request_additional_services"
+        },
+        {
+          "count": 0,
+          "kind": "quote_items"
+        },
+        {
+          "count": 0,
+          "kind": "quote_pricing_details"
+        },
+        {
+          "count": 0,
+          "kind": "pricing_evaluations"
+        },
+        {
+          "count": 0,
+          "kind": "pricing_evaluation_components"
+        },
+        {
+          "count": 0,
+          "kind": "distance_snapshots"
+        },
+        {
+          "count": 0,
+          "kind": "trip_stops"
+        },
+        {
+          "count": 0,
+          "kind": "trip_stop_dependencies"
+        },
+        {
+          "count": 0,
+          "kind": "trip_events"
+        },
+        {
+          "count": 3,
+          "kind": "requests"
+        },
+        {
+          "count": 0,
+          "kind": "quotes"
+        },
+        {
+          "count": 0,
+          "kind": "quote_versions"
+        },
+        {
+          "count": 0,
+          "kind": "orders"
+        },
+        {
+          "count": 0,
+          "kind": "jobs"
+        },
+        {
+          "count": 0,
+          "kind": "trips"
+        },
+        {
+          "count": 0,
+          "kind": "trip_pods"
+        },
+        {
+          "count": 0,
+          "kind": "assignments"
+        },
+        {
+          "count": 0,
+          "kind": "drivers"
+        },
+        {
+          "count": 0,
+          "kind": "vehicles"
+        },
+        {
+          "count": 0,
+          "kind": "file_objects"
+        },
+        {
+          "count": 0,
+          "kind": "issues"
+        },
+        {
+          "count": 0,
+          "kind": "issue_photos"
+        },
+        {
+          "count": 0,
+          "kind": "trip_event_locations"
+        },
+        {
+          "count": 0,
+          "kind": "trip_live_locations"
+        },
+        {
+          "count": 0,
+          "kind": "notifications"
+        },
+        {
+          "count": 0,
+          "kind": "payments"
+        },
+        {
+          "count": 0,
+          "kind": "payment_transactions"
+        },
+        {
+          "count": 0,
+          "kind": "invoices"
+        },
+        {
+          "count": 0,
+          "kind": "bank_transfer_attempts"
+        },
+        {
+          "count": 0,
+          "kind": "bank_accounts"
+        },
+        {
+          "count": 1,
+          "kind": "guest_access_grants"
+        },
+        {
+          "count": 0,
+          "kind": "tracking_sessions"
+        },
+        {
+          "count": 0,
+          "kind": "location_samples"
+        },
+        {
+          "count": 0,
+          "kind": "completed_trip_assignments"
+        },
+        {
+          "count": 0,
+          "kind": "driver_mutations"
+        },
+        {
+          "count": 0,
+          "kind": "payment_mutations"
+        },
+        {
+          "count": 6,
+          "kind": "auth_sessions"
+        },
+        {
+          "count": 1,
+          "kind": "auth_users"
+        },
+        {
+          "count": 0,
+          "kind": "storage_objects"
+        }
+      ],
+      "retainedMarkets": [
+        {
+          "active": true,
+          "cities": 2,
+          "country_code": "EG",
+          "currency": "EGP",
+          "timezone": "Africa/Cairo"
+        },
+        {
+          "active": true,
+          "cities": 2,
+          "country_code": "SA",
+          "currency": "SAR",
+          "timezone": "Asia/Riyadh"
+        }
+      ],
+      "ownedFixtureIdentities": 0,
+      "preservedSnapshotAt": "2026-09-30T14:17:46.146Z",
+      "unattributedRecordsPreserved": true,
+      "sessionCountExcluded": "Existing unrelated account may retain/refresh sessions",
+      "divergences": [
+        {
+          "kind": "requests",
+          "expected": 2,
+          "actual": 3
+        }
+      ]
+    },
+    "cleanupClassification": {
+      "checkedAt": "2026-10-03T09:29:26.023Z",
+      "requests": [
+        {
+          "created_at": "2026-09-30 13:22:04.403761+00",
+          "identity_kind": "GUEST",
+          "nominated_account": null,
+          "registered_owner": false,
+          "status": "CANCELLED",
+          "synthetic_owner": false
+        },
+        {
+          "created_at": "2026-09-30 13:29:01.611917+00",
+          "identity_kind": "ACCOUNT",
+          "nominated_account": true,
+          "registered_owner": true,
+          "status": "DRAFT",
+          "synthetic_owner": false
+        },
+        {
+          "created_at": "2026-10-03 09:06:24.978392+00",
+          "identity_kind": "ACCOUNT",
+          "nominated_account": true,
+          "registered_owner": true,
+          "status": "DRAFT",
+          "synthetic_owner": false
+        }
+      ],
+      "onboardingFixtureIdentities": 0,
+      "action": "Read-only; preserve unattributed owner data"
+    },
+    "bypassCleanup": {
+      "revokedCount": 1,
+      "allRevoked": true,
+      "remainingAutomationCredentials": 0,
+      "revokedCredentialResponseStatus": 302,
+      "protection": {
+        "deploymentType": "all_except_custom_domains"
+      }
+    },
+    "ci": {
+      "sha": "4a0326a2f83401fcda13d2fb2b7252da28d6718a",
+      "run": 37112601947,
+      "result": "PASS"
+    },
+    "finalDecision": "PHASE 7 PARTIAL — NOT READY"
   }
 }

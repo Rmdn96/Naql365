@@ -246,14 +246,46 @@ On 3 October, `npm audit --audit-level=low` exited 1 with five high findings ari
 
 **PHASE 7 PARTIAL — NOT READY**
 
-Previous application and hosted acceptance remain historical evidence. Final PASS is now withheld for the newly reported registered onboarding defect until its fix and required regressions are verified. The dependency advisory has explicit scoped owner risk acceptance. Production configuration/legal/release blockers remain separate. Do not merge, deploy Production, modify main or start Phase 8.
+Previous application and hosted acceptance remain historical evidence. The registered onboarding defect is now fixed and its required regressions pass. Final PASS is withheld solely for the requested administrative provisioning, blocked by existing immutable customer identity and membership rules. The dependency advisory has explicit scoped owner risk acceptance. Production configuration/legal/release blockers remain separate. Do not merge, deploy Production, modify main or start Phase 8.
 
-## Registered onboarding follow-up (in progress)
+## Registered onboarding follow-up — verified fix; provisioning blocked
 
-Reproduced on the accepted protected Preview with a fresh unconfirmed synthetic signup, actual Supabase activation link, password login and profile save. HTTP 200 with same-page redirect; authoritative profile, customer and active membership persisted after refresh. No success message appeared; request-country remained blank and Start Request disabled. The country selector is request-scoped, not part of profile mutation. Fix provides explicit success/validation/error feedback and country-selection guidance without changing auth/RLS. New hosted and regression evidence is pending; prior PASS rows do not certify this change.
+Reproduced on the accepted protected Preview with a fresh unconfirmed synthetic signup, actual Supabase activation link, password login and profile save. HTTP 200 with same-page redirect; authoritative profile, customer and active membership persisted after refresh. No success message appeared; request-country remained blank and Start Request disabled. The country selector is request-scoped, not part of profile mutation. Fix provides explicit success/validation/error feedback and country-selection guidance without changing auth/RLS. The final hosted and regression evidence below certifies the application fix.
 
 The owner-nominated Staging account was uniquely matched by normalized email and confirmed. It already has a CUSTOMER membership and one Request. Existing membership-category integrity prevents simultaneous staff authority. No deletion, role bypass or provisioning has occurred; owner disposition of its customer relationship is pending.
 
 Further inspection found `private.validate_person_membership` also forbids changing Customer identity/profile relationships (migration 20260926000100). The initially proposed detachment is therefore NOT executed and is withdrawn. An existing Request must not be deleted or this trigger bypassed merely to provision staff authority. Owner decision on a separate admin identity or a separately designed identity migration is required. The nominated account remains unchanged.
 
-Hosted validation reproduction on the fixed-feedback Preview found an additional defect: after returning a validation error the uncontrolled form resets name and phone to empty defaults. Both then become HTML-invalid, preventing a second submit. Safe browser evidence recorded namePreserved=false, nameEmpty=true, phoneValueEmpty=true and two invalid fields. Re-entering both fields produced HTTP 200, visible success and persisted database state. Controlled profile inputs now retain corrections; revised desktop/mobile tests assert this before retrying. Verification of that final fix is pending.
+Hosted validation reproduction on the fixed-feedback Preview found an additional defect: after returning a validation error the uncontrolled form resets name and phone to empty defaults. Both then become HTML-invalid, preventing a second submit. Safe browser evidence recorded namePreserved=false, nameEmpty=true, phoneValueEmpty=true and two invalid fields. Re-entering both fields produced HTTP 200, visible success and persisted database state. Controlled profile inputs now retain corrections; revised desktop/mobile tests assert this before retrying. Verification of that final fix passed in both hosted desktop Arabic and mobile English journeys.
+
+## Follow-up acceptance — 3 October 2026
+
+- Fix commits: dc6cd69 (visible success, explicit validation and request-country guidance); 3a5227feaf6f034660ccfc6c9bf82657cb1a38c9 (preserve controlled fields after validation).
+- Protected Preview: https://naql365-staging-4amvwuc0p-naql365.vercel.app ; deployment dpl_yCmDZL8GV4KKgUwdfXRfL8g8JkG9, genuine Preview READY from 3a5227feaf6f034660ccfc6c9bf82657cb1a38c9. Later changes only affect tests, exact Staging callback configuration and evidence/docs; application content unchanged.
+- Exact application CI 37110849502 PASS; subsequent checkpoint CI 37112601947 PASS. Final documentation HEAD/CI are supplied in the handoff.
+- Local: formatting, secrets, lint, strict types, 177 unit/integration, build and 32 E2E PASS.
+- Hosted: 8 registered/onboarding + 6 guest + 5 Finance = 19 PASS on this Preview. Fresh synthetic unconfirmed accounts use generated Supabase activation links opened in the real browser, then password login; mailbox delivery is not claimed. Both locales/devices prove validation preserves values, successful save persists after refresh and country selection enters Request flow.
+- First guest rerun failed a two-second signed URL initial read; HTTP status was not recorded. Diagnostic rerun succeeded (HTTP 200, 523/570ms), including expiry denial. No TTL/security relaxation. Failure is preserved rather than retrospectively labeled PASS.
+- Database/RLS/official types PASS; 44 migrations unchanged. No SQL or RLS changes.
+- Bounded runtime review: 50 records, zero error/5xx/credential markers; separate error/5xx queries empty. Five public pages/16 JS assets checked: security headers/CSP present, zero credential patterns or public sibling source maps. This is a bounded review, not exhaustive log certification.
+- Each runner cleaned its fixtures. Independent audit found zero owned fixture identities including onboarding. A new Request belonging to the nominated existing account appeared during work; it was preserved. Three retained Requests are two owner-account drafts plus one pre-existing cancelled guest Request. The historic aggregate expected two, so the count difference is explicitly attributed and not deleted. No test requests/files/payments/resources remain.
+- Temporary automation credential revoked; zero remain; revoked access returns 302. Preview protection retained. Production deployments/env scopes zero, main/develop and protection unchanged.
+
+| Follow-up gate                     | Result                     | Evidence                                                                            |
+| ---------------------------------- | -------------------------- | ----------------------------------------------------------------------------------- |
+| Scoped braces risk disposition     | PASS — owner accepted risk | Development advisory only; no audit suppression or dependency workaround            |
+| Registered onboarding              | PASS                       | 2 fresh activated desktop/mobile cases, persistence and request entry               |
+| Registered regression              | PASS                       | 6 cases                                                                             |
+| Guest regression                   | PASS                       | 6 final cases; initial failure documented                                           |
+| Finance regression                 | PASS                       | 5 cases                                                                             |
+| Local / database / CI              | PASS                       | Counts and run references above                                                     |
+| Fixture and credential cleanup     | PASS                       | Owned fixtures zero, owner records preserved, bypass revoked                        |
+| Nominated SUPER_ADMIN provisioning | BLOCKED                    | CUSTOMER identity with retained Requests is immutable; no bypass/deletion performed |
+
+The nominated account is confirmed, has a profile and active CUSTOMER membership, and remains unchanged. SUPER_ADMIN assignment and its authorization smoke tests were NOT executed. A separate admin identity is compatible with the existing model; converting this exact identity requires a separately approved identity-migration design, not ad-hoc trigger bypass or deleting Requests. The earlier detachment proposal is withdrawn. No assumption of owner approval is made for either alternative.
+
+Files changed in this follow-up: customer Server Actions; account page/shell; profile form; request-country guidance; AR/EN dictionary; intake fixture runner; new onboarding test; customer-auth unit tests; safe guest proof diagnostics; Staging Auth callback config; canonical report/evidence. No migration added.
+
+**PHASE 7 PARTIAL — NOT READY**
+
+No merge, main change, Production deployment or Phase 8 work. Stop for owner resolution of administrative identity provisioning.
