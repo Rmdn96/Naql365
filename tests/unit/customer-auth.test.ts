@@ -53,7 +53,7 @@ it('requires provider-verified identity before onboarding', async () => {
   mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
   const f = new FormData();
   f.set('name', 'Fixture');
-  f.set('phone', '0501234567');
+  f.set('phone', '+966500000001');
   f.set('locale', 'ar');
   expect(await customerProfile('ar', { status: 'idle' }, f)).toEqual({ status: 'error' });
   expect(mocks.rpc).not.toHaveBeenCalled();
@@ -65,4 +65,17 @@ it('constructs a locale-safe recovery callback', async () => {
   expect(mocks.resetPasswordForEmail).toHaveBeenCalledWith('fixture@example.test', {
     redirectTo: 'https://staging.example/auth/callback?locale=en&next=/en/password',
   });
+});
+
+it('returns field-level validation without calling the database', async () => {
+  const f = new FormData();
+  f.set('name', 'Fixture');
+  f.set('phone', 'invalid');
+  f.set('locale', 'en');
+  expect(await customerProfile('en', { status: 'idle' }, f)).toEqual({
+    status: 'error',
+    code: 'validation',
+    fields: ['phone'],
+  });
+  expect(mocks.rpc).not.toHaveBeenCalled();
 });

@@ -113,7 +113,11 @@ const ar = {
   noValue: '—',
   contactNotes: 'ملاحظات التواصل',
   editStep: 'تعديل الخطوة',
-  profileSaved: 'تم حفظ الملف',
+  profileSaved: 'تم حفظ الملف. لبدء طلب نقل، اختر الدولة ثم اضغط بدء طلب نقل.',
+  profileNameError: 'أدخل اسمًا من 1 إلى 200 حرف.',
+  profileValidation: 'راجع الحقول الموضحة ثم حاول الحفظ مجددًا.',
+  profileSaveError: 'تعذر حفظ الملف. تحقق من اتصالك وجلستك ثم حاول مجددًا.',
+  requestCountryHint: 'اختر دولة الخدمة لتفعيل بدء الطلب. هذا الاختيار يخص الطلب ولا يغيّر ملفك.',
 } as const;
 type CustomerDictionary = { [K in keyof typeof ar]: string };
 const en: CustomerDictionary = {
@@ -231,7 +235,13 @@ const en: CustomerDictionary = {
   noValue: '—',
   contactNotes: 'Contact notes',
   editStep: 'Edit step',
-  profileSaved: 'Profile saved',
+  profileSaved: 'Profile saved. Choose a country, then start your request.',
+  profileNameError: 'Enter a name between 1 and 200 characters.',
+  profileValidation: 'Check the indicated fields and save again.',
+  profileSaveError:
+    'Your profile could not be saved. Check your connection and session, then try again.',
+  requestCountryHint:
+    'Choose the service country to enable the request button. This selection belongs to the request, not your profile.',
 };
 export const customerDictionary = (locale: Locale): CustomerDictionary =>
   locale === 'ar' ? ar : en;

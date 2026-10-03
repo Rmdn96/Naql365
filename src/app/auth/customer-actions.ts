@@ -1,5 +1,6 @@
 'use server';
 import { headers } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { isLocale } from '@/i18n/config';
@@ -11,7 +12,7 @@ const credentials = z.strictObject({
   email: z.email().max(254),
   password: z.string().min(12).max(128),
 });
-export type AuthState = { status: 'idle' | 'sent' | 'error'; code?: string };
+export type AuthState = { status: 'idle' | 'sent' | 'error'; code?: string; fields?: string[] };
 export async function customerAuth(
   locale: string,
   mode: string,
@@ -69,11 +70,18 @@ export async function customerProfile(
   if (!isLocale(locale)) return { status: 'error' };
   try {
     assertSameOrigin((await headers()).get('origin'), appUrl().origin);
-    const profile = profileInput.parse({
+    const parsed = profileInput.safeParse({
       name: form.get('name'),
       phone: form.get('phone'),
       locale: form.get('locale'),
     });
+    if (!parsed.success)
+      return {
+        status: 'error',
+        code: 'validation',
+        fields: parsed.error.issues.map((issue) => String(issue.path[0])),
+      };
+    const profile = parsed.data;
     const client = await createSupabaseServerClient(true);
     const { data, error } = await client.auth.getUser();
     if (error || !data.user) return { status: 'error' };
@@ -86,7 +94,8 @@ export async function customerProfile(
   } catch {
     return { status: 'error' };
   }
-  redirect(`/${locale}/account`);
+  revalidatePath(`/${locale}/account`);
+  redirect(`/${locale}/account?profile=saved`);
 }
 export async function customerLogout(locale: string) {
   if (!isLocale(locale)) throw new Error('Invalid locale');

@@ -103,6 +103,8 @@ export function StartRequest({
     <>
       <Select
         id="request-market"
+        required
+        aria-describedby="request-country-hint"
         label={mt.market}
         value={marketId}
         disabled={!hydrated || pending}
@@ -118,6 +120,7 @@ export function StartRequest({
           </option>
         ))}
       </Select>
+      <p id="request-country-hint">{t.requestCountryHint}</p>
       <Button onClick={start} disabled={!hydrated || pending || !marketId}>
         {pending ? t.loading : t.start}
       </Button>

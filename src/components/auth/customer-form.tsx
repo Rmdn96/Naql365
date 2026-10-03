@@ -82,6 +82,7 @@ export function CustomerProfileForm({
         id="name"
         name="name"
         label={t.name}
+        error={state.fields?.includes('name') ? t.profileNameError : ''}
         defaultValue={profile.display_name ?? ''}
         required
         maxLength={200}
@@ -91,6 +92,7 @@ export function CustomerProfileForm({
         id="phone"
         name="phone"
         label={t.phone}
+        error={state.fields?.includes('phone') ? t.phoneHint : ''}
         defaultValue={profile.phone ?? ''}
         required
         maxLength={24}
@@ -103,7 +105,11 @@ export function CustomerProfileForm({
         <option value="ar">العربية</option>
         <option value="en">English</option>
       </Select>
-      {state.status === 'error' && <Alert tone="error">{t.authError}</Alert>}
+      {state.status === 'error' && (
+        <Alert tone="error">
+          {state.code === 'validation' ? t.profileValidation : t.profileSaveError}
+        </Alert>
+      )}
       <Button disabled={pending}>{pending ? t.saving : t.saveProfile}</Button>
     </form>
   );
