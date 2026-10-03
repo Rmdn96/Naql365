@@ -118,12 +118,10 @@ for (const country of ['SA', 'EG'] as const)
           const signed = await guest.storage.from('documents').createSignedUrl(path, 2);
           expect(signed.error).toBeNull();
           const signedRead = await fetch(signed.data!.signedUrl);
-          test
-            .info()
-            .annotations.push({
-              type: 'safe-security-probe',
-              description: `Private proof read: status=${signedRead.status}, elapsedMs=${Date.now() - signedStarted}, ttlSeconds=2`,
-            });
+          test.info().annotations.push({
+            type: 'safe-security-probe',
+            description: `Private proof read: status=${signedRead.status}, elapsedMs=${Date.now() - signedStarted}, ttlSeconds=2`,
+          });
           expect(signedRead.ok).toBe(true);
           await new Promise((resolve) => setTimeout(resolve, 3100));
           expect(
