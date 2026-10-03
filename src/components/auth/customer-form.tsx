@@ -3,6 +3,7 @@ import { useActionState, useState } from 'react';
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
+import { authErrorMessage } from '@/i18n/auth-errors';
 import { customerAuth, customerProfile, type AuthState } from '@/app/auth/customer-actions';
 import { Input, Button, Alert, Select } from '@/components/ui/primitives';
 const initial: AuthState = { status: 'idle' };
@@ -38,14 +39,16 @@ export function CustomerAuthForm({
               name="password"
               type="password"
               required
-              minLength={12}
+              minLength={mode === 'login' ? 1 : 12}
               maxLength={128}
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
             />
-            <small>{t.passwordHint}</small>
+            {mode !== 'login' && <small>{t.passwordHint}</small>}
           </>
         )}
-        {state.status === 'error' && <Alert tone="error">{t.authError}</Alert>}
+        {state.status === 'error' && (
+          <Alert tone="error">{authErrorMessage(locale, state.code)}</Alert>
+        )}
         {state.status === 'sent' && <Alert tone="success">{t.sent}</Alert>}
         <Button disabled={pending}>
           {pending

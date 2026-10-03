@@ -2,7 +2,6 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { appUrl } from '@/infrastructure/config/server-env';
-import { safeRedirect } from '@/application/identity/redirects';
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code');
@@ -13,7 +12,12 @@ export async function GET(request: NextRequest) {
     const { error } = await client.auth.exchangeCodeForSession(code);
     if (!error) {
       const response = NextResponse.redirect(
-        new URL(safeRedirect(request.nextUrl.searchParams.get('next'), locale), origin),
+        new URL(
+          request.nextUrl.searchParams.get('next') === `/${locale}/password`
+            ? `/${locale}/password`
+            : `/${locale}/auth-complete`,
+          origin,
+        ),
       );
       response.headers.set('Cache-Control', 'private, no-store');
       return response;

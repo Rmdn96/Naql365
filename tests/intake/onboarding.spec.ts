@@ -2,7 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import { test, expect } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 
-test('fresh activated customer gets profile feedback, persists after refresh and enters request flow', async ({
+// This is onboarding coverage after admin-generated activation, NOT public signup acceptance.
+test('admin-generated activation customer gets profile feedback, persists after refresh and enters request flow', async ({
   page,
   baseURL,
 }, testInfo) => {

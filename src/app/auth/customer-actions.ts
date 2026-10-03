@@ -41,26 +41,42 @@ export async function customerAuth(
       const signedOut = await client.auth.signOut({ scope: 'global' });
       if (signedOut.error) return { status: 'error' };
     } else {
-      const parsed = credentials.parse({
+      const parsed = (
+        mode === 'login'
+          ? credentials.extend({ password: z.string().min(1).max(128) })
+          : credentials
+      ).parse({
         email: form.get('email'),
         password: form.get('password'),
       });
       if (mode === 'register') {
         // Identity only. Metadata has no authorization meaning; verified onboarding is separate.
-        await client.auth.signUp({
+        const result = await client.auth.signUp({
           ...parsed,
           options: { emailRedirectTo: new URL(`/auth/callback?locale=${locale}`, appUrl()).href },
         });
-        // Same result for existing accounts/provider rejection; never enumerate identities.
+        // Existing-account outcomes stay indistinguishable. Infrastructure failures
+        // must not falsely claim that registration/confirmation mail succeeded.
+        if (result.error && result.error.code !== 'user_already_exists')
+          return { status: 'error', code: 'server' };
         return { status: 'sent' };
       }
       const { error } = await client.auth.signInWithPassword(parsed);
-      if (error) return { status: 'error' };
+      if (error)
+        return {
+          status: 'error',
+          code:
+            error.code === 'invalid_credentials'
+              ? 'credentials'
+              : error.code === 'email_not_confirmed'
+                ? 'confirmation'
+                : 'server',
+        };
     }
-  } catch {
-    return { status: 'error' };
+  } catch (error) {
+    return { status: 'error', code: error instanceof z.ZodError ? 'validation' : 'server' };
   }
-  redirect(`/${locale}/${mode === 'password' ? 'login' : 'account'}`);
+  redirect(`/${locale}/${mode === 'password' ? 'login' : 'auth-complete'}`);
 }
 export async function customerProfile(
   locale: string,
