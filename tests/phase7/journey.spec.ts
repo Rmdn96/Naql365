@@ -114,9 +114,17 @@ for (const country of ['SA', 'EG'] as const)
             (await (await principal('peer')).storage.from('documents').createSignedUrl(path, 2))
               .error,
           ).not.toBeNull();
+          const signedStarted = Date.now();
           const signed = await guest.storage.from('documents').createSignedUrl(path, 2);
           expect(signed.error).toBeNull();
-          expect((await fetch(signed.data!.signedUrl)).ok).toBe(true);
+          const signedRead = await fetch(signed.data!.signedUrl);
+          test
+            .info()
+            .annotations.push({
+              type: 'safe-security-probe',
+              description: `Private proof read: status=${signedRead.status}, elapsedMs=${Date.now() - signedStarted}, ttlSeconds=2`,
+            });
+          expect(signedRead.ok).toBe(true);
           await new Promise((resolve) => setTimeout(resolve, 3100));
           expect(
             (await fetch(signed.data!.signedUrl, { headers: { 'Cache-Control': 'no-cache' } })).ok,
