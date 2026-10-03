@@ -1,6 +1,6 @@
 # Naql365 Phase 7 — MVP launch, guest ordering and visual experience
 
-Canonical acceptance report, updated 3 October 2026. **Phase 7 acceptance and separate Staging SUPER_ADMIN provisioning are complete. Dependency security closeout: PASS — scoped owner risk acceptance. No merge or Production release is authorized.** This revision replaces earlier implementation checkpoints and retains material failed-run evidence below.
+Canonical acceptance report, updated 3 October 2026. **REOPENED by owner-observed public login and post-login routing defects on 3 October 2026. Previous PASS is superseded pending real public signup and role-aware hosted acceptance. Dependency security closeout: PASS — scoped owner risk acceptance. No merge or Production release is authorized.** This revision replaces earlier implementation checkpoints and retains material failed-run evidence below.
 
 ## A. Starting state
 
@@ -319,3 +319,17 @@ Final gates: 44 unchanged migrations; hosted database assertions/RLS/official ge
 **PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW**
 
 This is readiness for owner release review, not Production authorization. The separate Production configuration/legal/release checklist remains applicable. Do not merge, modify main, deploy Production or start Phase 8.
+
+## Reopened real-user authentication investigation — 3 October 2026
+
+Current decision: **PHASE 7 PARTIAL — NOT READY**. Earlier PASS sections are historical and are superseded by this investigation.
+
+Read-only Staging inspection confirms the designated administrator is email-confirmed, has a profile and an active staff membership with SUPER_ADMIN, and has no Customer identity. The existing customer remains confirmed with active CUSTOMER membership and a Customer identity. Neither account was changed.
+
+Confirmed source defect: successful password login unconditionally redirects to the Customer account, and the confirmation callback defaults there too. The generic login error currently collapses provider, validation and runtime failures; its observed cause is not yet established.
+
+Previous onboarding coverage created an unconfirmed identity through Auth admin generateLink rather than the public registration form. It then confirmed and completed profile onboarding. The administrative smoke reused an authenticated session and navigated directly to staff pages, so it did not test the post-password-login destination. These tests did not establish the complete real public signup or staff-login journey.
+
+Local corrective checkpoint: role-aware completion now reads live membership/permission RPCs; existing destination authorization stays in place. Staff and mapped internal Drivers bypass Customer onboarding. New Customer onboarding still uses the existing confirmed-user transactional profile command; no migration or membership mutation has been made while public reproduction remains pending. Login distinguishes invalid credentials, unconfirmed email, backend failure and input validation. Registration no longer hides provider service failure as successful mail delivery. New-password length policy is no longer imposed on existing password login.
+
+Validation: 187 unit/integration tests passed; 32 local desktop/mobile E2E passed; lint, TypeScript, formatting, secret scan and build passed. Targeted auth tests were rerun after the registration-error change (16 passed). These results do not substitute for hosted public registration. Owner selected a different fresh test mailbox, not yet supplied. Real public signup, actual failed-login cause, partial-state recovery and hosted role-routing acceptance remain pending. Production, main and develop are unchanged; 44 migrations retained.

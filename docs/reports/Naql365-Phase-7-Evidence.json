@@ -1376,5 +1376,26 @@
     },
     "finalDecision": "PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW"
   },
-  "finalDecision": "PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW"
+  "finalDecision": "PHASE 7 PARTIAL — NOT READY",
+  "realUserAuthReopened": {
+    "date": "2026-10-03",
+    "status": "INVESTIGATING",
+    "previousPassSuperseded": true,
+    "confirmedDefect": "Unconditional customer destination after successful password login",
+    "genericLoginFailureCause": "Not yet established",
+    "identityInspection": "Confirmed active STAFF SUPER_ADMIN with no Customer; existing CUSTOMER retained; read-only",
+    "localChecks": {
+      "unitIntegration": 187,
+      "e2e": 32,
+      "targetedAuthRerun": 16,
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "format": "PASS",
+      "build": "PASS"
+    },
+    "migrations": 44,
+    "hostedPublicSignup": "PENDING controlled new mailbox",
+    "hostedRoleRouting": "PENDING",
+    "databaseMutations": false
+  }
 }
