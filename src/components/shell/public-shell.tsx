@@ -6,6 +6,34 @@ import { publicDictionary } from '@/i18n/public';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
 import { MarketSelector } from './market-selector';
 import { PublicContact } from './public-contact';
+import { loginDestination } from '@/infrastructure/identity/login-destination';
+import { getPublicEnv } from '@/infrastructure/config/public-env';
+
+export async function IdentityLink({ locale }: { locale: Locale }) {
+  const destination = getPublicEnv() ? await loginDestination() : 'unauthenticated';
+  const t = dictionary(locale);
+  const label =
+    destination === 'portal'
+      ? t.portal
+      : destination === 'driver'
+        ? t.driver
+        : destination === 'unauthenticated'
+          ? publicDictionary(locale).signIn
+          : locale === 'ar'
+            ? 'حسابي'
+            : 'My account';
+  const route =
+    destination === 'unauthenticated'
+      ? 'login'
+      : ['portal', 'driver', 'account'].includes(destination)
+        ? destination
+        : 'auth-complete';
+  return (
+    <Link className="identity-link" href={`/${locale}/${route}`} prefetch={false}>
+      {label}
+    </Link>
+  );
+}
 
 export async function Header({ locale }: { locale: Locale }) {
   const t = dictionary(locale);
@@ -40,9 +68,7 @@ export async function Header({ locale }: { locale: Locale }) {
               {p.track}
             </Link>
             <MarketSelector country={country} locale={locale} />
-            <Link className="desktop-nav" href={`/${locale}/login`} prefetch={false}>
-              {p.signIn}
-            </Link>
+            <IdentityLink locale={locale} />
             <Link className="button button--primary header-request" href={`/${locale}/request`}>
               {p.request}
             </Link>
@@ -66,9 +92,7 @@ export async function Footer({ locale }: { locale: Locale }) {
         <p>{t.rights}</p>
         <nav aria-label={t.positioning}>
           <Link href={`/${locale}/request`}>{p.request}</Link>
-          <Link href={`/${locale}/login`} prefetch={false}>
-            {p.signIn}
-          </Link>
+          <IdentityLink locale={locale} />
           <Link href={`/${locale}#contact`}>{p.contact}</Link>
           {(['privacy', 'terms'] as const).map((kind) => {
             const copy = legalContent(kind, locale);
@@ -78,12 +102,6 @@ export async function Footer({ locale }: { locale: Locale }) {
               </Link>
             ) : null;
           })}
-          <Link href={`/${locale}/portal`} prefetch={false}>
-            {t.portal}
-          </Link>
-          <Link href={`/${locale}/driver`} prefetch={false}>
-            {t.driver}
-          </Link>
         </nav>
       </div>
       <PublicContact country={country} locale={locale} />

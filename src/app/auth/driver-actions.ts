@@ -22,7 +22,8 @@ export async function driverLogin(
     if (signed.error) return { error: true };
     const identity = await client.rpc('driver_identity');
     if (identity.error || !Array.isArray(identity.data) || !identity.data.length) {
-      await client.auth.signOut({ scope: 'local' });
+      // Failed Driver authorization does not terminate an otherwise valid identity.
+      // Protected Driver pages still reject this session; logout remains explicit.
       return { error: true };
     }
   } catch {

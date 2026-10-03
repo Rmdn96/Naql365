@@ -1416,5 +1416,20 @@
       "result": "NOT VERIFIED",
       "note": "Owner reported no confirmation email; read-only Auth inspection found no identity. No admin-created replacement or membership preparation performed."
     }
+  },
+  "sessionNavigationReopened": {
+    "date": "2026-10-03",
+    "preFixServerAuthentication": "retained after public homepage and direct login; auth-complete revalidated and redirected without credentials",
+    "ownerCookieMetadata": "not available through current browser interface",
+    "rootCause": [
+      "hardcoded unauthenticated public navigation",
+      "login page lacked authoritative session guard",
+      "public routes excluded from proxy refresh"
+    ],
+    "migrations": 44,
+    "unitIntegration": 197,
+    "earlierRun": "one SQL timeout during parallel build; full serial rerun passed",
+    "hostedAcceptance": "PENDING",
+    "publicSignupAcceptance": "PENDING"
   }
 }
