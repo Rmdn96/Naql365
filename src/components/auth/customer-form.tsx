@@ -1,5 +1,5 @@
 'use client';
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
@@ -76,6 +76,9 @@ export function CustomerProfileForm({
 }) {
   const t = customerDictionary(locale);
   const [state, action, pending] = useActionState(customerProfile.bind(null, locale), initial);
+  const [name, setName] = useState(profile.display_name ?? '');
+  const [phone, setPhone] = useState(profile.phone ?? '');
+  const [preferredLocale, setPreferredLocale] = useState(profile.locale);
   return (
     <form action={action} className="stack">
       <Input
@@ -83,7 +86,8 @@ export function CustomerProfileForm({
         name="name"
         label={t.name}
         error={state.fields?.includes('name') ? t.profileNameError : ''}
-        defaultValue={profile.display_name ?? ''}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
         required
         maxLength={200}
         autoComplete="name"
@@ -93,7 +97,8 @@ export function CustomerProfileForm({
         name="phone"
         label={t.phone}
         error={state.fields?.includes('phone') ? t.phoneHint : ''}
-        defaultValue={profile.phone ?? ''}
+        value={phone}
+        onChange={(event) => setPhone(event.target.value)}
         required
         maxLength={24}
         autoComplete="tel"
@@ -101,7 +106,13 @@ export function CustomerProfileForm({
         dir="ltr"
       />
       <small>{t.phoneHint}</small>
-      <Select id="locale" name="locale" label={t.locale} defaultValue={profile.locale}>
+      <Select
+        id="locale"
+        name="locale"
+        label={t.locale}
+        value={preferredLocale}
+        onChange={(event) => setPreferredLocale(event.target.value)}
+      >
         <option value="ar">العربية</option>
         <option value="en">English</option>
       </Select>

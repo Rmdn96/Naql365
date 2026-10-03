@@ -43,6 +43,8 @@ test('fresh activated customer gets profile feedback, persists after refresh and
       .getByRole('alert'),
   ).toContainText(t.profileValidation);
   await expect(page.locator('#phone')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#name')).toHaveValue('Synthetic activated customer');
+  await expect(page.locator('#phone')).toHaveValue('invalid');
   await page.locator('#phone').fill('+966500000001');
   await page.getByRole('button', { name: t.saveProfile, exact: true }).click();
   await expect(page.getByRole('status')).toContainText(t.profileSaved);
