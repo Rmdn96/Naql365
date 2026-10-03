@@ -234,16 +234,24 @@ PASS is limited to executed evidence. Hosted/runtime gates passed; the unpatched
 | Cleanup                        | PASS   | Every runner cleanup PASS; independent owned-fixture comparison; final bypass evidence     |
 | Scope compliance               | PASS   | No merge, main/Production/Phase 8 action                                                   |
 
-### Development dependency review - unresolved
+### Development dependency review — owner-approved scoped risk
 
-On 3 October, `npm audit --audit-level=low` exited 1 with five high findings arising from one dependency chain: eslint-config-next 16.3.6 -> @next/eslint-plugin-next -> fast-glob -> micromatch -> braces 3.0.3. `npm audit --omit=dev --audit-level=low` exited 0 with zero findings. [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm), updated 2 October, lists no patched version. The issue is stack exhaustion from deeply nested patterns; this project's dependency is development tooling, not a runtime input path. No exploitability claim beyond that inventory is made. npm proposes a breaking downgrade to eslint-config-next 14.2.35; that is not applied. No audit suppression, framework downgrade or unreviewed fork is introduced. A supported upstream remediation, or an explicit owner-approved and documented scoped risk disposition, is required before this gate can close.
+On 3 October, `npm audit --audit-level=low` exited 1 with five high findings arising from one dependency chain: eslint-config-next 16.3.6 -> @next/eslint-plugin-next -> fast-glob -> micromatch -> braces 3.0.3. `npm audit --omit=dev --audit-level=low` exited 0 with zero findings. [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm), updated 2 October, lists no patched version. The issue is stack exhaustion from deeply nested patterns; this project's dependency is development tooling, not a runtime input path. No exploitability claim beyond that inventory is made. npm proposes a breaking downgrade to eslint-config-next 14.2.35; that is not applied. No audit suppression, framework downgrade or unreviewed fork is introduced. The owner subsequently explicitly accepted this advisory only for the development-only chain. Audit remains unsuppressed; no downgrade or fork is permitted. Revisit immediately when a supported upstream patch becomes available. This acceptance does not cover other vulnerabilities.
 
-| Gate                         | Result  | Evidence                                                                                |
-| ---------------------------- | ------- | --------------------------------------------------------------------------------------- |
-| Dependency security closeout | PARTIAL | Unpatched development-only GHSA-vfj7-8cjw-p6xm; full audit exits 1; runtime audit clean |
+| Gate                         | Result                              | Evidence                                                                               |
+| ---------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------- |
+| Dependency security closeout | PASS — scoped owner risk acceptance | Advisory remains unresolved technically; full audit still exits 1; runtime audit clean |
 
 ## AR. Final decision
 
 **PHASE 7 PARTIAL — NOT READY**
 
-Application and hosted acceptance are complete. Final PASS is withheld because the new development dependency advisory has no supported patch and no owner risk disposition. Preserve the verified Preview and evidence; resolve that finding before owner launch review. Production configuration/legal/release blockers remain separate. Do not merge, deploy Production, modify main or start Phase 8.
+Previous application and hosted acceptance remain historical evidence. Final PASS is now withheld for the newly reported registered onboarding defect until its fix and required regressions are verified. The dependency advisory has explicit scoped owner risk acceptance. Production configuration/legal/release blockers remain separate. Do not merge, deploy Production, modify main or start Phase 8.
+
+## Registered onboarding follow-up (in progress)
+
+Reproduced on the accepted protected Preview with a fresh unconfirmed synthetic signup, actual Supabase activation link, password login and profile save. HTTP 200 with same-page redirect; authoritative profile, customer and active membership persisted after refresh. No success message appeared; request-country remained blank and Start Request disabled. The country selector is request-scoped, not part of profile mutation. Fix provides explicit success/validation/error feedback and country-selection guidance without changing auth/RLS. New hosted and regression evidence is pending; prior PASS rows do not certify this change.
+
+The owner-nominated Staging account was uniquely matched by normalized email and confirmed. It already has a CUSTOMER membership and one Request. Existing membership-category integrity prevents simultaneous staff authority. No deletion, role bypass or provisioning has occurred; owner disposition of its customer relationship is pending.
+
+Further inspection found `private.validate_person_membership` also forbids changing Customer identity/profile relationships (migration 20260926000100). The initially proposed detachment is therefore NOT executed and is withdrawn. An existing Request must not be deleted or this trigger bypassed merely to provision staff authority. Owner decision on a separate admin identity or a separately designed identity migration is required. The nominated account remains unchanged.

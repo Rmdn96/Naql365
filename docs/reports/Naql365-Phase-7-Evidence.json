@@ -574,7 +574,17 @@
     "rootAdvisory": "GHSA-vfj7-8cjw-p6xm",
     "scope": "development-only eslint-config-next -> @next/eslint-plugin-next -> fast-glob -> micromatch -> braces 3.0.3",
     "patchedVersionAvailable": false,
-    "status": "PARTIAL; not suppressed"
+    "status": "OWNER-ACCEPTED SCOPED RISK; audit remains unsuppressed",
+    "ownerDisposition": {
+      "recordedAt": "2026-10-03T08:16:52.188Z",
+      "scope": "GHSA-vfj7-8cjw-p6xm development-only chain only",
+      "constraints": [
+        "No audit suppression",
+        "No Next.js downgrade",
+        "No unreviewed fork",
+        "Revisit immediately when a supported upstream patch becomes available"
+      ]
+    }
   },
   "applicationCI": {
     "sha": "2d39d1d9031b2aeb9614310f54c1cc3fafcf052a",
@@ -585,5 +595,38 @@
     "sha": "bc8752bb61e9a124c335ec0f5d968a9c4115ad97",
     "run": 36876207982,
     "result": "PASS"
+  },
+  "onboardingCloseout": {
+    "status": "IN PROGRESS — release blocker",
+    "reproduction": {
+      "before": [
+        {
+          "confirmed": false
+        }
+      ],
+      "activation": [
+        {
+          "confirmed": true
+        }
+      ],
+      "save": {
+        "status": 200,
+        "redirect": "/ar/account;push",
+        "alertTexts": [""],
+        "market": "",
+        "startDisabled": true
+      },
+      "database": [
+        {
+          "active_memberships": 1,
+          "customers": 1,
+          "name_persisted": true,
+          "phone_persisted": true
+        }
+      ],
+      "refreshName": true
+    },
+    "rootCause": "Successful profile mutation redirects to the same account page without success feedback. Independent request-country selection remains blank, disabling request creation with no guidance.",
+    "adminProvisioning": "BLOCKED: confirmed existing CUSTOMER has one Request; membership and immutable Customer identity constraints prevent in-place SUPER_ADMIN conversion. No deletion, trigger bypass, role mutation or Production action."
   }
 }
