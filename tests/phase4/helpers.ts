@@ -34,6 +34,22 @@ export const admin = createClient(
 );
 export async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar') {
   await page.goto(`/${locale}/login`, { waitUntil: 'domcontentloaded' });
+  // A live session is correctly redirected away from /login. Switching test
+  // identities must exercise explicit logout, not depend on the old login bug.
+  const emailField = page.locator('#email');
+  const signOut = page.getByRole('button', {
+    name: customerDictionary(locale).logout,
+    exact: true,
+  });
+  // Next can stream the authenticated redirect after DOMContentLoaded.
+  await expect(emailField.or(signOut)).toBeVisible();
+  if (await signOut.isVisible()) {
+    await page
+      .getByRole('button', { name: customerDictionary(locale).logout, exact: true })
+      .click();
+    await expect(page).toHaveURL(new RegExp(`/${locale}/(?:driver/)?login$`));
+    await page.goto(`/${locale}/login`, { waitUntil: 'domcontentloaded' });
+  }
   await page.locator('#email').fill(identities[role]!.email);
   await page.locator('#password').fill(identities[role]!.password);
   await page.getByRole('button', { name: customerDictionary(locale).login, exact: true }).click();

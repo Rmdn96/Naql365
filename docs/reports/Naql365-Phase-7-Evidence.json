@@ -1430,6 +1430,41 @@
     "unitIntegration": 197,
     "earlierRun": "one SQL timeout during parallel build; full serial rerun passed",
     "hostedAcceptance": "PENDING",
-    "publicSignupAcceptance": "PENDING"
+    "publicSignupAcceptance": "PENDING",
+    "preview": "https://naql365-staging-jd6ncixk4-naql365.vercel.app",
+    "deployedSha": "556435d8fdf9499eb6552e3f21013452989c684d",
+    "ci": {
+      "id": 37139015668,
+      "result": "PASS",
+      "sha": "556435d8fdf9499eb6552e3f21013452989c684d"
+    },
+    "registeredHosted": {
+      "result": "PASS",
+      "tests": 10,
+      "sessionNavigationTests": 2,
+      "devices": ["desktop", "mobile"],
+      "cookieAttributes": "root Path, Secure on HTTPS, SameSite Lax",
+      "logoutCookieRemoval": true,
+      "cleanup": "PASS"
+    },
+    "database": {
+      "migrations": 44,
+      "rlsTables": 59,
+      "checks": "PASS",
+      "generatedTypes": "MATCH"
+    },
+    "guestRegression": {
+      "result": "FAILED",
+      "attempts": 2,
+      "passingPerAttempt": 4,
+      "failingPerAttempt": 2,
+      "reason": "shared login helper filled login input while existing session was being redirected; explicit logout fix also needed streaming redirect readiness",
+      "cleanup": "PASS",
+      "rerun": "PENDING after final helper readiness fix"
+    },
+    "financeRegression": "NOT RUN: runner stops after failed Guest gate",
+    "ownerEquivalentStaffSequence": "PENDING owner private login on new host",
+    "driverSessionNavigation": "PENDING",
+    "browserRefreshSecureParity": "Implemented after this Preview; build and targeted tests PASS; deployment pending"
   }
 }
