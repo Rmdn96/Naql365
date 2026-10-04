@@ -88,6 +88,26 @@ await sql(
 );
 const pids = await Promise.all([sql('select pg_backend_pid()'), sql('select pg_backend_pid()')]);
 assert(new Set(pids).size === 2, 'independent backends');
+// Supplemental LOCAL concurrency test, not evidence of public signup/mail delivery.
+// Auth trigger creates the profile; no Customer, membership or role is pre-created.
+const freshCustomer = randomUUID();
+await sql(
+  `insert into auth.users(id,email,email_confirmed_at) values('${freshCustomer}','${freshCustomer}@example.invalid',now())`,
+);
+const onboard = () =>
+  sql("select public.onboard_customer('Concurrency customer','+966500000001','en')", {
+    actor: freshCustomer,
+  });
+const enrolled = await Promise.all([onboard(), onboard()]);
+assert(enrolled[0] === enrolled[1], 'concurrent onboarding returns one customer');
+assert((await onboard()) === enrolled[0], 'subsequent onboarding is idempotent');
+for (const table of ['customers', 'organization_memberships', 'user_roles']) {
+  assert(
+    (await sql(`select count(*) from public.${table} where profile_id='${freshCustomer}'`)) === '1',
+    `one canonical onboarding ${table}`,
+  );
+}
+console.log('PASS: independent-connection customer onboarding and retry');
 async function journey() {
   const token = `g1_${randomBytes(32).toString('hex')}`;
   const result = await rpc(`public.start_guest_request('SA',${q(token)})`, { token: '' });

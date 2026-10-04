@@ -49,6 +49,30 @@ test('hosted Driver session expiry, route revocation and keyboard login in both 
     expect(
       cookies.every((cookie) => cookie.secure && cookie.sameSite === 'Lax' && cookie.path === '/'),
     ).toBe(true);
+    // Public navigation must retain the Driver identity, not offer Customer or staff access.
+    for (const path of [`/${locale}`, `/${locale}#services`, `/${locale}#contact`]) {
+      await page.goto(path);
+      await expect(page.locator('header .identity-link')).toHaveAttribute(
+        'href',
+        `/${locale}/driver`,
+      );
+    }
+    for (const country of ['EG', 'SA']) {
+      await page.locator('#public-market').selectOption(country);
+      await expect(page.locator('#public-market')).toBeEnabled();
+      await expect(page.locator('header .identity-link')).toHaveAttribute(
+        'href',
+        `/${locale}/driver`,
+      );
+    }
+    await page.goto(`/${locale}/login`);
+    await expect(page).toHaveURL(new RegExp(`/${locale}/driver$`));
+    await expect(page.locator('#email')).toHaveCount(0);
+    await page.reload();
+    await expect(page.locator('header .identity-link')).toHaveAttribute(
+      'href',
+      `/${locale}/driver`,
+    );
     // Exercise expired browser session cookies, without exposing their values or forging JWTs.
     await context.addCookies(
       cookies.map((cookie) => ({ ...cookie, expires: Math.floor(Date.now() / 1000) - 60 })),

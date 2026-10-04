@@ -115,15 +115,16 @@ for (const country of ['SA', 'EG'] as const)
               .error,
           ).not.toBeNull();
           const signedStarted = Date.now();
-          const signed = await guest.storage.from('documents').createSignedUrl(path, 2);
+          // Allow hosted round-trip latency before checking access; still prove expiry.
+          const signed = await guest.storage.from('documents').createSignedUrl(path, 10);
           expect(signed.error).toBeNull();
           const signedRead = await fetch(signed.data!.signedUrl);
           test.info().annotations.push({
             type: 'safe-security-probe',
-            description: `Private proof read: status=${signedRead.status}, elapsedMs=${Date.now() - signedStarted}, ttlSeconds=2`,
+            description: `Private proof read: status=${signedRead.status}, elapsedMs=${Date.now() - signedStarted}, ttlSeconds=10`,
           });
           expect(signedRead.ok).toBe(true);
-          await new Promise((resolve) => setTimeout(resolve, 3100));
+          await new Promise((resolve) => setTimeout(resolve, 11000));
           expect(
             (await fetch(signed.data!.signedUrl, { headers: { 'Cache-Control': 'no-cache' } })).ok,
           ).toBe(false);
