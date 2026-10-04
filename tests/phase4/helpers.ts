@@ -213,6 +213,9 @@ export async function acceptedOrder(
   await page.locator('#name').fill('Phase 4 controlled customer');
   await page.locator('#phone').fill(country === 'SA' ? '+966500000001' : '+201000000001');
   await page.getByRole('button', { name: ct.saveProfile, exact: true }).click();
+  // Profile save navigates/re-renders the account. Wait for its authoritative
+  // success state before testing keyboard focus on the replacement form.
+  await expect(page.getByRole('status')).toContainText(ct.profileSaved);
   await page.locator('#request-market').focus();
   await expect(page.locator('#request-market')).toBeFocused();
   await page.locator('#request-market').press('Tab');
