@@ -42,7 +42,23 @@ export async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar'
     exact: true,
   });
   // Next can stream the authenticated redirect after DOMContentLoaded.
-  await expect(emailField.or(signOut)).toBeVisible();
+  try {
+    await expect(emailField.or(signOut)).toBeVisible();
+  } catch (error) {
+    const path = new URL(page.url()).pathname;
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: JSON.stringify({
+        loginLanding: /^\/(ar|en)\/(login|account|portal|auth-complete)$/.test(path)
+          ? path
+          : 'other',
+        emailVisible: await emailField.isVisible(),
+        logoutVisible: await signOut.isVisible(),
+        alertPresent: (await page.getByRole('alert').count()) > 0,
+      }),
+    });
+    throw error;
+  }
   if (await signOut.isVisible()) {
     await page
       .getByRole('button', { name: customerDictionary(locale).logout, exact: true })
@@ -66,6 +82,9 @@ export async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar'
 export async function logout(page: Page, locale: 'ar' | 'en' = 'ar') {
   await page.goto(`/${locale}/account`, { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: customerDictionary(locale).logout, exact: true }).click();
+  // Do not cancel the logout Server Action by starting the next login navigation.
+  await expect(page).toHaveURL(new RegExp(`/${locale}/login$`));
+  await expect(page.locator('#email')).toBeVisible();
 }
 export async function axe(page: Page) {
   const beforeLayout = await page.evaluate(() => ({
