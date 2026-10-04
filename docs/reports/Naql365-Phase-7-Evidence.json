@@ -1495,5 +1495,60 @@
       "id": 37140712729,
       "result": "PASS"
     }
+  },
+  "publicSignupOwnerAcceptance": {
+    "checkedAt": "2026-10-04T10:29:03.245Z",
+    "preview": "https://naql365-staging-l2et1jst5-naql365.vercel.app",
+    "source": "a98e7af81b14e20e35a41252368f501a4a8b65ce",
+    "before": {
+      "checkedAt": "2026-10-04T10:04:22.848Z",
+      "email": "abo.sabara1@gmail.com",
+      "readOnly": true,
+      "rows": [
+        {
+          "auth_users": 0,
+          "customers": 0,
+          "memberships": 0,
+          "profiles": 0,
+          "roles": 0
+        }
+      ]
+    },
+    "after": {
+      "checkedAt": "2026-10-04T10:28:02.680Z",
+      "identityCount": 1,
+      "rows": [
+        {
+          "confirmed": true,
+          "customers": 1,
+          "memberships": [
+            {
+              "category": "customer",
+              "status": "active"
+            }
+          ],
+          "profile_exists": true,
+          "roles": ["CUSTOMER"]
+        }
+      ]
+    },
+    "method": "Owner operated public registration and real mailbox confirmation; no admin-generated activation or preprovisioning",
+    "observed": [
+      "Profile saved through application",
+      "Refresh retains profile",
+      "SA Request wizard opens",
+      "Public English navigation retains My account",
+      "Direct English login redirects to account",
+      "Explicit logout displays login",
+      "Owner password login returns to English account",
+      "Refresh retains account",
+      "One Customer, active customer membership and CUSTOMER role after repeat authentication"
+    ],
+    "limits": [
+      "Initial confirmation and profile save were owner-operated between observations",
+      "No password or confirmation token inspected",
+      "Full mobile, concurrency and remaining regression gates are pending"
+    ],
+    "result": "PASS for observed public customer flow; overall Phase 7 remains PARTIAL"
   }
 }
