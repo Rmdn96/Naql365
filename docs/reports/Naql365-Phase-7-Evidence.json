@@ -1463,8 +1463,37 @@
       "rerun": "PENDING after final helper readiness fix"
     },
     "financeRegression": "NOT RUN: runner stops after failed Guest gate",
-    "ownerEquivalentStaffSequence": "PENDING owner private login on new host",
+    "ownerEquivalentStaffSequence": {
+      "checkedAt": "2026-10-04",
+      "preview": "https://naql365-staging-jd6ncixk4-naql365.vercel.app",
+      "deployedSha": "556435d8fdf9499eb6552e3f21013452989c684d",
+      "result": "PASS for observed desktop sequence",
+      "steps": [
+        "owner normal login confirmed portal",
+        "header Operations portal, no Login link",
+        "logo to home",
+        "Services anchor",
+        "How It Works anchor",
+        "English navigation",
+        "SA then EG selection",
+        "direct /ar/login redirected to /ar/portal",
+        "refresh retained server-authorized portal",
+        "explicit logout restored Login navigation",
+        "direct protected portal redirected to login"
+      ],
+      "limits": [
+        "public sections are homepage anchors, not independent service pages",
+        "owner cookie values and attributes were not accessed",
+        "Back cache and mobile owner sequence not established in this run",
+        "browser refresh parity hardening is in later source, not this Preview"
+      ]
+    },
     "driverSessionNavigation": "PENDING",
-    "browserRefreshSecureParity": "Implemented after this Preview; build and targeted tests PASS; deployment pending"
+    "browserRefreshSecureParity": "Implemented after this Preview; build and targeted tests PASS; deployment pending",
+    "latestSourceCi": {
+      "sha": "78cb8971b9f4df7beaa2ff58005691e8824f6f68",
+      "id": 37140712729,
+      "result": "PASS"
+    }
   }
 }
