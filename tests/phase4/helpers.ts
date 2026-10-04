@@ -235,6 +235,9 @@ export async function acceptedOrder(
   // Profile save navigates/re-renders the account. Wait for its authoritative
   // success state before testing keyboard focus on the replacement form.
   await expect(page.getByRole('status')).toContainText(ct.profileSaved);
+  // SSR intentionally disables this control until its client handlers hydrate.
+  // locator.focus() does not wait for enabled actionability as click() does.
+  await expect(page.locator('#request-market')).toBeEnabled();
   await page.locator('#request-market').focus();
   await expect(page.locator('#request-market')).toBeFocused();
   await page.locator('#request-market').press('Tab');
