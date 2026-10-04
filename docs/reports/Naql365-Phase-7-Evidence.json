@@ -1488,11 +1488,28 @@
         "browser refresh parity hardening is in later source, not this Preview"
       ]
     },
-    "driverSessionNavigation": "PENDING",
-    "browserRefreshSecureParity": "Implemented after this Preview; build and targeted tests PASS; deployment pending",
+    "driverSessionNavigation": {
+      "result": "PASS",
+      "preview": "https://naql365-staging-l2et1jst5-naql365.vercel.app",
+      "tests": 1,
+      "durationMs": 152628,
+      "coverage": [
+        "AR/EN",
+        "public home/services/contact",
+        "SA/EG switch",
+        "direct login redirects to Driver",
+        "refresh",
+        "expired browser session",
+        "suspension",
+        "role revocation",
+        "explicit logout"
+      ],
+      "cleanup": "PASS"
+    },
+    "browserRefreshSecureParity": "Deployed in l2et1jst5 source a98e7af; hosted Driver cookie attributes PASS",
     "latestSourceCi": {
-      "sha": "78cb8971b9f4df7beaa2ff58005691e8824f6f68",
-      "id": 37140712729,
+      "sha": "4b329ef66193e93da141120aab809dae1700ba7b",
+      "id": 37195658909,
       "result": "PASS"
     }
   },
@@ -1542,7 +1559,9 @@
       "Explicit logout displays login",
       "Owner password login returns to English account",
       "Refresh retains account",
-      "One Customer, active customer membership and CUSTOMER role after repeat authentication"
+      "One Customer, active customer membership and CUSTOMER role after repeat authentication",
+      "390px English homepage without horizontal overflow; Arabic direct login returns to account",
+      "Customer denied staff portal after server render"
     ],
     "limits": [
       "Initial confirmation and profile save were owner-operated between observations",

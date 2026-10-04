@@ -44,7 +44,34 @@ This protocol was executed in Chrome in Arabic and English on the accepted Previ
 
 RLS is checked when a signed URL is issued. A prior URL remains a bearer capability until its short expiry. Suspension blocks new signing and authenticated reads immediately; it does not retrospectively revoke an already issued URL. The service uses a 60-second TTL and tests rejection after 65 seconds. Do not cache or log signed URLs.
 
-## Phase 4 Driver acceptance
+## Phase 7 real public registration acceptance
+
+This operator-assisted hosted test is mandatory. Neither `tests/intake/onboarding.spec.ts`
+(admin-generated activation) nor confirmed fixture users establish public signup or mail delivery.
+
+1. Use an owner-controlled fresh mailbox and the current protected Preview. Record a read-only
+   baseline proving no Auth identity and no linked profile, Customer, membership or role. If the
+   identity exists, stop and choose another mailbox; do not delete or alter an existing identity
+   to manufacture a fresh result.
+2. Open public registration. The owner enters and submits the password privately. Do not create
+   Auth users, generate activation links or insert business identity rows through a helper.
+3. The owner opens the actual delivered confirmation message in the same browser profile.
+   Inspect only the eventual application destination, never the confirmation URL or cookie values.
+4. Complete the normal profile form. Read-only checks must establish confirmed Auth, one profile,
+   one Customer, active customer membership and canonical CUSTOMER role. Existing transactional
+   `onboard_customer` performs this on profile save; saving required contact fields is not an
+   administrator provisioning step. Refresh and enter a Market-specific Request wizard.
+5. Navigate public sections and both locales, switch Market, and visit login directly. Expect
+   Customer navigation and return to account. Verify staff access is denied.
+6. Explicitly log out, have the owner log in with the password, refresh and repeat the identity
+   counts. Require no duplicate Customer, membership or role. Repeat the narrow-screen navigation.
+7. Record actual observations and owner-operated steps separately. Never label an unobserved
+   confirmation, password login or mobile step PASS. Keep incomplete or failed runs in the report.
+8. Clean only explicitly disposable test records after acceptance; preserve established owner
+   customer/admin identities. Run the independent-connection onboarding test in CI as supplemental
+   concurrency evidence, not as a replacement for this public flow.
+
+## Phase 4 Driver acceptance procedure
 
 Use the protected Preview recorded in the canonical Phase 4 report. With the explicit Staging project/organization, Preview origin and temporary automation-bypass environment configured securely, run `node scripts/staging/verify-phase4.mjs`. The default runs SA and EG execution journeys plus the independent Driver session lifecycle test. `--session-only` runs only the supplemental session test and is not a substitute for execution acceptance.
 
