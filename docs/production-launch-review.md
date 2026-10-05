@@ -4,6 +4,12 @@ Review date: 5 October 2026. **PRODUCTION REVIEW COMPLETE — OWNER INPUT REQUIR
 
 This is a documentation-first review, not Phase 8, setup permission, a release approval or Production acceptance. No resources, DNS, Auth configuration, payment destinations or application source were changed. The canonical execution starting point remains [production-launch-runbook.md](production-launch-runbook.md); this review qualifies its prerequisites against the accepted implementation.
 
+## Hostinger architecture update — 6 October 2026
+
+Production host is **Hostinger Managed Node.js / Next.js**; Supabase remains the authoritative backend. Canonical origin is **https://naql365.com**, with **www.naql365.com redirecting to the apex**. Hostinger manages DNS. See [Hostinger runtime compatibility](hostinger-runtime-compatibility.md) for the provider audit, required source controls, exact proposed build settings and unexecuted acceptance matrix. Vercel is historical/temporary Staging evidence only. No Hostinger account/runtime was tested and no deployment/DNS change was made.
+
+The previous operational-only environment comparison is superseded: the owner now requires a fail-closed Production build/startup guard. This is **SOURCE CHANGE REQUIRED**, along with Hostinger-safe acceptance tooling. The guard is designed, not implemented. Domain/hosting choice is resolved; legal, operating configuration, protection, recovery and all other unresolved launch gates below remain.
+
 ## Classification and evidence boundary
 
 - **READY**: accepted implementation/evidence exists; this does not mean a nonexistent Production environment has passed smoke tests.
@@ -27,22 +33,22 @@ The Phase 7 report and evidence remain canonical for application acceptance. Sta
 
 This review lives on `docs/production-launch-review`, created from the accepted develop. It changes documentation only. Do not treat that documentation branch as an application release. Approved legal content or any later correction needs a separately reviewed commit, full required CI and a newly frozen release SHA. Never edit any of the 44 accepted migration files. Generate a filename/SHA-256 manifest from the frozen release and compare both migration ledger and types before rollout. Database migration immutability is release discipline, not a claim that Git files cannot be edited by an operator.
 
-Before eventually merging to main, inspect Vercel Git production-branch auto-deployment settings: a main merge can itself trigger Production. Separate main-merge and deployment authorization operationally; do not accidentally use the merge as permission to deploy.
+Before eventually merging to main, inspect Hostinger managed Node Git auto-deployment settings and the retained Vercel integration: a main merge can itself trigger Production. Separate main-merge and deployment authorization operationally; do not accidentally use the merge as permission to deploy.
 
 ## 2. Infrastructure and environment isolation
 
 Read-only inventory found `naql365-staging` Supabase project `zuvyfeflkzlciuaauxba` and a separate project named `Naql365`, `bglbivhmqcpdakaijhng`. The latter's purpose/data/release approval is **unknown**; it is not certified as fresh Production and must not be repurposed based on its name. The configured Vercel project is `naql365-staging`: zero Production deployments, zero Production-scoped variables and zero temporary automation bypasses at review time. Four configured variables have Preview scope only. No new project was created.
 
-| Prerequisite                         | Classification         | Plan                                                                                                                                                                                                                                        |
-| ------------------------------------ | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dedicated Production Supabase        | OWNER INPUT REQUIRED   | Choose organization, project identity, region/data-residency review, paid capacity, budget, ownership and backup plan. Confirm whether a new project is intended; do not reuse the ambiguous existing project without a separate data audit |
-| Dedicated Production Vercel bindings | CONFIGURATION REQUIRED | Prefer a separately named Production project, with an explicit repository/production-branch mapping and protected prelaunch access. Keep the existing staging project unchanged                                                             |
-| Production/Staging separation        | CONFIGURATION REQUIRED | Two-person allowlisted project/reference/key/origin verification before build and deployment; no cloned Staging env export or Preview promotion                                                                                             |
-| Secret custody                       | OWNER INPUT REQUIRED   | Name vault, credential administrators, backup operator, rotation/revocation process and emergency contact                                                                                                                                   |
-| Auth mail delivery                   | CONFIGURATION REQUIRED | Production SMTP provider, verified sender/domain, DNS authentication, rate limits and real-mail delivery test; do not rely on the test mail service                                                                                         |
-| Storage / Realtime                   | CONFIGURATION REQUIRED | Apply migrations then verify exact private buckets, grants/publication and denied access; no manual broadening                                                                                                                              |
+| Prerequisite                            | Classification         | Plan                                                                                                                                                                                                                                        |
+| --------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dedicated Production Supabase           | OWNER INPUT REQUIRED   | Choose organization, project identity, region/data-residency review, paid capacity, budget, ownership and backup plan. Confirm whether a new project is intended; do not reuse the ambiguous existing project without a separate data audit |
+| Dedicated Production Hostinger bindings | CONFIGURATION REQUIRED | Separate Hostinger Node application; Production-only inputs and manual release approval. Never auto-deploy develop. Keep Vercel Staging unchanged during transition                                                                         |
+| Production/Staging separation           | CONFIGURATION REQUIRED | Two-person allowlisted project/reference/key/origin verification before build and deployment; no cloned Staging env export or Preview promotion                                                                                             |
+| Secret custody                          | OWNER INPUT REQUIRED   | Name vault, credential administrators, backup operator, rotation/revocation process and emergency contact                                                                                                                                   |
+| Auth mail delivery                      | CONFIGURATION REQUIRED | Production SMTP provider, verified sender/domain, DNS authentication, rate limits and real-mail delivery test; do not rely on the test mail service                                                                                         |
+| Storage / Realtime                      | CONFIGURATION REQUIRED | Apply migrations then verify exact private buckets, grants/publication and denied access; no manual broadening                                                                                                                              |
 
-**Important control gap:** `deployment-env.ts` rejects Preview with non-staging APP_ENV and Production with non-production APP_ENV. `public-env.ts` validates URL/key format, not project ownership/reference. A wrong but well-formed Staging URL/key paired with `APP_ENV=production` is not rejected by application code. Do not claim an automatic cross-environment lock exists. The controlled setup gate must compare the public URL host/project reference and corresponding key to a release manifest approved by two operators, reject the known Staging reference and all localhost/Preview origins, verify the target Vercel project/scope, and independently inspect the resulting public bundle/network destination. Missing/mismatched verification is NO-GO. If the owner requires a code-enforced invariant rather than this operational control, a separately reviewed deployment preflight/allowlist change is required; none was implemented here.
+**Important control gap:** VERCEL_ENV checks do not enforce Hostinger identity. Production requires the provider-neutral fail-closed guard in the compatibility review: canonical apex, approved Supabase reference/key binding, backend identity/configuration attestation, no Staging or TEST dependency. Two-person inspection is additional, not a substitute. No guard or new marker was implemented here.
 
 ### Complete runtime variable inventory
 
@@ -54,22 +60,22 @@ Read-only inventory found `naql365-staging` Supabase project `zuvyfeflkzlciuaaux
 | `APP_ENV`                              | Server/build configuration                   | `production` only on authorized Production target                                                                         |
 | `STAGING_AUTH_SMOKE_ENABLED`           | Server flag                                  | Absent or `false`; technical Staging handlers must remain disabled                                                        |
 | `LAUNCH_CUSTOMER_LIVE_TRACKING`        | Server presentation flag                     | Explicit owner decision; default false. Does **not** disable Driver GPS capture or replace authorization                  |
-| `VERCEL_ENV`, `VERCEL_URL`, `NODE_ENV` | Platform-managed                             | Verify effective values; do not spoof target variables to pass guards                                                     |
+| `NODE_ENV`, `PORT`                     | Platform-managed                             | Hostinger runtime values; VERCEL_ENV/VERCEL_URL absent on Hostinger                                                       |
 
-No runtime service-role/admin key or routing/payment-provider credential is required by the current app. Supabase management access/DB password, Vercel deployment credentials and GitHub automation credentials are operator/CI secrets only. SMTP password belongs in Supabase Auth provider configuration, not the Next.js bundle. Provision only scoped secrets actually needed. Never put owner passwords, financial values, API keys or cookies in Git, shell history, tickets or release evidence. Environment changes require a new build/deployment; old artifacts are not proof of new values ([Vercel environment documentation](https://vercel.com/docs/environment-variables)).
+No runtime service-role/admin key or routing/payment-provider credential is required by the current app. Supabase management access/DB password, Hostinger deployment credentials and retained transition credentials and GitHub automation credentials are operator/CI secrets only. SMTP password belongs in Supabase Auth provider configuration, not the Next.js bundle. Provision only scoped secrets actually needed. Never put owner passwords, financial values, API keys or cookies in Git, shell history, tickets or release evidence. Environment changes require a new build/deployment; old artifacts are not proof of new values ([Hostinger environment configuration](https://www.hostinger.com/support/how-to-add-environment-variables-during-node-js-application-deployment/)).
 
 ## 3. Final domain, DNS and Auth URLs
 
-**OWNER INPUT REQUIRED:** canonical hostname, apex/www redirect preference, registrar/DNS administrator, sender domain, support mailbox, TLS ownership and permitted alternate origins.
+**READY owner decision:** canonical https://naql365.com, www-to-apex redirect, Hostinger DNS. **OWNER INPUT REQUIRED:** authorized operator, plan/access, sender domain, support mailbox and change window. TLS/DNS implementation remains CONFIGURATION REQUIRED.
 
-Let `ORIGIN` mean the approved HTTPS canonical origin, not a literal configuration value. Dependencies:
+Production `ORIGIN` is https://naql365.com. Temporary Hostinger acceptance uses its own explicitly allowlisted HTTPS origin and Staging backend. Dependencies:
 
 - `APP_URL`: origin checks, Auth email redirects, metadataBase, canonical/hreflang, sitemap URLs and structured organization/site information.
 - Supabase Auth Site URL: `ORIGIN`. Exact allowlist: `ORIGIN/auth/callback?locale=ar`, `ORIGIN/auth/callback?locale=en`, and each corresponding `&next=/ar/password` or `&next=/en/password`. Validate actual invitation template flow separately. Do not copy Staging config.toml or add unrestricted wildcards.
 - Application completion: `/{ar|en}/auth-complete`, account/portal/driver destinations, login/register/recover/password. Preserve PKCE verifier browser context and safe locale redirects.
 - Guest continuation uses `/{locale}/guest` plus a secret fragment exchanged for a scoped cookie; hostname changes invalidate the browser's host-scoped session. Do not migrate tokens through query strings or redirects.
 - Supabase project REST/Storage/WebSocket origin feeds browser requests and CSP connect-src. Default project API hostname is separate from the app hostname; custom Supabase domain is optional, not assumed.
-- Configure only records shown for the actual Vercel project/domain, with DNS operator review; do not guess universal A/CNAME values. Validate TLS and canonical redirects without cross-origin POST/cookie loss. Add SMTP provider-specified SPF/DKIM and owner-approved DMARC without replacing unrelated mail records.
+- Configure only records shown for the actual Hostinger application/domain, with DNS operator review; do not guess universal A/CNAME values. Validate TLS and canonical redirects without cross-origin POST/cookie loss. Add SMTP provider-specified SPF/DKIM and owner-approved DMARC without replacing unrelated mail records.
 
 **CONFIGURATION REQUIRED:** reserve/link domain, certificate issuance, DNS and Auth origin changes only during authorized setup. Test from the final host, not a Preview hostname. No DNS change was made during this review.
 
@@ -152,7 +158,7 @@ External map tiles can disclose client network information to the tile provider 
 
 **READY foundation; CONFIGURATION REQUIRED at final origin.** Production APP_ENV removes the global Staging noindex header. `robots.ts` then allows public locale homepages, disallows listed private/auth surfaces, and points to the canonical sitemap. Sitemap currently contains only `/ar` and `/en` with mutual language alternates; no independent indexed SA/EG URL tree is promised. Homepage metadata/canonical/structured data use APP_URL; Market selection is separate from locale. Request/account/portal/driver pages carry noindex metadata; guest pages/APIs also receive explicit noindex/no-referrer headers. Crawler directives are not access control.
 
-Owner must approve indexing start. APP_ENV is not a safe way to label a Production build staging merely to block indexing. Keep prelaunch access protected until opening approval, or configure a deliberate supported noindex control. Verify response headers, rendered metadata, sitemap, canonical redirect host and private noindex on the actual release; legal routes remain noindex unless separately reviewed. Unknown final domain prevents final SEO verification.
+Owner must approve indexing start. APP_ENV is not a safe way to label a Production build staging merely to block indexing. Keep prelaunch access protected until opening approval, or configure a deliberate supported noindex control. Verify response headers, rendered metadata, sitemap, canonical redirect host and private noindex on the actual release; legal routes remain noindex unless separately reviewed. Domain is decided; final-host runtime/SEO verification remains unexecuted.
 
 ## 11. Operations procedures and manual dependencies
 
@@ -177,7 +183,7 @@ Receipts are operational payment receipts, not a claim of statutory e-invoicing,
 
 Supabase database backups cover database contents/Storage metadata, **not Storage object bytes**. Separate encrypted object backup/inventory and restoration verification are required for payment proofs/POD/attachments ([backup documentation](https://supabase.com/docs/guides/platform/backups)). Choose daily backup versus PITR to meet the approved RPO; test restoring DB plus matching object versions into an isolated target. Include Auth/project configuration recovery, keys/SMTP reconfiguration and user-session implications in the runbook; do not assume all dashboard settings are in migrations.
 
-Application rollback selects a previously approved build compatible with the current schema; environment changes are not retroactively applied to an old build ([Vercel rollback documentation](https://vercel.com/docs/instant-rollback)). On first launch there is no prior Production application: the fallback is protected/closed intake or an approved maintenance response, not the old Phase 0 main build against a Phase 7 database.
+Application rollback selects a previously approved build compatible with the current schema; environment changes are not retroactively applied to an old build ; rehearse Hostinger artifact redeployment, with no instant rollback assumed. On first launch there is no prior Production application: the fallback is protected/closed intake or an approved maintenance response, not the old Phase 0 main build against a Phase 7 database.
 
 Database rollback is not reverse SQL or deletion of tables. Stop writes, preserve evidence, identify the restore point, assess lost financial/operational records, restore only with incident authorization, reconcile Orders/Quotes/payments/receipts/Storage and verify invariants before resuming. Prefer reviewed additive forward fixes when feasible. Unknown migration ledger entries or type drift stop rollout.
 
@@ -225,7 +231,7 @@ Disabling `guest_policy.enabled` stops new guest creation/replacement, not all e
 
 ## Final Production Launch Checklist — execution order
 
-Each line is a gate, not permission to execute it now.
+Each line is a gate, not permission to execute it now. First resolve Hostinger source controls and pass temporary Hostinger/Staging runtime acceptance. Follow the compatibility review cutover order: restricted final-host smoke, authorized DNS/TLS/callback validation, then public opening. A temporary Production APP_URL is prohibited; if pre-DNS final-host TLS is unavailable, obtain a restricted validation-window decision.
 
 1. **OWNER INPUT REQUIRED** — return the owner decision pack below and identify release approvers.
 2. **BLOCKED** — obtain approved legal text; resolve GPS retention/disable, app-MFA requirement and smoke record/payment treatment.
@@ -243,9 +249,9 @@ Each line is a gate, not permission to execute it now.
 
 ## Exact owner decision pack required before authorization
 
-1. Final app domain and alias redirects; DNS owner/access; permitted opening date/window and expected launch traffic.
+1. Domain and alias choice is resolved: naql365.com with www redirect via Hostinger. Still provide operator/access, plan/capacity, opening window and traffic expectations.
 2. Legal operating entity/organization identity; SA/EG data residency/processing decision; approved AR/EN Privacy and Terms with approval reference and support/privacy contacts.
-3. Whether the existing non-staging-named Supabase project has any intended role; otherwise approve a new dedicated project. Choose Supabase/Vercel account, region, capacity/plan/budget and administrators.
+3. Whether the existing non-staging-named Supabase project has any intended role; otherwise approve a new dedicated project. Choose Supabase/Hostinger account, region, capacity/plan/budget and administrators.
 4. SMTP provider, sender name/address/domain, private credential-entry operator and delivery/rate expectations.
 5. Per-Market active cities, within/intercity routes, services/extras, property requirements, schedule/capacity limits and operational opening coverage.
 6. Per-Market vehicle classes and complete versioned pricing schedule; tax applicability/rates/effective dates/rounding sign-off from authorized Finance/legal adviser. No assumed legal percentages.
@@ -259,6 +265,6 @@ Each line is a gate, not permission to execute it now.
 
 ## Source-change conclusion
 
-No application source, migration or dependency was changed by this review. The core accepted customer/guest/finance/operations journeys do not require a redesign. **A reviewed legal content change is definitely required** before public launch because the accepted repository contains null legal content. Production GPS retention/disable, code-enforced environment binding and application staff MFA may require small targeted source/migration work depending on the owner's requirements; they are not silently marked READY. Supported catalog/payment/identity provisioning and DNS/SMTP are configuration/operations work. Missing owner decisions prevent asserting that configuration alone is sufficient for the final release.
+No application source, migration or dependency was changed by this review. The core accepted customer/guest/finance/operations journeys do not require a redesign. **A reviewed legal content change is definitely required** before public launch because the accepted repository contains null legal content. Hostinger environment binding and acceptance-tool adaptation now require source changes. Production GPS retention/disable and staff MFA may require targeted work depending on owner decisions; they are not silently marked READY. Supported catalog/payment/identity provisioning and DNS/SMTP are configuration/operations work. Missing owner decisions prevent asserting that configuration alone is sufficient for the final release.
 
 **Final decision: PRODUCTION REVIEW COMPLETE — OWNER INPUT REQUIRED.** All BLOCKED rows are launch gates, not evidence that this read-only review failed. Stop here: no merge to main, infrastructure creation, Production deployment, real payment entry or Phase 8.

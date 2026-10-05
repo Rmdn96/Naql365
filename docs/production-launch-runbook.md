@@ -2,18 +2,20 @@
 
 Status: preparation only. Phase 7 is CLOSED & MERGED at develop `518aef34128dd31413f1e4fc7c31e30a19f15832` (44 migrations). Production release is **not authorized** by Phase 7 approval. Consult the canonical Phase 7 report and the [Production launch review](production-launch-review.md) for verified prerequisites, manual dependencies and outstanding owner decisions before executing this runbook.
 
+Intended Production hosting: **Hostinger Managed Node.js / Next.js**. Canonical **https://naql365.com**, with www redirecting to apex, DNS managed by Hostinger. Supabase remains authoritative. See [Hostinger compatibility](hostinger-runtime-compatibility.md): source controls and actual temporary Hostinger acceptance remain required. Vercel is retained only as historical/temporary Staging evidence. No deployment/DNS change is authorized here.
+
 ## Release entry gate
 
 1. Obtain explicit owner authorization for a named, protected, reviewed release commit and the Production environment. Do not merge or deploy as a side effect of running tests.
-2. Require final feature CI, populated Phase 6 upgrade, fresh reconstruction, generated types, RLS, independent-connection concurrency, registered-customer regression and both hosted guest journeys to pass on the accepted protected Preview.
+2. Require final feature CI, populated Phase 6 upgrade, fresh reconstruction, generated types, RLS, independent-connection concurrency, registered-customer regression and both hosted guest journeys to pass on the accepted protected Hostinger temporary acceptance deployment; Vercel evidence alone is insufficient.
 3. Review the final report, fixture cleanup evidence and remaining limitations. Freeze the accepted commit and migration list. Do not run disposable acceptance fixtures in Production.
 4. Record owner-approved domain, legal copy, service areas, active services, pricing, taxes, staff identities and operating procedures. Missing items are release blockers.
 
 ## Separate infrastructure and credentials
 
 - Create a dedicated Production Supabase project only under release authorization. Verify its project reference and organization against the release record. It must differ from Local and Staging.
-- Use a separate Production Vercel environment/project configuration. Verify environment scopes before each change. Keep Preview connected only to Staging.
-- The current application checks APP_ENV/platform-target agreement but does not bind a Supabase project reference to Production. Require independent comparison of project, public URL/key pair and build environment against an approved release manifest before build/deploy. A well-formed Staging URL is not rejected by the current format validator. Stop on mismatch; do not copy Preview environment exports.
+- Use a separate Hostinger Production Node application. Temporary Hostinger acceptance connects only to Staging with APP_ENV=staging. Never auto-deploy Production from develop. Require manual deployment approval; use a verified exact-SHA source artifact if Git auto-deploy cannot be safely disabled.
+- Implement and test the fail-closed Production build/startup guard designed in the compatibility review before release. Existing Vercel target checks do not enforce Hostinger project identity. Require canonical apex, approved Production Supabase binding and backend/configuration attestation; reject Staging, temporary origins and TEST dependencies. Independent operator verification remains additional. No guard was implemented by this review.
 - Public variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Server configuration: `APP_URL`, `APP_ENV`. Use `APP_ENV=production` only for the approved Production deployment. Keep technical Staging authentication disabled (`STAGING_AUTH_SMOKE_ENABLED` absent/false).
 - Store deploy/management credentials in the approved secret store. Never print environment values, dump cookies, capture authorization headers or commit exports. No service-role key belongs in browser code.
 - Configure exact Auth site origin and callback allowlist for the approved domain. Verify SSR/PKCE, locale-safe redirects, password recovery and privileged invitation separately. Do not use unrestricted redirect wildcards.
@@ -65,7 +67,7 @@ Verify authorized checkout reveals only its Market's selected transfer instructi
 - `LAUNCH_CUSTOMER_LIVE_TRACKING` is a server-only presentation flag (`true`/`false`, default false). It controls the existing registered-customer live view; status tracking always remains available. Guest live coordinates remain excluded. This flag does not grant tracking authority or disable DB/RLS checks. Test the enabled registered view separately during regression.
 - That presentation flag does not disable Driver GPS collection. The existing `staging_retention_hours`/prune schedule is explicitly Staging-only. An approved Production retention/maintenance or server-authoritative capture-disable plan is required before live location collection; see the review. Do not infer a Production policy from the Staging value.
 - Funnel telemetry retains only daily event/Market/context counts in `private.mvp_funnel_counts`, with 90-day retention on ingestion and a 600/minute organization limit. It is approximate, user-reportable product telemetry, never commercial/audit evidence. No identity, IP, URL, guest capability or financial destination is collected. Operators can inspect aggregate counts through privileged database access; no public metrics query is exposed.
-- Execute the approved Vercel Production deployment only after all entry gates pass. Confirm deployment classification, source SHA and Production-only environment bindings. Do not reuse a Staging deployment as Production evidence.
+- Execute the separately approved Hostinger Production deployment only after entry gates and temporary Hostinger acceptance pass. Verify protected main source SHA, Node24, npm ci, npm run build / npm start, fail-closed guard and Production-only inputs. Rebuild public environment values; do not reuse a Staging artifact as Production.
 - Verify canonical/hreflang, robots/sitemap, CSP and security headers. Public indexing is a release decision; guest/account/payment/portal routes stay noindex and private. Guest secrets remain URL fragments exchanged for HttpOnly cookies, never request paths or analytics properties.
 
 ## Bounded release smoke and rollback
@@ -79,6 +81,12 @@ Verify authorized checkout reveals only its Market's selected transfer instructi
 
 ## Unresolved Production blockers
 
-Final approved domain/DNS, dedicated Production bindings and secret custody, SMTP, active service coverage, real rules/taxes, privately verified payment configuration, legal copy, staff/Driver provisioning, retention/recovery, bounded smoke and release authorization are not fulfilled by this document. See the review's classified checklist and owner decision pack.
+Domain choice is approved; DNS/TLS execution, Hostinger runtime acceptance, source guard, dedicated Production bindings and secret custody, SMTP, active service coverage, real rules/taxes, privately verified payment configuration, legal copy, staff/Driver provisioning, retention/recovery, bounded smoke and release authorization are not fulfilled by this document. See the review's classified checklist and owner decision pack.
 
 **Dependency security closeout: PASS — scoped owner risk acceptance.** The development-only `braces` advisory remains technically unresolved in the accepted graph and the full audit is not fully clean. Its documented owner-approved scoped disposition is not an unresolved approval blocker and does not cover unrelated/new advisories. Do not suppress audit. Recheck the dependency inventory before an authorized release.
+
+## Hostinger cutover and retirement
+
+Follow the compatibility review sequence: temporary Hostinger/Staging acceptance PASS → separately authorized Production Supabase setup → protected main release and Hostinger Production build → restricted final-host smoke → authorized DNS/SSL/callback validation → explicit public opening. Pre-DNS final-host smoke needs valid TLS/SNI and a supported operator resolution method. If unavailable, obtain an approved restricted validation window; never substitute a temporary Production APP_URL. Configure exact canonical callbacks before final-origin Auth tests.
+
+Keep Vercel during transition. Only after Hostinger acceptance PASS and owner-approved retirement inventory, stop new Vercel deployments, revoke unused provider credentials and remove provider-only configuration. Preserve historical evidence and shared Supabase resources. Rehearse Hostinger rollback from an approved artifact; no Vercel instant rollback is assumed.
