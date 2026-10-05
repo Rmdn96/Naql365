@@ -1,6 +1,6 @@
 # Naql365 Phase 7 — MVP launch, guest ordering and visual experience
 
-Canonical acceptance report, updated 4 October 2026. **REOPENED by owner-observed public login and post-login routing defects on 3 October 2026. Previous PASS is superseded pending real public signup and role-aware hosted acceptance. Dependency security closeout: PASS — scoped owner risk acceptance. No merge or Production release is authorized.** This revision replaces earlier implementation checkpoints and retains material failed-run evidence below.
+Canonical acceptance report, updated 5 October 2026. **PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW.** The earlier PASS was reopened by owner-observed real-user authentication/navigation evidence on 3 October; the corrective public-signup, session-navigation and regression gates are now verified below. **Dependency security closeout: PASS — scoped owner risk acceptance.** No merge or Production release is authorized. Earlier checkpoint sections retain historical results and are superseded by the authoritative 5 October closeout at the end.
 
 ## A. Starting state
 
@@ -314,7 +314,7 @@ Final gates: 44 unchanged migrations; hosted database assertions/RLS/official ge
 | Scoped dependency risk                    | PASS — scoped owner risk acceptance | GHSA-vfj7-8cjw-p6xm only; audit not suppressed            |
 | Credentials/Production/scope              | PASS                                | Zero temporary bypasses; no Production or source changes  |
 
-## Final decision (authoritative)
+## Historical decision before owner reopening
 
 **PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW**
 
@@ -369,3 +369,52 @@ On protected Preview `https://naql365-staging-l2et1jst5-naql365.vercel.app` (sou
 The Guest rerun passed the SA delivery journey and four other cases; EG failed when its two-second signed URL was first read after approximately three seconds. The test now uses ten seconds and still asserts denial after expiry; rerun pending. Cleanup of that failed run passed. Full local unit/integration suite passed 199 tests. Driver session navigation coverage was extended and remains pending hosted execution. Overall decision remains **PHASE 7 PARTIAL — NOT READY** until remaining regressions, cleanup and exact final CI pass.
 
 Further verification: the real Customer retained English navigation at 390px without horizontal overflow, returned from Arabic login to account and was denied staff portal access. Hosted Driver session coverage passed in AR/EN, including public navigation, SA/EG switching, direct login routing, refresh, browser-session expiry, suspension, role loss and explicit logout. Driver fixture cleanup passed. CI `37195658909` passed for `4b329ef66193e93da141120aab809dae1700ba7b`, including independent-connection Customer onboarding/retry. A later Guest rerun failed during temporary Auth-fixture setup because the provider connection was unavailable; its cleanup passed. Finance and the corrected signed-URL Guest rerun remain pending.
+
+### Regression checkpoint — 5 October 2026
+
+The corrected Guest suite passed all six cases on the l2et1jst5 Preview: SA and EG delivery, rejected Quote without Order, AR/EN responsive accessibility/SEO/contact and capability isolation. Signed proof access and expiry passed; fixture cleanup passed.
+
+Finance most recently passed configuration, SA BANK_TRANSFER, EG CASH and EG BANK_TRANSFER, but SA CASH failed in the keyboard test because focus was attempted while the SSR Market selector was disabled before hydration. The harness now waits for profile-save success and an enabled selector while retaining the focus assertion. Identity switching also awaits explicit logout completion before navigating again. These are test changes, not application authorization changes; earlier failures and interrupted-run scoped cleanup are retained as evidence. A full rerun is pending.
+
+Exact-source CI `37215255842` passed for `4fe82ec570066b224e99151f23fd2aad4cae9e6f`. Application source and 44 migrations are unchanged from the accepted Preview source. Owner instructed retaining the new Customer account and deleting only the agent-created draft after tests. Remaining full Driver/intake/Finance/database/cleanup gates must finish before restoring PASS. **PHASE 7 PARTIAL — NOT READY**.
+
+## Final corrective closeout — 5 October 2026 (authoritative)
+
+**PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW**
+
+### Root cause and correction
+
+The reproduced session remained valid after public navigation (case B); it was not deleted. Header/Footer hardcoded Login and the login page always rendered its form, while successful authentication defaulted to the Customer account. Shared navigation and direct-login completion now reuse live server user/membership/permission resolution: CUSTOMER → account, STAFF/SUPER_ADMIN → portal, mapped INTERNAL DRIVER → driver, invalid membership → localized recovery. Proxy refresh covers localized public routes; browser and SSR cookie configuration agree on root Path, HTTPS Secure and SameSite Lax. No email-based authority, Customer conversion of staff, or RLS weakening was introduced. The request-specific layout remains dynamic/private/no-store. Explicit logout is the normal session-ending action. The precise cause of the owner's earlier generic error cannot be reconstructed from the screenshot; it is not attributed to credentials without evidence. Current localized handling separates credential, confirmation, provisioning/membership and server failures.
+
+Prior onboarding tests used an Auth-admin-generated activation link, and staff smoke navigated directly to an already-authorized portal. They did not prove public signup or public-header/direct-login behavior. The activation test is now explicitly named as such and is supplemental only. The documented operator-assisted public-signup gate requires a zero-row read-only baseline, actual public signup and real mailbox confirmation. Canonical customer provisioning remains the existing transactional onboarding command when the confirmed customer saves their required profile; no administrator-created membership is needed. Concurrent bootstrap/retry is covered by independent connections in CI.
+
+### Hosted acceptance
+
+Accepted protected Preview: https://naql365-staging-l2et1jst5-naql365.vercel.app . Deployed application source: `a98e7af81b14e20e35a41252368f501a4a8b65ce`. Application code, package manifests and all 44 migrations are byte-identical to the final tested source; subsequent commits change tests/evidence only. The owner-equivalent SUPER_ADMIN sequence was already accepted on jd6ncixk4 and remains retained, not repeated or replaced by a fixture. Current Preview independently proves registered Customer and DRIVER navigation/cookie behavior.
+
+The genuinely new public Customer started with no Auth/profile/Customer/membership/role rows. The owner submitted public signup, confirmed the delivered email, saved the profile, then performed a normal password login after logout. Refresh, Request entry, repeat login/idempotency, AR/EN and narrow mobile navigation passed. Read-only verification shows one confirmed identity/profile/Customer, one active CUSTOMER membership and CUSTOMER role. Owner-operated confirmation/profile actions occurred between observations; no password or confirmation token was inspected. SUPER_ADMIN remains confirmed STAFF + SUPER_ADMIN with zero Customer records. The original Customer and both Requests are unchanged.
+
+| Final gate                                                    | Result | Evidence                                                                                                                                  |
+| ------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Genuine public signup / confirmation / profile / repeat login | PASS   | Owner-operated real mailbox flow and before/after canonical counts                                                                        |
+| SUPER_ADMIN routing and public navigation                     | PASS   | Retained owner-equivalent portal/home/AR/EN/Market/direct-login/refresh/logout sequence                                                   |
+| Registered Customer                                           | PASS   | 10 hosted desktop/mobile cases; AR/EN, private uploads, IDOR, suspension and session navigation                                           |
+| Explicit logout / browser Back                                | PASS   | Both device projects: Back itself shows Login, no Sign out, no auth cookie before further navigation; protected route denied              |
+| DRIVER                                                        | PASS   | 3 hosted cases: SA, EG full execution and session/role revocation                                                                         |
+| Guest                                                         | PASS   | 6 hosted cases: SA CASH/EG transfer delivery, rejection, contact/SEO/a11y and isolation; signed access/expiry                             |
+| Finance                                                       | PASS   | 5 hosted cases: configuration and SA/EG CASH/BANK_TRANSFER, review/reupload and execution gate                                            |
+| Database / RLS / types                                        | PASS   | Hosted 44-migration history, 59 RLS tables, SQL assertions and canonical public types match; revoked/expired capability probes            |
+| Quality / CI                                                  | PASS   | 199 unit/integration, 32 local E2E; formatting/secrets/lint/strict types/build; CI 37280413785 at 9fff9a7                                 |
+| Security / logs                                               | PASS   | Current Preview headers/CSP/bundle review; bounded 50-record runtime sample, no 5xx/errors/credential patterns; no full-history guarantee |
+| Cleanup / preservation                                        | PASS   | Every hosted suite cleanup passed; no synthetic phase Auth identities; owner draft deleted only; zero temporary bypass credentials        |
+| Scope                                                         | PASS   | Main/develop unchanged; Production deployments and environment variables zero; no merge or Phase 8                                        |
+
+There are **24 passing automated hosted cases** in this final regression set (6 Guest + 5 Finance + 3 Driver + 10 Intake), in addition to the separately evidenced real public signup and owner SUPER_ADMIN sequence. Earlier failed runs remain documented; none are relabeled as passes. The final test corrections wait for hydrated/enabled controls and explicit logout completion, and use a ten-second test signed URL with explicit expiry denial. Application permissions and financial rules were not relaxed.
+
+### Cleanup, changed files and delivery
+
+At the owner's request, `abo.sabara1@gmail.com` is retained; only the agent-created empty DRAFT was deleted. Confirmed identity, profile, Customer and active membership remain. `abo.sabara0@gmail.com` remains canonical STAFF/SUPER_ADMIN; the original customer and its two Requests remain unchanged. Temporary fixture users/data/files were removed by each scoped harness. The interrupted test's Staging guest quota of 100 was restored to the intended configured 30/hour, with 30-day expiry retained. All automation bypass credentials were revoked and revoked access returned the protection redirect.
+
+The final closeout changes only `tests/intake/session-navigation.spec.ts` and the canonical report/evidence. Relevant test commits: `db41b0a` (save readiness), `127fffe` (logout completion), `4fe82ec` (enabled focus), `9fff9a7` (Back-cache assertion). Auth source fixes remain `e533ea9`, `556435d`, `78cb897`; no new migration (44 total). CI `37280413785` passed for full `9fff9a7f0b0053fd3519bdf8a78098ab3b9f62f9`; the final documentation SHA and its exact-head CI are supplied in the verified final handoff to avoid a self-referential commit identifier.
+
+Owner-approved dependency risk acceptance remains scoped; npm audit has not been suppressed. Production domain/configuration, real pricing/taxes/payment destinations, staff setup and owner/legal approval remain release-runbook prerequisites. This application acceptance authorizes no Production release. Do not merge or start Phase 8.
