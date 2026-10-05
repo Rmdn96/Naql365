@@ -7,6 +7,7 @@ import { marketDateTime, localScheduleToInstant } from '@/domain/markets/model';
 import { marketDictionary } from '@/i18n/markets';
 import { Button, Input, Select, Alert } from '@/components/ui/primitives';
 import { useOperationalCommand } from './command';
+import { useHydrated } from '@/components/ui/use-hydrated';
 type PlannedStop = {
   key: string;
   cityId: string;
@@ -16,6 +17,7 @@ type PlannedStop = {
   pickups: string[];
 };
 export function TripPlanner({ locale, data }: { locale: Locale; data: OperationalTrip }) {
+  const hydrated = useHydrated();
   const t = operationsDictionary(locale),
     mt = marketDictionary(locale);
   const [scheduleError, setScheduleError] = useState(false);
@@ -63,6 +65,7 @@ export function TripPlanner({ locale, data }: { locale: Locale; data: Operationa
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          if (!hydrated) return;
           setScheduleError(false);
           try {
             void command.run('plan', {
@@ -81,152 +84,158 @@ export function TripPlanner({ locale, data }: { locale: Locale; data: Operationa
           }
         }}
       >
-        <div className="form-columns">
-          <Input
-            id="planned-start"
-            label={t.start}
-            type="datetime-local"
-            required
-            value={start}
-            onChange={(e) => setStart(e.target.value)}
-          />
-          <Input
-            id="planned-end"
-            label={t.end}
-            type="datetime-local"
-            required
-            value={end}
-            onChange={(e) => setEnd(e.target.value)}
-          />
-        </div>
-        <h3>{t.stops}</h3>
-        {stops.map((s, index) => (
-          <fieldset key={s.key}>
-            <legend>
-              {index + 1}. {s.kind === 'PICKUP' ? t.pickup : t.delivery}
-            </legend>
-            <Select
-              id={`city-${s.key}`}
-              label={mt.city}
-              value={s.cityId}
-              required
-              onChange={(e) => patch(s.key, { cityId: e.target.value })}
-            >
-              <option value="">{mt.city}</option>
-              {data.cities.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {locale === 'ar' ? c.name_ar : c.name_en}
-                </option>
-              ))}
-            </Select>
-            <Select
-              id={`kind-${s.key}`}
-              label={t.stops}
-              value={s.kind}
-              onChange={(e) =>
-                patch(s.key, {
-                  kind: e.target.value === 'DELIVERY' ? 'DELIVERY' : 'PICKUP',
-                  pickups: [],
-                })
-              }
-            >
-              <option value="PICKUP">{t.pickup}</option>
-              <option value="DELIVERY">{t.delivery}</option>
-            </Select>
+        <fieldset
+          className="wizard-fields"
+          disabled={!hydrated || command.busy}
+          aria-label={t.plan}
+        >
+          <div className="form-columns">
             <Input
-              id={`address-${s.key}`}
-              label={t.address}
-              value={s.address}
-              maxLength={500}
+              id="planned-start"
+              label={t.start}
+              type="datetime-local"
               required
-              onChange={(e) => patch(s.key, { address: e.target.value })}
+              value={start}
+              onChange={(e) => setStart(e.target.value)}
             />
             <Input
-              id={`notes-${s.key}`}
-              label={t.notes}
-              value={s.notes}
-              maxLength={1000}
-              onChange={(e) => patch(s.key, { notes: e.target.value })}
+              id="planned-end"
+              label={t.end}
+              type="datetime-local"
+              required
+              value={end}
+              onChange={(e) => setEnd(e.target.value)}
             />
-            {s.kind === 'DELIVERY' && (
-              <fieldset>
-                <legend>{t.dependencies}</legend>
-                {stops
-                  .filter((p) => p.kind === 'PICKUP')
-                  .map((p) => (
-                    <label className="operations-check" key={p.key}>
-                      <input
-                        type="checkbox"
-                        checked={s.pickups.includes(p.key)}
-                        onChange={(e) =>
-                          patch(s.key, {
-                            pickups: e.target.checked
-                              ? [...s.pickups, p.key]
-                              : s.pickups.filter((key) => key !== p.key),
-                          })
-                        }
-                      />
-                      {stops.indexOf(p) + 1}. {p.address || t.pickup}
-                    </label>
-                  ))}
-              </fieldset>
-            )}
-            <div className="wizard-actions">
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={index === 0}
-                onClick={() => move(index, -1)}
+          </div>
+          <h3>{t.stops}</h3>
+          {stops.map((s, index) => (
+            <fieldset key={s.key}>
+              <legend>
+                {index + 1}. {s.kind === 'PICKUP' ? t.pickup : t.delivery}
+              </legend>
+              <Select
+                id={`city-${s.key}`}
+                label={mt.city}
+                value={s.cityId}
+                required
+                onChange={(e) => patch(s.key, { cityId: e.target.value })}
               >
-                {t.up}
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={index === stops.length - 1}
-                onClick={() => move(index, 1)}
-              >
-                {t.down}
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() =>
-                  setStops((current) =>
-                    current
-                      .filter((p) => p.key !== s.key)
-                      .map((p) => ({ ...p, pickups: p.pickups.filter((key) => key !== s.key) })),
-                  )
+                <option value="">{mt.city}</option>
+                {data.cities.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {locale === 'ar' ? c.name_ar : c.name_en}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                id={`kind-${s.key}`}
+                label={t.stops}
+                value={s.kind}
+                onChange={(e) =>
+                  patch(s.key, {
+                    kind: e.target.value === 'DELIVERY' ? 'DELIVERY' : 'PICKUP',
+                    pickups: [],
+                  })
                 }
               >
-                {t.remove}
-              </Button>
-            </div>
-          </fieldset>
-        ))}
-        <div className="wizard-actions">
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={stops.length >= 40}
-            onClick={() =>
-              setStops((current) => [
-                ...current,
-                {
-                  key: crypto.randomUUID(),
-                  cityId: '',
-                  kind: current.length ? 'DELIVERY' : 'PICKUP',
-                  address: '',
-                  notes: '',
-                  pickups: [],
-                },
-              ])
-            }
-          >
-            {t.addStop}
-          </Button>
-          <Button disabled={command.busy}>{t.savePlan}</Button>
-        </div>
+                <option value="PICKUP">{t.pickup}</option>
+                <option value="DELIVERY">{t.delivery}</option>
+              </Select>
+              <Input
+                id={`address-${s.key}`}
+                label={t.address}
+                value={s.address}
+                maxLength={500}
+                required
+                onChange={(e) => patch(s.key, { address: e.target.value })}
+              />
+              <Input
+                id={`notes-${s.key}`}
+                label={t.notes}
+                value={s.notes}
+                maxLength={1000}
+                onChange={(e) => patch(s.key, { notes: e.target.value })}
+              />
+              {s.kind === 'DELIVERY' && (
+                <fieldset>
+                  <legend>{t.dependencies}</legend>
+                  {stops
+                    .filter((p) => p.kind === 'PICKUP')
+                    .map((p) => (
+                      <label className="operations-check" key={p.key}>
+                        <input
+                          type="checkbox"
+                          checked={s.pickups.includes(p.key)}
+                          onChange={(e) =>
+                            patch(s.key, {
+                              pickups: e.target.checked
+                                ? [...s.pickups, p.key]
+                                : s.pickups.filter((key) => key !== p.key),
+                            })
+                          }
+                        />
+                        {stops.indexOf(p) + 1}. {p.address || t.pickup}
+                      </label>
+                    ))}
+                </fieldset>
+              )}
+              <div className="wizard-actions">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={index === 0}
+                  onClick={() => move(index, -1)}
+                >
+                  {t.up}
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={index === stops.length - 1}
+                  onClick={() => move(index, 1)}
+                >
+                  {t.down}
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() =>
+                    setStops((current) =>
+                      current
+                        .filter((p) => p.key !== s.key)
+                        .map((p) => ({ ...p, pickups: p.pickups.filter((key) => key !== s.key) })),
+                    )
+                  }
+                >
+                  {t.remove}
+                </Button>
+              </div>
+            </fieldset>
+          ))}
+          <div className="wizard-actions">
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={stops.length >= 40}
+              onClick={() =>
+                setStops((current) => [
+                  ...current,
+                  {
+                    key: crypto.randomUUID(),
+                    cityId: '',
+                    kind: current.length ? 'DELIVERY' : 'PICKUP',
+                    address: '',
+                    notes: '',
+                    pickups: [],
+                  },
+                ])
+              }
+            >
+              {t.addStop}
+            </Button>
+            <Button disabled={command.busy}>{t.savePlan}</Button>
+          </div>
+        </fieldset>
         {command.feedback}
       </form>
     </section>

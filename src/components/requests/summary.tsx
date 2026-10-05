@@ -8,12 +8,14 @@ export function RequestSummary({
   services,
   options,
   attachments,
+  guest = false,
 }: {
   locale: Locale;
   payload: RequestDraft;
   services: RequestDetails['services'];
   options: RequestDetails['options'];
   attachments: RequestDetails['attachments'];
+  guest?: boolean;
 }) {
   const t = customerDictionary(locale);
   const service = services.find((s) => s.id === payload.service_id);
@@ -105,7 +107,7 @@ export function RequestSummary({
             <li key={file.id}>
               {file.upload_state === 'ready' ? (
                 <a
-                  href={`/api/customer/files/${file.id}`}
+                  href={`/api/${guest ? 'guest' : 'customer'}/files/${file.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

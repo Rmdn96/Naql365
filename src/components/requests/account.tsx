@@ -11,7 +11,13 @@ import { Card, Button, Alert } from '@/components/ui/primitives';
 import { StartRequest } from './wizard';
 import { quotesDictionary } from '@/i18n/quotes';
 import { availableMarkets } from '@/infrastructure/markets/service';
-export async function CustomerAccount({ locale }: { locale: Locale }) {
+export async function CustomerAccount({
+  locale,
+  saved = false,
+}: {
+  locale: Locale;
+  saved?: boolean;
+}) {
   if (!getPublicEnv()) return <ProtectedShell locale={locale} portal="account" />;
   const t = customerDictionary(locale),
     qt = quotesDictionary(locale),
@@ -35,6 +41,7 @@ export async function CustomerAccount({ locale }: { locale: Locale }) {
           </Alert>
         ) : (
           <>
+            {saved && permitted && <Alert tone="success">{t.profileSaved}</Alert>}
             {permitted && (
               <nav className="customer-links" aria-label={t.account}>
                 <Link href={`/${locale}/account/requests`}>{t.myRequests}</Link>

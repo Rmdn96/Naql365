@@ -52,8 +52,30 @@ try {
  insert into public.customers(organization_id,profile_id) values('${org}','${users[1]}'),('${otherOrg}','${users[2]}');
  insert into public.requests(id,organization_id,customer_id,market_id) select case when c.profile_id='${users[1]}' then '${peerRequest}'::uuid else '${otherRequest}'::uuid end,c.organization_id,c.id,m.id from public.customers c join public.markets m on m.organization_id=c.organization_id and m.country_code='SA' where c.profile_id in ('${users[1]}','${users[2]}');commit;`,
   );
+  const onboarding = {};
+  for (const device of ['desktop', 'mobile']) {
+    const fixtureEmail = 'naql365-onboarding-' + randomUUID() + '@example.test';
+    const fixturePassword = randomBytes(32).toString('base64url');
+    const activation = await admin.auth.admin.generateLink({
+      type: 'signup',
+      email: fixtureEmail,
+      password: fixturePassword,
+      options: {
+        redirectTo: origin + '/auth/callback?locale=' + (device === 'desktop' ? 'ar' : 'en'),
+      },
+    });
+    if (activation.error || !activation.data.user) throw new Error('Onboarding fixture failed');
+    users.push(activation.data.user.id);
+    onboarding[device] = {
+      email: fixtureEmail,
+      password: fixturePassword,
+      id: activation.data.user.id,
+      activation: activation.data.properties.action_link,
+    };
+  }
   const env = {
     ...process.env,
+    STAGING_ONBOARDING_FIXTURES: JSON.stringify(onboarding),
     STAGING_TEST_USER_EMAIL: email,
     STAGING_TEST_USER_PASSWORD: password,
     STAGING_TEST_PROFILE_ID: users[0],

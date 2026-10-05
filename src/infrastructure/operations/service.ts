@@ -10,6 +10,7 @@ import {
 import { portalAccess } from '@/infrastructure/identity/access';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { customerClient } from '@/infrastructure/requests/service';
+import { guestSessionClient } from '@/infrastructure/guest/session';
 import { marketSchema } from '@/domain/markets/model';
 import { normalizeSignature } from './signature';
 
@@ -318,9 +319,9 @@ export async function privatePodUrl(tripId: string) {
   if (signed.error) throw new AppError('forbidden', 'Signature unavailable');
   return { url: signed.data.signedUrl };
 }
-export async function customerProgress(orderId: string) {
+export async function customerProgress(orderId: string, guest = false) {
   z.uuid().parse(orderId);
-  const { client } = await customerClient();
+  const client = guest ? await guestSessionClient() : (await customerClient()).client;
   const { data, error } = await client.rpc('customer_order_progress', { p_order_id: orderId });
   if (error) dbError(error.code);
   return progressSchema.parse(data);

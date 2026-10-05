@@ -30,7 +30,8 @@ insert into public.user_roles(organization_id,profile_id,role_id)
  select m.organization_id,m.profile_id,r.id from public.organization_memberships m join public.roles r on r.code=case
   when m.profile_id='11000000-0000-4000-8000-000000000001' then 'SALES'
   when m.profile_id='11000000-0000-4000-8000-000000000005' then 'SALES'
-  when m.member_type='customer' then 'CUSTOMER' else 'OPERATIONS' end;
+  when m.member_type='customer' then 'CUSTOMER' else 'OPERATIONS' end
+ where m.organization_id in ('21000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000002');
 insert into public.customers(id,organization_id,profile_id) values
  ('31000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000001','11000000-0000-4000-8000-000000000002'),
  ('31000000-0000-4000-8000-000000000002','21000000-0000-4000-8000-000000000001','11000000-0000-4000-8000-000000000003');

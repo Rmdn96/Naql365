@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Alexandria, Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { isLocale, direction, locales } from '@/i18n/config';
 import { dictionary } from '@/i18n/dictionaries';
@@ -7,6 +8,8 @@ import { appUrl } from '@/infrastructure/config/server-env';
 import { headers } from 'next/headers';
 import { preventIndexing } from '@/infrastructure/config/deployment-env';
 import '../globals.css';
+const arabic = Alexandria({ subsets: ['arabic'], display: 'swap', variable: '--font-arabic' });
+const english = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-english' });
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -37,7 +40,11 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   return (
-    <html lang={locale} dir={direction(locale)}>
+    <html
+      lang={locale}
+      dir={direction(locale)}
+      className={`${arabic.variable} ${english.variable}`}
+    >
       <body>
         <Header locale={locale} />
         <main id="main" tabIndex={-1}>

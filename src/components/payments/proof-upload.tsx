@@ -6,8 +6,18 @@ import type { Locale } from '@/i18n/config';
 import { paymentDictionary } from '@/i18n/payments';
 import { Alert, Button, Input } from '@/components/ui/primitives';
 import { useHydrated } from '@/components/ui/use-hydrated';
-export function ProofUpload({ data, locale }: { data: PaymentDetails; locale: Locale }) {
+import { recordMvpEvent } from '@/components/public/analytics';
+export function ProofUpload({
+  data,
+  locale,
+  guest = false,
+}: {
+  data: PaymentDetails;
+  locale: Locale;
+  guest?: boolean;
+}) {
   const hydrated = useHydrated();
+  const api = guest ? '/api/guest/payments/proof' : '/api/payments/proof';
   const t = paymentDictionary(locale),
     router = useRouter();
   const locked = useRef(false),
@@ -33,9 +43,10 @@ export function ProofUpload({ data, locale }: { data: PaymentDetails; locale: Lo
     form.set('revision', String(data.revision));
     for (const [key, value] of Object.entries(ids.current)) form.set(key, value);
     try {
-      const result = await fetch('/api/payments/proof', { method: 'POST', body: form });
+      const result = await fetch(api, { method: 'POST', body: form });
       if (!result.ok) throw new Error();
       ids.current = null;
+      recordMvpEvent('transfer_proof_submitted', data.country, 'checkout');
       setFile(null);
       router.refresh();
     } catch {
@@ -52,7 +63,7 @@ export function ProofUpload({ data, locale }: { data: PaymentDetails; locale: Lo
     setError(false);
     removeIds.current ??= { removeId: crypto.randomUUID(), finishId: crypto.randomUUID() };
     try {
-      const result = await fetch('/api/payments/proof', {
+      const result = await fetch(api, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

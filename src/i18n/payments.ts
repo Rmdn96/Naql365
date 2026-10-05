@@ -1,5 +1,13 @@
 import type { Locale } from './config';
 const en = {
+  destinationType: 'Transfer destination',
+  bankDestination: 'Bank account',
+  vodafone: 'Vodafone Cash',
+  instapay: 'InstaPay',
+  egyptDestinationHelp:
+    'Vodafone Cash and InstaPay require an Egypt / EGP Market. Enter the destination in Account number and leave IBAN and BIC empty.',
+  copyIban: 'Copy IBAN',
+  copiedIban: 'IBAN copied',
   bankAdmin: 'Bank account configuration',
   addBank: 'Add bank account',
   saveBank: 'Save bank account',
@@ -24,7 +32,7 @@ const en = {
   executionAllowed: 'Execution is allowed.',
   finance: 'Finance',
   cash: 'Cash',
-  transfer: 'Bank transfer',
+  transfer: 'Transfer',
   choose: 'Choose payment method',
   refresh: 'Refresh',
   retry: 'Retry',
@@ -76,6 +84,14 @@ const en = {
   },
 };
 const ar: typeof en = {
+  destinationType: 'وجهة التحويل',
+  bankDestination: 'حساب بنكي',
+  vodafone: 'فودافون كاش',
+  instapay: 'إنستاباي',
+  egyptDestinationHelp:
+    'فودافون كاش وإنستاباي متاحان لمصر بالجنيه المصري فقط. أدخل الوجهة في رقم الحساب واترك IBAN وBIC فارغين.',
+  copyIban: 'نسخ الآيبان',
+  copiedIban: 'تم نسخ الآيبان',
   bankAdmin: 'إعداد الحسابات البنكية',
   addBank: 'إضافة حساب بنكي',
   saveBank: 'حفظ الحساب البنكي',
@@ -100,7 +116,7 @@ const ar: typeof en = {
   executionAllowed: 'التنفيذ مسموح.',
   finance: 'المالية',
   cash: 'نقدًا',
-  transfer: 'تحويل بنكي',
+  transfer: 'تحويل',
   choose: 'اختر طريقة الدفع',
   refresh: 'تحديث',
   retry: 'إعادة المحاولة',

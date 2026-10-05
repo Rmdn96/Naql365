@@ -1,4 +1,5 @@
 @import '../styles/tokens.css';
+@import '../styles/launch.css';
 * {
   box-sizing: border-box;
 }
@@ -9,9 +10,12 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--navy);
-  font-family: var(--font-body);
+  font-family: var(--font-english), var(--font-body);
   font-size: 1rem;
   line-height: 1.7;
+}
+html[lang='ar'] body {
+  font-family: var(--font-arabic), var(--font-body);
 }
 h1,
 h2,
@@ -599,6 +603,8 @@ dialog::backdrop {
   height: 1.5rem;
   margin-inline-end: 0.5rem;
   background: #e5ebf2;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #c3eaf1;
 }
 .wizard-progress button[aria-current] {
   border-color: #075cc9;

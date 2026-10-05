@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { isLocale } from '@/i18n/config';
+import { legalKind, legalContent } from '@/domain/legal/content';
 
 export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname === '/') return NextResponse.redirect(new URL('/ar', request.url));
@@ -25,11 +26,9 @@ export async function proxy(request: NextRequest) {
   headers.set('x-nonce', nonce);
   headers.set('Content-Security-Policy', csp);
   let response = NextResponse.next({ request: { headers } });
-  const protectedRoute =
-    /^\/(ar|en)\/(account|portal|driver|login|register|recover|password|request)(\/|$)/.test(
-      request.nextUrl.pathname,
-    );
-  if (env && protectedRoute) {
+  // Every localized page has session-aware navigation. Refresh once here,
+  // preserving the provider's cookie attributes on both request and response.
+  if (env) {
     const client = createServerClient(env.url, env.publishableKey, {
       cookieOptions: { secure: request.nextUrl.protocol === 'https:', sameSite: 'lax', path: '/' },
       cookies: {
@@ -46,6 +45,22 @@ export async function proxy(request: NextRequest) {
   }
   response.headers.set('Content-Security-Policy', csp);
   response.headers.set('Cache-Control', 'private, no-store');
+  const segments = request.nextUrl.pathname.split('/');
+  if (segments[2] === 'legal') {
+    const kind = legalKind.safeParse(segments[3]);
+    if (!kind.success || !legalContent(kind.data, locale)) {
+      // Reject before streaming starts: unpublished legal content must be a real 404.
+      response = new NextResponse(locale === 'ar' ? 'الصفحة غير موجودة' : 'Page not found', {
+        status: 404,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'private, no-store',
+          'X-Robots-Tag': 'noindex, nofollow',
+          'Content-Security-Policy': csp,
+        },
+      });
+    }
+  }
   return response;
 }
 export const config = { matcher: ['/', '/ar/:path*', '/en/:path*'] };

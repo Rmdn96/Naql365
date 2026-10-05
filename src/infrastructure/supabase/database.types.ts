@@ -214,6 +214,7 @@ export type Database = {
           created_at: string
           created_by: string
           currency: string
+          destination_type: string
           iban: string | null
           id: string
           instructions_ar: string
@@ -235,6 +236,7 @@ export type Database = {
           created_at?: string
           created_by: string
           currency: string
+          destination_type?: string
           iban?: string | null
           id?: string
           instructions_ar?: string
@@ -256,6 +258,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           currency?: string
+          destination_type?: string
           iban?: string | null
           id?: string
           instructions_ar?: string
@@ -292,6 +295,8 @@ export type Database = {
           created_at: string
           file_id: string
           finance_note: string | null
+          guest_customer_id: string | null
+          guest_grant_id: string | null
           id: string
           market_id: string
           organization_id: string
@@ -301,7 +306,7 @@ export type Database = {
           reviewed_by: string | null
           state: string
           submitted_at: string | null
-          submitted_by: string
+          submitted_by: string | null
         }
         Insert: {
           attempt_number: number
@@ -311,6 +316,8 @@ export type Database = {
           created_at?: string
           file_id: string
           finance_note?: string | null
+          guest_customer_id?: string | null
+          guest_grant_id?: string | null
           id?: string
           market_id: string
           organization_id: string
@@ -320,7 +327,7 @@ export type Database = {
           reviewed_by?: string | null
           state?: string
           submitted_at?: string | null
-          submitted_by: string
+          submitted_by?: string | null
         }
         Update: {
           attempt_number?: number
@@ -330,6 +337,8 @@ export type Database = {
           created_at?: string
           file_id?: string
           finance_note?: string | null
+          guest_customer_id?: string | null
+          guest_grant_id?: string | null
           id?: string
           market_id?: string
           organization_id?: string
@@ -339,7 +348,7 @@ export type Database = {
           reviewed_by?: string | null
           state?: string
           submitted_at?: string | null
-          submitted_by?: string
+          submitted_by?: string | null
         }
         Relationships: [
           {
@@ -376,6 +385,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfer_guest_customer_fk"
+            columns: ["organization_id", "guest_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
           },
         ]
       }
@@ -425,22 +441,25 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          identity_kind: string
           organization_id: string
-          profile_id: string
+          profile_id: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           id?: string
+          identity_kind?: string
           organization_id: string
-          profile_id: string
+          profile_id?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           id?: string
+          identity_kind?: string
           organization_id?: string
-          profile_id?: string
+          profile_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -606,11 +625,12 @@ export type Database = {
         Row: {
           bucket_id: string
           created_at: string
+          guest_customer_id: string | null
           id: string
           mime_type: string | null
           object_name: string
           organization_id: string
-          owner_profile_id: string
+          owner_profile_id: string | null
           purpose: string
           size_bytes: number | null
           updated_at: string
@@ -619,11 +639,12 @@ export type Database = {
         Insert: {
           bucket_id: string
           created_at?: string
+          guest_customer_id?: string | null
           id?: string
           mime_type?: string | null
           object_name?: string
           organization_id: string
-          owner_profile_id: string
+          owner_profile_id?: string | null
           purpose?: string
           size_bytes?: number | null
           updated_at?: string
@@ -632,17 +653,25 @@ export type Database = {
         Update: {
           bucket_id?: string
           created_at?: string
+          guest_customer_id?: string | null
           id?: string
           mime_type?: string | null
           object_name?: string
           organization_id?: string
-          owner_profile_id?: string
+          owner_profile_id?: string | null
           purpose?: string
           size_bytes?: number | null
           updated_at?: string
           upload_state?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "file_guest_customer_fk"
+            columns: ["organization_id", "guest_customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["organization_id", "id"]
+          },
           {
             foreignKeyName: "file_objects_organization_id_fkey"
             columns: ["organization_id"]
@@ -1644,6 +1673,7 @@ export type Database = {
       payments: {
         Row: {
           amount_minor: number | null
+          bank_account_id: string | null
           confirmed_by: string | null
           created_at: string
           currency: string | null
@@ -1660,6 +1690,7 @@ export type Database = {
         }
         Insert: {
           amount_minor?: number | null
+          bank_account_id?: string | null
           confirmed_by?: string | null
           created_at?: string
           currency?: string | null
@@ -1676,6 +1707,7 @@ export type Database = {
         }
         Update: {
           amount_minor?: number | null
+          bank_account_id?: string | null
           confirmed_by?: string | null
           created_at?: string
           currency?: string | null
@@ -1697,6 +1729,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "payment_destination_scope"
+            columns: ["organization_id", "market_id", "bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["organization_id", "market_id", "id"]
           },
           {
             foreignKeyName: "payment_market"
@@ -3760,6 +3799,48 @@ export type Database = {
         Args: { p_offset?: number; p_org: string; p_status?: string }
         Returns: Json
       }
+      guest_access_state: { Args: never; Returns: Json }
+      guest_catalogue_visible: { Args: { p_org: string }; Returns: boolean }
+      guest_customer_visible: {
+        Args: { p_customer: string; p_org: string }
+        Returns: boolean
+      }
+      guest_exchange_attempt: { Args: never; Returns: Json }
+      guest_preliminary_price: { Args: never; Returns: Json }
+      guest_quote_version_visible: {
+        Args: { p_org: string; p_version: string }
+        Returns: boolean
+      }
+      guest_quote_visible: {
+        Args: { p_org: string; p_quote: string }
+        Returns: boolean
+      }
+      guest_request_file_visible: {
+        Args: { p_file: string; p_org: string }
+        Returns: boolean
+      }
+      guest_request_storage: {
+        Args: {
+          p_bucket: string
+          p_metadata?: Json
+          p_operation: string
+          p_path: string
+        }
+        Returns: boolean
+      }
+      guest_request_visible: {
+        Args: { p_org: string; p_request: string }
+        Returns: boolean
+      }
+      guest_transfer_storage: {
+        Args: {
+          p_action: string
+          p_bucket: string
+          p_metadata?: Json
+          p_path: string
+        }
+        Returns: boolean
+      }
       has_permission: {
         Args: { organization_id: string; permission_code: string }
         Returns: boolean
@@ -3772,6 +3853,10 @@ export type Database = {
           p_mime?: string
           p_size?: number
         }
+        Returns: Json
+      }
+      manage_guest_link: {
+        Args: { p_action: string; p_request: string }
         Returns: Json
       }
       onboard_customer: {
@@ -3802,12 +3887,17 @@ export type Database = {
         Returns: Json
       }
       payment_details: { Args: { p_order: string }; Returns: Json }
+      public_market_catalogue: { Args: never; Returns: Json }
       publish_trip_location: {
         Args: { p_location: Json; p_sample: string; p_trip: string }
         Returns: Json
       }
       read_notification: {
         Args: { p_notification: string }
+        Returns: undefined
+      }
+      record_mvp_event: {
+        Args: { p_context: string; p_country: string; p_event: string }
         Returns: undefined
       }
       report_driver_issue: {
@@ -3854,6 +3944,10 @@ export type Database = {
         Returns: Json
       }
       send_quote: { Args: { p_quote_version_id: string }; Returns: Json }
+      start_guest_request: {
+        Args: { p_country: string; p_creation_token?: string }
+        Returns: Json
+      }
       tracking_feed: {
         Args: {
           p_driver?: string

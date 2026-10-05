@@ -39,21 +39,43 @@ it('rejects cross-origin registration before provider interaction', async () => 
   mocks.origin = 'https://evil.example';
   expect(await customerAuth('ar', 'register', { status: 'idle' }, new FormData())).toEqual({
     status: 'error',
+    code: 'server',
   });
   expect(mocks.signUp).not.toHaveBeenCalled();
 });
-it('uses indistinguishable signup result for existing or unavailable accounts', async () => {
-  mocks.signUp.mockResolvedValue({ error: { message: 'private provider detail' } });
+
+it.each([
+  ['invalid_credentials', 'credentials'],
+  ['email_not_confirmed', 'confirmation'],
+  ['unexpected_failure', 'server'],
+])('safely classifies password login failure %s', async (providerCode, visibleCode) => {
+  mocks.signInWithPassword.mockResolvedValue({ error: { code: providerCode } });
+  const form = new FormData();
+  form.set('email', 'fixture@example.test');
+  // Login accepts existing provider credentials independently of new-password policy.
+  form.set('password', 'short');
+  expect(await customerAuth('en', 'login', { status: 'idle' }, form)).toEqual({
+    status: 'error',
+    code: visibleCode,
+  });
+});
+it('keeps existing-account signup indistinguishable but exposes recoverable service failure', async () => {
+  mocks.signUp.mockResolvedValue({ error: { code: 'user_already_exists' } });
   const f = new FormData();
   f.set('email', 'fixture@example.test');
   f.set('password', 'Long-fixture-password');
   expect(await customerAuth('en', 'register', { status: 'idle' }, f)).toEqual({ status: 'sent' });
+  mocks.signUp.mockResolvedValue({ error: { code: 'unexpected_failure' } });
+  expect(await customerAuth('en', 'register', { status: 'idle' }, f)).toEqual({
+    status: 'error',
+    code: 'server',
+  });
 });
 it('requires provider-verified identity before onboarding', async () => {
   mocks.getUser.mockResolvedValue({ data: { user: null }, error: null });
   const f = new FormData();
   f.set('name', 'Fixture');
-  f.set('phone', '0501234567');
+  f.set('phone', '+966500000001');
   f.set('locale', 'ar');
   expect(await customerProfile('ar', { status: 'idle' }, f)).toEqual({ status: 'error' });
   expect(mocks.rpc).not.toHaveBeenCalled();
@@ -65,4 +87,17 @@ it('constructs a locale-safe recovery callback', async () => {
   expect(mocks.resetPasswordForEmail).toHaveBeenCalledWith('fixture@example.test', {
     redirectTo: 'https://staging.example/auth/callback?locale=en&next=/en/password',
   });
+});
+
+it('returns field-level validation without calling the database', async () => {
+  const f = new FormData();
+  f.set('name', 'Fixture');
+  f.set('phone', 'invalid');
+  f.set('locale', 'en');
+  expect(await customerProfile('en', { status: 'idle' }, f)).toEqual({
+    status: 'error',
+    code: 'validation',
+    fields: ['phone'],
+  });
+  expect(mocks.rpc).not.toHaveBeenCalled();
 });

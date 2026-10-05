@@ -52,6 +52,7 @@ export function BankForm({
           revision: existing?.revision ?? 0,
           details: {
             ...details,
+            destinationType: values.get('destinationType'),
             active: values.get('active') === 'on',
             primary: values.get('primary') === 'on',
           },
@@ -108,6 +109,18 @@ export function BankForm({
           </option>
         ))}
       </Select>
+      <Select
+        id={`destination-${existing?.id ?? 'new'}`}
+        name="destinationType"
+        label={t.destinationType}
+        defaultValue={existing?.details.destinationType ?? 'BANK'}
+        disabled={busy}
+      >
+        <option value="BANK">{t.bankDestination}</option>
+        <option value="VODAFONE_CASH">{t.vodafone}</option>
+        <option value="INSTAPAY">{t.instapay}</option>
+      </Select>
+      <p>{t.egyptDestinationHelp}</p>
       {fields.map((f) => (
         <Input
           key={f}

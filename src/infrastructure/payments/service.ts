@@ -2,6 +2,7 @@ import 'server-only';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { AppError } from '@/domain/shared/errors';
+import { guestSessionClient } from '@/infrastructure/guest/session';
 import {
   paymentCommand,
   paymentDetails,
@@ -19,6 +20,7 @@ async function client(writable = false) {
   return c;
 }
 export function paymentFailure(code: string): never {
+  if (code === 'PT429') throw new AppError('rate_limited', 'Please try again later');
   if (code === '42501') throw new AppError('forbidden', 'Payment unavailable');
   if (['55000', '40001', '23505'].includes(code))
     throw new AppError('conflict', 'Refresh payment state');
@@ -26,15 +28,15 @@ export function paymentFailure(code: string): never {
     throw new AppError('validation', 'Invalid payment input');
   throw new AppError('internal', 'Payment unavailable');
 }
-export async function getPayment(orderId: string) {
-  const c = await client();
+export async function getPayment(orderId: string, guest = false) {
+  const c = guest ? await guestSessionClient() : await client();
   const result = await c.rpc('payment_details', { p_order: z.uuid().parse(orderId) });
   if (result.error) paymentFailure(result.error.code);
   return paymentDetails.parse(result.data);
 }
-export async function executePayment(input: unknown) {
+export async function executePayment(input: unknown, guest = false) {
   const command = paymentCommand.parse(input),
-    c = await client(true);
+    c = guest ? await guestSessionClient() : await client(true);
   const result = await c.rpc('payment_command', {
     p_order: command.orderId,
     p_action: command.action,
@@ -68,8 +70,8 @@ export async function getPaymentClearance(tripId: string) {
   if (result.error) paymentFailure(result.error.code);
   return clearance.parse(result.data);
 }
-export async function signTransferProof(attemptId: string) {
-  const c = await client();
+export async function signTransferProof(attemptId: string, guest = false) {
+  const c = guest ? await guestSessionClient() : await client();
   const result = await c.rpc('transfer_proof_path', { p_attempt: z.uuid().parse(attemptId) });
   if (result.error) paymentFailure(result.error.code);
   const file = z

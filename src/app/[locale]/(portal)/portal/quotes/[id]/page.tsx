@@ -7,6 +7,8 @@ import { AppError } from '@/domain/shared/errors';
 import { RequestSummary } from '@/components/requests/summary';
 import { SalesPricing } from '@/components/pricing/sales-pricing';
 import type { RequestDraft } from '@/domain/requests/intake';
+import { manageGuestLink } from '@/infrastructure/guest/staff';
+import { StaffGuestLink } from '@/components/guest/staff-link';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({
@@ -27,6 +29,13 @@ export default async function Page({
     throw error;
   }
   const latest = details.evaluations[0];
+  let guestLink = null;
+  try {
+    guestLink = await manageGuestLink({ requestId: id, action: 'inspect' });
+  } catch (error) {
+    // Independent permission: existing custom Sales roles retain their quote view.
+    if (!(error instanceof AppError) || error.code !== 'forbidden') throw error;
+  }
   const versions = details.request.quotes.flatMap((q) => q.quote_versions);
   const draft = versions.find((v) => v.status === 'DRAFT');
   const locations = details.request.request_locations;
@@ -130,6 +139,7 @@ export default async function Page({
         evaluation={latest ?? undefined}
         draft={draft ?? undefined}
       />
+      {guestLink?.guest && <StaffGuestLink locale={locale} requestId={id} />}
     </div>
   );
 }

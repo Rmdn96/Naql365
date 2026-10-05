@@ -34,6 +34,38 @@ export const admin = createClient(
 );
 export async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar') {
   await page.goto(`/${locale}/login`, { waitUntil: 'domcontentloaded' });
+  // A live session is correctly redirected away from /login. Switching test
+  // identities must exercise explicit logout, not depend on the old login bug.
+  const emailField = page.locator('#email');
+  const signOut = page.getByRole('button', {
+    name: customerDictionary(locale).logout,
+    exact: true,
+  });
+  // Next can stream the authenticated redirect after DOMContentLoaded.
+  try {
+    await expect(emailField.or(signOut)).toBeVisible();
+  } catch (error) {
+    const path = new URL(page.url()).pathname;
+    test.info().annotations.push({
+      type: 'safe-security-probe',
+      description: JSON.stringify({
+        loginLanding: /^\/(ar|en)\/(login|account|portal|auth-complete)$/.test(path)
+          ? path
+          : 'other',
+        emailVisible: await emailField.isVisible(),
+        logoutVisible: await signOut.isVisible(),
+        alertPresent: (await page.getByRole('alert').count()) > 0,
+      }),
+    });
+    throw error;
+  }
+  if (await signOut.isVisible()) {
+    await page
+      .getByRole('button', { name: customerDictionary(locale).logout, exact: true })
+      .click();
+    await expect(page).toHaveURL(new RegExp(`/${locale}/(?:driver/)?login$`));
+    await page.goto(`/${locale}/login`, { waitUntil: 'domcontentloaded' });
+  }
   await page.locator('#email').fill(identities[role]!.email);
   await page.locator('#password').fill(identities[role]!.password);
   await page.getByRole('button', { name: customerDictionary(locale).login, exact: true }).click();
@@ -50,6 +82,9 @@ export async function login(page: Page, role: string, locale: 'ar' | 'en' = 'ar'
 export async function logout(page: Page, locale: 'ar' | 'en' = 'ar') {
   await page.goto(`/${locale}/account`, { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: customerDictionary(locale).logout, exact: true }).click();
+  // Do not cancel the logout Server Action by starting the next login navigation.
+  await expect(page).toHaveURL(new RegExp(`/${locale}/login$`));
+  await expect(page.locator('#email')).toBeVisible();
 }
 export async function axe(page: Page) {
   const beforeLayout = await page.evaluate(() => ({
@@ -197,6 +232,12 @@ export async function acceptedOrder(
   await page.locator('#name').fill('Phase 4 controlled customer');
   await page.locator('#phone').fill(country === 'SA' ? '+966500000001' : '+201000000001');
   await page.getByRole('button', { name: ct.saveProfile, exact: true }).click();
+  // Profile save navigates/re-renders the account. Wait for its authoritative
+  // success state before testing keyboard focus on the replacement form.
+  await expect(page.getByRole('status')).toContainText(ct.profileSaved);
+  // SSR intentionally disables this control until its client handlers hydrate.
+  // locator.focus() does not wait for enabled actionability as click() does.
+  await expect(page.locator('#request-market')).toBeEnabled();
   await page.locator('#request-market').focus();
   await expect(page.locator('#request-market')).toBeFocused();
   await page.locator('#request-market').press('Tab');

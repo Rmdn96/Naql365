@@ -1,15 +1,9 @@
-import { InAppNotifications } from '@/components/tracking/notifications';
-import Link from 'next/link';
-import { getPayment } from '@/infrastructure/payments/service';
-import { formatMoney } from '@/domain/markets/model';
-import { paymentDictionary } from '@/i18n/payments';
-import { TrackingView } from '@/components/tracking/view';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
-import { operationsDictionary, operationalStatus } from '@/i18n/operations';
 import { customerProgress } from '@/infrastructure/operations/service';
+import { getPayment } from '@/infrastructure/payments/service';
 import { AppError } from '@/domain/shared/errors';
-import { Badge, EmptyState } from '@/components/ui/primitives';
+import { OrderProgress } from '@/components/orders/progress';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({
@@ -19,76 +13,13 @@ export default async function Page({
 }) {
   const { locale, id } = await params;
   if (!isLocale(locale)) notFound();
-  const t = operationsDictionary(locale);
-  let data;
-  let payment;
+  let data, payment;
   try {
-    data = await customerProgress(id);
-    payment = await getPayment(id);
+    [data, payment] = await Promise.all([customerProgress(id, false), getPayment(id, false)]);
   } catch (error) {
     if (error instanceof AppError && error.code === 'unauthenticated') redirect(`/${locale}/login`);
     if (error instanceof AppError && ['forbidden', 'not_found'].includes(error.code)) notFound();
     throw error;
   }
-  const pt = paymentDictionary(locale);
-  return (
-    <div className="container page">
-      <h1>{t.tracking}</h1>
-      <p>
-        {locale === 'ar' ? data.market.nameAr : data.market.nameEn} ·{' '}
-        <bdi>{data.market.currency}</bdi>
-      </p>
-      <p>
-        <bdi>{data.reference}</bdi>
-      </p>
-      <Badge>{operationalStatus(data.status, locale)}</Badge>
-      <p>{t.trackingHelp}</p>
-      <section aria-labelledby="payment-summary-title" className="card">
-        <h2 id="payment-summary-title">{pt.title}</h2>
-        <dl>
-          <dt>{pt.method}</dt>
-          <dd>
-            {payment.method === 'CASH'
-              ? pt.cash
-              : payment.method === 'BANK_TRANSFER'
-                ? pt.transfer
-                : pt.states.PENDING}
-          </dd>
-          <dt>{pt.status}</dt>
-          <dd>{pt.states[payment.status]}</dd>
-          <dt>{pt.total}</dt>
-          <dd>{formatMoney(payment.totalMinor, payment.currency, locale)}</dd>
-          <dt>{pt.currency}</dt>
-          <dd>
-            <bdi>{payment.currency}</bdi>
-          </dd>
-        </dl>
-      </section>
-      <Link className="button button--primary" href={`/${locale}/account/orders/${id}/payment`}>
-        {paymentDictionary(locale).title}
-      </Link>
-      <TrackingView locale={locale} orderId={id} />
-      <InAppNotifications locale={locale} />
-      {data.trips.length ? (
-        <ul className="request-list">
-          {data.trips.map((trip, index) => (
-            <li key={trip.reference ?? index}>
-              <div>
-                <h2>
-                  <bdi>{trip.reference}</bdi>
-                </h2>
-                <Badge>{operationalStatus(trip.status, locale)}</Badge>
-                <p>
-                  {t.completedStops}: {trip.completedStops} / {trip.totalStops}
-                </p>
-                <p>{trip.podCaptured ? t.podCaptured : t.pendingPod}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <EmptyState title={t.trips}>{t.empty}</EmptyState>
-      )}
-    </div>
-  );
+  return <OrderProgress data={data} payment={payment} locale={locale} guest={false} />;
 }

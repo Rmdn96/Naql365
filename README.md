@@ -1,6 +1,6 @@
 # Naql365 · نقل 365
 
-Transportation Operating Platform. **Phase 5: foreground live tracking and in-app notifications for Saudi Arabia and Egypt.** Staging acceptance and review status are recorded in the canonical Phase 5 report; this is not a Production release.
+Transportation Operating Platform. **Phase 7: secure guest ordering and the MVP public/customer experience for Saudi Arabia and Egypt.** The canonical [Phase 7 report](docs/reports/Naql365-Phase-7-Report.md) records current acceptance and review status. No Production release is authorized.
 
 Independent implementation for Naql365. No source, branding, credentials or data from another product is used.
 
@@ -51,6 +51,10 @@ docs/                       Architecture, operations and decision records
 
 ## Documentation
 
+- [Phase 7 gap analysis](docs/phase-7-mvp-launch-gap-analysis.md)
+- [Guest Staging setup and acceptance](docs/staging.md#phase-7-guest-setup-and-acceptance)
+- [Production launch runbook and owner release gates](docs/production-launch-runbook.md)
+
 - [Repository audit](docs/repository-audit.md)
 - [Architecture and decisions](docs/architecture.md)
 - [Database and migrations](docs/database.md)
@@ -75,6 +79,8 @@ docs/                       Architecture, operations and decision records
 - [Native location publication contract](docs/native-driver-location-contract.md)
 - [Phase 5 acceptance report](docs/reports/Naql365-Phase-5-Report.md)
 
-Workflow: `feature/* → develop → main`. Phase 5 uses `feature/phase-5-live-tracking-eta-notifications` from protected develop `b5a6406b69a62bdc9c4d383433efea5b9da86b44` (accepted Phase 4). Separate owner review and protected approval are required before merging. No Production deployment or Phase 6 work is authorized.
+- [Phase 6 Finance acceptance report](docs/reports/Naql365-Phase-6-Report.md)
+
+Workflow: `feature/* → develop → main`. Phase 7 uses `feature/phase-7-mvp-launch-guest-brand` from protected develop `24f1a4c6a3b8027a6ce89aaf72c8c3bb5fd6fbd9` (accepted Phase 6). Separate owner review and protected approval are required before merging. Production release needs explicit authorization; Phase 8 has not started.
 
 Browser GPS is foreground-only; reliable background/screen-locked tracking requires a future native client. ETA explicitly remains unavailable because no external routing provider is configured. Maps load OpenStreetMap tiles only after disclosure and retain visible attribution.

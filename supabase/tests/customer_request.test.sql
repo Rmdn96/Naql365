@@ -38,7 +38,7 @@ grant all on intake_state to authenticated;
 set local role anon;
 select public.intake_reject($q$select public.onboard_customer('Fixture','+966500000001','ar')$q$,'42501');
 select public.intake_reject($q$select public.request_command('create',null,0,gen_random_uuid(),jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001SA')::uuid))$q$,'42501');
-select public.intake_reject('select * from public.requests','42501');
+select public.intake_assert((select count(*)=0 from public.requests),'anonymous without grant reads no Requests');
 reset role;
 select set_config('request.jwt.claim.sub','b0000000-0000-4000-8000-000000000004',true);
 set local role authenticated;

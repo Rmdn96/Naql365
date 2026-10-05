@@ -5,6 +5,15 @@ import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { normalizeSignature } from '@/infrastructure/operations/signature';
 import { paymentResult } from '@/domain/payments/model';
 import { paymentFailure } from './service';
+import { guestSessionClient } from '@/infrastructure/guest/session';
+
+async function proofClient(guest: boolean) {
+  if (guest) return guestSessionClient();
+  const c = await createSupabaseServerClient(true);
+  const user = await c.auth.getUser();
+  if (user.error || !user.data.user) throw new AppError('unauthenticated', 'Sign in required');
+  return c;
+}
 
 const uploadInput = z.strictObject({
   orderId: z.uuid(),
@@ -13,16 +22,14 @@ const uploadInput = z.strictObject({
   submitId: z.uuid(),
   revision: z.coerce.number().int().nonnegative(),
 });
-export async function uploadTransferProof(form: FormData) {
+export async function uploadTransferProof(form: FormData, guest = false) {
   const p = uploadInput.parse(
     Object.fromEntries([...form.entries()].filter(([key]) => key !== 'file')),
   );
   const file = form.get('file');
   if (!(file instanceof File) || file.size < 1 || file.size > 2097152)
     throw new AppError('validation', 'Invalid proof size');
-  const c = await createSupabaseServerClient(true),
-    user = await c.auth.getUser();
-  if (user.error || !user.data.user) throw new AppError('unauthenticated', 'Sign in required');
+  const c = await proofClient(guest);
   let bytes = new Uint8Array(await file.arrayBuffer()),
     mime = file.type;
   if (mime === 'application/pdf') {
@@ -63,7 +70,7 @@ export async function uploadTransferProof(form: FormData) {
   return paymentResult.parse(submitted.data);
 }
 
-export async function removeIncompleteProof(input: unknown) {
+export async function removeIncompleteProof(input: unknown, guest = false) {
   const p = z
     .strictObject({
       orderId: z.uuid(),
@@ -73,9 +80,7 @@ export async function removeIncompleteProof(input: unknown) {
       finishId: z.uuid(),
     })
     .parse(input);
-  const c = await createSupabaseServerClient(true),
-    user = await c.auth.getUser();
-  if (user.error || !user.data.user) throw new AppError('unauthenticated', 'Sign in required');
+  const c = await proofClient(guest);
   const result = await c.rpc('payment_command', {
     p_order: p.orderId,
     p_action: 'remove',

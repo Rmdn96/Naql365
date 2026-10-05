@@ -1,8 +1,9 @@
 'use client';
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
+import { authErrorMessage } from '@/i18n/auth-errors';
 import { customerAuth, customerProfile, type AuthState } from '@/app/auth/customer-actions';
 import { Input, Button, Alert, Select } from '@/components/ui/primitives';
 const initial: AuthState = { status: 'idle' };
@@ -38,14 +39,16 @@ export function CustomerAuthForm({
               name="password"
               type="password"
               required
-              minLength={12}
+              minLength={mode === 'login' ? 1 : 12}
               maxLength={128}
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
             />
-            <small>{t.passwordHint}</small>
+            {mode !== 'login' && <small>{t.passwordHint}</small>}
           </>
         )}
-        {state.status === 'error' && <Alert tone="error">{t.authError}</Alert>}
+        {state.status === 'error' && (
+          <Alert tone="error">{authErrorMessage(locale, state.code)}</Alert>
+        )}
         {state.status === 'sent' && <Alert tone="success">{t.sent}</Alert>}
         <Button disabled={pending}>
           {pending
@@ -76,13 +79,18 @@ export function CustomerProfileForm({
 }) {
   const t = customerDictionary(locale);
   const [state, action, pending] = useActionState(customerProfile.bind(null, locale), initial);
+  const [name, setName] = useState(profile.display_name ?? '');
+  const [phone, setPhone] = useState(profile.phone ?? '');
+  const [preferredLocale, setPreferredLocale] = useState(profile.locale);
   return (
     <form action={action} className="stack">
       <Input
         id="name"
         name="name"
         label={t.name}
-        defaultValue={profile.display_name ?? ''}
+        error={state.fields?.includes('name') ? t.profileNameError : ''}
+        value={name}
+        onChange={(event) => setName(event.target.value)}
         required
         maxLength={200}
         autoComplete="name"
@@ -91,7 +99,9 @@ export function CustomerProfileForm({
         id="phone"
         name="phone"
         label={t.phone}
-        defaultValue={profile.phone ?? ''}
+        error={state.fields?.includes('phone') ? t.phoneHint : ''}
+        value={phone}
+        onChange={(event) => setPhone(event.target.value)}
         required
         maxLength={24}
         autoComplete="tel"
@@ -99,11 +109,21 @@ export function CustomerProfileForm({
         dir="ltr"
       />
       <small>{t.phoneHint}</small>
-      <Select id="locale" name="locale" label={t.locale} defaultValue={profile.locale}>
+      <Select
+        id="locale"
+        name="locale"
+        label={t.locale}
+        value={preferredLocale}
+        onChange={(event) => setPreferredLocale(event.target.value)}
+      >
         <option value="ar">العربية</option>
         <option value="en">English</option>
       </Select>
-      {state.status === 'error' && <Alert tone="error">{t.authError}</Alert>}
+      {state.status === 'error' && (
+        <Alert tone="error">
+          {state.code === 'validation' ? t.profileValidation : t.profileSaveError}
+        </Alert>
+      )}
       <Button disabled={pending}>{pending ? t.saving : t.saveProfile}</Button>
     </form>
   );

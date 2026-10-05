@@ -1,0 +1,1795 @@
+{
+  "recordedAt": "2026-10-05T08:04:59.710Z",
+  "preview": {
+    "url": "https://naql365-staging-9s73vfobh-naql365.vercel.app",
+    "id": "dpl_7ANrTtkuqboUSJ3YNnxYWBuH2c7o",
+    "classification": "Preview",
+    "state": "READY",
+    "sha": "2d39d1d9031b2aeb9614310f54c1cc3fafcf052a",
+    "branch": "feature/phase-7-mvp-launch-guest-brand"
+  },
+  "fullHosted": {
+    "passed": 36,
+    "suites": [
+      "Operations and Markets regression",
+      "Phase 7 guest acceptance",
+      "Phase 6 Finance regression",
+      "Foundation authentication regression",
+      "Registered request intake regression",
+      "Pricing and Quote regression",
+      "Driver, live tracking and notifications regression"
+    ],
+    "cases": [
+      {
+        "test": "hosted-phase3 > assets.spec.ts > authenticated operations assets preserve server-only secret boundaries",
+        "durationMs": 18947
+      },
+      {
+        "test": "hosted-phase3 > journey.spec.ts > hosted SA intake to multi-trip dispatch, private POD and whole-Order completion",
+        "durationMs": 348970
+      },
+      {
+        "test": "hosted-phase3 > journey.spec.ts > hosted EG intake to multi-trip dispatch, private POD and whole-Order completion",
+        "durationMs": 345374
+      },
+      {
+        "test": "hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration",
+        "durationMs": 108647
+      },
+      {
+        "test": "hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration",
+        "durationMs": 174374
+      },
+      {
+        "test": "hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order",
+        "durationMs": 75657
+      },
+      {
+        "test": "hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact",
+        "durationMs": 9424
+      },
+      {
+        "test": "hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact",
+        "durationMs": 8675
+      },
+      {
+        "test": "hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed",
+        "durationMs": 5851
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > hosted bank configuration is privileged, localized and revisioned",
+        "durationMs": 31577
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > SA CASH: hosted checkout, Finance, execution clearance, isolation and receipt",
+        "durationMs": 202734
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > SA BANK_TRANSFER: hosted checkout, Finance, execution clearance, isolation and receipt",
+        "durationMs": 203803
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > EG CASH: hosted checkout, Finance, execution clearance, isolation and receipt",
+        "durationMs": 266725
+      },
+      {
+        "test": "hosted-phase6 > journey.spec.ts > EG BANK_TRANSFER: hosted checkout, Finance, execution clearance, isolation and receipt",
+        "durationMs": 238492
+      },
+      {
+        "test": "desktop > auth.spec.ts > real customer login, server session, staff denial and logout",
+        "durationMs": 17202
+      },
+      {
+        "test": "desktop > public.spec.ts > ar hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2663
+      },
+      {
+        "test": "desktop > public.spec.ts > en hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2251
+      },
+      {
+        "test": "desktop > public.spec.ts > hosted routing, crawler policy and callback rejection",
+        "durationMs": 6920
+      },
+      {
+        "test": "desktop > public.spec.ts > hosted browser assets contain no privileged test secrets or source maps",
+        "durationMs": 3937
+      },
+      {
+        "test": "desktop > security.spec.ts > hosted customer isolation, private file capability and suspended routing",
+        "durationMs": 88118
+      },
+      {
+        "test": "mobile > auth.spec.ts > real customer login, server session, staff denial and logout",
+        "durationMs": 15009
+      },
+      {
+        "test": "mobile > public.spec.ts > ar hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2473
+      },
+      {
+        "test": "mobile > public.spec.ts > en hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2652
+      },
+      {
+        "test": "mobile > public.spec.ts > hosted routing, crawler policy and callback rejection",
+        "durationMs": 6735
+      },
+      {
+        "test": "mobile > public.spec.ts > hosted browser assets contain no privileged test secrets or source maps",
+        "durationMs": 3781
+      },
+      {
+        "test": "mobile > security.spec.ts > hosted customer isolation, private file capability and suspended routing",
+        "durationMs": 89511
+      },
+      {
+        "test": "desktop > journey.spec.ts > customer persists a bilingual request through private image, review, submit and history",
+        "durationMs": 63405
+      },
+      {
+        "test": "desktop > journey.spec.ts > customer direct APIs reject IDOR, mass assignment, stale writes and suspended membership",
+        "durationMs": 18195
+      },
+      {
+        "test": "desktop > journey.spec.ts > draft cancellation removes private images and prevents further edits",
+        "durationMs": 20200
+      },
+      {
+        "test": "mobile > journey.spec.ts > customer persists a bilingual request through private image, review, submit and history",
+        "durationMs": 80429
+      },
+      {
+        "test": "mobile > journey.spec.ts > customer direct APIs reject IDOR, mass assignment, stale writes and suspended membership",
+        "durationMs": 24790
+      },
+      {
+        "test": "mobile > journey.spec.ts > draft cancellation removes private images and prevents further edits",
+        "durationMs": 22732
+      },
+      {
+        "test": "hosted-phase2 > journey.spec.ts > hosted commercial journey enforces pricing, lifecycle, isolation and accessibility",
+        "durationMs": 98671
+      },
+      {
+        "test": "hosted-phase5 > journey.spec.ts > hosted SA authenticated Driver execution, reassignment, issues, private POD and tracking",
+        "durationMs": 670261
+      },
+      {
+        "test": "hosted-phase5 > journey.spec.ts > hosted EG authenticated Driver execution, reassignment, issues, private POD and tracking",
+        "durationMs": 413854
+      },
+      {
+        "test": "hosted-phase5 > session.spec.ts > hosted Driver session expiry, route revocation and keyboard login in both locales",
+        "durationMs": 40443
+      }
+    ]
+  },
+  "supplementalHosted": {
+    "passed": 12,
+    "purpose": "Fresh bounded Auth/Storage runtime-log review after original run logs aged out",
+    "cases": [
+      {
+        "test": "desktop > auth.spec.ts > real customer login, server session, staff denial and logout",
+        "durationMs": 24733
+      },
+      {
+        "test": "desktop > public.spec.ts > ar hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2603
+      },
+      {
+        "test": "desktop > public.spec.ts > en hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2699
+      },
+      {
+        "test": "desktop > public.spec.ts > hosted routing, crawler policy and callback rejection",
+        "durationMs": 6204
+      },
+      {
+        "test": "desktop > public.spec.ts > hosted browser assets contain no privileged test secrets or source maps",
+        "durationMs": 3990
+      },
+      {
+        "test": "desktop > security.spec.ts > hosted customer isolation, private file capability and suspended routing",
+        "durationMs": 86316
+      },
+      {
+        "test": "mobile > auth.spec.ts > real customer login, server session, staff denial and logout",
+        "durationMs": 15001
+      },
+      {
+        "test": "mobile > public.spec.ts > ar hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2417
+      },
+      {
+        "test": "mobile > public.spec.ts > en hosted public metadata, accessibility and responsive layout",
+        "durationMs": 2782
+      },
+      {
+        "test": "mobile > public.spec.ts > hosted routing, crawler policy and callback rejection",
+        "durationMs": 5428
+      },
+      {
+        "test": "mobile > public.spec.ts > hosted browser assets contain no privileged test secrets or source maps",
+        "durationMs": 3089
+      },
+      {
+        "test": "mobile > security.spec.ts > hosted customer isolation, private file capability and suspended routing",
+        "durationMs": 84181
+      }
+    ]
+  },
+  "local": {
+    "unitIntegration": 176,
+    "testFiles": 40,
+    "e2e": 32,
+    "format": "PASS",
+    "secretScan": "PASS",
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "build": "PASS"
+  },
+  "database": {
+    "checkedAt": "2026-10-01T08:03:16.026Z",
+    "migrations": 44,
+    "sql": "PASS",
+    "rls": "PASS",
+    "officialPublicSchemaTypes": "PASS",
+    "positiveRevokedExpiredReplay": "PASS",
+    "probeCleanup": "PASS"
+  },
+  "browserSecurity": {
+    "deployment": "dpl_7ANrTtkuqboUSJ3YNnxYWBuH2c7o",
+    "checkedAt": "2026-10-01T14:22:40.589Z",
+    "pages": [
+      {
+        "path": "/ar",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      },
+      {
+        "path": "/en",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      },
+      {
+        "path": "/ar/guest",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      },
+      {
+        "path": "/en/login",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      },
+      {
+        "path": "/ar/driver/login",
+        "status": 200,
+        "securityHeadersPresent": true,
+        "nonceCsp": true,
+        "credentialPatternFound": false
+      }
+    ],
+    "assetCount": 16,
+    "assetBytes": 1029161,
+    "credentialPatternFound": false,
+    "publicSourceMaps": 0,
+    "unauthenticatedProtectionStatus": 302,
+    "method": "Public HTML and discovered same-origin JavaScript assets; credential-pattern scan, sibling source-map probes; no private responses persisted."
+  },
+  "runtimeLogReview": {
+    "deployment": "dpl_7ANrTtkuqboUSJ3YNnxYWBuH2c7o",
+    "checkedAt": "2026-10-03T07:38:15.072Z",
+    "evidence": [
+      {
+        "scope": "serverless",
+        "records": 50,
+        "http5xx": 0,
+        "paymentRequests": 0,
+        "errorRecords": 0,
+        "credentialPatternFound": false,
+        "authQueryValueObserved": false,
+        "markers": []
+      },
+      {
+        "scope": "errors",
+        "records": 0,
+        "http5xx": 0,
+        "paymentRequests": 0,
+        "errorRecords": 0,
+        "credentialPatternFound": false,
+        "authQueryValueObserved": false,
+        "markers": []
+      },
+      {
+        "scope": "5xx",
+        "records": 0,
+        "http5xx": 0,
+        "paymentRequests": 0,
+        "errorRecords": 0,
+        "credentialPatternFound": false,
+        "authQueryValueObserved": false,
+        "markers": []
+      }
+    ]
+  },
+  "cleanup": {
+    "project": "zuvyfeflkzlciuaauxba",
+    "checkedAt": "2026-10-03T07:38:11.875Z",
+    "counts": [
+      {
+        "count": 1,
+        "kind": "profiles"
+      },
+      {
+        "count": 1,
+        "kind": "organization_memberships"
+      },
+      {
+        "count": 1,
+        "kind": "user_roles"
+      },
+      {
+        "count": 2,
+        "kind": "customers"
+      },
+      {
+        "count": 2,
+        "kind": "request_locations"
+      },
+      {
+        "count": 0,
+        "kind": "request_items"
+      },
+      {
+        "count": 0,
+        "kind": "request_attachments"
+      },
+      {
+        "count": 0,
+        "kind": "request_additional_services"
+      },
+      {
+        "count": 0,
+        "kind": "quote_items"
+      },
+      {
+        "count": 0,
+        "kind": "quote_pricing_details"
+      },
+      {
+        "count": 0,
+        "kind": "pricing_evaluations"
+      },
+      {
+        "count": 0,
+        "kind": "pricing_evaluation_components"
+      },
+      {
+        "count": 0,
+        "kind": "distance_snapshots"
+      },
+      {
+        "count": 0,
+        "kind": "trip_stops"
+      },
+      {
+        "count": 0,
+        "kind": "trip_stop_dependencies"
+      },
+      {
+        "count": 0,
+        "kind": "trip_events"
+      },
+      {
+        "count": 2,
+        "kind": "requests"
+      },
+      {
+        "count": 0,
+        "kind": "quotes"
+      },
+      {
+        "count": 0,
+        "kind": "quote_versions"
+      },
+      {
+        "count": 0,
+        "kind": "orders"
+      },
+      {
+        "count": 0,
+        "kind": "jobs"
+      },
+      {
+        "count": 0,
+        "kind": "trips"
+      },
+      {
+        "count": 0,
+        "kind": "trip_pods"
+      },
+      {
+        "count": 0,
+        "kind": "assignments"
+      },
+      {
+        "count": 0,
+        "kind": "drivers"
+      },
+      {
+        "count": 0,
+        "kind": "vehicles"
+      },
+      {
+        "count": 0,
+        "kind": "file_objects"
+      },
+      {
+        "count": 0,
+        "kind": "issues"
+      },
+      {
+        "count": 0,
+        "kind": "issue_photos"
+      },
+      {
+        "count": 0,
+        "kind": "trip_event_locations"
+      },
+      {
+        "count": 0,
+        "kind": "trip_live_locations"
+      },
+      {
+        "count": 0,
+        "kind": "notifications"
+      },
+      {
+        "count": 0,
+        "kind": "payments"
+      },
+      {
+        "count": 0,
+        "kind": "payment_transactions"
+      },
+      {
+        "count": 0,
+        "kind": "invoices"
+      },
+      {
+        "count": 0,
+        "kind": "bank_transfer_attempts"
+      },
+      {
+        "count": 0,
+        "kind": "bank_accounts"
+      },
+      {
+        "count": 1,
+        "kind": "guest_access_grants"
+      },
+      {
+        "count": 0,
+        "kind": "tracking_sessions"
+      },
+      {
+        "count": 0,
+        "kind": "location_samples"
+      },
+      {
+        "count": 0,
+        "kind": "completed_trip_assignments"
+      },
+      {
+        "count": 0,
+        "kind": "driver_mutations"
+      },
+      {
+        "count": 0,
+        "kind": "payment_mutations"
+      },
+      {
+        "count": 3,
+        "kind": "auth_sessions"
+      },
+      {
+        "count": 1,
+        "kind": "auth_users"
+      },
+      {
+        "count": 0,
+        "kind": "storage_objects"
+      }
+    ],
+    "retainedMarkets": [
+      {
+        "active": true,
+        "cities": 2,
+        "country_code": "EG",
+        "currency": "EGP",
+        "timezone": "Africa/Cairo"
+      },
+      {
+        "active": true,
+        "cities": 2,
+        "country_code": "SA",
+        "currency": "SAR",
+        "timezone": "Asia/Riyadh"
+      }
+    ],
+    "ownedFixtureIdentities": 0,
+    "preservedSnapshotAt": "2026-09-30T14:17:46.146Z",
+    "unattributedRecordsPreserved": true,
+    "sessionCountExcluded": "Existing unrelated account may retain/refresh sessions",
+    "divergences": []
+  },
+  "automationCleanup": {
+    "revokedCount": 1,
+    "allRevoked": true,
+    "remainingAutomationCredentials": 0,
+    "revokedCredentialResponseStatus": 302,
+    "protection": {
+      "deploymentType": "all_except_custom_domains"
+    }
+  },
+  "gitProtection": {
+    "checkedAt": "2026-10-03T07:30:30.051Z",
+    "develop": "24f1a4c6a3b8027a6ce89aaf72c8c3bb5fd6fbd9",
+    "main": "184ac2374a7e9611b4b265efc7dac21b57b7a2b1",
+    "developProtected": true,
+    "mainProtected": true,
+    "protectionUnchanged": true,
+    "requiredApprovals": 1,
+    "staleApprovalsDismissed": true,
+    "requiredChecks": ["Lint, types, tests and production build", "Supabase migrations and RLS"],
+    "adminsEnforced": true,
+    "forcePushAllowed": false
+  },
+  "runtimeEquivalence": {
+    "previewSource": "2d39d1d9031b2aeb9614310f54c1cc3fafcf052a",
+    "applicationUnchanged": true,
+    "runtimeDependencyGraphUnchanged": true,
+    "runtimeDependencyGraphSha256": "466494f3bb90afda77336641db7a30d363ae6ad34209872444c0a59af70c2c29",
+    "patchedDevelopmentPackages": [
+      "brace-expansion 1.1.18 -> 1.1.21",
+      "brace-expansion 5.0.9 -> 5.0.12"
+    ]
+  },
+  "dependencyAudit": {
+    "checkedAt": "2026-10-03",
+    "productionFindings": 0,
+    "productionExitCode": 0,
+    "allDependenciesExitCode": 1,
+    "highFindings": 5,
+    "rootAdvisory": "GHSA-vfj7-8cjw-p6xm",
+    "scope": "development-only eslint-config-next -> @next/eslint-plugin-next -> fast-glob -> micromatch -> braces 3.0.3",
+    "patchedVersionAvailable": false,
+    "status": "OWNER-ACCEPTED SCOPED RISK; audit remains unsuppressed",
+    "ownerDisposition": {
+      "recordedAt": "2026-10-03T08:16:52.188Z",
+      "scope": "GHSA-vfj7-8cjw-p6xm development-only chain only",
+      "constraints": [
+        "No audit suppression",
+        "No Next.js downgrade",
+        "No unreviewed fork",
+        "Revisit immediately when a supported upstream patch becomes available"
+      ]
+    }
+  },
+  "applicationCI": {
+    "sha": "2d39d1d9031b2aeb9614310f54c1cc3fafcf052a",
+    "run": 36838210557,
+    "result": "PASS"
+  },
+  "checkpointCI": {
+    "sha": "bc8752bb61e9a124c335ec0f5d968a9c4115ad97",
+    "run": 36876207982,
+    "result": "PASS"
+  },
+  "onboardingCloseout": {
+    "status": "Onboarding PASS; administrative provisioning BLOCKED",
+    "reproduction": {
+      "before": [
+        {
+          "confirmed": false
+        }
+      ],
+      "activation": [
+        {
+          "confirmed": true
+        }
+      ],
+      "save": {
+        "status": 200,
+        "redirect": "/ar/account;push",
+        "alertTexts": [""],
+        "market": "",
+        "startDisabled": true
+      },
+      "database": [
+        {
+          "active_memberships": 1,
+          "customers": 1,
+          "name_persisted": true,
+          "phone_persisted": true
+        }
+      ],
+      "refreshName": true
+    },
+    "rootCause": "Successful profile mutation redirects to the same account page without success feedback. Independent request-country selection remains blank, disabling request creation with no guidance. Further hosted negative testing proved React form-action reset clears uncontrolled name/phone on validation return; required-field validation then blocks the next submit. Controlled fields preserve input for correction.",
+    "adminProvisioning": "BLOCKED: confirmed existing CUSTOMER has one Request; membership and immutable Customer identity constraints prevent in-place SUPER_ADMIN conversion. No deletion, trigger bypass, role mutation or Production action.",
+    "validationReproduction": {
+      "before": [
+        {
+          "confirmed": false
+        }
+      ],
+      "activation": [
+        {
+          "confirmed": true
+        }
+      ],
+      "afterValidation": {
+        "namePreserved": false,
+        "nameEmpty": true,
+        "phoneValueEmpty": true,
+        "invalidFields": 2
+      },
+      "save": {
+        "status": 200,
+        "redirect": "/ar/account?profile=saved;push",
+        "alertTexts": [
+          "تم حفظ الملف. لبدء طلب نقل، اختر الدولة ثم اضغط بدء طلب نقل.",
+          "حساب العميل"
+        ],
+        "market": "",
+        "startDisabled": true
+      },
+      "database": [
+        {
+          "active_memberships": 1,
+          "customers": 1,
+          "name_persisted": true,
+          "phone_persisted": true
+        }
+      ],
+      "refreshName": true
+    },
+    "checkedAt": "2026-10-03T09:31:01.428Z",
+    "preview": {
+      "url": "https://naql365-staging-4amvwuc0p-naql365.vercel.app",
+      "id": "dpl_yCmDZL8GV4KKgUwdfXRfL8g8JkG9",
+      "classification": "Preview",
+      "state": "READY",
+      "sha": "3a5227feaf6f034660ccfc6c9bf82657cb1a38c9",
+      "branch": "feature/phase-7-mvp-launch-guest-brand"
+    },
+    "fixCommits": ["dc6cd69", "3a5227feaf6f034660ccfc6c9bf82657cb1a38c9"],
+    "local": {
+      "unitIntegration": 177,
+      "e2e": 32,
+      "format": "PASS",
+      "lint": "PASS",
+      "typecheck": "PASS",
+      "build": "PASS",
+      "secrets": "PASS"
+    },
+    "hosted": {
+      "registeredAndActivation": [
+        {
+          "test": "desktop > journey.spec.ts > customer persists a bilingual request through private image, review, submit and history",
+          "durationMs": 67608
+        },
+        {
+          "test": "desktop > journey.spec.ts > customer direct APIs reject IDOR, mass assignment, stale writes and suspended membership",
+          "durationMs": 18338
+        },
+        {
+          "test": "desktop > journey.spec.ts > draft cancellation removes private images and prevents further edits",
+          "durationMs": 16650
+        },
+        {
+          "test": "desktop > onboarding.spec.ts > fresh activated customer gets profile feedback, persists after refresh and enters request flow",
+          "durationMs": 16483
+        },
+        {
+          "test": "mobile > journey.spec.ts > customer persists a bilingual request through private image, review, submit and history",
+          "durationMs": 53345
+        },
+        {
+          "test": "mobile > journey.spec.ts > customer direct APIs reject IDOR, mass assignment, stale writes and suspended membership",
+          "durationMs": 17539
+        },
+        {
+          "test": "mobile > journey.spec.ts > draft cancellation removes private images and prevents further edits",
+          "durationMs": 16646
+        },
+        {
+          "test": "mobile > onboarding.spec.ts > fresh activated customer gets profile feedback, persists after refresh and enters request flow",
+          "durationMs": 14764
+        }
+      ],
+      "guestAndFinance": [
+        {
+          "test": "hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration",
+          "durationMs": 115293
+        },
+        {
+          "test": "hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration",
+          "durationMs": 135300
+        },
+        {
+          "test": "hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order",
+          "durationMs": 43541
+        },
+        {
+          "test": "hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact",
+          "durationMs": 9967
+        },
+        {
+          "test": "hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact",
+          "durationMs": 11717
+        },
+        {
+          "test": "hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed",
+          "durationMs": 4958
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > hosted bank configuration is privileged, localized and revisioned",
+          "durationMs": 20952
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > SA CASH: hosted checkout, Finance, execution clearance, isolation and receipt",
+          "durationMs": 121239
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > SA BANK_TRANSFER: hosted checkout, Finance, execution clearance, isolation and receipt",
+          "durationMs": 154626
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > EG CASH: hosted checkout, Finance, execution clearance, isolation and receipt",
+          "durationMs": 134736
+        },
+        {
+          "test": "hosted-phase6 > journey.spec.ts > EG BANK_TRANSFER: hosted checkout, Finance, execution clearance, isolation and receipt",
+          "durationMs": 160662
+        }
+      ],
+      "totalPassed": 19,
+      "activationMethod": "Fresh unconfirmed synthetic signup via Supabase Admin generateLink; actual activation link opened in browser, confirmed status verified, password login; no real mailbox delivery claim.",
+      "initialGuestFailure": "Initial EG two-second signed URL read failed without recorded HTTP status; diagnostic rerun passed with HTTP 200 at 523/570ms and expiry denial. No security policy or TTL changed."
+    },
+    "database": {
+      "checkedAt": "2026-10-03T08:24:37.813Z",
+      "migrations": 44,
+      "sql": "PASS",
+      "rls": "PASS",
+      "officialPublicSchemaTypes": "PASS",
+      "positiveRevokedExpiredReplay": "PASS",
+      "probeCleanup": "PASS"
+    },
+    "security": {
+      "deployment": "dpl_yCmDZL8GV4KKgUwdfXRfL8g8JkG9",
+      "checkedAt": "2026-10-03T09:09:58.168Z",
+      "pages": [
+        {
+          "path": "/ar",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        },
+        {
+          "path": "/en",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        },
+        {
+          "path": "/ar/guest",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        },
+        {
+          "path": "/en/login",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        },
+        {
+          "path": "/ar/driver/login",
+          "status": 200,
+          "securityHeadersPresent": true,
+          "nonceCsp": true,
+          "credentialPatternFound": false
+        }
+      ],
+      "assetCount": 16,
+      "assetBytes": 1031297,
+      "credentialPatternFound": false,
+      "publicSourceMaps": 0,
+      "unauthenticatedProtectionStatus": 302,
+      "method": "Public HTML and discovered same-origin JavaScript assets; credential-pattern scan, sibling source-map probes; no private responses persisted."
+    },
+    "runtime": {
+      "deployment": "dpl_yCmDZL8GV4KKgUwdfXRfL8g8JkG9",
+      "checkedAt": "2026-10-03T09:29:04.049Z",
+      "evidence": [
+        {
+          "scope": "serverless",
+          "records": 50,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "errors",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "5xx",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        }
+      ]
+    },
+    "environments": {
+      "checkedAt": "2026-10-03T09:21:24.944Z",
+      "productionDeployments": 0,
+      "productionEnvCount": 0,
+      "protection": {
+        "deploymentType": "all_except_custom_domains"
+      },
+      "environmentNames": [
+        {
+          "name": "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+          "scopes": ["preview"]
+        },
+        {
+          "name": "NEXT_PUBLIC_SUPABASE_URL",
+          "scopes": ["preview"]
+        },
+        {
+          "name": "STAGING_AUTH_SMOKE_ENABLED",
+          "scopes": ["preview"]
+        },
+        {
+          "name": "APP_ENV",
+          "scopes": ["preview"]
+        }
+      ]
+    },
+    "cleanup": {
+      "project": "zuvyfeflkzlciuaauxba",
+      "checkedAt": "2026-10-03T09:28:38.332Z",
+      "counts": [
+        {
+          "count": 1,
+          "kind": "profiles"
+        },
+        {
+          "count": 1,
+          "kind": "organization_memberships"
+        },
+        {
+          "count": 1,
+          "kind": "user_roles"
+        },
+        {
+          "count": 2,
+          "kind": "customers"
+        },
+        {
+          "count": 2,
+          "kind": "request_locations"
+        },
+        {
+          "count": 0,
+          "kind": "request_items"
+        },
+        {
+          "count": 0,
+          "kind": "request_attachments"
+        },
+        {
+          "count": 0,
+          "kind": "request_additional_services"
+        },
+        {
+          "count": 0,
+          "kind": "quote_items"
+        },
+        {
+          "count": 0,
+          "kind": "quote_pricing_details"
+        },
+        {
+          "count": 0,
+          "kind": "pricing_evaluations"
+        },
+        {
+          "count": 0,
+          "kind": "pricing_evaluation_components"
+        },
+        {
+          "count": 0,
+          "kind": "distance_snapshots"
+        },
+        {
+          "count": 0,
+          "kind": "trip_stops"
+        },
+        {
+          "count": 0,
+          "kind": "trip_stop_dependencies"
+        },
+        {
+          "count": 0,
+          "kind": "trip_events"
+        },
+        {
+          "count": 3,
+          "kind": "requests"
+        },
+        {
+          "count": 0,
+          "kind": "quotes"
+        },
+        {
+          "count": 0,
+          "kind": "quote_versions"
+        },
+        {
+          "count": 0,
+          "kind": "orders"
+        },
+        {
+          "count": 0,
+          "kind": "jobs"
+        },
+        {
+          "count": 0,
+          "kind": "trips"
+        },
+        {
+          "count": 0,
+          "kind": "trip_pods"
+        },
+        {
+          "count": 0,
+          "kind": "assignments"
+        },
+        {
+          "count": 0,
+          "kind": "drivers"
+        },
+        {
+          "count": 0,
+          "kind": "vehicles"
+        },
+        {
+          "count": 0,
+          "kind": "file_objects"
+        },
+        {
+          "count": 0,
+          "kind": "issues"
+        },
+        {
+          "count": 0,
+          "kind": "issue_photos"
+        },
+        {
+          "count": 0,
+          "kind": "trip_event_locations"
+        },
+        {
+          "count": 0,
+          "kind": "trip_live_locations"
+        },
+        {
+          "count": 0,
+          "kind": "notifications"
+        },
+        {
+          "count": 0,
+          "kind": "payments"
+        },
+        {
+          "count": 0,
+          "kind": "payment_transactions"
+        },
+        {
+          "count": 0,
+          "kind": "invoices"
+        },
+        {
+          "count": 0,
+          "kind": "bank_transfer_attempts"
+        },
+        {
+          "count": 0,
+          "kind": "bank_accounts"
+        },
+        {
+          "count": 1,
+          "kind": "guest_access_grants"
+        },
+        {
+          "count": 0,
+          "kind": "tracking_sessions"
+        },
+        {
+          "count": 0,
+          "kind": "location_samples"
+        },
+        {
+          "count": 0,
+          "kind": "completed_trip_assignments"
+        },
+        {
+          "count": 0,
+          "kind": "driver_mutations"
+        },
+        {
+          "count": 0,
+          "kind": "payment_mutations"
+        },
+        {
+          "count": 6,
+          "kind": "auth_sessions"
+        },
+        {
+          "count": 1,
+          "kind": "auth_users"
+        },
+        {
+          "count": 0,
+          "kind": "storage_objects"
+        }
+      ],
+      "retainedMarkets": [
+        {
+          "active": true,
+          "cities": 2,
+          "country_code": "EG",
+          "currency": "EGP",
+          "timezone": "Africa/Cairo"
+        },
+        {
+          "active": true,
+          "cities": 2,
+          "country_code": "SA",
+          "currency": "SAR",
+          "timezone": "Asia/Riyadh"
+        }
+      ],
+      "ownedFixtureIdentities": 0,
+      "preservedSnapshotAt": "2026-09-30T14:17:46.146Z",
+      "unattributedRecordsPreserved": true,
+      "sessionCountExcluded": "Existing unrelated account may retain/refresh sessions",
+      "divergences": [
+        {
+          "kind": "requests",
+          "expected": 2,
+          "actual": 3
+        }
+      ]
+    },
+    "cleanupClassification": {
+      "checkedAt": "2026-10-03T09:29:26.023Z",
+      "requests": [
+        {
+          "created_at": "2026-09-30 13:22:04.403761+00",
+          "identity_kind": "GUEST",
+          "nominated_account": null,
+          "registered_owner": false,
+          "status": "CANCELLED",
+          "synthetic_owner": false
+        },
+        {
+          "created_at": "2026-09-30 13:29:01.611917+00",
+          "identity_kind": "ACCOUNT",
+          "nominated_account": true,
+          "registered_owner": true,
+          "status": "DRAFT",
+          "synthetic_owner": false
+        },
+        {
+          "created_at": "2026-10-03 09:06:24.978392+00",
+          "identity_kind": "ACCOUNT",
+          "nominated_account": true,
+          "registered_owner": true,
+          "status": "DRAFT",
+          "synthetic_owner": false
+        }
+      ],
+      "onboardingFixtureIdentities": 0,
+      "action": "Read-only; preserve unattributed owner data"
+    },
+    "bypassCleanup": {
+      "revokedCount": 1,
+      "allRevoked": true,
+      "remainingAutomationCredentials": 0,
+      "revokedCredentialResponseStatus": 302,
+      "protection": {
+        "deploymentType": "all_except_custom_domains"
+      }
+    },
+    "ci": {
+      "sha": "4a0326a2f83401fcda13d2fb2b7252da28d6718a",
+      "run": 37112601947,
+      "result": "PASS"
+    },
+    "finalDecision": "PHASE 7 PARTIAL — NOT READY"
+  },
+  "adminCloseout": {
+    "checkedAt": "2026-10-03T14:49:42.968Z",
+    "provisioning": {
+      "checkedAt": "2026-10-03T14:44:06.170Z",
+      "email": "abo.sabara0@gmail.com",
+      "id": "7c61b160-ec94-4bd6-874c-ebd4459588f0",
+      "organization": "a179182a-fa47-40ff-aea1-f849ef62de6d",
+      "confirmed": true,
+      "profileExists": true,
+      "evidence": [
+        {
+          "catalogue_permissions": 27,
+          "granted_permissions": 25,
+          "member_type": "staff",
+          "membership_count": 1,
+          "role_count": 1,
+          "roles": ["SUPER_ADMIN"],
+          "status": "active"
+        }
+      ]
+    },
+    "rls": [
+      {
+        "verification": {
+          "audit_visible": 4629,
+          "markets": ["EG", "SA"],
+          "membership_visible": 1,
+          "organizations": 1,
+          "permissions": [
+            {
+              "allowed": true,
+              "code": "portal.access"
+            },
+            {
+              "allowed": true,
+              "code": "users.manage"
+            },
+            {
+              "allowed": true,
+              "code": "audit.read"
+            },
+            {
+              "allowed": true,
+              "code": "customers.read"
+            },
+            {
+              "allowed": true,
+              "code": "requests.read"
+            },
+            {
+              "allowed": true,
+              "code": "files.read"
+            },
+            {
+              "allowed": true,
+              "code": "fleet.read"
+            },
+            {
+              "allowed": true,
+              "code": "services.read"
+            },
+            {
+              "allowed": true,
+              "code": "quotes.read"
+            },
+            {
+              "allowed": true,
+              "code": "orders.read"
+            },
+            {
+              "allowed": true,
+              "code": "trips.read"
+            },
+            {
+              "allowed": true,
+              "code": "finance.read"
+            },
+            {
+              "allowed": true,
+              "code": "notifications.manage"
+            },
+            {
+              "allowed": true,
+              "code": "quality.read"
+            },
+            {
+              "allowed": true,
+              "code": "support.read"
+            },
+            {
+              "allowed": false,
+              "code": "driver.access"
+            },
+            {
+              "allowed": false,
+              "code": "account.access"
+            },
+            {
+              "allowed": true,
+              "code": "pricing.calculate"
+            },
+            {
+              "allowed": true,
+              "code": "quotes.manage"
+            },
+            {
+              "allowed": true,
+              "code": "operations.manage"
+            },
+            {
+              "allowed": true,
+              "code": "dispatch.manage"
+            },
+            {
+              "allowed": true,
+              "code": "fleet.manage"
+            },
+            {
+              "allowed": true,
+              "code": "pod.read"
+            },
+            {
+              "allowed": true,
+              "code": "markets.manage"
+            },
+            {
+              "allowed": true,
+              "code": "finance.verify"
+            },
+            {
+              "allowed": true,
+              "code": "finance.accounts.manage"
+            },
+            {
+              "allowed": true,
+              "code": "guest.links.manage"
+            }
+          ],
+          "services": 5
+        }
+      }
+    ],
+    "preservation": {
+      "checkedAt": "2026-10-03T14:48:29.588Z",
+      "customerPreserved": true,
+      "customerRoles": ["CUSTOMER"],
+      "customerRecords": 1,
+      "requestCount": 2,
+      "temporaryBypasses": 0,
+      "protection": {
+        "deploymentType": "all_except_custom_domains"
+      }
+    },
+    "database": {
+      "checkedAt": "2026-10-03T14:48:39.155Z",
+      "migrations": 44,
+      "sql": "PASS",
+      "rls": "PASS",
+      "officialPublicSchemaTypes": "PASS",
+      "positiveRevokedExpiredReplay": "PASS",
+      "probeCleanup": "PASS"
+    },
+    "runtime": {
+      "deployment": "dpl_yCmDZL8GV4KKgUwdfXRfL8g8JkG9",
+      "checkedAt": "2026-10-03T14:49:01.376Z",
+      "evidence": [
+        {
+          "scope": "serverless",
+          "records": 50,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "errors",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "5xx",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        }
+      ]
+    },
+    "hosted": {
+      "result": "PASS for implemented administration surfaces",
+      "method": "Owner-created and confirmed identity, owner password login; existing in-app browser session. No password/token/cookie was read or exported.",
+      "preview": "https://naql365-staging-4amvwuc0p-naql365.vercel.app",
+      "surfaces": [
+        "AR/EN staff portal",
+        "AR/EN Sales/Quote review",
+        "AR/EN Operations/Dispatch/Drivers/Vehicles and SA/EG selectors",
+        "AR Finance queue",
+        "AR/EN privileged bank/transfer destination configuration",
+        "AR customer account correctly denied"
+      ],
+      "notClaimed": [
+        "No standalone organization/staff-role admin UI exists in accepted source",
+        "No standalone Market/service/coverage editor exists in accepted source",
+        "Guest-link mutation not exercised: no eligible submitted guest request; canonical guest.links.manage permission verified under authenticated RLS context",
+        "No business data was created or modified for this read-only smoke"
+      ],
+      "permissions": {
+        "granted": 25,
+        "catalogue": 27,
+        "expectedExcluded": ["account.access", "driver.access"]
+      },
+      "unexpectedAuthorizationDenial": false
+    },
+    "finalDecision": "PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW"
+  },
+  "finalDecision": "PHASE 7 PASS — MVP READY FOR OWNER LAUNCH REVIEW",
+  "realUserAuthReopened": {
+    "date": "2026-10-03",
+    "status": "INVESTIGATING",
+    "previousPassSuperseded": true,
+    "confirmedDefect": "Unconditional customer destination after successful password login",
+    "genericLoginFailureCause": "Not yet established",
+    "identityInspection": "Confirmed active STAFF SUPER_ADMIN with no Customer; existing CUSTOMER retained; read-only",
+    "localChecks": {
+      "unitIntegration": 187,
+      "e2e": 32,
+      "targetedAuthRerun": 16,
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "format": "PASS",
+      "build": "PASS"
+    },
+    "migrations": 44,
+    "hostedPublicSignup": "PENDING controlled new mailbox",
+    "hostedRoleRouting": {
+      "result": "PASS for owner-operated Arabic password login",
+      "source": "e533ea9f4cba58933d1875c3bea77389874fc7e5",
+      "preview": "https://naql365-staging-q142gx9ok-naql365.vercel.app",
+      "destination": "/ar/portal",
+      "refreshRetainsSession": true,
+      "englishCompletionDestination": "/en/portal",
+      "financeReadSurface": "PASS",
+      "scope": "English completion reused session; not a second password-login test"
+    },
+    "databaseMutations": false,
+    "ci": {
+      "id": 37135663161,
+      "sha": "e533ea9f4cba58933d1875c3bea77389874fc7e5",
+      "result": "PASS"
+    },
+    "publicSignupAttempt": {
+      "identityCreated": false,
+      "result": "NOT VERIFIED",
+      "note": "Owner reported no confirmation email; read-only Auth inspection found no identity. No admin-created replacement or membership preparation performed."
+    }
+  },
+  "sessionNavigationReopened": {
+    "date": "2026-10-03",
+    "preFixServerAuthentication": "retained after public homepage and direct login; auth-complete revalidated and redirected without credentials",
+    "ownerCookieMetadata": "not available through current browser interface",
+    "rootCause": [
+      "hardcoded unauthenticated public navigation",
+      "login page lacked authoritative session guard",
+      "public routes excluded from proxy refresh"
+    ],
+    "migrations": 44,
+    "unitIntegration": 197,
+    "earlierRun": "one SQL timeout during parallel build; full serial rerun passed",
+    "hostedAcceptance": "PASS — see authoritative october5Closeout",
+    "publicSignupAcceptance": "PASS — real owner-controlled signup",
+    "preview": "https://naql365-staging-jd6ncixk4-naql365.vercel.app",
+    "deployedSha": "556435d8fdf9499eb6552e3f21013452989c684d",
+    "ci": {
+      "id": 37139015668,
+      "result": "PASS",
+      "sha": "556435d8fdf9499eb6552e3f21013452989c684d"
+    },
+    "registeredHosted": {
+      "result": "PASS",
+      "tests": 10,
+      "sessionNavigationTests": 2,
+      "devices": ["desktop", "mobile"],
+      "cookieAttributes": "root Path, Secure on HTTPS, SameSite Lax",
+      "logoutCookieRemoval": true,
+      "cleanup": "PASS"
+    },
+    "database": {
+      "migrations": 44,
+      "rlsTables": 59,
+      "checks": "PASS",
+      "generatedTypes": "MATCH"
+    },
+    "guestRegression": {
+      "result": "FAILED",
+      "attempts": 2,
+      "passingPerAttempt": 4,
+      "failingPerAttempt": 2,
+      "reason": "shared login helper filled login input while existing session was being redirected; explicit logout fix also needed streaming redirect readiness",
+      "cleanup": "PASS",
+      "rerun": "PASS — six cases on current Preview; historical failures retained"
+    },
+    "financeRegression": "PASS — five cases on current Preview",
+    "ownerEquivalentStaffSequence": {
+      "checkedAt": "2026-10-04",
+      "preview": "https://naql365-staging-jd6ncixk4-naql365.vercel.app",
+      "deployedSha": "556435d8fdf9499eb6552e3f21013452989c684d",
+      "result": "PASS for observed desktop sequence",
+      "steps": [
+        "owner normal login confirmed portal",
+        "header Operations portal, no Login link",
+        "logo to home",
+        "Services anchor",
+        "How It Works anchor",
+        "English navigation",
+        "SA then EG selection",
+        "direct /ar/login redirected to /ar/portal",
+        "refresh retained server-authorized portal",
+        "explicit logout restored Login navigation",
+        "direct protected portal redirected to login"
+      ],
+      "limits": [
+        "public sections are homepage anchors, not independent service pages",
+        "owner cookie values and attributes were not accessed",
+        "Back cache and mobile owner sequence not established in this run",
+        "browser refresh parity hardening is in later source, not this Preview"
+      ]
+    },
+    "driverSessionNavigation": {
+      "result": "PASS",
+      "preview": "https://naql365-staging-l2et1jst5-naql365.vercel.app",
+      "tests": 1,
+      "durationMs": 152628,
+      "coverage": [
+        "AR/EN",
+        "public home/services/contact",
+        "SA/EG switch",
+        "direct login redirects to Driver",
+        "refresh",
+        "expired browser session",
+        "suspension",
+        "role revocation",
+        "explicit logout"
+      ],
+      "cleanup": "PASS"
+    },
+    "browserRefreshSecureParity": "Deployed in l2et1jst5 source a98e7af; hosted Driver cookie attributes PASS",
+    "latestSourceCi": {
+      "sha": "4b329ef66193e93da141120aab809dae1700ba7b",
+      "id": 37195658909,
+      "result": "PASS"
+    }
+  },
+  "publicSignupOwnerAcceptance": {
+    "checkedAt": "2026-10-04T10:29:03.245Z",
+    "preview": "https://naql365-staging-l2et1jst5-naql365.vercel.app",
+    "source": "a98e7af81b14e20e35a41252368f501a4a8b65ce",
+    "before": {
+      "checkedAt": "2026-10-04T10:04:22.848Z",
+      "email": "abo.sabara1@gmail.com",
+      "readOnly": true,
+      "rows": [
+        {
+          "auth_users": 0,
+          "customers": 0,
+          "memberships": 0,
+          "profiles": 0,
+          "roles": 0
+        }
+      ]
+    },
+    "after": {
+      "checkedAt": "2026-10-04T10:28:02.680Z",
+      "identityCount": 1,
+      "rows": [
+        {
+          "confirmed": true,
+          "customers": 1,
+          "memberships": [
+            {
+              "category": "customer",
+              "status": "active"
+            }
+          ],
+          "profile_exists": true,
+          "roles": ["CUSTOMER"]
+        }
+      ]
+    },
+    "method": "Owner operated public registration and real mailbox confirmation; no admin-generated activation or preprovisioning",
+    "observed": [
+      "Profile saved through application",
+      "Refresh retains profile",
+      "SA Request wizard opens",
+      "Public English navigation retains My account",
+      "Direct English login redirects to account",
+      "Explicit logout displays login",
+      "Owner password login returns to English account",
+      "Refresh retains account",
+      "One Customer, active customer membership and CUSTOMER role after repeat authentication",
+      "390px English homepage without horizontal overflow; Arabic direct login returns to account",
+      "Customer denied staff portal after server render"
+    ],
+    "limits": [
+      "Initial confirmation and profile save were owner-operated between observations",
+      "No password or confirmation token inspected"
+    ],
+    "result": "PASS",
+    "finalState": {
+      "checkedAt": "2026-10-05T08:02:25.960Z",
+      "identityCount": 1,
+      "rows": [
+        {
+          "confirmed": true,
+          "customers": 1,
+          "memberships": [
+            {
+              "category": "customer",
+              "status": "active"
+            }
+          ],
+          "profile_exists": true,
+          "roles": ["CUSTOMER"]
+        }
+      ]
+    },
+    "retention": "Owner retained account; only disposable draft removed"
+  },
+  "october5Closeout": {
+    "preview": "https://naql365-staging-l2et1jst5-naql365.vercel.app",
+    "source": "a98e7af81b14e20e35a41252368f501a4a8b65ce",
+    "guest": {
+      "result": "PASS",
+      "tests": 6,
+      "cleanup": "PASS",
+      "saDelivery": true,
+      "egDelivery": true,
+      "signedUrlExpiry": true
+    },
+    "finance": {
+      "result": "PASS",
+      "tests": 5,
+      "cleanup": "PASS",
+      "coverage": [
+        "privileged bank configuration",
+        "SA CASH",
+        "SA BANK_TRANSFER",
+        "EG CASH",
+        "EG BANK_TRANSFER"
+      ],
+      "previousFailure": "SSR disabled selector focus; test now waits for enabled control without removing assertion"
+    },
+    "ci": {
+      "sha": "9fff9a7f0b0053fd3519bdf8a78098ab3b9f62f9",
+      "id": 37280413785,
+      "result": "PASS"
+    },
+    "ownerCleanupDecision": "Retain abo.sabara1@gmail.com Customer; delete only agent-created draft",
+    "applicationChangesSincePreview": false,
+    "migrations": 44,
+    "authoritative": true,
+    "driver": {
+      "result": "PASS",
+      "tests": 3,
+      "cleanup": "PASS",
+      "coverage": [
+        "SA execution/reassignment/issues/private POD/tracking",
+        "EG equivalent journey",
+        "AR/EN sessions, expiry, suspension, role loss, explicit logout"
+      ]
+    },
+    "registered": {
+      "result": "PASS",
+      "tests": 10,
+      "devices": ["desktop", "mobile"],
+      "cleanup": "PASS",
+      "backAfterLogout": "Header Login, no Sign out control, no auth cookies BEFORE any fresh navigation; then protected route denied"
+    },
+    "automatedHostedTotal": 24,
+    "realPublicSignup": "PASS — separate owner-operated public form, delivered email confirmation and password login, never an admin-prepared substitute",
+    "stages": [
+      {
+        "name": "Finance",
+        "status": 0,
+        "completedAt": "2026-10-05T07:38:21.154Z"
+      },
+      {
+        "name": "Driver",
+        "status": 0,
+        "completedAt": "2026-10-05T07:53:48.941Z"
+      },
+      {
+        "name": "Intake",
+        "status": 0,
+        "completedAt": "2026-10-05T07:59:33.992Z"
+      },
+      {
+        "name": "Database",
+        "status": 0,
+        "completedAt": "2026-10-05T08:00:49.138Z"
+      },
+      {
+        "name": "RevokeBypass",
+        "status": 0,
+        "completedAt": "2026-10-05T08:01:08.671Z"
+      },
+      {
+        "name": "Preservation",
+        "status": 0,
+        "completedAt": "2026-10-05T08:01:20.454Z"
+      }
+    ],
+    "database": {
+      "checkedAt": "2026-10-05T08:00:49.120Z",
+      "migrations": 44,
+      "sql": "PASS",
+      "rls": "PASS",
+      "officialPublicSchemaTypes": "PASS",
+      "positiveRevokedExpiredReplay": "PASS",
+      "probeCleanup": "PASS"
+    },
+    "ownerDraftCleanup": {
+      "checkedAt": "2026-10-05T08:01:58.612Z",
+      "active_customer_memberships": 1,
+      "confirmed_identity": 1,
+      "customers": 1,
+      "draft_remaining": 0
+    },
+    "guestPolicyRestoration": {
+      "checkedAt": "2026-10-05T08:02:19.700Z",
+      "before": {
+        "creations_per_hour": 100,
+        "enabled": true,
+        "lifetime_days": 30
+      },
+      "after": {
+        "creations_per_hour": 30,
+        "enabled": true,
+        "lifetime_days": 30
+      },
+      "source": "scripts/staging/configure-guest.mjs: intended quota 30; interrupted fixture run used 100",
+      "restored": true
+    },
+    "identities": {
+      "checkedAt": "2026-10-05T08:03:05.846Z",
+      "administrator": [
+        {
+          "active_staff_memberships": 1,
+          "confirmed": true,
+          "customers": 0,
+          "profile": true,
+          "roles": ["SUPER_ADMIN"]
+        }
+      ],
+      "syntheticPhaseIdentities": 0
+    },
+    "preservation": {
+      "checkedAt": "2026-10-05T08:01:20.439Z",
+      "customerPreserved": true,
+      "customerRoles": ["CUSTOMER"],
+      "customerRecords": 1,
+      "requestCount": 2,
+      "temporaryBypasses": 0,
+      "protection": {
+        "deploymentType": "all_except_custom_domains"
+      }
+    },
+    "environment": {
+      "checkedAt": "2026-10-05T07:42:02.512Z",
+      "productionDeployments": 0,
+      "productionEnvCount": 0,
+      "protection": {
+        "deploymentType": "all_except_custom_domains"
+      },
+      "environmentNames": [
+        {
+          "name": "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+          "scopes": ["preview"]
+        },
+        {
+          "name": "NEXT_PUBLIC_SUPABASE_URL",
+          "scopes": ["preview"]
+        },
+        {
+          "name": "STAGING_AUTH_SMOKE_ENABLED",
+          "scopes": ["preview"]
+        },
+        {
+          "name": "APP_ENV",
+          "scopes": ["preview"]
+        }
+      ]
+    },
+    "runtimeLogs": {
+      "deployment": "dpl_5YDRkZkEzX24TJTJ4jhk8h2N12gD",
+      "checkedAt": "2026-10-05T07:59:22.186Z",
+      "evidence": [
+        {
+          "scope": "serverless",
+          "records": 50,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "errors",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        },
+        {
+          "scope": "5xx",
+          "records": 0,
+          "http5xx": 0,
+          "paymentRequests": 0,
+          "errorRecords": 0,
+          "credentialPatternFound": false,
+          "authQueryValueObserved": false,
+          "markers": []
+        }
+      ]
+    },
+    "finalDocumentationCi": "Exact documentation HEAD/run verified in final handoff; no deployed application changes",
+    "scope": "No merge, main/develop unchanged, no Production, no Phase 8"
+  }
+}

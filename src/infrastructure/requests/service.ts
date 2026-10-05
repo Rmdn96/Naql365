@@ -2,6 +2,7 @@ import 'server-only';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { AppError } from '@/domain/shared/errors';
+import { guestSessionClient } from '@/infrastructure/guest/session';
 import { marketSchema } from '@/domain/markets/model';
 import {
   blankDraft,
@@ -45,9 +46,11 @@ export async function customerClient(writable = false) {
   if (!permitted.length) throw new AppError('forbidden', 'Active customer membership required');
   return { client, user: data.user, customers: permitted };
 }
-export async function requestDetails(id: string, writable = false) {
+export async function requestDetails(id: string, writable = false, guest = false) {
   z.uuid().parse(id);
-  const { client, user } = await customerClient(writable);
+  const { client, user } = guest
+    ? { client: await guestSessionClient(), user: null }
+    : await customerClient(writable);
   const { data: r, error } = await client.from('requests').select('*').eq('id', id).maybeSingle();
   if (error) databaseError(error.code);
   if (!r) throw new AppError('not_found', 'Request unavailable');
@@ -70,10 +73,11 @@ export async function requestDetails(id: string, writable = false) {
   // Customer ownership remains explicit even when a principal has additional read permissions.
   const { data: owner } = await client
     .from('customers')
-    .select('profile_id')
+    .select('profile_id,identity_kind')
     .eq('id', r.customer_id)
     .single();
-  if (owner?.profile_id !== user.id) throw new AppError('not_found', 'Request unavailable');
+  if (!owner || (user ? owner.profile_id !== user.id : owner.identity_kind !== 'GUEST'))
+    throw new AppError('not_found', 'Request unavailable');
   const [locations, items, additional, attachments, services, options] = await Promise.all([
     client.from('request_locations').select('*').eq('request_id', id),
     client
@@ -160,10 +164,10 @@ export async function createDraft(key: unknown, marketId: unknown) {
   if (error) databaseError(error.code);
   return commandResult.parse(data);
 }
-export async function mutateRequest(id: string, input: unknown) {
+export async function mutateRequest(id: string, input: unknown, guest = false) {
   z.uuid().parse(id);
   const command = commandInput.parse(input);
-  const { client } = await customerClient(true);
+  const client = guest ? await guestSessionClient() : (await customerClient(true)).client;
   const { data, error } = await client.rpc('request_command', {
     p_operation: command.operation,
     p_request_id: id,
@@ -175,10 +179,10 @@ export async function mutateRequest(id: string, input: unknown) {
   return commandResult.parse(data);
 }
 const fileResult = z.object({ id: z.uuid(), path: z.string(), state: z.string() });
-export async function removeAttachment(requestId: string, fileId: string) {
+export async function removeAttachment(requestId: string, fileId: string, guest = false) {
   z.uuid().parse(requestId);
   z.uuid().parse(fileId);
-  const { client } = await customerClient(true);
+  const client = guest ? await guestSessionClient() : (await customerClient(true)).client;
   const { data, error } = await client.rpc('request_file_command', {
     p_operation: 'remove',
     p_request_id: requestId,
@@ -196,7 +200,12 @@ export async function removeAttachment(requestId: string, fileId: string) {
   if (result.error) databaseError(result.error.code);
   return { removed: true };
 }
-export async function uploadAttachment(requestId: string, fileId: string, file: File) {
+export async function uploadAttachment(
+  requestId: string,
+  fileId: string,
+  file: File,
+  guest = false,
+) {
   z.uuid().parse(requestId);
   z.uuid().parse(fileId);
   if (file.size < 1 || file.size > 3 * 1024 * 1024)
@@ -204,7 +213,7 @@ export async function uploadAttachment(requestId: string, fileId: string, file: 
   const bytes = new Uint8Array(await file.arrayBuffer());
   const mime = imageMime(bytes);
   if (!mime || mime !== file.type) throw new AppError('validation', 'Image type invalid');
-  const { client } = await customerClient(true);
+  const client = guest ? await guestSessionClient() : (await customerClient(true)).client;
   const { data, error } = await client.rpc('request_file_command', {
     p_operation: 'reserve',
     p_request_id: requestId,
