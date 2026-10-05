@@ -1,5 +1,7 @@
 # Naql365 Production release runbook
 
+> Runtime enablement checkpoint (6 October 2026): the requested branch was created and approved documentation carried forward. Backend inspection found no environment attestation interface. Per the owner stop condition, implementation is paused before a proposed additive private marker/read-only RPC. See [the design and hPanel checklist](hostinger-acceptance-deployment.md). The guard and provider adapters are not implemented; no new runtime/CI PASS is claimed.
+
 Status: preparation only. Phase 7 is CLOSED & MERGED at develop `518aef34128dd31413f1e4fc7c31e30a19f15832` (44 migrations). Production release is **not authorized** by Phase 7 approval. Consult the canonical Phase 7 report and the [Production launch review](production-launch-review.md) for verified prerequisites, manual dependencies and outstanding owner decisions before executing this runbook.
 
 Intended Production hosting: **Hostinger Managed Node.js / Next.js**. Canonical **https://naql365.com**, with www redirecting to apex, DNS managed by Hostinger. Supabase remains authoritative. See [Hostinger compatibility](hostinger-runtime-compatibility.md): source controls and actual temporary Hostinger acceptance remain required. Vercel is retained only as historical/temporary Staging evidence. No deployment/DNS change is authorized here.

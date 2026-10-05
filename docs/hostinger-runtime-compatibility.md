@@ -1,5 +1,7 @@
 # Hostinger runtime compatibility review
 
+> Runtime enablement checkpoint (6 October 2026): the requested branch was created and approved documentation carried forward. Backend inspection found no environment attestation interface. Per the owner stop condition, implementation is paused before a proposed additive private marker/read-only RPC. See [the design and hPanel checklist](hostinger-acceptance-deployment.md). The guard and provider adapters are not implemented; no new runtime/CI PASS is claimed.
+
 Review date: 6 October 2026. **HOSTINGER COMPATIBILITY REVIEW PARTIAL — SOURCE CHANGES REQUIRED**.
 
 Production architecture: Hostinger Managed Node.js / Next.js at `https://naql365.com`, with `www.naql365.com` redirecting to the apex. Supabase remains authoritative for Auth, PostgreSQL, RLS, Storage, Realtime and database functions/migrations. Vercel is retained only for temporary/historical Staging evidence during transition. This document authorizes no deployment, resource creation, DNS change or Phase 8 work.
