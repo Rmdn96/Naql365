@@ -48,6 +48,10 @@ test('registered session survives public navigation and ends only on explicit lo
   expect(await cookieMetadata()).toHaveLength(0);
   await expect(page.locator('header .identity-link')).toHaveAttribute('href', '/en/login');
   await page.goBack();
+  // Check Back itself before a fresh navigation can hide stale authorized UI.
+  await expect(page.locator('header .identity-link')).toHaveAttribute('href', /\/(ar|en)\/login$/);
+  await expect(page.getByRole('button', { name: /^(Sign out|تسجيل الخروج)$/ })).toHaveCount(0);
+  expect(await cookieMetadata()).toHaveLength(0);
   await page.goto('/en/account');
   await expect(page).toHaveURL(`${baseURL}/en/login`);
 });
