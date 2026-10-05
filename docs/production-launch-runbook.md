@@ -1,6 +1,6 @@
 # Naql365 Production release runbook
 
-Status: preparation only. Production release is **not authorized** by Phase 7 implementation approval. This runbook does not assert that the application has passed Phase 7 acceptance. Consult the canonical Phase 7 report first.
+Status: preparation only. Phase 7 is CLOSED & MERGED at develop `518aef34128dd31413f1e4fc7c31e30a19f15832` (44 migrations). Production release is **not authorized** by Phase 7 approval. Consult the canonical Phase 7 report and the [Production launch review](production-launch-review.md) for verified prerequisites, manual dependencies and outstanding owner decisions before executing this runbook.
 
 ## Release entry gate
 
@@ -13,9 +13,11 @@ Status: preparation only. Production release is **not authorized** by Phase 7 im
 
 - Create a dedicated Production Supabase project only under release authorization. Verify its project reference and organization against the release record. It must differ from Local and Staging.
 - Use a separate Production Vercel environment/project configuration. Verify environment scopes before each change. Keep Preview connected only to Staging.
+- The current application checks APP_ENV/platform-target agreement but does not bind a Supabase project reference to Production. Require independent comparison of project, public URL/key pair and build environment against an approved release manifest before build/deploy. A well-formed Staging URL is not rejected by the current format validator. Stop on mismatch; do not copy Preview environment exports.
 - Public variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Server configuration: `APP_URL`, `APP_ENV`. Use `APP_ENV=production` only for the approved Production deployment. Keep technical Staging authentication disabled (`STAGING_AUTH_SMOKE_ENABLED` absent/false).
 - Store deploy/management credentials in the approved secret store. Never print environment values, dump cookies, capture authorization headers or commit exports. No service-role key belongs in browser code.
 - Configure exact Auth site origin and callback allowlist for the approved domain. Verify SSR/PKCE, locale-safe redirects, password recovery and privileged invitation separately. Do not use unrestricted redirect wildcards.
+- Configure a Production SMTP provider and verified sender/domain; the default Supabase test mail service is not the public-registration delivery plan. Prove actual mailbox confirmation without admin activation substitutes.
 
 ## Schema rollout
 
@@ -61,6 +63,7 @@ Verify authorized checkout reveals only its Market's selected transfer instructi
 - Publish Privacy/Terms only after approved content is available and reviewed. Do not publish invented legal assurances or placeholder legal text.
   The technical routes are `/{locale}/legal/privacy` and `/{locale}/legal/terms`. Add reviewed AR/EN title, paragraphs and the approval reference as `approvedRevision` in `src/content/legal.json`. Null entries return 404 and have no footer link. Content approval remains a Production release blocker.
 - `LAUNCH_CUSTOMER_LIVE_TRACKING` is a server-only presentation flag (`true`/`false`, default false). It controls the existing registered-customer live view; status tracking always remains available. Guest live coordinates remain excluded. This flag does not grant tracking authority or disable DB/RLS checks. Test the enabled registered view separately during regression.
+- That presentation flag does not disable Driver GPS collection. The existing `staging_retention_hours`/prune schedule is explicitly Staging-only. An approved Production retention/maintenance or server-authoritative capture-disable plan is required before live location collection; see the review. Do not infer a Production policy from the Staging value.
 - Funnel telemetry retains only daily event/Market/context counts in `private.mvp_funnel_counts`, with 90-day retention on ingestion and a 600/minute organization limit. It is approximate, user-reportable product telemetry, never commercial/audit evidence. No identity, IP, URL, guest capability or financial destination is collected. Operators can inspect aggregate counts through privileged database access; no public metrics query is exposed.
 - Execute the approved Vercel Production deployment only after all entry gates pass. Confirm deployment classification, source SHA and Production-only environment bindings. Do not reuse a Staging deployment as Production evidence.
 - Verify canonical/hreflang, robots/sitemap, CSP and security headers. Public indexing is a release decision; guest/account/payment/portal routes stay noindex and private. Guest secrets remain URL fragments exchanged for HttpOnly cookies, never request paths or analytics properties.
@@ -71,7 +74,11 @@ Verify authorized checkout reveals only its Market's selected transfer instructi
 - Inspect bounded runtime logs for errors and secret patterns; report methodology and limits. Do not claim an exhaustive leak audit from a small sample.
 - If a critical security or accounting invariant fails, stop onboarding, disable guest creation through privileged policy, preserve evidence and notify the owner. Do not weaken policies.
 - For application rollback, deploy the last approved compatible application build through the normal protected release path. Additive migrations should remain unless a separately reviewed restoration plan requires otherwise. Never drop financial/operational tables or reverse migrations blindly. A database restore needs explicit incident authorization and an accounting/data-reconciliation plan.
+- Database backups do not include Storage object bytes. Approve a separate private-object backup and coordinated restore rehearsal. On first launch there is no previous Production build: use the approved closed-intake/maintenance fallback, not an old incompatible application.
+- Production smoke must not run the bulk Staging fixture/cleanup harnesses. Obtain an approved bounded record and payment plan. Never mark a synthetic transfer proof PAID; confirm only independently verified actual receipt. Preserve submitted financial/audit records and reconcile them rather than hard-delete.
 
 ## Unresolved Production blockers
 
-Final approved domain/DNS, Production resources and secrets, active service coverage, real rules/taxes, real private payment configuration, legal copy, staff/Driver provisioning and release authorization are not fulfilled by this document. Phase 7 hosted acceptance evidence is recorded in the canonical report; final acceptance is blocked by the unresolved development dependency advisory documented there.
+Final approved domain/DNS, dedicated Production bindings and secret custody, SMTP, active service coverage, real rules/taxes, privately verified payment configuration, legal copy, staff/Driver provisioning, retention/recovery, bounded smoke and release authorization are not fulfilled by this document. See the review's classified checklist and owner decision pack.
+
+**Dependency security closeout: PASS — scoped owner risk acceptance.** The development-only `braces` advisory remains technically unresolved in the accepted graph and the full audit is not fully clean. Its documented owner-approved scoped disposition is not an unresolved approval blocker and does not cover unrelated/new advisories. Do not suppress audit. Recheck the dependency inventory before an authorized release.
