@@ -1,11 +1,17 @@
+import manifest from './config/deployment-manifest.json';
+import { validateEnvironment } from './src/infrastructure/config/environment-authority';
 import type { NextConfig } from 'next';
 import { preventIndexing } from './src/infrastructure/config/deployment-env';
 
 // Validate before compilation so a platform target mismatch cannot serve the app.
+validateEnvironment(process.env, manifest);
 const noIndex = preventIndexing();
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  outputFileTracingIncludes: {
+    '/**': ['./.naql365-build-identity.json', './config/deployment-manifest.json'],
+  },
   reactStrictMode: true,
   async headers() {
     return [

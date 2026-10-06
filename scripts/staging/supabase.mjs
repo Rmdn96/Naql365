@@ -19,7 +19,7 @@ export function supabase(args) {
 export function stagingProject() {
   const ref = process.env.STAGING_SUPABASE_PROJECT_REF;
   const org = process.env.STAGING_SUPABASE_ORG_ID;
-  if (!ref || !/^[a-z]{20}$/.test(ref) || !org)
+  if (ref !== 'zuvyfeflkzlciuaauxba' || org !== 'hjfxhwznfgjgywsdsqzn')
     throw new Error('Explicit staging project and organization are required');
   const projects = JSON.parse(supabase(['projects', 'list', '--output', 'json']));
   const project = projects.find((item) => item.id === ref && item.organization_id === org);

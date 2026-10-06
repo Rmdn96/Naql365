@@ -1,3 +1,4 @@
+import { protectionHeaders } from '../../scripts/staging/target.mjs';
 import { test as base, expect } from '@playwright/test';
 import type { BrowserContext, Page } from '@playwright/test';
 
@@ -18,8 +19,8 @@ export function holdApplicationScripts(page: Page) {
 }
 
 export async function configureProtectedContext(context: BrowserContext, baseURL?: string) {
-  const secret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-  if (secret) {
+  const headers = protectionHeaders();
+  {
     // Restrict this credential to the verified application origin, including redirects.
     await context.route('**/*', async (route) => {
       if (new URL(route.request().url()).origin === baseURL) {
@@ -31,7 +32,7 @@ export async function configureProtectedContext(context: BrowserContext, baseURL
           await scriptGates.get(page);
         }
         await route.continue({
-          headers: { ...route.request().headers(), 'x-vercel-protection-bypass': secret },
+          headers: { ...route.request().headers(), ...headers },
         });
       } else await route.continue();
     });

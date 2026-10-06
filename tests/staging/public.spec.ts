@@ -1,3 +1,4 @@
+import { protectionHeaders } from '../../scripts/staging/target.mjs';
 import AxeBuilder from '@axe-core/playwright';
 import { test, expect } from './fixtures';
 import { hasSourceMapDirective } from '../helpers/source-map';
@@ -81,9 +82,7 @@ test('hosted browser assets contain no privileged test secrets or source maps', 
   for (const source of scripts) {
     const url = new URL(source, baseURL);
     expect([baseURL, 'https://vercel.live'].includes(url.origin)).toBe(true);
-    const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-    const headers =
-      url.origin === baseURL && bypass ? { 'x-vercel-protection-bypass': bypass } : undefined;
+    const headers = url.origin === baseURL ? protectionHeaders() : undefined;
     const asset = await fetch(url, headers ? { headers } : {});
     assets.push({ ok: asset.ok, body: await asset.text() });
   }

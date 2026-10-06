@@ -1,3 +1,4 @@
+import { protectionHeaders } from '../../scripts/staging/target.mjs';
 import { hasSourceMapDirective } from '../helpers/source-map';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
@@ -104,10 +105,7 @@ async function financialAssets(page: Page) {
     expect([origin, 'https://vercel.live']).toContain(url.origin);
     if (scannedAssets.has(source)) continue;
     const response = await fetch(source, {
-      headers:
-        url.origin === origin
-          ? { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET! }
-          : {},
+      headers: url.origin === origin ? protectionHeaders() : {},
       signal: AbortSignal.timeout(30000),
     });
     expect(response.ok).toBe(true);

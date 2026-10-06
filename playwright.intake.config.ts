@@ -1,3 +1,5 @@
+import { acceptanceTarget } from './scripts/staging/target.mjs';
+acceptanceTarget();
 import { defineConfig, devices } from '@playwright/test';
 const origin = new URL(process.env.STAGING_BASE_URL || 'http://invalid');
 if (

@@ -1,3 +1,4 @@
+import { protectionHeaders } from '../../scripts/staging/target.mjs';
 import { test, expect } from '../staging/fixtures';
 import { customerDictionary } from '../../src/i18n/customer';
 import { hasSourceMapDirective } from '../helpers/source-map';
@@ -10,7 +11,7 @@ test('authenticated operations assets preserve server-only secret boundaries', a
   const raw = process.env.STAGING_PHASE3_IDENTITIES;
   const adminKey = process.env.STAGING_TEST_ADMIN_KEY;
   const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-  if (!raw || !adminKey || !bypass || !baseURL) throw new Error('Guarded fixture required');
+  if (!raw || !adminKey || !baseURL) throw new Error('Guarded fixture required');
   const identities = JSON.parse(raw) as Record<string, { email: string; password: string }>;
   const staff = identities.operations!;
   await page.goto('/en/login');
@@ -26,7 +27,7 @@ test('authenticated operations assets preserve server-only secret boundaries', a
   expect(response?.headers()['x-robots-tag']).toContain('noindex');
   const secrets = [adminKey, bypass, ...Object.values(identities).map((item) => item.password)];
   const html = await page.content();
-  expect(secrets.every((value) => !html.includes(value))).toBe(true);
+  expect(secrets.every((value) => !value || !html.includes(value))).toBe(true);
   const sources = await page
     .locator('script[src]')
     .evaluateAll((nodes) => nodes.map((node) => (node as HTMLScriptElement).src));
@@ -35,12 +36,12 @@ test('authenticated operations assets preserve server-only secret boundaries', a
     const url = new URL(source);
     expect([baseURL, 'https://vercel.live']).toContain(url.origin);
     const asset = await fetch(url, {
-      headers: url.origin === baseURL ? { 'x-vercel-protection-bypass': bypass } : {},
+      headers: url.origin === baseURL ? protectionHeaders() : {},
       signal: AbortSignal.timeout(30000),
     });
     expect(asset.ok).toBe(true);
     const body = await asset.text();
-    expect(secrets.every((value) => !body.includes(value))).toBe(true);
+    expect(secrets.every((value) => !value || !body.includes(value))).toBe(true);
     if (body.includes('sb_secret_'))
       test.info().annotations.push({
         type: 'safe-security-probe',
