@@ -1,8 +1,16 @@
+type TargetManifest = {
+  staging: {
+    projectRef: string;
+    origins: string[];
+    hostingerOrigins: string[];
+    hostingerProtection?: Record<string, { mode: string; approval: string }>;
+  };
+};
 export function acceptanceTarget(
   env?: Record<string, string | undefined>,
-  approved?: { staging: { projectRef: string; origins: string[]; hostingerOrigins: string[] } },
+  approved?: TargetManifest,
 ): { origin: string; provider: string };
 export function protectionHeaders(
   env?: Record<string, string | undefined>,
-  approved?: Parameters<typeof acceptanceTarget>[1],
+  approved?: TargetManifest,
 ): Record<string, string>;
