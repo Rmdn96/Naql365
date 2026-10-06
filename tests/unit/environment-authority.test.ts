@@ -6,7 +6,7 @@ import {
   verifyArtifact,
   type Manifest,
 } from '../../src/infrastructure/config/environment-authority';
-import { acceptanceTarget } from '../../scripts/staging/target.mjs';
+import { acceptanceTarget, protectionHeaders } from '../../scripts/staging/target.mjs';
 const key = 'sb_publishable_synthetic_configuration_only_123';
 const manifest: Manifest = {
   version: 1,
@@ -139,6 +139,18 @@ describe('independently approved deployment authority', () => {
       ACCEPTANCE_PROVIDER: 'HOSTINGER_ACCEPTANCE',
     };
     expect(acceptanceTarget(env, manifest).provider).toBe('HOSTINGER_ACCEPTANCE');
+    expect(
+      protectionHeaders(
+        { ...env, VERCEL_AUTOMATION_BYPASS_SECRET: 'synthetic-not-a-credential' },
+        manifest,
+      ),
+    ).toEqual({});
+    expect(() =>
+      acceptanceTarget(env, {
+        ...manifest,
+        staging: { ...manifest.staging, hostingerProtection: {} },
+      }),
+    ).toThrow('ACCEPTANCE_HOSTINGER_NOT_APPROVED');
     expect(() =>
       acceptanceTarget({ ...env, STAGING_BASE_URL: 'https://other.example.test' }, manifest),
     ).toThrow();

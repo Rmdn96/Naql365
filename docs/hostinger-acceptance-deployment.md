@@ -1,53 +1,40 @@
-# Hostinger acceptance deployment — preflight design checkpoint
+# Hostinger acceptance deployment — runtime enablement
 
-Status: **HOSTINGER RUNTIME ENABLEMENT PARTIAL — FURTHER SOURCE CHANGE REQUIRED**.
+Implementation date: 6 October 2026. No Hostinger deployment, DNS change, Production project/marker/configuration or Phase 8 work is authorized here. Hostinger runtime acceptance is NOT EXECUTED; Vercel historical evidence is not substituted for it.
 
-No deployment is authorized by this document. No application implementation, environment guard, provider adapter or migration was added at this checkpoint. The owner explicitly requires stopping before an additive backend-marker migration for review. This checkpoint records that decision boundary rather than claiming runtime enablement is complete.
+## Baseline and approved scope
 
-## Verified source and branch
+Branch: feature/preproduction-hostinger-runtime, created from protected develop 518aef34128dd31413f1e4fc7c31e30a19f15832. Documentation-only b30c0e3 and b238112 were ancestry/file-audited and cherry-picked as f14db28 and 844fd4e. Main remains 184ac2374a7e9611b4b265efc7dac21b57b7a2b1. Existing migrations 1–44 are immutable; candidate now has 45.
 
-- Accepted remote develop: `518aef34128dd31413f1e4fc7c31e30a19f15832`.
-- Remote main: `184ac2374a7e9611b4b265efc7dac21b57b7a2b1`, unchanged.
-- New branch: `feature/preproduction-hostinger-runtime`, created directly from remote develop.
-- Documentation-only commits `b30c0e337b1e99f5a56b3cafc9f90900f814f4a3` and `b23811216bfe852a62942d041ce46e4e501802b4` descend from the accepted develop and were not its ancestors. Inspected each changed-file list before cherry-picking them as `f14db28` and `844fd4e` respectively. Only the Production launch review/runbook and Hostinger compatibility document changed.
-- Existing 44 migrations and application source remain unchanged. No Production reference has been invented.
+The owner subsequently approved the marker design recorded at 862a3e2. The former stop pending migration approval is resolved. Migration 20261006000100_deployment_attestation.sql creates no marker row.
 
-## Why backend attestation needs owner review
+## Schema and anonymous boundary
 
-Inspection of migrations and generated database types found no environment-identity table or attestation RPC. Existing public endpoints can show that a key reaches a project, but cannot attest that its database has been independently designated as the approved Production environment. URL/key format validation, duplicated environment variables and a local manifest alone cannot establish that database-side designation. Reading protected business tables with a service-role key in the web runtime would introduce unnecessary authority and is rejected.
+private.deployment_identity is a singleton enforced by a boolean primary key constrained true. It contains protocol_version=1, environment, opaque deployment_identity UUID and opaque configuration_revision UUID only. RLS is enabled with no application policies; PUBLIC/anon/authenticated have no table privileges. No ordinary staff command writes it.
 
-For the proposed live backend-marker design, an additive database interface is required. It is not required merely to run Next.js on Hostinger. The owner may instead approve a separately designed signed external attestation architecture, but no such system currently exists and none is assumed.
+public.deployment_attestation() takes zero arguments and returns at most one row with precisely those four fields; no marker returns zero rows. SQL is STABLE, SECURITY DEFINER, has empty search_path and fully qualified objects, no dynamic SQL or mutation. Default PUBLIC execution is revoked; anon/authenticated receive only execution of this RPC. The migration owner must be the trusted schema operator: the function uses that owner's ability to read its private table, not caller-provided authority. Its narrow fixed body is the boundary; it does not grant callers the owner's other powers.
 
-### Smallest proposed additive design — NOT APPLIED
+Anonymous disclosure is deliberately limited to the owner-approved non-secret designation tuple. This is NOT certification of prices, taxes, bank/wallet destinations, payment approval or operational readiness. Those remain separate launch gates. Marker initialization/change is a separately authorized privileged operator action, never migration seed or application signup.
 
-Propose one new migration (45 only after explicit approval), leaving migrations 1–44 untouched:
+## Environment authority and artifact lifecycle
 
-1. A singleton `private.deployment_identity` table containing protocol version, environment enum, opaque non-secret deployment identity UUID, and approved configuration revision. No keys, email addresses, payment values or business data. No row is seeded by the migration; a missing row means unprovisioned and fails Production startup.
-2. Deny direct table/schema access to anon/authenticated; retain RLS/default denial as defense in depth. Only an audited privileged setup procedure may initialize/change the marker after independent verification. Application users, including ordinary staff RPCs, cannot write it.
-3. A narrowly scoped `public.deployment_attestation()` read-only RPC, with fixed empty search_path and fully qualified references, returning only that non-secret tuple. Revoke default PUBLIC execution and grant only the API roles explicitly needed. Startup has no user session: the proposed anon publishable-key execution exposes only non-secret environment identity, never business data. This deliberate limited disclosure requires owner review; do not claim it is an authenticated staff-only endpoint. No caller-provided SQL, reference, organization selector or write operation.
-4. Production startup requests this RPC at the manifest-allowlisted HTTPS Supabase origin using the matching publishable key. Exact response/schema, marker, environment and revision must match a separately reviewed release manifest. Bound timeout/response size; no redirect following; errors contain codes only. Missing row/RPC, denied key, timeout or mismatch prevents readiness. The future Production manifest entry remains absent until the real project is authorized and independently recorded.
-5. The marker attests environment designation, not financial correctness. A configuration revision is meaningful only with a separately approved inventory/readback procedure and invalidation on relevant configuration changes. Do not claim this minimal RPC automatically detects arbitrary TEST payment data. Extending automated financial-configuration attestation requires an explicit further design, not access to private account values from anon.
+config/deployment-manifest.json is reviewed version-controlled authority, independent of runtime environment variables. It pins the approved Staging project and exact historical Vercel origins. Hostinger origins/protection entries are empty and production is null. No real Production startup/build can pass until a separately approved Production manifest entry exists.
 
-Required migration review tests: empty reconstruction creates no marker; no anon/authenticated writes or direct reads; exact safe RPC result; unprovisioned/invalid-marker rejection; no business/financial data disclosure; populated 44-migration upgrade leaves existing records unchanged; generated types exact. No existing schema constraint or RLS policy is weakened.
+src/infrastructure/config/environment-authority.ts enforces explicit non-local origins/backend and matching publishable configuration. Production requires exactly https://naql365.com, approved project/key digest, disabled staging smoke, and successful matching protocol/environment/identity/revision attestation. It rejects missing configuration, localhost/IP/www/temporary/Vercel canonical origins and the known Staging project. Failures expose bounded ENV_* codes only.
 
-## Application implementation plan after marker decision
+npm run build and npm start invoke scripts/guarded-next.mjs. The build loads Next environment configuration, validates inputs, and records a non-secret .naql365-build-identity.json artifact (ignored in Git). It contains the public-target/key digest and manifest digest, not raw keys. Start reads actual runtime process inputs and compares against the artifact before listening. Next instrumentation repeats validation before readiness, including when starting Next directly; next.config.ts validates direct builds. The artifact is included in output-file tracing for managed packaging. Do not omit it from the hosted build output. It must be generated on the target by the approved build command, not copied from Staging to Production.
 
-Use one provider-neutral authority shared by Next build validation, startup preflight and server initialization. Next's installed instrumentation documentation confirms register completes before readiness; additionally validate the supported npm start path before listening. Never rely only on a later page render.
+Production preflight makes a bounded POST with the publishable key to the exact approved Supabase RPC endpoint. It follows no redirects, caps response bytes at 2048 and waits at most five seconds. Missing RPC/row, invalid schema, extra fields, different identity/revision/environment, network error and timeout fail closed. No service-role key, customer session or financial details are used. The approved project/key digest plus independent database marker establish backend designation; duplicate environment variables are not treated as independent proof.
 
-- Local: preserve current supported loopback/development behavior.
-- Staging: explicit APP_ENV=staging; exact reviewed origin allowlist and project `zuvyfeflkzlciuaauxba`; preserve approved Vercel origins, with Hostinger list empty until its exact hostname is known and reviewed.
-- Production: exact https://naql365.com; reject localhost/IP/www/temporary/Vercel origins, missing values and staging smoke. Require a reviewed Production manifest entry and successful backend attestation. No entry currently exists, so Production stays unavailable.
-- Build writes an artifact identity recording environment, canonical origin, approved manifest revision and digest of public backend configuration. Start independently reads runtime inputs, compares them with the built artifact and performs backend preflight. Do not mistake statically inlined NEXT_PUBLIC reads for runtime process environment. No key values in diagnostics.
-- Bounded errors include ENV_CANONICAL_ORIGIN_MISMATCH, ENV_BACKEND_IDENTITY_MISMATCH, ENV_STAGING_BACKEND_IN_PRODUCTION, ENV_BUILD_RUNTIME_MISMATCH and ENV_BACKEND_ATTESTATION_UNAVAILABLE.
-- Automated synthetic-manifest tests must cover all owner-listed rejections, safe local/staging/synthetic Production, wrong key/marker, RPC failure and timeout. Synthetic Production approval exists only in test injection, never in the shipped manifest.
+Local behavior remains supported. When testing an optimized local artifact, build and start with the same APP_URL (the local E2E suite uses http://127.0.0.1:3000); the artifact guard correctly rejects changing it after build. Production build mode NODE_ENV=production is distinct from APP_ENV=production.
 
-## Acceptance-tool adaptation plan
+## Provider adapters, protection and fixtures
 
-Existing verify-browser/intake/phase2/phase3/driver scripts contain Vercel origin/bypass assumptions. Playwright fixtures and helper fetches also emit Vercel bypass headers; changing only the top-level origin check is insufficient.
+scripts/staging/target.mjs provides VERCEL_STAGING and HOSTINGER_ACCEPTANCE authority shared by hosted harnesses and Playwright configurations. Both require APP_ENV=staging and exact approved project/origin; management verification separately checks the exact Staging organization/reference and healthy project. Arbitrary CLI URLs, suffix-only matches and Production targets are denied.
 
-Create one shared target authority and protection adapter for VERCEL_STAGING and HOSTINGER_ACCEPTANCE. Require exact HTTPS origin, reviewed hostname entry, APP_ENV=staging, exact project/reference/organization verification, manifest identity and disposable-fixture ledger before mutation. Reject arbitrary command-line targets and suffix-only allowlists. Keep shared business tests, exclusive-run lock, cleanup and secret-safe reporters. Extend consistent ledger/cleanup coverage across harnesses before claiming this gate passed.
+Only VERCEL_STAGING sends the Vercel bypass header, and only to the verified origin. Hostinger sends no such header and cannot be approved just by setting a bypass variable. The currently implemented Hostinger mode requires an independently reviewed NETWORK_ALLOWLIST platform restriction recorded for the exact origin. Actual platform support/enforcement must be verified in hPanel before adding an entry; if unavailable, leave Hostinger denied and implement a supported adapter after review. This is not an application-level bypass and does not claim Hostinger currently provides a verified restriction for this account.
 
-Only the Vercel adapter consumes/emits VERCEL_AUTOMATION_BYPASS_SECRET. Hostinger must use a verified platform-supported restriction (for example an approved operator network restriction if actually available) and its corresponding browser/request access method. No Hostinger mechanism is currently certified. Do not simulate protection with a new application bypass or send Vercel headers to Hostinger. Missing approved Hostinger protection means acceptance mutation is denied.
+Existing business tests and scoped cleanup are retained. Exclusive-run locking prevents overlapping fixtures. The common ignored JSONL ledger records safe fixture-root Auth/organization UUIDs; existing Phase 7 guest ledger supplements it. Cleanup failures/nonzero runs retain the ledger for recovery, successful completed runs remove it. Never treat a ledger entry for a shared organization as permission to delete the organization; use existing per-user/request cleanup predicates. No email/password/token/financial data belongs in a ledger. Public signup still requires actual confirmation, never pre-provisioned fixture membership as a substitute.
 
 ## Non-secret hPanel checklist — values to verify, not deployed configuration
 
@@ -77,12 +64,25 @@ Only the Vercel adapter consumes/emits VERCEL_AUTOMATION_BYPASS_SECRET. Hostinge
 | Auth                                       | Exact temporary callbacks added to Staging only after separate authorization; preserve historical callbacks during transition |
 | DNS                                        | No naql365.com/www binding or record changes in this task                                                                     |
 
-## Verification at this stopped checkpoint
+## Required acceptance and verification
 
-Only documentation changed. Formatting, diff hygiene, tracked-file secret-pattern scan and migration/source equivalence checks are applicable. No new guard tests exist yet; full unit/integration, E2E, database/RLS/types and concurrency suites were not rerun and must not be reported as newly PASS. No exact-head CI run is claimed. After implementation, run every requested regression and secret/history scan before requesting deployment authorization. Historical CI is not evidence for unfinished enablement.
+Run the complete Hostinger matrix in hostinger-runtime-compatibility.md only after separate deployment authorization. It covers real registration/confirmation, all role sessions and logout, Guest/Finance/Operations/Driver/POD, private Storage, Realtime, AR/EN/SA/EG, mobile, headers/cookies, safe logs and cleanup. No result on Hostinger is claimed by this source task.
 
-## Owner decision required
+Source verification includes synthetic environment/adapter tests, real PostgreSQL migration security assertions, fresh 45 reconstruction, populated 44→45 table/policy snapshot comparison, complete unit/integration and local E2E. Official Supabase-generated types and independent-connection concurrency are verified in GitHub CI; see the final task evidence for exact final-head run and totals. Local Docker was unavailable and attempting to start it exhausted machine memory; that local stack gate is not represented as executed successfully.
 
-Approve or reject the proposed single additive private marker + minimal read-only RPC, including its deliberately non-secret anon result, before implementation continues. No migration, infrastructure, app source or hosted setting has been changed at this checkpoint.
+The full dependency audit is not clean: preserve the existing scoped owner acceptance for the development-only braces advisory, technically unresolved upstream. No package version was changed.
 
-**HOSTINGER RUNTIME ENABLEMENT PARTIAL — FURTHER SOURCE CHANGE REQUIRED**
+## Manual hPanel values still unknown
+
+Exact temporary origin, plan/region, Node/npm patches, deterministic install control, build-output retention, supported access restriction, PORT/proxy/TLS/cookie handling, resource/upload limits, logs and operational rollback must be verified on the real account. No credentials or real Production identifiers are requested or stored here. Production remains disabled; financial configuration approval is separate.
+
+## Source verification evidence
+
+- 219 unit/integration tests PASS locally (45 files), including 18 environment/adapter cases and two migration security/upgrade cases.
+- 32 local desktop/mobile E2E PASS; optimized build, strict TypeScript, lint and formatting PASS.
+- Initial implementation CI 37430815661 PASS: both application and Supabase jobs; six SQL TAP files (containing their internal assertions), all five independent-connection concurrency suites, generated-type diff check. These suite counts are not represented as six individual SQL assertions.
+- Official Supabase CLI types artifact from generation run 37430815666 is byte-identical to committed types (SHA-256 6429ed5bd00c72a905ff14f7fe291de0d1ca2cba8d60e94de81fcca20cbdfe8d).
+- Tracked and history heuristic credential scans PASS. History scan is now in CI; it does not claim detection of every possible secret format.
+- Final exact-head CI must also PASS after this documentation update; its SHA/run are recorded in the final task response. No hosted tests ran and no hosted fixture cleanup was necessary in this source task.
+
+Changed areas: deployment manifest/authority, build/start/instrumentation and output tracing; one migration, SQL assertions and generated types; shared hosted target/protection adapters, Playwright protection headers and fixture ledger; unit/upgrade tests; CI history scan; the four Hostinger/Production documents. No commercial/Auth/RLS business behavior was redesigned.

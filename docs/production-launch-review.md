@@ -1,6 +1,6 @@
 # Naql365 Production Launch Review
 
-> Runtime enablement checkpoint (6 October 2026): the requested branch was created and approved documentation carried forward. Backend inspection found no environment attestation interface. Per the owner stop condition, implementation is paused before a proposed additive private marker/read-only RPC. See [the design and hPanel checklist](hostinger-acceptance-deployment.md). The guard and provider adapters are not implemented; no new runtime/CI PASS is claimed.
+> Runtime enablement update (6 October 2026): owner-approved additive migration 45 and provider-neutral source controls are now implemented. Existing 44 migrations are unchanged; no marker row or Production manifest entry exists. See [implementation, security boundary and hPanel checklist](hostinger-acceptance-deployment.md). Hostinger hosted acceptance remains unexecuted. Earlier review findings below describe the accepted 44-migration baseline and are superseded for guard/tool implementation by this update.
 
 Review date: 5 October 2026. **PRODUCTION REVIEW COMPLETE — OWNER INPUT REQUIRED**.
 
@@ -10,7 +10,7 @@ This is a documentation-first review, not Phase 8, setup permission, a release a
 
 Production host is **Hostinger Managed Node.js / Next.js**; Supabase remains the authoritative backend. Canonical origin is **https://naql365.com**, with **www.naql365.com redirecting to the apex**. Hostinger manages DNS. See [Hostinger runtime compatibility](hostinger-runtime-compatibility.md) for the provider audit, required source controls, exact proposed build settings and unexecuted acceptance matrix. Vercel is historical/temporary Staging evidence only. No Hostinger account/runtime was tested and no deployment/DNS change was made.
 
-The previous operational-only environment comparison is superseded: the owner now requires a fail-closed Production build/startup guard. This is **SOURCE CHANGE REQUIRED**, along with Hostinger-safe acceptance tooling. The guard is designed, not implemented. Domain/hosting choice is resolved; legal, operating configuration, protection, recovery and all other unresolved launch gates below remain.
+The previous operational-only environment comparison is superseded: the owner now requires a fail-closed Production build/startup guard. This guard and Hostinger-safe acceptance tooling are now implemented under the subsequent owner approval; see the implementation document. Production marker/manifest remain absent. Domain/hosting choice is resolved; legal, operating configuration, protection, recovery and all other unresolved launch gates below remain.
 
 ## Classification and evidence boundary
 
@@ -50,7 +50,7 @@ Read-only inventory found `naql365-staging` Supabase project `zuvyfeflkzlciuaaux
 | Auth mail delivery                      | CONFIGURATION REQUIRED | Production SMTP provider, verified sender/domain, DNS authentication, rate limits and real-mail delivery test; do not rely on the test mail service                                                                                         |
 | Storage / Realtime                      | CONFIGURATION REQUIRED | Apply migrations then verify exact private buckets, grants/publication and denied access; no manual broadening                                                                                                                              |
 
-**Important control gap:** VERCEL_ENV checks do not enforce Hostinger identity. Production requires the provider-neutral fail-closed guard in the compatibility review: canonical apex, approved Supabase reference/key binding, backend identity/configuration attestation, no Staging or TEST dependency. Two-person inspection is additional, not a substitute. No guard or new marker was implemented here.
+**Important control gap:** VERCEL_ENV checks do not enforce Hostinger identity. The runtime-enablement branch now implements canonical apex, approved Supabase reference/key binding, build/runtime identity and migration-45 backend attestation. Production has no approved manifest/marker and fails closed. Attestation certifies designation only: TEST payment/configuration approval remains a separate Finance gate. Two-person inspection is additional, not a substitute.
 
 ### Complete runtime variable inventory
 
@@ -267,6 +267,6 @@ Each line is a gate, not permission to execute it now. First resolve Hostinger s
 
 ## Source-change conclusion
 
-No application source, migration or dependency was changed by this review. The core accepted customer/guest/finance/operations journeys do not require a redesign. **A reviewed legal content change is definitely required** before public launch because the accepted repository contains null legal content. Hostinger environment binding and acceptance-tool adaptation now require source changes. Production GPS retention/disable and staff MFA may require targeted work depending on owner decisions; they are not silently marked READY. Supported catalog/payment/identity provisioning and DNS/SMTP are configuration/operations work. Missing owner decisions prevent asserting that configuration alone is sufficient for the final release.
+No application source, migration or dependency was changed by this review. The core accepted customer/guest/finance/operations journeys do not require a redesign. **A reviewed legal content change is definitely required** before public launch because the accepted repository contains null legal content. Hostinger environment binding and acceptance-tool adaptation are implemented on the enablement branch. Production GPS retention/disable and staff MFA may require targeted work depending on owner decisions; they are not silently marked READY. Supported catalog/payment/identity provisioning and DNS/SMTP are configuration/operations work. Missing owner decisions prevent asserting that configuration alone is sufficient for the final release.
 
 **Final decision: PRODUCTION REVIEW COMPLETE — OWNER INPUT REQUIRED.** All BLOCKED rows are launch gates, not evidence that this read-only review failed. Stop here: no merge to main, infrastructure creation, Production deployment, real payment entry or Phase 8.

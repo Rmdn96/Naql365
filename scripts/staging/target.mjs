@@ -29,8 +29,8 @@ export function acceptanceTarget(env = process.env, approved = manifest) {
   } else throw Error('ACCEPTANCE_PROVIDER_DENIED');
   return { origin, provider };
 }
-export function protectionHeaders(env = process.env) {
-  const target = acceptanceTarget(env);
+export function protectionHeaders(env = process.env, approved = manifest) {
+  const target = acceptanceTarget(env, approved);
   return target.provider === 'VERCEL_STAGING'
     ? { 'x-vercel-protection-bypass': env.VERCEL_AUTOMATION_BYPASS_SECRET }
     : {};
