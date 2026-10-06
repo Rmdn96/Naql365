@@ -45,7 +45,26 @@ export function validateEnvironment(env: Inputs, manifest: Manifest): ArtifactId
     publicKeyDigest: digest(key),
     manifestDigest: digest(JSON.stringify(manifest)),
   };
-  if (environment === 'local') return identity;
+  if (environment === 'local') {
+    // Omitting APP_ENV must not turn a public deployment into a local exception.
+    if (origin) {
+      let local: URL;
+      try {
+        local = new URL(origin);
+      } catch {
+        return fail('ENV_CANONICAL_ORIGIN_MISMATCH');
+      }
+      if (
+        !['localhost', '127.0.0.1'].includes(local.hostname) ||
+        !['http:', 'https:'].includes(local.protocol) ||
+        local.origin !== origin ||
+        local.username ||
+        local.password
+      )
+        fail('ENV_CANONICAL_ORIGIN_MISMATCH');
+    }
+    return identity;
+  }
   if (manifest.version !== 1) fail('ENV_MANIFEST_INVALID');
   if (environment === 'production') {
     if (origin !== 'https://naql365.com') fail('ENV_CANONICAL_ORIGIN_MISMATCH');

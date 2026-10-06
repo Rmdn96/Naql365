@@ -35,6 +35,17 @@ const safe = {
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key,
 };
 describe('independently approved deployment authority', () => {
+  it('does not let public targets use the local environment exception', () => {
+    expect(() => validateEnvironment({ APP_URL: 'https://naql365.com' }, manifest)).toThrow(
+      'ENV_CANONICAL_ORIGIN_MISMATCH',
+    );
+    expect(() =>
+      validateEnvironment({ APP_ENV: 'local', APP_URL: 'https://approved.example.test' }, manifest),
+    ).toThrow('ENV_CANONICAL_ORIGIN_MISMATCH');
+    expect(validateEnvironment({ APP_URL: 'http://127.0.0.1:3000' }, manifest).environment).toBe(
+      'local',
+    );
+  });
   it.each([
     'http://localhost:3000',
     'https://127.0.0.1',

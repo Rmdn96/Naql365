@@ -26,7 +26,7 @@ npm run build and npm start invoke scripts/guarded-next.mjs. The build loads Nex
 
 Production preflight makes a bounded POST with the publishable key to the exact approved Supabase RPC endpoint. It follows no redirects, caps response bytes at 2048 and waits at most five seconds. Missing RPC/row, invalid schema, extra fields, different identity/revision/environment, network error and timeout fail closed. No service-role key, customer session or financial details are used. The approved project/key digest plus independent database marker establish backend designation; duplicate environment variables are not treated as independent proof.
 
-Local behavior remains supported. When testing an optimized local artifact, build and start with the same APP_URL (the local E2E suite uses http://127.0.0.1:3000); the artifact guard correctly rejects changing it after build. Production build mode NODE_ENV=production is distinct from APP_ENV=production.
+Local behavior remains supported for loopback origins; a public origin cannot use missing/local APP_ENV to evade hosted validation. When testing an optimized local artifact, build and start with the same APP_URL (the local E2E suite uses http://127.0.0.1:3000); the artifact guard correctly rejects changing it after build. Production build mode NODE_ENV=production is distinct from APP_ENV=production.
 
 ## Provider adapters, protection and fixtures
 
@@ -78,7 +78,7 @@ Exact temporary origin, plan/region, Node/npm patches, deterministic install con
 
 ## Source verification evidence
 
-- 219 unit/integration tests PASS locally (45 files), including 18 environment/adapter cases and two migration security/upgrade cases.
+- 219 unit/integration tests PASS locally before the additional local-origin hardening; the final suite has 220 cases (45 files), including 19 environment/adapter cases and two migration security/upgrade cases.
 - 32 local desktop/mobile E2E PASS; optimized build, strict TypeScript, lint and formatting PASS.
 - Initial implementation CI 37430815661 PASS: both application and Supabase jobs; six SQL TAP files (containing their internal assertions), all five independent-connection concurrency suites, generated-type diff check. These suite counts are not represented as six individual SQL assertions.
 - Official Supabase CLI types artifact from generation run 37430815666 is byte-identical to committed types (SHA-256 6429ed5bd00c72a905ff14f7fe291de0d1ca2cba8d60e94de81fcca20cbdfe8d).
