@@ -8,7 +8,7 @@
       "https://naql365-staging-q142gx9ok-naql365.vercel.app",
       "https://naql365-staging-4amvwuc0p-naql365.vercel.app"
     ],
-    "hostingerOrigins": ["https://purple-skunk-677919.hostingersite.com"],
+    "hostingerOrigins": [],
     "hostingerProtection": {}
   },
   "production": null

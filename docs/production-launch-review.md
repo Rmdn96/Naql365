@@ -1,5 +1,7 @@
 # Naql365 Production Launch Review
 
+> Owner decision (7 October 2026): **DEFERRED — RESUME AFTER PRODUCT RELEASE CANDIDATE**. Hostinger remains the intended Production host; development, Staging and Preview work resumes on Vercel. No Hostinger runtime remediation or deployment is authorized in this candidate. See [runtime candidate separation](preproduction-runtime-candidate.md).
+
 > Runtime enablement update (6 October 2026): owner-approved additive migration 45 and provider-neutral source controls are now implemented. Existing 44 migrations are unchanged; no marker row or Production manifest entry exists. See [implementation, security boundary and hPanel checklist](hostinger-acceptance-deployment.md). Hostinger hosted acceptance remains unexecuted. Earlier review findings below describe the accepted 44-migration baseline and are superseded for guard/tool implementation by this update.
 
 Review date: 5 October 2026. **PRODUCTION REVIEW COMPLETE — OWNER INPUT REQUIRED**.

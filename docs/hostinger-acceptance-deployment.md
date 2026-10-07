@@ -1,5 +1,7 @@
 # Hostinger acceptance deployment — runtime enablement
 
+> Owner decision (7 October 2026): **DEFERRED — RESUME AFTER PRODUCT RELEASE CANDIDATE**. Hostinger remains the intended Production host; development, Staging and Preview work resumes on Vercel. No Hostinger runtime remediation or deployment is authorized in this candidate. See [runtime candidate separation](preproduction-runtime-candidate.md).
+
 Implementation date: 6 October 2026. No Hostinger deployment, DNS change, Production project/marker/configuration or Phase 8 work is authorized here. Hostinger runtime acceptance is NOT EXECUTED; Vercel historical evidence is not substituted for it.
 
 ## Baseline and approved scope
