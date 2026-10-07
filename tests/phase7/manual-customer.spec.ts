@@ -1,5 +1,6 @@
 import { test, expect } from '../staging/fixtures';
 import { acceptedOrder, admin, org } from '../phase4/helpers';
+import { dictionary } from '../../src/i18n/dictionaries';
 for (const country of ['SA', 'EG'] as const)
   test(`${country} registered customer manual quote and CASH regression`, async ({ page }) => {
     const market = await admin
@@ -52,4 +53,8 @@ for (const country of ['SA', 'EG'] as const)
     await expect(page).toHaveURL(/\/en\/account$/);
     await page.reload();
     await expect(page).toHaveURL(/\/en\/account$/);
+    await page.getByRole('button', { name: dictionary('en').logout, exact: true }).click();
+    await expect(page).toHaveURL(/\/en\/login$/);
+    await page.goto('/en/account');
+    await expect(page).toHaveURL(/\/en\/login$/);
   });

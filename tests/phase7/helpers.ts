@@ -9,6 +9,7 @@ import { customerDictionary } from '../../src/i18n/customer';
 import { publicDictionary } from '../../src/i18n/public';
 import { quotesDictionary } from '../../src/i18n/quotes';
 import { driverDictionary } from '../../src/i18n/driver';
+import { dictionary } from '../../src/i18n/dictionaries';
 import { marketDate } from '../../src/domain/markets/model';
 import { driverLogin, uiAction } from '../helpers/driver-journey';
 import sharp from 'sharp';
@@ -258,5 +259,13 @@ export async function executeDelivery(
     (await admin.from('orders').select('operational_status').eq('id', orderId).single()).data
       ?.operational_status,
   ).toBe('COMPLETED');
+  await staff.goto(`/${locale}`);
+  await staff.goto(`/${locale}/login`);
+  await expect(staff).toHaveURL(new RegExp(`/${locale}/driver$`));
+  await staff.reload();
+  await staff.getByRole('button', { name: dictionary(locale).logout, exact: true }).click();
+  await expect(staff).toHaveURL(new RegExp(`/${locale}/login$`));
+  await staff.goto(`/${locale}/driver`);
+  await expect(staff).toHaveURL(new RegExp(`/${locale}/login$`));
   return trip;
 }
