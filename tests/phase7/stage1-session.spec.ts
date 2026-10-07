@@ -23,7 +23,13 @@ for (const locale of ['ar', 'en'] as const) {
     await page.getByRole('button', { name: dictionary(locale).logout, exact: true }).click();
     await expect(page).toHaveURL(new RegExp(`/${locale}/login$`));
     await page.goBack();
-    await expect(page).toHaveURL(new RegExp(`/${locale}/login$`));
+    await expect(page.locator('.desktop-header-nav .identity-link')).toHaveAttribute(
+      'href',
+      `/${locale}/login`,
+    );
+    await expect(
+      page.getByRole('button', { name: dictionary(locale).logout, exact: true }),
+    ).toHaveCount(0);
     await page.goto(`/${locale}/portal/operations`);
     await expect(page).toHaveURL(new RegExp(`/${locale}/login$`));
   });

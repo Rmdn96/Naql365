@@ -60,7 +60,7 @@ for (const locale of ['ar', 'en'] as const) {
     expect(resources[2]!.status).toBe(404);
     if (process.env.STAGING_UX_SCREENSHOTS) {
       await page.setViewportSize({ width: locale === 'ar' ? 1280 : 390, height: 900 });
-      await page.goto(`/${locale}/${locale === 'ar' ? 'login' : 'signup'}`);
+      await page.goto(`/${locale}/${locale === 'ar' ? 'login' : 'register'}`);
       // Capture only an untouched anonymous form; never a credential-entry step.
       for (const input of await page.locator('input:not([type=hidden])').all())
         await expect(input).toHaveValue('');
