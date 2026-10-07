@@ -537,7 +537,15 @@ export function RequestWizard({
               value={draft.service_id}
               onChange={(e) => {
                 const s = details.services.find((s) => s.id === e.target.value);
-                const next = { ...draft, service_id: e.target.value };
+                const next = {
+                  ...draft,
+                  service_id: e.target.value,
+                  additional_service_ids: draft.additional_service_ids.filter((id) =>
+                    details.applicability.some(
+                      (a) => a.service_id === e.target.value && a.additional_service_id === id,
+                    ),
+                  ),
+                };
                 if (!s?.property_required) {
                   for (const kind of ['pickup', 'delivery'] as const)
                     next[kind] = { ...next[kind], floor: null, elevator: null, access_notes: '' };
@@ -579,18 +587,30 @@ export function RequestWizard({
                   }}
                 >
                   <option value="">{t.city}</option>
-                  {details.cities.map((city) => (
-                    <option key={city.id} value={city.id}>
-                      {locale === 'ar' ? city.name_ar : city.name_en} —{' '}
-                      {locale === 'ar'
-                        ? city.market_regions?.name_ar
-                        : city.market_regions?.name_en}
-                    </option>
-                  ))}
+                  {details.cities
+                    .filter((city) =>
+                      details.coverage.some(
+                        (c) =>
+                          c.city_id === city.id &&
+                          c.service_id === draft.service_id &&
+                          (kind === 'pickup' ? c.pickup_eligible : c.delivery_eligible),
+                      ),
+                    )
+                    .map((city) => (
+                      <option key={city.id} value={city.id}>
+                        {locale === 'ar' ? city.name_ar : city.name_en} —{' '}
+                        {locale === 'ar'
+                          ? city.market_regions?.name_ar
+                          : city.market_regions?.name_en}
+                      </option>
+                    ))}
                 </Select>
                 {draft[kind].city_id &&
                   !details.coverage.some(
-                    (c) => c.city_id === draft[kind].city_id && c.service_id === draft.service_id,
+                    (c) =>
+                      c.city_id === draft[kind].city_id &&
+                      c.service_id === draft.service_id &&
+                      (kind === 'pickup' ? c.pickup_eligible : c.delivery_eligible),
                   ) && <Alert>{mt.unavailable}</Alert>}
                 {locationField(kind, 'district', t.district, 120)}
                 {locationField(kind, 'address', t.address, 500)}
@@ -752,7 +772,13 @@ export function RequestWizard({
         {step === 4 && (
           <>
             {details.options
-              .filter((o) => o.active)
+              .filter(
+                (o) =>
+                  o.active &&
+                  details.applicability.some(
+                    (a) => a.service_id === draft.service_id && a.additional_service_id === o.id,
+                  ),
+              )
               .map((o) => (
                 <label className="choice" key={o.id}>
                   <input
@@ -770,7 +796,13 @@ export function RequestWizard({
                   {locale === 'ar' ? o.name_ar : o.name_en}
                 </label>
               ))}
-            {!details.options.some((o) => o.active) && <p>{t.noExtras}</p>}
+            {!details.options.some(
+              (o) =>
+                o.active &&
+                details.applicability.some(
+                  (a) => a.service_id === draft.service_id && a.additional_service_id === o.id,
+                ),
+            ) && <p>{t.noExtras}</p>}
           </>
         )}
         {step === 5 && (

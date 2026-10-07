@@ -26,8 +26,20 @@ insert into public.pricing_rules(organization_id,market_id,code,version,componen
  select organization_id,id,'test-distance',1,'DISTANCE','PER_KM',case country_code when 'SA' then 100 else 200 end,true,'مسافة اختبار','TEST distance' from (select * from public.markets where organization_id::text like '23500000%') fixture_markets;
 create temporary table market_results(market uuid primary key,request uuid,quote uuid,order_id uuid,job uuid,trip uuid,driver uuid,vehicle uuid);
 grant all on market_results to authenticated;
+-- Explicit legacy AUTOMATED-mode regression, never launch configuration.
+do $launch_fixture$ begin
+ if exists(select 1 from information_schema.columns where table_schema='public' and table_name='pricing_settings' and column_name='pricing_mode') then
+  update public.pricing_settings set pricing_mode='AUTOMATED' where organization_id::text like '23500000%';
+  update public.service_areas set pickup_eligible=true,delivery_eligible=true where organization_id::text like '23500000%';
+  insert into public.service_addon_applicability
+   select ms.organization_id,ms.market_id,ms.service_id,a.id,a.active from public.market_services ms join public.additional_services a on a.organization_id=ms.organization_id
+   where ms.organization_id::text like '23500000%' on conflict do nothing;
+ end if;
+end $launch_fixture$;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','13500000-0000-4000-8000-000000000002',true);
+
+
 do $$ declare m record; other uuid; req uuid; result jsonb; payload jsonb; eval uuid; q uuid; ord uuid; job uuid; trip uuid; driver uuid; vehicle uuid;
 begin
  for m in select * from (select * from public.markets where organization_id::text like '23500000%') fixture_markets order by country_code loop

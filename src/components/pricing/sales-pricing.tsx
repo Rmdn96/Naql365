@@ -43,12 +43,16 @@ type Version = {
 export function SalesPricing({
   locale,
   requestId,
+  requestRevision,
+  pricingMode,
   vehicles,
   evaluation,
   draft,
 }: {
   locale: Locale;
   requestId: string;
+  requestRevision: number;
+  pricingMode: string | null;
   vehicles: { id: string; name_ar: string; name_en: string }[];
   evaluation: Evaluation | undefined;
   draft: Version | undefined;
@@ -64,6 +68,9 @@ export function SalesPricing({
   const [adjustment, setAdjustment] = useState('0.00'),
     [reason, setReason] = useState(''),
     [hours, setHours] = useState('48');
+  const [subtotal, setSubtotal] = useState('');
+  const [manualMutation] = useState(() => crypto.randomUUID());
+  const manual = pricingMode === 'MANUAL';
   async function post(url: string, body: unknown) {
     setBusy(true);
     setError(false);
@@ -106,6 +113,11 @@ export function SalesPricing({
   return (
     <div className="stack commercial-stack">
       {error && <Alert tone="error">{t.actionFailed}</Alert>}
+      {pricingMode === null && (
+        <Alert>
+          {locale === 'ar' ? 'إعداد التسعير غير مكتمل' : 'Pricing configuration is incomplete'}
+        </Alert>
+      )}
       <section className="card stack" aria-labelledby="distance-title">
         <h2 id="distance-title">{t.verifiedDistance}</h2>
         <p>{t.distanceHelp}</p>
@@ -127,35 +139,83 @@ export function SalesPricing({
             maxLength={300}
             onChange={(e) => setNote(e.target.value)}
           />
-          <Select
-            disabled={!hydrated}
-            id="vehicle"
-            label={t.vehicle}
-            value={vehicle}
-            onChange={(e) => setVehicle(e.target.value)}
-          >
-            {vehicles.map((v) => (
-              <option key={v.id} value={v.id}>
-                {locale === 'ar' ? v.name_ar : v.name_en}
-              </option>
-            ))}
-          </Select>
+          {!manual && (
+            <Select
+              disabled={!hydrated}
+              id="vehicle"
+              label={t.vehicle}
+              value={vehicle}
+              onChange={(e) => setVehicle(e.target.value)}
+            >
+              {vehicles.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {locale === 'ar' ? v.name_ar : v.name_en}
+                </option>
+              ))}
+            </Select>
+          )}
+          {!manual && (
+            <Input
+              disabled={!hydrated}
+              id="workers"
+              label={t.workers}
+              type="number"
+              min={1}
+              max={50}
+              value={workers}
+              onChange={(e) => setWorkers(e.target.value)}
+            />
+          )}
+        </div>
+        {pricingMode === 'AUTOMATED' && (
+          <Button disabled={!hydrated || busy || !vehicle} onClick={calculate}>
+            {t.calculate}
+          </Button>
+        )}
+      </section>
+      {manual && (
+        <section className="card stack">
+          <h2>{locale === 'ar' ? 'عرض سعر يدوي' : 'Manual quote'}</h2>
           <Input
-            disabled={!hydrated}
-            id="workers"
-            label={t.workers}
+            id="manual-subtotal"
+            label={t.finalSubtotal}
+            inputMode="decimal"
+            value={subtotal}
+            onChange={(e) => setSubtotal(e.target.value)}
+          />
+          <Input
+            id="manual-validity"
+            label={t.validity}
             type="number"
             min={1}
-            max={50}
-            value={workers}
-            onChange={(e) => setWorkers(e.target.value)}
+            max={720}
+            value={hours}
+            onChange={(e) => setHours(e.target.value)}
           />
-        </div>
-        <Button disabled={!hydrated || busy || !vehicle} onClick={calculate}>
-          {t.calculate}
-        </Button>
-      </section>
-      {evaluation && (
+          <Button
+            disabled={!hydrated || busy}
+            onClick={() => {
+              const amount = parseAmountToMinor(subtotal);
+              if (amount === null || amount < 0) {
+                setError(true);
+                return;
+              }
+              void post('/api/sales/quotes/manual', {
+                requestId,
+                expectedRevision: requestRevision,
+                subtotalMinor: amount,
+                distanceKm: Number(distance),
+                sourceNote: note,
+                validitySeconds: Number(hours) * 3600,
+                mutationId: manualMutation,
+              });
+            }}
+          >
+            {t.createDraft}
+          </Button>
+        </section>
+      )}
+      {pricingMode === 'AUTOMATED' && evaluation && (
         <section className="card stack">
           <h2>{t.calculated}</h2>
           <p className="eyebrow">

@@ -92,7 +92,7 @@ const ar = {
   submit: 'إرسال الطلب',
   submitting: 'جارٍ إرسال الطلب…',
   success: 'تم إرسال طلبك',
-  reviewNotice: 'سيتم مراجعة طلبك. لا يوجد سعر أو موعد مؤكد في هذه الخطوة.',
+  reviewNotice: 'السعر قيد المراجعة. سيجهز فريقنا عرض السعر النهائي؛ الموعد غير مؤكد بعد.',
   immutable: 'تم إرسال هذا الطلب، ولا يمكن تعديل بياناته.',
   edit: 'تعديل',
   cancel: 'إلغاء المسودة',
@@ -214,7 +214,8 @@ const en: CustomerDictionary = {
   submit: 'Submit request',
   submitting: 'Submitting request…',
   success: 'Your request was submitted',
-  reviewNotice: 'Your request will be reviewed. No price or appointment is confirmed at this step.',
+  reviewNotice:
+    'Pricing under review. Our team will prepare your final quote; the appointment is not confirmed yet.',
   immutable: 'This request has been submitted and its details cannot be edited.',
   edit: 'Edit',
   cancel: 'Cancel draft',

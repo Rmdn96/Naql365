@@ -15,7 +15,13 @@ export function Landing({
   locale: Locale;
   country: PublicCountry;
   services: { id: string; nameAr: string; nameEn: string }[];
-  cities: { id: string; nameAr: string; nameEn: string }[];
+  cities: {
+    id: string;
+    nameAr: string;
+    nameEn: string;
+    pickupEligible: boolean;
+    deliveryEligible: boolean;
+  }[];
 }) {
   const t = publicDictionary(locale),
     request = `/${locale}/request`,
@@ -89,11 +95,13 @@ export function Landing({
                 defaultValue=""
               >
                 <option value="">{i === 0 ? t.pickup : t.delivery}</option>
-                {cities.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {locale === 'ar' ? c.nameAr : c.nameEn}
-                  </option>
-                ))}
+                {cities
+                  .filter((c) => (i === 0 ? c.pickupEligible : c.deliveryEligible))
+                  .map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {locale === 'ar' ? c.nameAr : c.nameEn}
+                    </option>
+                  ))}
               </Select>
             ))}
             <Button>{t.quickAction}</Button>

@@ -294,10 +294,23 @@ export async function acceptedOrder(
   await page.goto(`/ar/portal/quotes/${requestId}`, { waitUntil: 'domcontentloaded' });
   await page.locator('#distance').fill('18.750');
   await page.locator('#source-note').fill('Controlled verified road distance');
-  await page.locator('#vehicle').selectOption({ label: 'شاحنة صغيرة' });
-  await page.locator('#workers').fill('2');
-  await page.getByRole('button', { name: qt.calculate, exact: true }).click();
-  await expect(page.getByRole('heading', { name: qt.calculated, exact: true })).toBeVisible();
+  const mode = await admin
+    .from('pricing_settings')
+    .select('pricing_mode')
+    .eq('organization_id', org)
+    .eq('market_id', market.id)
+    .single();
+  expect(mode.error).toBeNull();
+  if (mode.data?.pricing_mode === 'MANUAL') {
+    await expect(page.getByRole('button', { name: qt.calculate, exact: true })).toHaveCount(0);
+    await page.locator('#manual-subtotal').fill('123.45');
+  } else {
+    expect(mode.data?.pricing_mode).toBe('AUTOMATED');
+    await page.locator('#vehicle').selectOption({ label: 'شاحنة صغيرة' });
+    await page.locator('#workers').fill('2');
+    await page.getByRole('button', { name: qt.calculate, exact: true }).click();
+    await expect(page.getByRole('heading', { name: qt.calculated, exact: true })).toBeVisible();
+  }
   await page.getByRole('button', { name: qt.createDraft, exact: true }).click();
   await page.getByRole('button', { name: qt.sendQuote, exact: true }).click();
   await expect(page.getByRole('button', { name: qt.sendQuote, exact: true })).toBeHidden();

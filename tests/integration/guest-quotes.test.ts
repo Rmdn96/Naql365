@@ -472,3 +472,44 @@ test('staff replacement revokes old access and never exposes or stores an existi
     db.query("select public.manage_guest_link($1,'replace')", [journey.request.id]),
   ).rejects.toThrow();
 });
+
+test('MANUAL and absent configuration hide legacy automatic amounts at the capability RPC while final quote stays visible', async () => {
+  const journey = await newJourney();
+  const version = await prepareQuote(journey.request.id);
+  await db.query('select public.send_quote($1)', [version]);
+  await guest(journey.token);
+  expect(
+    (await db.query<{ r: { state: string } }>('select public.guest_preliminary_price() r')).rows[0]
+      ?.r.state,
+  ).toBe('PRELIMINARY');
+  await db.exec('reset role');
+  await db.query(
+    "update public.pricing_settings set pricing_mode='MANUAL' where organization_id=$1",
+    [org],
+  );
+  await guest(journey.token);
+  expect(
+    (await db.query<{ r: unknown }>('select public.guest_preliminary_price() r')).rows[0]?.r,
+  ).toEqual({ state: 'WAITING_FOR_REVIEW' });
+  expect(
+    (await db.query('select total_minor from public.quote_versions where id=$1', [version])).rows,
+  ).toHaveLength(1);
+  await expect(db.query('select * from public.pricing_evaluations')).rejects.toThrow();
+  await db.exec('reset role');
+  const settings = (
+    await db.query<{ organization_id: string; market_id: string; currency: string }>(
+      'delete from public.pricing_settings where organization_id=$1 returning *',
+      [org],
+    )
+  ).rows;
+  await guest(journey.token);
+  expect(
+    (await db.query<{ r: unknown }>('select public.guest_preliminary_price() r')).rows[0]?.r,
+  ).toEqual({ state: 'WAITING_FOR_REVIEW' });
+  await db.exec('reset role');
+  for (const row of settings)
+    await db.query(
+      "insert into public.pricing_settings(organization_id,market_id,currency,pricing_mode) values($1,$2,$3,'AUTOMATED')",
+      [row.organization_id, row.market_id, row.currency],
+    );
+});
