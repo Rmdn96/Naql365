@@ -26,7 +26,7 @@ export async function IdentityPage({
   }
   return (
     <div className="container page narrow">
-      <Card>
+      <Card className="auth-card">
         <h1>{mode === 'password' ? t.passwordTitle : t[mode]}</h1>
         <CustomerAuthForm locale={locale} mode={mode} />
       </Card>

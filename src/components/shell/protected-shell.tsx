@@ -3,8 +3,7 @@ import { dictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
 import { portalAccess } from '@/infrastructure/identity/access';
 import { Card, Alert, EmptyState, Button } from '@/components/ui/primitives';
-import { stagingAuthEnabled } from '@/infrastructure/config/deployment-env';
-import { smokeLogout } from '@/app/auth/actions';
+import { customerLogout as sessionLogout } from '@/app/auth/customer-actions';
 import Link from 'next/link';
 import { quotesDictionary } from '@/i18n/quotes';
 import { operationsDictionary } from '@/i18n/operations';
@@ -40,11 +39,9 @@ export async function ProtectedShell({
           <h1>{t.unauthorized}</h1>
           <p>{t.unauthorizedBody}</p>
         </Alert>
-        {stagingAuthEnabled() && (
-          <form action={smokeLogout.bind(null, locale)}>
-            <Button variant="secondary">{t.logout}</Button>
-          </form>
-        )}
+        <form action={sessionLogout.bind(null, locale)}>
+          <Button variant="secondary">{t.logout}</Button>
+        </form>
       </div>
     );
   return (
@@ -74,11 +71,9 @@ export async function ProtectedShell({
           </p>
         )}
         <EmptyState title={t.empty}>{t.emptyBody}</EmptyState>
-        {stagingAuthEnabled() && (
-          <form action={smokeLogout.bind(null, locale)}>
-            <Button variant="secondary">{t.logout}</Button>
-          </form>
-        )}
+        <form action={sessionLogout.bind(null, locale)}>
+          <Button variant="secondary">{t.logout}</Button>
+        </form>
       </Card>
     </div>
   );

@@ -43,7 +43,13 @@ export function Workspace({ locale, data }: { locale: Locale; data: OperationsWo
           </option>
         ))}
       </Select>
-      <section>
+      <nav className="workspace-sections" aria-label={t.title}>
+        <a href="#work-orders">{t.orders}</a>
+        <a href="#work-jobs">{t.jobs}</a>
+        <a href="#dispatch-title">{t.dispatch}</a>
+        <a href="#work-resources">{t.resources}</a>
+      </nav>
+      <section id="work-orders" className="workspace-panel">
         <h2>{t.orders}</h2>
         <ul className="request-list">
           {data.orders
@@ -62,7 +68,7 @@ export function Workspace({ locale, data }: { locale: Locale; data: OperationsWo
             ))}
         </ul>
       </section>
-      <section>
+      <section id="work-jobs" className="workspace-panel">
         <h2>{t.jobs}</h2>
         <ul className="request-list">
           {data.jobs
@@ -76,7 +82,7 @@ export function Workspace({ locale, data }: { locale: Locale; data: OperationsWo
             ))}
         </ul>
       </section>
-      <section aria-labelledby="dispatch-title">
+      <section className="workspace-panel" aria-labelledby="dispatch-title">
         <h2 id="dispatch-title">{t.dispatch}</h2>
         <p>{t.planningWarning}</p>
         <Select
@@ -121,7 +127,7 @@ export function Workspace({ locale, data }: { locale: Locale; data: OperationsWo
         )}
         <p>{t.windowLimit}</p>
       </section>
-      <section>
+      <section id="work-resources" className="workspace-panel">
         <h2>{t.resources}</h2>
         {command.feedback}
         <div className="form-columns">

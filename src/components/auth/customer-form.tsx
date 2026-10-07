@@ -16,14 +16,17 @@ export function CustomerAuthForm({
 }) {
   const t = customerDictionary(locale);
   const [state, action, pending] = useActionState(customerAuth.bind(null, locale, mode), initial);
+  const [email, setEmail] = useState('');
   return (
     <>
-      <form action={action} className="stack">
+      <form action={action} className="stack auth-form" aria-busy={pending}>
         {mode !== 'password' && (
           <Input
             id="email"
             label={t.email}
             name="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
             type="email"
             required
             maxLength={254}
@@ -49,7 +52,16 @@ export function CustomerAuthForm({
         {state.status === 'error' && (
           <Alert tone="error">{authErrorMessage(locale, state.code)}</Alert>
         )}
-        {state.status === 'sent' && <Alert tone="success">{t.sent}</Alert>}
+        {state.status === 'sent' && (
+          <Alert tone="success">
+            <strong>{t.sent}</strong>
+            <p>
+              {locale === 'ar'
+                ? 'افتح بريدك واتبع الرابط لإكمال الخطوة. تحقق من البريد غير المرغوب فيه، ثم عُد لتسجيل الدخول. لا تشارك رابط التأكيد.'
+                : 'Open your inbox and follow the link to continue. Check your spam folder, then return to sign in. Keep the confirmation link private.'}
+            </p>
+          </Alert>
+        )}
         <Button disabled={pending}>
           {pending
             ? t.loading

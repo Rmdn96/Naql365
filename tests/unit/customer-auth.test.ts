@@ -2,6 +2,7 @@ import { beforeEach, expect, it, vi } from 'vitest';
 const mocks = vi.hoisted(() => ({
   origin: 'https://staging.example',
   signUp: vi.fn(),
+  signOut: vi.fn(),
   signInWithPassword: vi.fn(),
   getUser: vi.fn(),
   rpc: vi.fn(),
@@ -14,7 +15,7 @@ vi.mock('@/infrastructure/config/server-env', () => ({
 vi.mock('@/infrastructure/supabase/server', () => ({
   createSupabaseServerClient: async () => ({ auth: mocks, rpc: mocks.rpc }),
 }));
-import { customerAuth, customerProfile } from '@/app/auth/customer-actions';
+import { customerAuth, customerProfile, customerLogout } from '@/app/auth/customer-actions';
 beforeEach(() => {
   vi.clearAllMocks();
   mocks.origin = 'https://staging.example';
@@ -100,4 +101,22 @@ it('returns field-level validation without calling the database', async () => {
     fields: ['phone'],
   });
   expect(mocks.rpc).not.toHaveBeenCalled();
+});
+
+it('normal logout terminates the local session without any staging flag', async () => {
+  vi.stubEnv('STAGING_AUTH_SMOKE_ENABLED', 'false');
+  mocks.signOut.mockResolvedValue({ error: null });
+  await expect(customerLogout('ar')).rejects.toMatchObject({
+    digest: expect.stringContaining('/ar/login'),
+  });
+  expect(mocks.signOut).toHaveBeenCalledWith({ scope: 'local' });
+  vi.unstubAllEnvs();
+});
+it('logout refuses cross-origin and does not claim success after provider failure', async () => {
+  mocks.origin = 'https://evil.example';
+  await expect(customerLogout('en')).rejects.toThrow();
+  expect(mocks.signOut).not.toHaveBeenCalled();
+  mocks.origin = 'https://staging.example';
+  mocks.signOut.mockResolvedValue({ error: { message: 'Unavailable' } });
+  await expect(customerLogout('en')).rejects.toThrow('Sign-out failed');
 });

@@ -14,6 +14,7 @@ import {
   DriverPodForm,
   PrivateEvidence,
 } from '@/components/driver/execution';
+import { StatusBadge } from '@/components/ui/presentation';
 import { Alert, Badge } from '@/components/ui/primitives';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
@@ -35,6 +36,7 @@ export default async function Page({
   const t = driverDictionary(locale),
     ot = operationsDictionary(locale),
     completed = trip.status === 'COMPLETED';
+  const next = trip.stops.find((stop) => stop.status !== 'COMPLETED');
   return (
     <div className="container page driver-shell">
       <DriverNavigation locale={locale} tripId={trip.id} />
@@ -47,6 +49,41 @@ export default async function Page({
       <p>
         {t.vehicle}: <bdi>{trip.vehicle.identifier}</bdi>
       </p>
+      {!completed && (
+        <section className="driver-focus">
+          <p className="eyebrow">{locale === 'ar' ? 'خطوتك التالية' : 'Your next step'}</p>
+          <h2>
+            {next
+              ? next.kind === 'PICKUP'
+                ? ot.pickup
+                : ot.delivery
+              : locale === 'ar'
+                ? 'إتمام التسليم'
+                : 'Finish delivery'}
+          </h2>
+          {next && (
+            <>
+              <StatusBadge>{operationalStatus(next.status, locale)}</StatusBadge>
+              <p>{next.address}</p>
+              {next.instructions && <p>{next.instructions}</p>}
+            </>
+          )}
+          {trip.contact && (
+            <p>
+              {trip.contact.name} · <bdi>{trip.contact.phone}</bdi>
+            </p>
+          )}
+          <DriverExecution
+            key={`execution-${trip.revision}`}
+            trip={trip}
+            locale={locale}
+            executionAllowed={clearance.executionAllowed}
+          />
+          {!clearance.executionAllowed && (
+            <Alert>{paymentDictionary(locale).executionBlocked}</Alert>
+          )}
+        </section>
+      )}
       <DriverTracking
         tripId={trip.id}
         eligible={
@@ -84,19 +121,6 @@ export default async function Page({
           </li>
         ))}
       </ol>
-      {!completed && (
-        <>
-          <DriverExecution
-            key={`execution-${trip.revision}`}
-            trip={trip}
-            locale={locale}
-            executionAllowed={clearance.executionAllowed}
-          />
-          {!clearance.executionAllowed && (
-            <Alert>{paymentDictionary(locale).executionBlocked}</Alert>
-          )}
-        </>
-      )}
       <section>
         <h2>{t.issues}</h2>
         {trip.issues.length === 0 ? (

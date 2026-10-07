@@ -320,7 +320,37 @@ export function RequestWizard({
       if (issues.length) {
         setMissing(issues);
         setError(t.invalid);
-        title.current?.focus();
+        const first = issues[0];
+        const index = steps.findIndex((key) => key === first);
+        if (index >= 0) setStep(index);
+        setTimeout(() => {
+          const d = draftRef.current;
+          const field =
+            first === 'service'
+              ? 'service'
+              : first === 'route'
+                ? !d.pickup.city_id
+                  ? 'pickup-city'
+                  : !d.pickup.address.trim()
+                    ? 'pickup-address'
+                    : !d.delivery.city_id
+                      ? 'delivery-city'
+                      : 'delivery-address'
+                : first === 'shipment'
+                  ? !d.description.trim()
+                    ? 'description'
+                    : 'item-0'
+                  : first === 'schedule'
+                    ? 'date'
+                    : first === 'contact'
+                      ? !d.contact_name.trim()
+                        ? 'contact_name'
+                        : 'contact_phone'
+                      : '';
+          const input = document.getElementById(field);
+          if (input) input.focus();
+          else title.current?.focus();
+        }, 0);
         return;
       }
     }
@@ -493,8 +523,13 @@ export function RequestWizard({
           ))}
         </ol>
       </nav>
-      <div className="save-status" role="status">
-        {busy ? t.loading : t[saveState]}
+      <div className="wizard-state-bar">
+        <span>
+          {locale === 'ar' ? 'الخطوة' : 'Step'} {step + 1} / 8
+        </span>
+        <div className="save-status" role="status">
+          {busy ? t.loading : t[saveState]}
+        </div>
       </div>
       {saveState === 'conflict' ? (
         <Alert tone="error">
@@ -522,7 +557,21 @@ export function RequestWizard({
           {missing.length > 0 && (
             <ul>
               {missing.map((key) => (
-                <li key={key}>{t[key as keyof typeof t]}</li>
+                <li key={key}>
+                  <button
+                    type="button"
+                    className="validation-link"
+                    onClick={() => {
+                      const index = steps.findIndex((step) => step === key);
+                      if (index >= 0) {
+                        setStep(index);
+                        setTimeout(() => title.current?.focus(), 0);
+                      }
+                    }}
+                  >
+                    {t[key as keyof typeof t]}
+                  </button>
+                </li>
               ))}
             </ul>
           )}

@@ -26,15 +26,28 @@ export function Landing({
   const t = publicDictionary(locale),
     request = `/${locale}/request`,
     wa = whatsappUrl(country, locale);
+  const coverage =
+    locale === 'ar'
+      ? country === 'SA'
+        ? 'نقل داخل الرياض، ومن الرياض إلى الوجهات المفعّلة فقط.'
+        : 'نقل داخل القاهرة، ومن القاهرة إلى الوجهات المفعّلة فقط.'
+      : country === 'SA'
+        ? 'Within Riyadh and from Riyadh to activated destinations only.'
+        : 'Within Cairo and from Cairo to activated destinations only.';
+  const stages =
+    locale === 'ar'
+      ? ['الطلب', 'مراجعة المبيعات', 'عرض السعر النهائي', 'النقل', 'التسليم']
+      : ['Request', 'Sales review', 'Final quote', 'Transport', 'Delivery'];
   return (
     <div className="launch-page">
       <MvpView event="homepage_viewed" market={country} context="home" />
       <section className="launch-hero">
         <div className="container launch-hero-grid">
           <div className="launch-hero-copy">
-            <p className="eyebrow">{t.eyebrow}</p>
+            <p className="eyebrow">{country === 'SA' ? t.sa : t.eg} · Naql365</p>
             <h1>{t.headline}</h1>
             <p className="launch-lead">{t.intro}</p>
+            <p className="coverage-note">{coverage}</p>
             <div className="actions">
               <Link href={request} className="button button--primary">
                 {t.start}
@@ -112,6 +125,18 @@ export function Landing({
           </Link>
         )}
       </section>
+      <section id="how" className="launch-how">
+        <div className="container launch-section">
+          <p className="eyebrow">{t.how}</p>
+          <h2>{t.howTitle}</h2>
+          <RouteMotif labels={stages} />
+          <div className="launch-steps">
+            {t.steps.map(([title, body]) => (
+              <p key={title}>{body}</p>
+            ))}
+          </div>
+        </div>
+      </section>
       <section id="services" className="container launch-section">
         <p className="eyebrow">{t.services}</p>
         <h2>{t.servicesTitle}</h2>
@@ -139,17 +164,22 @@ export function Landing({
           </p>
         )}
       </section>
-      <section id="how" className="launch-how">
-        <div className="container launch-section">
-          <p className="eyebrow">{t.how}</p>
-          <h2>{t.howTitle}</h2>
-          <RouteMotif labels={t.steps.map((step) => step[0]!)} />
-          <div className="launch-steps">
-            {t.steps.map(([title, body]) => (
-              <p key={title}>{body}</p>
+      <section id="coverage" className="container launch-section">
+        <p className="eyebrow">{country === 'SA' ? t.sa : t.eg}</p>
+        <h2>{locale === 'ar' ? 'نطاق الخدمة المتاح' : 'Available coverage'}</h2>
+        <p>{coverage}</p>
+        <ul className="coverage-cities">
+          {cities
+            .filter((c) => c.deliveryEligible)
+            .map((c) => (
+              <li key={c.id}>{locale === 'ar' ? c.nameAr : c.nameEn}</li>
             ))}
-          </div>
-        </div>
+        </ul>
+        <p>
+          {locale === 'ar'
+            ? 'تتحدد الخيارات المتاحة حسب الخدمة المختارة. السعر قيد مراجعة فريق المبيعات.'
+            : 'Available options depend on your selected service. Pricing is reviewed by our Sales team.'}
+        </p>
       </section>
       <section id="tracking" className="container launch-section launch-split">
         <div>

@@ -1,3 +1,4 @@
+import { stage1Capture } from '../helpers/stage1-evidence';
 import { appendFileSync } from 'node:fs';
 import { createHash, randomUUID } from 'node:crypto';
 import type { Page } from '@playwright/test';
@@ -225,6 +226,8 @@ export async function executeDelivery(
   await op(staff, 'ready', trip);
   await driverLogin(staff, role, locale);
   await staff.goto(`/${locale}/driver/trips/${trip}`);
+  await staff.setViewportSize({ width: 390, height: 844 });
+  await stage1Capture(staff, `driver-${country.toLowerCase()}-${locale}-mobile`);
   await uiAction(staff, trip, 'dispatch', locale);
   for (let n = 0; n < 2; n++) {
     if (n) await uiAction(staff, trip, 'depart', locale);

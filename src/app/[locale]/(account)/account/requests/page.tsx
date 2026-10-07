@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
-import { customerPage } from '@/infrastructure/requests/page-access';
+import { customerRequests } from '@/infrastructure/requests/list';
 import { StartRequest } from '@/components/requests/wizard';
 import { EmptyState, Badge } from '@/components/ui/primitives';
 export const metadata = { robots: { index: false, follow: false } };
@@ -19,20 +19,7 @@ export default async function Page({
   const t = customerDictionary(locale);
   const page = Math.min(10000, Math.max(1, Number((await searchParams).page) || 1));
   if (!Number.isInteger(page)) notFound();
-  const { client, customers } = await customerPage(locale);
-  const { data, error } = await client
-    .from('requests')
-    .select(
-      'id,markets(name_ar,name_en,timezone,currency),status,reference,created_at,preferred_date,services(name_ar,name_en),request_locations(kind,city)',
-    )
-    .in(
-      'customer_id',
-      customers.map((c) => c.id),
-    )
-    .order('created_at', { ascending: false })
-    .order('id')
-    .range((page - 1) * 20, page * 20);
-  if (error) throw new Error('Request list unavailable');
+  const data = await customerRequests(locale, page);
   return (
     <div className="container page">
       <div className="wizard-top">

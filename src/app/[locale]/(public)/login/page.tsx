@@ -23,7 +23,7 @@ export default async function Login({ params }: { params: Promise<{ locale: stri
   const t = dictionary(locale);
   return (
     <div className="container page narrow">
-      <Card>
+      <Card className="auth-card">
         {!getPublicEnv() && <Badge>{t.foundation}</Badge>}
         <h1>{t.login}</h1>
         {getPublicEnv() ? (
