@@ -1,0 +1,82 @@
+{
+  "applicationSha": "237937804d8779b235f9052f1fa6b632d36e68ab",
+  "implementationCi": 37617321428,
+  "ciResult": "PASS",
+  "migrations": 46,
+  "unitIntegration": 269,
+  "unitFiles": 49,
+  "localE2E": 32,
+  "hostedGroups": 8,
+  "hostedResults": [
+    "passed: hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration; durationMs=135877",
+    "passed: hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration; durationMs=195359",
+    "passed: hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order; durationMs=38371",
+    "passed: hosted-phase7 > manual-customer.spec.ts > SA registered customer manual quote and CASH regression; durationMs=75672",
+    "passed: hosted-phase7 > manual-customer.spec.ts > EG registered customer manual quote and CASH regression; durationMs=72409",
+    "passed: hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact; durationMs=8980",
+    "passed: hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact; durationMs=8812",
+    "passed: hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed; durationMs=5198"
+  ],
+  "preview": {
+    "protection": 302,
+    "url": "https://naql365-staging-manual-pricing-naql365.vercel.app",
+    "id": "dpl_64LrhiJNNtrHAWBjMZkePUvfteBP",
+    "classification": "Preview",
+    "state": "READY",
+    "sha": "237937804d8779b235f9052f1fa6b632d36e68ab",
+    "branch": "feature/preproduction-manual-pricing-coverage"
+  },
+  "stagingModes": {
+    "SA": "MANUAL",
+    "EG": "MANUAL"
+  },
+  "ownedAuthIdentitiesPerRun": 16,
+  "hostedFixtureCleanup": "PASS",
+  "automationCleanup": {
+    "revoked": true,
+    "revokedCredentialStatus": 302,
+    "productionChanged": false
+  },
+  "existingCustomerFingerprintPreserved": true,
+  "existingCustomerCount": 3,
+  "runtimeAudit": {
+    "deployment": "dpl_64LrhiJNNtrHAWBjMZkePUvfteBP",
+    "checkedAt": "2026-10-07T12:27:21.145Z",
+    "evidence": [
+      {
+        "scope": "serverless",
+        "records": 50,
+        "http5xx": 0,
+        "paymentRequests": 0,
+        "errorRecords": 0,
+        "credentialPatternFound": false,
+        "authQueryValueObserved": false,
+        "markers": []
+      },
+      {
+        "scope": "errors",
+        "records": 0,
+        "http5xx": 0,
+        "paymentRequests": 0,
+        "errorRecords": 0,
+        "credentialPatternFound": false,
+        "authQueryValueObserved": false,
+        "markers": []
+      },
+      {
+        "scope": "5xx",
+        "records": 0,
+        "http5xx": 0,
+        "paymentRequests": 0,
+        "errorRecords": 0,
+        "credentialPatternFound": false,
+        "authQueryValueObserved": false,
+        "markers": []
+      }
+    ]
+  },
+  "productionChanged": false,
+  "mainChanged": false,
+  "merged": false,
+  "hostinger": "DEFERRED — RESUME AFTER PRODUCT RELEASE CANDIDATE"
+}

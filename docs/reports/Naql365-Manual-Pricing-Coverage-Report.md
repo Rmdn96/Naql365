@@ -1,47 +1,74 @@
-# Manual Pricing & Launch Coverage — Implementation Evidence
+# Manual Pricing & Launch Coverage — Owner Review
 
-Status: IN PROGRESS — not accepted, not deployed. Baseline: `2b0639824442857408844a916d96c170b52984e4`; approved analysis: `a235b85b481ae44bf3ae37fd16bc43c4d9d62949`.
+Baseline: `2b0639824442857408844a916d96c170b52984e4`. Approved analysis: `a235b85b481ae44bf3ae37fd16bc43c4d9d62949`. Branch: `feature/preproduction-manual-pricing-coverage`. This is pre-production product completion, not Phase 8. No merge is authorized by this report.
 
-## Migration and backfill
+## Architecture and upgrade
 
-Migration 46: `20261007000100_manual_pricing_directional_coverage.sql`. Migrations 1–45 are immutable.
+Migration 46 is `20261007000100_manual_pricing_directional_coverage.sql`. Migrations 1–45 are unchanged against the accepted develop baseline. The fresh database has 46 migrations.
 
-Existing pricing settings retain AUTOMATED; only subsequently inserted settings default to MANUAL. Existing quote pricing details receive AUTOMATED provenance without changing their previous values. No historical quote/order money, distance, currency or tax is updated. Existing coverage rows retain both directions; new coverage rows default to neither. Existing organization-wide add-ons are backfilled to existing Market/service contexts only, preserving previous applicability. New options require explicit applicability rows.
+Existing `pricing_settings` rows receive AUTOMATED without changing existing commercial configuration; subsequently created settings default to MANUAL. Historical evaluation-backed pricing details receive AUTOMATED provenance. No quote/order monetary, currency, tax or distance snapshots are rewritten. Populated 45→46 tests compare complete quote/order/evaluation/item/distance JSON before and after upgrade. Existing coverage retains both directions during schema upgrade; new rows default to neither direction. Existing organization-wide add-ons are backfilled across the existing Market/service combinations only.
 
-This is not a commercial switch. SA and EG require explicit Staging configuration and authoritative readback before hosted manual acceptance. No Production configuration is supplied.
+The migration is not a commercial launch switch. After local and exact-head CI passed, the guarded Staging configuration script explicitly set SA and EG to MANUAL and authoritative readback confirmed both. Hosted Staging previously had 44 migrations; accepted migration 45 and new migration 46 were applied through the supported migration CLI. The deployment identity table remains empty; no Production marker or manifest was created.
 
-## Implementation boundary
+## Pricing authority and provenance
 
-- Manual command derives organization, Market, currency and effective tax from the Request; verified road distance does not call pricing rules.
-- Mode-dependent provenance constraints distinguish real automated evaluations from manual author/revision/subtotal/input facts.
-- Private mutation ledger retains retries after draft replacement. Existing quote send/accept/reject/Order engine is reused.
-- MANUAL/missing configuration suppresses guest preliminary monetary projection, including historical evaluations. Customer RLS continues excluding pricing evaluations.
-- Shared Request command validates one directional coverage predicate for both account and capability callers.
-- Service/add-on applicability uses one organization/Market/service/add-on relation, not new service engines.
+- Organization/Market pricing mode is database configuration, independent of locale, email, hosting provider and client flags.
+- MANUAL or missing configuration returns only `WAITING_FOR_REVIEW` from the guest preliminary projection, even when a historical automatic evaluation exists. Registered Customer RLS excludes evaluations and private pricing details. AR/EN copy says Pricing under review / السعر قيد المراجعة. Final sent Quote and accepted Order values remain visible through existing authorized projections.
+- The automated engine is preserved. Explicit isolated AUTOMATED fixtures exercise its previous calculation and quote behavior. Recording manual verified distance does not invoke pricing rules.
+- `create_manual_quote_draft` verifies Sales authority, Request and expected revision, integer minor-unit subtotal, validity, distance facts and mutation identifier. Organization, Market, currency, effective tax and final tax/total are derived in the database. Existing integer rounding is preserved.
+- Mode-dependent CHECK constraints require real evaluation/calculation facts for AUTOMATED and author/revision/manual subtotal/input facts for MANUAL. No dummy or zero evaluation is created. Manual provenance and mutation records are private.
+- Request locks, configuration locks and durable mutation replay protect retries/concurrency. Draft revision, sending, quote response and exactly-one accepted Order reuse the existing commercial workflow. Sent/superseded/accepted values are preserved across later pricing-mode changes.
+- Customer, Guest, Driver, unprivileged Operations and other-tenant Sales cannot author manual pricing. No direct client table-write grants were introduced. Finance verification and execution clearance remain unchanged.
 
-## Evidence checkpoint
+## Coverage and catalogue
 
-- Fresh 46-migration reconstruction and populated 45→46 commercial snapshot preservation: PASS.
-- Full unit/integration: 267 PASS across 49 files, including 36 Customer/Guest directional coverage cases.
-- Native Supabase SQL/RLS: PASS on the implementation candidate; the eight manual assertions now use the existing shared local/hosted SQL format, with a final TAP report. Exact-head CI reruns all seven files.
-- Official generated types: regenerated from a pristine 46-migration database; exact-head CI checks equality.
-- Independent connections: Operations, Driver, Tracking, Payment, manual quote and Guest suites PASS. Manual suite covers duplicate draft/send/accept, conflicting payload, request revision and pricing-mode races.
-- Local E2E: 32 PASS. Formatting, lint, strict types and production build PASS after the Arabic copy correction.
-- Tracked/history secret scans: PASS for 427 staged/tracked files and 1122 history text blobs; heuristic checks, not a guarantee for every secret format.
-- Implementation candidate CI 37616469664: PASS on `118d78c86bc64c07b857f28219b9f772d2ce29cd`. Expanded acceptance-test candidate CI: PENDING.
-- Protected Preview and hosted regression/cleanup: NOT RUN.
-- Hostinger remains deferred; main, Production and DNS untouched.
+`service_areas.active` remains the master availability flag. `pickup_eligible` and `delivery_eligible` express direction per organization/Market/service/city without route pairs. One shared server predicate validates both registered and Guest submissions, including stale wizard selections and add-on applicability.
 
-## Catalogue and applicability
+The launch configuration allows Riyadh and Cairo as pickup/delivery hubs and the representative domestic destinations as delivery-only. Cross-Market, reverse, inactive, forged and unsupported selections are denied server-side. A 36-case matrix exercises both identities and Markets, including a third synthetic destination in each isolated local Market.
 
-The read-only Staging inventory contains Riyadh/Jeddah and Cairo/Alexandria only. See `docs/launch-coverage-configuration-inventory.md`. Nationwide coverage cannot yet be advertised. Destination additions and Production activation remain owner-controlled configuration.
+The separate [configuration inventory](../launch-coverage-configuration-inventory.md) records actual Staging cities: Riyadh/Jeddah and Cairo/Alexandria. This is not nationwide coverage. An owner-approved supported-city inventory and operational activation are still required before advertising all cities. No Production city activation occurs in the migration.
 
-The bounded Staging setup explicitly configures household and office relocation as existing service records, unpacking as an existing add-on record, and Market/service applicability. No new domain engine or migration-seeded city/service activation is introduced. Both SA and EG must be read back as MANUAL before hosted acceptance.
+Existing services/add-ons are reused. Staging explicitly adds household and office relocation service records and unpacking, alongside cargo/furniture and packing/loading/unloading/dismantling/assembly. `service_addon_applicability` scopes options by Market/service. The controlled four-service setup disables irrelevant applicability before enabling supported options; furniture dismantling/assembly are not activated for general cargo. Production availability remains a separate owner-controlled configuration task.
 
-## Remaining acceptance work
+## Validation evidence
 
-Complete exact-head CI, protected hosted Customer/Guest/Sales/Finance/Operations/Driver regression, explicit SA/EG MANUAL readback, owned-fixture cleanup and hosted response non-disclosure checks. The local 36-case directional matrix includes both identities and Markets, a third synthetic destination, reverse/cross-Market/forged routes and inactive coverage/service/add-on denial. No hosted PASS is inferred from local tests.
+| Gate                                      | Result and scope                                                                                                                                                |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Local unit/integration                    | 269 PASS / 49 files, including manual revision/provenance, authorization and 36 directional cases                                                               |
+| Local browser E2E                         | 32 PASS, desktop/mobile AR/EN                                                                                                                                   |
+| Format / lint / strict TypeScript / build | PASS; final closeout CI also reruns these gates                                                                                                                 |
+| Fresh reconstruction / populated upgrade  | PASS; 46 migrations; historical snapshots unchanged                                                                                                             |
+| SQL / RLS / official types                | PASS locally and hosted; all 60 public tables have RLS; hosted public types match canonical CLI types                                                           |
+| Independent-connection concurrency        | PASS: Operations, Driver, Tracking, Payment, manual quote and Guest suites                                                                                      |
+| Manual races                              | Duplicate draft/send/accept; conflicting retry; request revision versus draft; mode change versus draft; exactly-one Order                                      |
+| Source/history credential scans           | PASS, heuristic patterns; not proof against every possible secret encoding                                                                                      |
+| Implementation exact-head CI              | [37617321428](https://github.com/Rmdn96/Naql365/actions/runs/37617321428), PASS on `237937804d8779b235f9052f1fa6b632d36e68ab`                                   |
+| Final closeout CI                         | Required on the final branch HEAD; exact SHA/run is recorded in the owner handoff. Closeout changes after the hosted application commit are tests/evidence only |
+| Hosted browser regression                 | 8/8 complete test groups PASS on one protected Preview                                                                                                          |
+| Hosted cleanup                            | PASS; owned fixtures removed, original Customer rows preserved, temporary automation credential revoked                                                         |
 
-Dependency security disposition remains the documented scoped owner acceptance of the development-only braces advisory; the upstream advisory is not represented as resolved.
+Protected Preview: <https://naql365-staging-manual-pricing-naql365.vercel.app>. Full hosted suite deployment: `dpl_64LrhiJNNtrHAWBjMZkePUvfteBP`, application SHA `237937804d8779b235f9052f1fa6b632d36e68ab`. Vercel Preview, never Production. Anonymous requests redirect to the Vercel SSO gate. The application, migration, dependency and deployment-manifest content must remain identical when a documentation/test-only closeout commit is redeployed; that redeployment does not imply the full suite was rerun.
 
-MANUAL PRICING & COVERAGE PARTIAL — REMEDIATION REQUIRED
+The eight hosted groups prove SA Guest → manual Quote → CASH → Driver execution/POD; EG Guest → manual Quote → synthetic transfer destination → proof rejection/reupload → Finance confirmation → Driver execution/POD; Guest Quote rejection without Order; SA and EG registered Customer manual Quote/CASH/session/unauthorized mutation denial; Arabic and English public mobile/accessibility/Market/WhatsApp checks; and capability replay/isolation/revocation/privacy negatives. No real payment details were configured.
+
+The initial hosted run was aborted after two role-switch failures: this new Preview had explicitly disabled the existing Staging auth-smoke setting, while the accepted staff shell exposes its logout action only when that setting is enabled. Cleanup and credential revocation passed. The successful run restored the existing protected Staging test configuration. No application RBAC or authentication bypass was added. This staff-shell configuration dependency remains an existing Production-readiness concern to address separately; this report does not certify Production readiness.
+
+Bounded runtime review inspected up to 50 records per filter; no observed 5xx, error records, credential patterns or auth-token query values in that sample. This is bounded evidence, not exhaustive logging certification. Public response checks observed CSP and private/no-store cache headers.
+
+## Cleanup and preserved state
+
+Each hosted run owned 16 temporary Auth identities and one isolation organization. The runner cleaned owned Requests, Quotes, Orders, payments/proofs, execution resources, POD/files, capability grants and the new manual-mutation ledger, then removed those identities. Existing catalogues and intended SA/EG MANUAL configuration were retained. Both runs' temporary Vercel automation credentials were revoked. Before/after fingerprints confirm the three original Customer records are unchanged, with original quote/order counts unchanged (both zero on this Staging baseline). Populated historical commercial preservation is independently proved in the upgrade tests.
+
+No main/develop merge, Production resource/configuration, real payment destination, DNS, Hostinger acceptance, visual redesign, MFA, legal publication or Phase 8 work occurred. Hostinger remains **DEFERRED — RESUME AFTER PRODUCT RELEASE CANDIDATE**.
+
+Dependency disposition remains the documented scoped owner acceptance for the development-only braces advisory. It is technically unresolved upstream; the audit is not described as fully clean.
+
+## Changed areas
+
+Additive migration and official types; trusted manual Quote API/domain/service/Sales form; shared Request coverage and catalogue/wizard filtering; minimal AR/EN copy; scoped Staging configuration/inventory/cleanup tooling; SQL/RLS/unit/upgrade/concurrency/hosted tests; CI concurrency gate; exact protected Preview allowlist; this report and the catalogue inventory. No visual styling or dependency versions changed.
+
+## Decision
+
+MANUAL PRICING & COVERAGE PASS — READY FOR OWNER REVIEW
+
+Do not merge without owner authorization. Production catalogue, tax, payment configuration and launch decisions remain separate.

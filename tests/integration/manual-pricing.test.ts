@@ -225,3 +225,52 @@ test('manual provenance rejects absent amount, inactive coverage and inapplicabl
     await db.exec('rollback');
   }
 });
+
+test('Customer, other tenant Sales, unprivileged Operations, Driver and anonymous cannot author manual pricing', async () => {
+  await db.exec('reset role');
+  await db.exec(`insert into auth.users(id,email,email_confirmed_at) values('11000000-0000-4000-8000-000000000099','manual-driver@example.invalid',now());
+  insert into public.organization_memberships(organization_id,profile_id,member_type) values('21000000-0000-4000-8000-000000000001','11000000-0000-4000-8000-000000000099','driver');
+  insert into public.user_roles(organization_id,profile_id,role_id) select '21000000-0000-4000-8000-000000000001','11000000-0000-4000-8000-000000000099',id from public.roles where code='DRIVER';`);
+  for (const suffix of ['002', '003', '004', '005', '099']) {
+    await db.query("select set_config('request.jwt.claim.sub',$1,false)", [
+      '11000000-0000-4000-8000-000000000' + suffix,
+    ]);
+    await db.exec('set role authenticated');
+    await expect(db.query(command())).rejects.toThrow('Request unavailable');
+    await db.exec('reset role');
+  }
+  await db.exec("select set_config('request.jwt.claim.sub','',false);set role anon");
+  await expect(db.query(command())).rejects.toThrow('permission denied');
+  await db.exec('reset role');
+});
+
+test('Sales revises a manual draft without duplicate drafts or changing previously sent money', async () => {
+  await db.exec(
+    "reset role;update public.pricing_settings set pricing_mode='MANUAL';select set_config('request.jwt.claim.sub','11000000-0000-4000-8000-000000000001',false);set role authenticated",
+  );
+  const r = '51000000-0000-4000-8000-000000000003';
+  const a = '69000000-0000-4000-8000-000000000071',
+    b = '69000000-0000-4000-8000-000000000072',
+    c = '69000000-0000-4000-8000-000000000073';
+  const create = (id: string, amount: number) =>
+    db.query(
+      "select public.create_manual_quote_draft($1,1,$2,10,'TEST verified route',3600,$3) result",
+      [r, amount, id],
+    );
+  const first = await create(a, 10000);
+  await create(b, 20000);
+  expect((await create(a, 10000)).rows).toEqual(first.rows);
+  await db.query('select public.send_quote($1)', [b]);
+  await create(c, 30000);
+  await db.query('select public.send_quote($1)', [c]);
+  const rows = (
+    await db.query<{ id: string; status: string; final_subtotal_minor: number }>(
+      'select id,status,final_subtotal_minor from public.quote_versions where id in ($1,$2,$3) order by id',
+      [a, b, c],
+    )
+  ).rows;
+  expect(rows).toEqual([
+    { id: b, status: 'SUPERSEDED', final_subtotal_minor: 20000 },
+    { id: c, status: 'SENT', final_subtotal_minor: 30000 },
+  ]);
+});
