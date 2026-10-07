@@ -2050,6 +2050,7 @@ export type Database = {
           currency: string
           market_id: string
           organization_id: string
+          pricing_mode: string
           updated_at: string
         }
         Insert: {
@@ -2057,6 +2058,7 @@ export type Database = {
           currency: string
           market_id: string
           organization_id: string
+          pricing_mode?: string
           updated_at?: string
         }
         Update: {
@@ -2064,6 +2066,7 @@ export type Database = {
           currency?: string
           market_id?: string
           organization_id?: string
+          pricing_mode?: string
           updated_at?: string
         }
         Relationships: [
@@ -2222,38 +2225,50 @@ export type Database = {
       quote_pricing_details: {
         Row: {
           adjustment_reason: string | null
-          calculated_subtotal_minor: number
+          calculated_subtotal_minor: number | null
           created_at: string
           created_by: string
-          evaluation_id: string
+          evaluation_id: string | null
           manual_adjustment_minor: number
+          manual_input: Json | null
+          manual_subtotal_minor: number | null
           market_id: string
           organization_id: string
+          pricing_mode: string
           quote_version_id: string
+          request_revision: number | null
           sent_by: string | null
         }
         Insert: {
           adjustment_reason?: string | null
-          calculated_subtotal_minor: number
+          calculated_subtotal_minor?: number | null
           created_at?: string
           created_by: string
-          evaluation_id: string
+          evaluation_id?: string | null
           manual_adjustment_minor: number
+          manual_input?: Json | null
+          manual_subtotal_minor?: number | null
           market_id: string
           organization_id: string
+          pricing_mode?: string
           quote_version_id: string
+          request_revision?: number | null
           sent_by?: string | null
         }
         Update: {
           adjustment_reason?: string | null
-          calculated_subtotal_minor?: number
+          calculated_subtotal_minor?: number | null
           created_at?: string
           created_by?: string
-          evaluation_id?: string
+          evaluation_id?: string | null
           manual_adjustment_minor?: number
+          manual_input?: Json | null
+          manual_subtotal_minor?: number | null
           market_id?: string
           organization_id?: string
+          pricing_mode?: string
           quote_version_id?: string
+          request_revision?: number | null
           sent_by?: string | null
         }
         Relationships: [
@@ -2919,14 +2934,55 @@ export type Database = {
         }
         Relationships: []
       }
+      service_addon_applicability: {
+        Row: {
+          active: boolean
+          additional_service_id: string
+          market_id: string
+          organization_id: string
+          service_id: string
+        }
+        Insert: {
+          active?: boolean
+          additional_service_id: string
+          market_id: string
+          organization_id: string
+          service_id: string
+        }
+        Update: {
+          active?: boolean
+          additional_service_id?: string
+          market_id?: string
+          organization_id?: string
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_addon_applicability_organization_id_additional_ser_fkey"
+            columns: ["organization_id", "additional_service_id"]
+            isOneToOne: false
+            referencedRelation: "additional_services"
+            referencedColumns: ["organization_id", "id"]
+          },
+          {
+            foreignKeyName: "service_addon_applicability_organization_id_market_id_serv_fkey"
+            columns: ["organization_id", "market_id", "service_id"]
+            isOneToOne: false
+            referencedRelation: "market_services"
+            referencedColumns: ["organization_id", "market_id", "service_id"]
+          },
+        ]
+      }
       service_areas: {
         Row: {
           active: boolean
           city_id: string | null
           created_at: string
+          delivery_eligible: boolean
           id: string
           market_id: string
           organization_id: string
+          pickup_eligible: boolean
           service_id: string
           updated_at: string
         }
@@ -2934,9 +2990,11 @@ export type Database = {
           active?: boolean
           city_id?: string | null
           created_at?: string
+          delivery_eligible?: boolean
           id?: string
           market_id: string
           organization_id: string
+          pickup_eligible?: boolean
           service_id: string
           updated_at?: string
         }
@@ -2944,9 +3002,11 @@ export type Database = {
           active?: boolean
           city_id?: string | null
           created_at?: string
+          delivery_eligible?: boolean
           id?: string
           market_id?: string
           organization_id?: string
+          pickup_eligible?: boolean
           service_id?: string
           updated_at?: string
         }
@@ -3756,6 +3816,18 @@ export type Database = {
       }
       create_customer_request: {
         Args: { p_key: string; p_market_id: string }
+        Returns: Json
+      }
+      create_manual_quote_draft: {
+        Args: {
+          p_distance_km: number
+          p_expected_revision: number
+          p_mutation_id: string
+          p_request_id: string
+          p_source_note: string
+          p_subtotal_minor: number
+          p_validity_seconds: number
+        }
         Returns: Json
       }
       create_quote_draft: {

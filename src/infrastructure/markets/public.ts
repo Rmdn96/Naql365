@@ -18,7 +18,15 @@ const catalogue = z
     currency: z.enum(['SAR', 'EGP']),
     timezone: z.string(),
     services: z.object({ id: z.uuid(), nameAr: z.string(), nameEn: z.string() }).array(),
-    cities: z.object({ id: z.uuid(), nameAr: z.string(), nameEn: z.string() }).array(),
+    cities: z
+      .object({
+        id: z.uuid(),
+        nameAr: z.string(),
+        nameEn: z.string(),
+        pickupEligible: z.boolean(),
+        deliveryEligible: z.boolean(),
+      })
+      .array(),
   })
   .array();
 export async function publicCatalogue() {

@@ -17,7 +17,7 @@ const ar = {
   proceed: 'متابعة إدخال التفاصيل',
   request: 'طلبك',
   received: 'تم استلام طلبك',
-  review: 'يراجع فريقنا تفاصيل طلبك والمسافة قبل إعداد السعر. يمكنك العودة عبر رابطك الآمن.',
+  review: 'السعر قيد المراجعة. يراجع فريقنا طلبك ويجهز عرض السعر النهائي.',
   cancelled: 'تم إلغاء المسودة',
   home: 'الرئيسية',
   reference: 'رقم الطلب',
@@ -49,8 +49,7 @@ const en: typeof ar = {
   proceed: 'Continue to details',
   request: 'Your request',
   received: 'Request received',
-  review:
-    'Our team will review your request and verify the road distance before preparing a price. Return using your secure link.',
+  review: 'Pricing under review. Our team reviews your request and prepares your final quote.',
   cancelled: 'Draft cancelled',
   home: 'Home',
   reference: 'Request reference',

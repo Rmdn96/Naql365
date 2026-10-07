@@ -246,6 +246,7 @@ export async function verifyDriverAcceptance(phase) {
     delete from private.payment_mutations where actor_id in (${ids}) or actor_id in(select id from cleanup_grants);
     delete from public.bank_accounts where created_by in (${ids});
     delete from private.operational_mutations where actor_id in (${ids});delete from public.orders where id in(select id from cleanup_orders);
+    delete from private.manual_quote_mutations where request_id in(select id from cleanup_requests);
     delete from public.quote_items where quote_version_id in(select id from cleanup_versions);delete from public.quote_pricing_details where quote_version_id in(select id from cleanup_versions);
     delete from public.quote_versions where id in(select id from cleanup_versions);delete from public.quotes where id in(select id from cleanup_quotes);
     delete from public.pricing_evaluation_components where evaluation_id in(select id from public.pricing_evaluations where request_id in(select id from cleanup_requests));
@@ -257,7 +258,7 @@ export async function verifyDriverAcceptance(phase) {
     delete from public.request_additional_services where request_id in(select id from cleanup_requests);delete from public.request_locations where request_id in(select id from cleanup_requests);delete from public.request_items where request_id in(select id from cleanup_requests);delete from public.requests where id in(select id from cleanup_requests);
     delete from public.customers where id in(select id from cleanup_customers);delete from public.user_roles where profile_id in (${ids});delete from public.organization_memberships where profile_id in (${ids});delete from public.audit_logs where actor_id in (${ids});
     do $$ begin
-     if exists(select 1 from public.requests where id in(select id from cleanup_requests)) or exists(select 1 from private.guest_access_grants where id in(select id from cleanup_grants)) or exists(select 1 from public.customers where id in(select id from cleanup_customers)) then raise exception 'Guest fixture cleanup incomplete'; end if;
+     if exists(select 1 from public.requests where id in(select id from cleanup_requests)) or exists(select 1 from private.guest_access_grants where id in(select id from cleanup_grants)) or exists(select 1 from public.customers where id in(select id from cleanup_customers)) or exists(select 1 from private.manual_quote_mutations where request_id in(select id from cleanup_requests)) then raise exception 'Guest fixture cleanup incomplete'; end if;
      if exists(select 1 from public.payments where order_id in(select id from cleanup_orders)) or exists(select 1 from public.invoices where order_id in(select id from cleanup_orders)) or exists(select 1 from public.bank_transfer_attempts where submitted_by in (${ids})) or exists(select 1 from public.bank_accounts where created_by in (${ids})) or exists(select 1 from public.file_objects where owner_profile_id in (${ids})) or exists(select 1 from private.payment_mutations where actor_id in (${ids})) then raise exception 'Financial fixture cleanup incomplete';end if;
     end $$;commit;`,
         );

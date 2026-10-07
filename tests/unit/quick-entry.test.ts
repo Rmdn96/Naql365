@@ -10,7 +10,9 @@ const context = {
   revision: 0,
   services: [{ id: service, active: true }],
   cities: [{ id: city, name_ar: 'مدينة اختبار', name_en: 'TEST city' }],
-  coverage: [{ service_id: service, city_id: city }],
+  coverage: [
+    { service_id: service, city_id: city, pickup_eligible: true, delivery_eligible: true },
+  ],
 };
 test('quick entry only carries public catalogue identifiers and uses the existing draft', () => {
   const payload = blankDraft();
@@ -31,7 +33,12 @@ test('forged/inactive/out-of-coverage/cross-Market selections cannot override st
     { ...context, cities: [] },
     { ...context, services: [{ id: service, active: false }] },
     { ...context, coverage: [] },
-    { ...context, coverage: [{ service_id: service, city_id: null }] },
+    {
+      ...context,
+      coverage: [
+        { service_id: service, city_id: null, pickup_eligible: true, delivery_eligible: true },
+      ],
+    },
   ])
     expect(prefillQuickEntry(payload, entry, invalid, 'en')).toBe(payload);
 });

@@ -60,3 +60,15 @@ export interface DistanceProvider {
     | { available: false; reason: string }
   >;
 }
+
+export const manualQuoteInput = z
+  .object({
+    requestId: z.uuid(),
+    expectedRevision: z.number().int().nonnegative(),
+    subtotalMinor: z.number().int().min(0).max(900_000_000_000),
+    distanceKm: calculatePriceInput.shape.distanceKm,
+    sourceNote: z.string().trim().max(300).default(''),
+    validitySeconds: z.number().int().min(1).max(2_592_000),
+    mutationId: z.uuid(),
+  })
+  .strict();

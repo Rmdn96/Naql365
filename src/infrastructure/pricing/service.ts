@@ -1,7 +1,12 @@
 import 'server-only';
 import { z } from 'zod';
 import { AppError } from '@/domain/shared/errors';
-import { calculatePriceInput, createQuoteInput, quoteResponseInput } from '@/domain/pricing/model';
+import {
+  calculatePriceInput,
+  createQuoteInput,
+  quoteResponseInput,
+  manualQuoteInput,
+} from '@/domain/pricing/model';
 import { portalAccess } from '@/infrastructure/identity/access';
 import { customerClient } from '@/infrastructure/requests/service';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
@@ -72,6 +77,13 @@ export async function salesRequestDetails(requestId: string) {
     .maybeSingle();
   if (context.error) pricingError(context.error.code);
   if (!context.data) throw new AppError('not_found', 'Request unavailable');
+  const mode = await client
+    .from('pricing_settings')
+    .select('pricing_mode')
+    .eq('organization_id', organizationId)
+    .eq('market_id', context.data.market_id)
+    .maybeSingle();
+  if (mode.error) pricingError(mode.error.code);
   const [request, vehicles, evaluations] = await Promise.all([
     client
       .from('requests')
@@ -110,6 +122,7 @@ export async function salesRequestDetails(requestId: string) {
     }
   if (!request.data) throw new AppError('not_found', 'Submitted request unavailable');
   return {
+    pricingMode: mode.data?.pricing_mode ?? null,
     request: request.data,
     vehicles: vehicles.data ?? [],
     evaluations: evaluations.data ?? [],
@@ -207,5 +220,21 @@ export async function respondToQuote(quoteVersionId: string, input: unknown, gue
     data.error_code === 'QUOTE_EXPIRED'
   )
     throw new AppError('validation', 'Quote expired');
+  return data;
+}
+
+export async function createManualQuoteDraft(input: unknown) {
+  const command = manualQuoteInput.parse(input);
+  const { client } = await salesClient('quotes.manage', true);
+  const { data, error } = await client.rpc('create_manual_quote_draft', {
+    p_request_id: command.requestId,
+    p_expected_revision: command.expectedRevision,
+    p_subtotal_minor: command.subtotalMinor,
+    p_distance_km: command.distanceKm,
+    p_source_note: command.sourceNote,
+    p_validity_seconds: command.validitySeconds,
+    p_mutation_id: command.mutationId,
+  });
+  if (error) pricingError(error.code);
   return data;
 }

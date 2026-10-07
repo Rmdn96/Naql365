@@ -13,7 +13,7 @@ const ar = {
   eg: 'مصر',
   eyebrow: 'نقل منظّم. تجربة أوضح.',
   headline: 'من الطلب إلى التسليم… كل شيء تحت السيطرة.',
-  intro: 'اطلب خدمة النقل بسهولة، احصل على سعر مبدئي، واستلم عرض السعر النهائي من فريق نقل 365.',
+  intro: 'اطلب خدمة النقل بسهولة. يراجع فريقنا احتياجك ويجهز عرض السعر النهائي.',
   noAccount: 'بدون تسجيل • مراجعة بشرية للسعر • متابعة عبر رابط آمن',
   whatsapp: 'تواصل عبر واتساب',
   illustration: 'عرض توضيحي لرحلة الطلب',
@@ -25,16 +25,15 @@ const ar = {
   pickup: 'الاستلام',
   delivery: 'التسليم',
   quickTitle: 'ابدأ بتفاصيل بسيطة',
-  quickBody:
-    'أخبرنا من أين وإلى أين، وما الذي تريد نقله. نكمل معك التفاصيل اللازمة لسعر مبدئي موثوق داخل طلبك.',
-  quickAction: 'احصل على سعر مبدئي',
+  quickBody: 'أخبرنا من أين وإلى أين، وما الذي تريد نقله. يراجع فريقنا التفاصيل ويجهز عرض السعر.',
+  quickAction: 'اطلب عرض سعر',
   servicesTitle: 'خدمة تناسب ما تنقله',
   servicesBody: 'الخدمات المتاحة في بلدك، بخطوات واضحة من البداية.',
   noServices: 'تواصل معنا لمعرفة الخدمات والمناطق المتاحة حاليًا.',
   howTitle: 'أربع خطوات. رحلة واضحة.',
   steps: [
     ['اطلب', 'ابدأ بتفاصيل النقل، بدون إنشاء حساب.'],
-    ['استلم السعر', 'سعر مبدئي ثم عرض نهائي يراجعه فريقنا.'],
+    ['استلم السعر', 'يراجع فريقنا طلبك ويجهز عرض السعر النهائي.'],
     ['أكد وادفع', 'اختر الكاش أو التحويل وفق خيارات طلبك.'],
     ['تابع واستلم', 'من التجهيز والتنفيذ إلى إثبات التسليم.'],
   ],
@@ -59,7 +58,7 @@ const ar = {
     ['هل يجب إنشاء حساب؟', 'لا. يمكنك إكمال طلبك ومتابعته عبر رابط آمن، دون التسجيل.'],
     [
       'كيف يتم تحديد السعر؟',
-      'يجمع الطلب تفاصيل النقل. يُحسب السعر المبدئي بعد استكمال المعلومات والتحقق من مسافة الطريق، ثم يراجع فريق المبيعات العرض النهائي.',
+      'يجمع الطلب تفاصيل النقل. يراجع فريق المبيعات احتياجك ومسافة الطريق المتحققة، ثم يجهز عرض السعر النهائي.',
     ],
     [
       'كيف أدفع؟',
@@ -85,8 +84,7 @@ const en: typeof ar = {
   eg: 'Egypt',
   eyebrow: 'Organized transport. A clearer experience.',
   headline: 'From request to delivery. Everything under control.',
-  intro:
-    'Request transport with ease, receive a preliminary price, and get your final quote reviewed by the Naql365 team.',
+  intro: 'Request transport with ease. Our team reviews your needs and prepares your final quote.',
   noAccount: 'No registration • Human-reviewed quotes • A secure link to follow your request',
   whatsapp: 'Chat on WhatsApp',
   illustration: 'Illustrative request journey',
@@ -99,15 +97,15 @@ const en: typeof ar = {
   delivery: 'Delivery',
   quickTitle: 'Start with the essentials',
   quickBody:
-    'Tell us where from, where to, and what you need to move. Continue into your request to provide the details needed for a reliable preliminary price.',
-  quickAction: 'Get a preliminary price',
+    'Tell us where from, where to, and what you need to move. Our team reviews the details and prepares your quote.',
+  quickAction: 'Request a quote',
   servicesTitle: 'The right service for your move',
   servicesBody: 'Available services in your country, with clear steps from the start.',
   noServices: 'Contact us for currently available services and coverage.',
   howTitle: 'Four steps. One clear journey.',
   steps: [
     ['Request', 'Tell us what you need to move. No account required.'],
-    ['Get your quote', 'A preliminary price, then a final quote reviewed by our team.'],
+    ['Get your quote', 'Our team reviews your request and prepares your final quote.'],
     ['Confirm and pay', 'Choose cash or transfer from your request’s payment options.'],
     ['Follow and receive', 'From preparation and transport to proof of delivery.'],
   ],
@@ -136,7 +134,7 @@ const en: typeof ar = {
     ],
     [
       'How is the price calculated?',
-      'Your request collects the transport details. A preliminary price is calculated after the required information and road distance are verified, then Sales reviews the final quote.',
+      'Your request collects the transport details. Sales reviews your needs and verified road distance, then prepares your final quote.',
     ],
     [
       'How do I pay?',

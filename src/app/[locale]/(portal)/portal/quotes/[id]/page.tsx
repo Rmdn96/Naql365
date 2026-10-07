@@ -135,6 +135,8 @@ export default async function Page({
       <SalesPricing
         locale={locale}
         requestId={id}
+        requestRevision={details.request.revision}
+        pricingMode={details.pricingMode}
         vehicles={details.vehicles}
         evaluation={latest ?? undefined}
         draft={draft ?? undefined}

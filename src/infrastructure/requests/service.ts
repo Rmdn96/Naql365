@@ -63,7 +63,7 @@ export async function requestDetails(id: string, writable = false, guest = false
       .order('name_en'),
     client
       .from('service_areas')
-      .select('service_id,city_id')
+      .select('service_id,city_id,pickup_eligible,delivery_eligible')
       .eq('market_id', r.market_id)
       .eq('active', true),
   ]);
@@ -78,30 +78,48 @@ export async function requestDetails(id: string, writable = false, guest = false
     .single();
   if (!owner || (user ? owner.profile_id !== user.id : owner.identity_kind !== 'GUEST'))
     throw new AppError('not_found', 'Request unavailable');
-  const [locations, items, additional, attachments, services, options] = await Promise.all([
-    client.from('request_locations').select('*').eq('request_id', id),
-    client
-      .from('request_items')
-      .select('description,quantity,notes')
-      .eq('request_id', id)
-      .order('position'),
-    client.from('request_additional_services').select('additional_service_id').eq('request_id', id),
-    client
-      .from('request_attachments')
-      .select('file_id,file_objects(id,mime_type,size_bytes,upload_state)')
-      .eq('request_id', id),
-    client
-      .from('market_services')
-      .select('active,services(id,name_ar,name_en,property_required,active)')
-      .eq('market_id', r.market_id)
-      .eq('organization_id', r.organization_id),
-    client
-      .from('additional_services')
-      .select('id,name_ar,name_en,active')
-      .eq('organization_id', r.organization_id)
-      .order('code'),
-  ]);
-  for (const result of [locations, items, additional, attachments, services, options])
+  const [locations, items, additional, attachments, services, options, applicability] =
+    await Promise.all([
+      client.from('request_locations').select('*').eq('request_id', id),
+      client
+        .from('request_items')
+        .select('description,quantity,notes')
+        .eq('request_id', id)
+        .order('position'),
+      client
+        .from('request_additional_services')
+        .select('additional_service_id')
+        .eq('request_id', id),
+      client
+        .from('request_attachments')
+        .select('file_id,file_objects(id,mime_type,size_bytes,upload_state)')
+        .eq('request_id', id),
+      client
+        .from('market_services')
+        .select('active,services(id,name_ar,name_en,property_required,active)')
+        .eq('market_id', r.market_id)
+        .eq('organization_id', r.organization_id),
+      client
+        .from('additional_services')
+        .select('id,name_ar,name_en,active')
+        .eq('organization_id', r.organization_id)
+        .order('code'),
+      client
+        .from('service_addon_applicability')
+        .select('service_id,additional_service_id')
+        .eq('organization_id', r.organization_id)
+        .eq('market_id', r.market_id)
+        .eq('active', true),
+    ]);
+  for (const result of [
+    locations,
+    items,
+    additional,
+    attachments,
+    services,
+    options,
+    applicability,
+  ])
     if (result.error) databaseError(result.error.code);
   const draft = blankDraft();
   for (const l of locations.data ?? [])
@@ -137,6 +155,7 @@ export async function requestDetails(id: string, writable = false, guest = false
     market,
     cities: cities.data,
     coverage: coverage.data,
+    applicability: applicability.data ?? [],
     request: {
       id: r.id,
       revision: r.revision,

@@ -71,6 +71,17 @@ insert into public.pricing_rules(organization_id,code,version,component_code,sel
 ('21000000-0000-4000-8000-000000000001','within-city',1,'WITHIN_CITY',null,'FIXED',500,true,'داخل المدينة','Within city',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
 ('21000000-0000-4000-8000-000000000001','intercity',1,'INTERCITY',null,'FIXED',4000,true,'بين المدن','Intercity',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid);
 
+-- Explicit legacy AUTOMATED-mode regression, never launch configuration.
+do $launch_fixture$ begin
+ if exists(select 1 from information_schema.columns where table_schema='public' and table_name='pricing_settings' and column_name='pricing_mode') then
+  update public.pricing_settings set pricing_mode='AUTOMATED' where organization_id::text like '21000000%';
+  update public.service_areas set pickup_eligible=true,delivery_eligible=true where organization_id::text like '21000000%';
+  insert into public.service_addon_applicability
+   select ms.organization_id,ms.market_id,ms.service_id,a.id,a.active from public.market_services ms join public.additional_services a on a.organization_id=ms.organization_id
+   where ms.organization_id::text like '21000000%' on conflict do nothing;
+ end if;
+end $launch_fixture$;
+
 set local role authenticated;
 select set_config('request.jwt.claim.sub','11000000-0000-4000-8000-000000000002',true);
 do $$ begin

@@ -20,7 +20,12 @@ export function prefillQuickEntry(
     revision: number;
     services: { id: string; active: boolean }[];
     cities: { id: string; name_ar: string; name_en: string }[];
-    coverage: { service_id: string; city_id: string | null }[];
+    coverage: {
+      service_id: string;
+      city_id: string | null;
+      pickup_eligible?: boolean;
+      delivery_eligible?: boolean;
+    }[];
   },
   locale: 'ar' | 'en',
 ): RequestDraft {
@@ -36,8 +41,13 @@ export function prefillQuickEntry(
   if (
     !pickup ||
     !delivery ||
-    ![pickup, delivery].every((c) =>
-      context.coverage.some((a) => a.city_id === c.id && a.service_id === entry.service),
+    ![pickup, delivery].every((c, index) =>
+      context.coverage.some(
+        (a) =>
+          a.city_id === c.id &&
+          a.service_id === entry.service &&
+          (index === 0 ? a.pickup_eligible === true : a.delivery_eligible === true),
+      ),
     )
   )
     return payload;

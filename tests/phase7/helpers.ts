@@ -139,12 +139,19 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   await staff.goto(`/${locale}/portal/quotes/${requestId}`);
   await staff.locator('#distance').fill('18.750');
   await staff.locator('#source-note').fill('TEST verified distance');
-  await staff.locator('#vehicle').selectOption({ index: 1 });
-  await staff.locator('#workers').fill('2');
-  await staff.getByRole('button', { name: qt.calculate, exact: true }).click();
-  await expect(staff.getByRole('heading', { name: qt.calculated, exact: true })).toBeVisible();
+  const mode = await admin
+    .from('pricing_settings')
+    .select('pricing_mode')
+    .eq('organization_id', org)
+    .eq('market_id', market.id)
+    .single();
+  expect(mode.error).toBeNull();
+  expect(mode.data?.pricing_mode).toBe('MANUAL');
+  await expect(staff.getByRole('button', { name: qt.calculate, exact: true })).toHaveCount(0);
   await page.reload();
-  await expect(page.getByRole('heading', { name: gt.preliminary, exact: true })).toBeVisible();
+  await expect(page.getByText(gt.review, { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: gt.preliminary, exact: true })).toHaveCount(0);
+  await staff.locator('#manual-subtotal').fill('123.45');
   await staff.getByRole('button', { name: qt.createDraft, exact: true }).click();
   await staff.getByRole('button', { name: qt.sendQuote, exact: true }).click();
   await expect(staff.getByRole('button', { name: qt.sendQuote, exact: true })).toBeHidden();
