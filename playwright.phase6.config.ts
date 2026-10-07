@@ -1,3 +1,5 @@
+import { acceptanceTarget } from './scripts/staging/target.mjs';
+acceptanceTarget();
 import { defineConfig, devices } from '@playwright/test';
 const origin = process.env.STAGING_BASE_URL;
 if (!origin || !/^https:\/\/naql365-staging-[a-z0-9-]+\.vercel\.app$/.test(origin))

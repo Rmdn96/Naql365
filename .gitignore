@@ -11,3 +11,5 @@ test-results/
 **/supabase/.temp/
 supabase/.branches/
 *.log
+
+.naql365-build-identity.json

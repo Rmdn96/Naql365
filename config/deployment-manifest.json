@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "staging": {
+    "projectRef": "zuvyfeflkzlciuaauxba",
+    "origins": [
+      "https://naql365-staging-l2et1jst5-naql365.vercel.app",
+      "https://naql365-staging-jd6ncixk4-naql365.vercel.app",
+      "https://naql365-staging-q142gx9ok-naql365.vercel.app",
+      "https://naql365-staging-4amvwuc0p-naql365.vercel.app"
+    ],
+    "hostingerOrigins": [],
+    "hostingerProtection": {}
+  },
+  "production": null
+}

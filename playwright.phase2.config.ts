@@ -1,3 +1,5 @@
+import { acceptanceTarget } from './scripts/staging/target.mjs';
+acceptanceTarget();
 import { defineConfig, devices } from '@playwright/test';
 const origin = process.env.STAGING_BASE_URL;
 if (!origin) throw new Error('STAGING_BASE_URL is required');

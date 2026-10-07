@@ -1,3 +1,4 @@
+import { acceptanceTarget } from './target.mjs';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -6,13 +7,7 @@ import { stagingProject, supabase, query } from './supabase.mjs';
 import { acquireHostedRun } from './exclusive-run.mjs';
 
 process.chdir(fileURLToPath(new URL('../../', import.meta.url)));
-const origin = process.env.STAGING_BASE_URL;
-if (
-  !origin ||
-  !/^https:\/\/naql365-staging-[a-z0-9-]+\.vercel\.app$/.test(origin) ||
-  !process.env.VERCEL_AUTOMATION_BYPASS_SECRET
-)
-  throw new Error('Verified protected Preview required');
+acceptanceTarget();
 
 const release = acquireHostedRun();
 const users = [];
@@ -20,6 +15,7 @@ const requestIds = [randomUUID(), randomUUID(), randomUUID(), randomUUID()];
 let ref, admin, org;
 try {
   ref = stagingProject();
+  release.track('organization', otherOrg);
   org = query(ref, 'select organization_id from private.customer_enrollment where singleton')[0]
     ?.organization_id;
   if (!org) throw new Error('Configure Staging first');
@@ -43,6 +39,7 @@ try {
     });
     if (result.error || !result.data.user) throw new Error('Synthetic identity creation failed');
     users.push(result.data.user.id);
+    release.track('auth', result.data.user.id);
     identities.push({ email, password });
   }
   const service = query(

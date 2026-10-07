@@ -3770,6 +3770,15 @@ export type Database = {
       }
       customer_enrollment_state: { Args: never; Returns: string }
       customer_order_progress: { Args: { p_order_id: string }; Returns: Json }
+      deployment_attestation: {
+        Args: never
+        Returns: {
+          configuration_revision: string
+          deployment_identity: string
+          environment: string
+          protocol_version: number
+        }[]
+      }
       driver_evidence_path: {
         Args: { p_id: string; p_kind: string }
         Returns: Json

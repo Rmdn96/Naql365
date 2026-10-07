@@ -1,16 +1,11 @@
+import { acceptanceTarget } from './target.mjs';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createClient } from '@supabase/supabase-js';
 import { stagingProject, supabase, query } from './supabase.mjs';
 import { acquireHostedRun } from './exclusive-run.mjs';
-const origin = process.env.STAGING_BASE_URL;
-if (
-  !origin ||
-  !/^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin) ||
-  !process.env.VERCEL_AUTOMATION_BYPASS_SECRET
-)
-  throw new Error('Verified protected Vercel Preview origin and automation credential required');
+const { origin } = acceptanceTarget();
 process.chdir(fileURLToPath(new URL('../../', import.meta.url)));
 const org = randomUUID(),
   otherOrg = randomUUID(),
@@ -18,6 +13,8 @@ const org = randomUUID(),
   peerFileId = randomUUID();
 let ref, admin, user, peer, path, peerPath;
 const release = acquireHostedRun();
+release.track('organization', org);
+release.track('organization', otherOrg);
 try {
   ref = stagingProject();
   const keys = JSON.parse(
@@ -38,6 +35,7 @@ try {
   });
   if (created.error || !created.data.user) throw new Error('Fixture creation failed');
   user = created.data.user.id;
+  release.track('auth', user);
   const peerCreated = await admin.auth.admin.createUser({
     email: `naql365-peer-${randomUUID()}@example.test`,
     password: randomBytes(32).toString('base64url'),
@@ -45,6 +43,7 @@ try {
   });
   if (peerCreated.error || !peerCreated.data.user) throw new Error('Peer fixture creation failed');
   peer = peerCreated.data.user.id;
+  release.track('auth', peer);
   query(
     ref,
     `begin; insert into public.organizations(id,name) values ('${org}','Naql365 hosted browser fixture'),('${otherOrg}','Naql365 hosted browser isolation'); insert into public.organization_memberships(organization_id,profile_id,member_type) values ('${org}','${user}','customer'),('${org}','${peer}','customer'); insert into public.user_roles(organization_id,profile_id,role_id) select organization_id,profile_id,r.id from public.organization_memberships m cross join public.roles r where m.organization_id='${org}' and r.code='CUSTOMER'; insert into public.customers(organization_id,profile_id) values ('${org}','${user}'),('${org}','${peer}'); insert into public.file_objects(id,organization_id,owner_profile_id,bucket_id) values ('${fileId}','${org}','${user}','attachments'),('${peerFileId}','${org}','${peer}','attachments'); commit;`,

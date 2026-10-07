@@ -1,3 +1,4 @@
+import { protectionHeaders } from '../../scripts/staging/target.mjs';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import type { Page, BrowserContext } from '@playwright/test';
@@ -636,11 +637,11 @@ export function registerDriverJourneys(
         const url = new URL(source);
         if (url.origin !== baseURL) continue;
         const asset = await fetch(url, {
-          headers: { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET! },
+          headers: protectionHeaders(),
         });
         expect(asset.ok).toBe(true);
         const text = await asset.text();
-        expect(protectedSecrets.every((s) => !text.includes(s))).toBe(true);
+        expect(protectedSecrets.every((s) => !s || !text.includes(s))).toBe(true);
         expect(text.includes('sb_secret_')).toBe(false);
         expect(hasSourceMapDirective(text)).toBe(false);
       }

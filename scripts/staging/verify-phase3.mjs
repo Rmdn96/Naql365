@@ -1,3 +1,4 @@
+import { acceptanceTarget } from './target.mjs';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -9,19 +10,14 @@ const args = process.argv.slice(2);
 if (args.some((arg) => arg !== '--assets-only')) throw new Error('Unknown verification option');
 // Supplemental bundle inspection is useful after a completed journey; it is not full acceptance.
 const selectedTests = args.includes('--assets-only') ? ['tests/phase3/assets.spec.ts'] : [];
-const origin = process.env.STAGING_BASE_URL;
-if (
-  !origin ||
-  !/^https:\/\/naql365-staging-[a-z0-9-]+\.vercel\.app$/.test(origin) ||
-  !process.env.VERCEL_AUTOMATION_BYPASS_SECRET
-)
-  throw new Error('Verified protected Phase 3 Preview required');
+acceptanceTarget();
 const release = acquireHostedRun();
 const users = [];
 const otherOrg = randomUUID();
 let ref, admin, org;
 try {
   ref = stagingProject();
+  release.track('organization', otherOrg);
   org = query(ref, 'select organization_id from private.customer_enrollment where singleton')[0]
     ?.organization_id;
   if (!org) throw new Error('Staging catalogue unavailable');
@@ -50,6 +46,7 @@ try {
     if (created.error || !created.data.user) throw new Error('Fixture identity unavailable');
     const id = created.data.user.id;
     users.push(id);
+    release.track('auth', id);
     identities[label] = { email, password, id };
     if (label !== 'customer') {
       const tenant = label === 'other' ? otherOrg : org;
