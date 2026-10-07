@@ -26,6 +26,9 @@ where ms.organization_id='${org}' and ms.active and c.code in ('riyadh','jeddah'
 on conflict(organization_id,market_id,service_id,city_id) do update set pickup_eligible=excluded.pickup_eligible,delivery_eligible=excluded.delivery_eligible;
 update public.service_areas a set pickup_eligible=(c.code in ('riyadh','cairo')),delivery_eligible=true
 from public.market_cities c where a.organization_id='${org}' and a.city_id=c.id and a.market_id=c.market_id and a.active;
+update public.service_addon_applicability a set active=false from public.services s
+where a.organization_id='${org}' and s.id=a.service_id and s.organization_id=a.organization_id
+and s.code in ('goods','furniture','household-relocation','office-relocation');
 insert into public.service_addon_applicability(organization_id,market_id,service_id,additional_service_id,active)
 select ms.organization_id,ms.market_id,ms.service_id,a.id,true from public.market_services ms
 join public.services s on s.id=ms.service_id and s.organization_id=ms.organization_id

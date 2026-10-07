@@ -22,13 +22,13 @@ This is not a commercial switch. SA and EG require explicit Staging configuratio
 ## Evidence checkpoint
 
 - Fresh 46-migration reconstruction and populated 45→46 commercial snapshot preservation: PASS.
-- Full unit/integration: 231 PASS across 48 files after the final provenance/coverage assertion.
-- Native Supabase SQL/RLS: PASS, seven SQL files / 14 TAP assertions plus their internal assertions.
+- Full unit/integration: 267 PASS across 49 files, including 36 Customer/Guest directional coverage cases.
+- Native Supabase SQL/RLS: PASS on the implementation candidate; the eight manual assertions now use the existing shared local/hosted SQL format, with a final TAP report. Exact-head CI reruns all seven files.
 - Official generated types: regenerated from a pristine 46-migration database; exact-head CI checks equality.
 - Independent connections: Operations, Driver, Tracking, Payment, manual quote and Guest suites PASS. Manual suite covers duplicate draft/send/accept, conflicting payload, request revision and pricing-mode races.
 - Local E2E: 32 PASS. Formatting, lint, strict types and production build PASS after the Arabic copy correction.
 - Tracked/history secret scans: PASS for 427 staged/tracked files and 1122 history text blobs; heuristic checks, not a guarantee for every secret format.
-- Exact-head CI: PENDING.
+- Implementation candidate CI 37616469664: PASS on `118d78c86bc64c07b857f28219b9f772d2ce29cd`. Expanded acceptance-test candidate CI: PENDING.
 - Protected Preview and hosted regression/cleanup: NOT RUN.
 - Hostinger remains deferred; main, Production and DNS untouched.
 
@@ -40,7 +40,7 @@ The bounded Staging setup explicitly configures household and office relocation 
 
 ## Remaining acceptance work
 
-Complete exact-head CI, protected hosted Customer/Guest/Sales/Finance/Operations/Driver regression, explicit SA/EG MANUAL readback, owned-fixture cleanup and the full approved negative-coverage matrix. No hosted PASS is inferred from local tests.
+Complete exact-head CI, protected hosted Customer/Guest/Sales/Finance/Operations/Driver regression, explicit SA/EG MANUAL readback, owned-fixture cleanup and hosted response non-disclosure checks. The local 36-case directional matrix includes both identities and Markets, a third synthetic destination, reverse/cross-Market/forged routes and inactive coverage/service/add-on denial. No hosted PASS is inferred from local tests.
 
 Dependency security disposition remains the documented scoped owner acceptance of the development-only braces advisory; the upstream advisory is not represented as resolved.
 
