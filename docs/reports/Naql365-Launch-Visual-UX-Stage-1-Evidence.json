@@ -1,0 +1,58 @@
+{
+  "applicationSha": "4a2f155b13358757e567a59dd66c69b266449cac",
+  "applicationCi": 37771902706,
+  "preview": "https://naql365-staging-ux-stage1-naql365.vercel.app",
+  "deployment": "dpl_ASCH7SNgfs1tLKhA5ubR3eMd8pUv",
+  "migrationCount": 46,
+  "hostedPassed": 10,
+  "hostedFailed": 0,
+  "cleanup": {
+    "revoked": true,
+    "revokedCredentialStatus": 302,
+    "productionChanged": false
+  },
+  "runtime": {
+    "deployment": "dpl_ASCH7SNgfs1tLKhA5ubR3eMd8pUv",
+    "sampleCount": 50,
+    "window": "1h",
+    "limit": 200,
+    "statusCounts": {
+      "200": 50
+    },
+    "secretPatternDetected": false
+  },
+  "images": [
+    {
+      "file": "ar-desktop.png",
+      "sha256": "2c04901e9c65b6e3b99e46f139c159eaf5755c3d3fad6227948045f1d4d9b109"
+    },
+    {
+      "file": "en-mobile.png",
+      "sha256": "509a61433761f1cf0889566462791f3ab057c6200961fa759e03c187d81269db"
+    },
+    {
+      "file": "login-ar.png",
+      "sha256": "c1955a41b0b3176587b20de2c794552d2facf77d2ade6cdb7018646c89e0531c"
+    },
+    {
+      "file": "signup-en-mobile.png",
+      "sha256": "31e250cbcd469a17beee36d1a9e3d402df4a20e955016988bdbb0b1f138a6e71"
+    },
+    {
+      "file": "customer-eg-ar.png",
+      "sha256": "2ed3d3dfeaee59f15ad2666f132937abc2c01a0fb2463f70a87ea0af041f57c1"
+    },
+    {
+      "file": "request-sa-en-mobile.png",
+      "sha256": "985d41201d3400061184a9916d9f2b19846dfa15fbf67bd5d955f46410b052ac"
+    },
+    {
+      "file": "operations-ar.png",
+      "sha256": "a683d9ef87461f1ae5d9a68c7d68e81a8f1dd9067664faedc7d0b38b7042c0e1"
+    },
+    {
+      "file": "driver-eg-en-mobile.png",
+      "sha256": "f1ba17b12f0b6fc390ccbdd27dc46ed8a0e79c97f2d3d6cc33babf8fa7cc9d82"
+    }
+  ]
+}
