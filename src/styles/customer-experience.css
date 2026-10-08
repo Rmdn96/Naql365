@@ -334,3 +334,63 @@ body:has(.customer-experience) .floating-contact {
     flex-wrap: wrap;
   }
 }
+.launch-process {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.launch-process li {
+  position: relative;
+  min-width: 0;
+}
+.process-node {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: white;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 0 4px #22c7e825;
+}
+.launch-process h3 {
+  font-size: 1rem;
+}
+.launch-process p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.launch-process li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  inset-inline-start: 46px;
+  inset-inline-end: 0;
+  height: 1px;
+  background: var(--border-strong);
+}
+@media (max-width: 700px) {
+  .launch-process {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .launch-process li {
+    padding-inline-start: 3.5rem;
+    padding-bottom: 1.5rem;
+  }
+  .launch-process .process-node {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+  }
+  .launch-process li:not(:last-child)::after {
+    top: 44px;
+    bottom: 8px;
+    height: auto;
+    width: 1px;
+    inset-inline-start: 18px;
+  }
+}

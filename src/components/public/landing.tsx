@@ -34,10 +34,6 @@ export function Landing({
       : country === 'SA'
         ? 'Within Riyadh and from Riyadh to activated destinations only.'
         : 'Within Cairo and from Cairo to activated destinations only.';
-  const stages =
-    locale === 'ar'
-      ? ['الطلب', 'مراجعة المبيعات', 'عرض السعر النهائي', 'النقل', 'التسليم']
-      : ['Request', 'Sales review', 'Final quote', 'Transport', 'Delivery'];
   return (
     <div className="launch-page">
       <MvpView event="homepage_viewed" market={country} context="home" />
@@ -132,12 +128,17 @@ export function Landing({
         <div className="container launch-section">
           <p className="eyebrow">{t.how}</p>
           <h2>{t.howTitle}</h2>
-          <RouteMotif labels={stages} />
-          <div className="launch-steps">
-            {t.steps.map(([title, body]) => (
-              <p key={title}>{body}</p>
+          <ol className="launch-process">
+            {t.steps.map(([title, body], index) => (
+              <li key={title}>
+                <span className="process-node" aria-hidden="true">
+                  {index + 1}
+                </span>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
       <section id="services" className="container launch-section">
