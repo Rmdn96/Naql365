@@ -5,6 +5,8 @@ import { isLocale } from '@/i18n/config';
 import { operationsDictionary } from '@/i18n/operations';
 import { operationsWorkspace } from '@/infrastructure/operations/service';
 import { AppError } from '@/domain/shared/errors';
+import { PageHeader } from '@/components/ui/presentation';
+import Link from 'next/link';
 import { Workspace } from '@/components/operations/workspace';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
@@ -22,7 +24,20 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   }
   return (
     <div className="container page operations">
-      <h1>{t.title}</h1>
+      <PageHeader
+        title={t.title}
+        eyebrow={locale === 'ar' ? 'مساحة العمل · Naql365' : 'Workspace · Naql365'}
+        description={
+          locale === 'ar'
+            ? 'رتّب التنفيذ وتابع الرحلات والموارد المصرح لك بها.'
+            : 'Coordinate execution and review your authorized trips and resources.'
+        }
+        actions={
+          <Link href={`/${locale}/portal`}>
+            {locale === 'ar' ? 'بوابة العمليات' : 'Operations portal'}
+          </Link>
+        }
+      />
       <Workspace locale={locale} data={data} />
       <TrackingView
         locale={locale}

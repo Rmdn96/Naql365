@@ -1,0 +1,391 @@
+:root {
+  --type-display: clamp(2.3rem, 4.4vw, 4.2rem);
+  --type-title: clamp(1.65rem, 3vw, 2.5rem);
+  --type-section: 1.25rem;
+  --type-body: 1rem;
+  --type-help: 0.875rem;
+  --radius-control: 8px;
+  --radius-workspace: 12px;
+  --radius-surface: 20px;
+  --elevation-surface: 0 8px 28px #0b1f3308;
+  --width-public: 1200px;
+  --width-workspace: 1320px;
+  --width-reading: 680px;
+  --tone-warning: #854d0e;
+  --tone-warning-bg: #fff7df;
+  --tone-success-bg: #eaf8f1;
+}
+.mobile-menu {
+  display: none;
+}
+.header-market {
+  display: block;
+}
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+.page-heading h1 {
+  font-size: var(--type-title);
+  margin-bottom: var(--space-3);
+}
+.page-description {
+  color: var(--muted);
+  max-width: var(--width-reading);
+}
+.section-heading,
+.workspace-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+.summary-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-surface);
+  padding: clamp(1.25rem, 3vw, 2rem);
+  box-shadow: var(--elevation-surface);
+}
+.summary-card h2 {
+  font-size: var(--type-section);
+}
+.summary-card p {
+  color: var(--muted);
+}
+.summary-card:first-child {
+  border-block-start: 4px solid var(--blue);
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-control);
+  background: #eaf3ff;
+  color: var(--action);
+  font-size: var(--type-help);
+  font-weight: 600;
+}
+.status-badge--success {
+  color: var(--success);
+  background: var(--tone-success-bg);
+}
+.status-badge--warning {
+  color: var(--tone-warning);
+  background: var(--tone-warning-bg);
+}
+.status-badge--error {
+  color: var(--error);
+  background: #fff1f1;
+}
+.status-badge--neutral {
+  color: var(--muted);
+  background: var(--background);
+}
+.skeleton {
+  padding: var(--space-8);
+  max-width: var(--width-reading);
+  margin-inline: auto;
+}
+.skeleton-line {
+  background: var(--border);
+  height: 1rem;
+  border-radius: 4px;
+  margin-block: 1rem;
+}
+.skeleton-line:last-child {
+  width: 60%;
+}
+.coverage-note {
+  border-inline-start: 3px solid var(--cyan);
+  padding-inline-start: 1rem;
+  max-width: 38rem;
+}
+.coverage-cities,
+.task-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.coverage-cities li {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: white;
+}
+.launch-how .route-motif {
+  grid-template-columns: repeat(5, 1fr);
+}
+.launch-steps {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.launch-page .container {
+  max-width: var(--width-public);
+}
+.launch-page .button,
+.auth-form .button {
+  border-radius: var(--radius-control);
+}
+.auth-form {
+  padding-block: var(--space-4);
+}
+.auth-form + nav {
+  flex-wrap: wrap;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+.customer-home > .card {
+  border-radius: var(--radius-surface);
+}
+.customer-home .customer-links {
+  flex-wrap: wrap;
+}
+.profile-settings {
+  border-block-start: 1px solid var(--border);
+  margin-block: var(--space-6);
+  padding-block: var(--space-4);
+}
+.profile-settings > summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+}
+.profile-settings form {
+  max-width: var(--width-reading);
+}
+.operations {
+  max-width: var(--width-workspace);
+}
+.workspace-panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-workspace);
+  padding: var(--space-6);
+  margin-block: var(--space-6);
+  scroll-margin-top: 1rem;
+}
+.workspace-sections {
+  display: flex;
+  flex-wrap: wrap;
+  padding: var(--space-3);
+  gap: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-workspace);
+  background: white;
+  margin-block: var(--space-6);
+}
+.workspace-sections a {
+  padding: 0.6rem 1rem;
+  min-height: 44px;
+}
+.operations .request-list li {
+  box-shadow: none;
+  border-radius: var(--radius-control);
+}
+.wizard {
+  max-width: 980px;
+  margin-inline: auto;
+}
+.wizard-state-bar {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: white;
+  border-block: 1px solid var(--border);
+  padding: 0.8rem 1rem;
+}
+.wizard-state-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.wizard h1 {
+  font-size: var(--type-title);
+}
+.wizard-fields {
+  border-radius: var(--radius-surface);
+}
+.wizard .wizard-progress {
+  gap: 0.5rem;
+}
+.wizard input,
+.wizard select,
+.wizard textarea {
+  scroll-margin-top: 5rem;
+}
+.driver-shell {
+  max-width: 880px;
+}
+.driver-focus {
+  border: 1px solid var(--border);
+  border-block-start: 4px solid var(--blue);
+  padding: var(--space-6);
+  border-radius: var(--radius-surface);
+  background: white;
+  margin-block: var(--space-6);
+}
+.driver-focus h2 {
+  font-size: var(--type-section);
+}
+.driver-focus .actions {
+  margin-block: 1rem;
+}
+.driver-shell .driver-nav {
+  flex-wrap: wrap;
+}
+.driver-shell .driver-nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.driver-shell .card {
+  border-radius: var(--radius-workspace);
+}
+.page-heading > *,
+.summary-grid > *,
+.workspace-panel,
+.driver-focus,
+.wizard {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1100px) {
+  .desktop-header-nav {
+    display: none;
+  }
+  .mobile-menu,
+  .header-market {
+    display: block;
+  }
+  .header-inner {
+    gap: 0.5rem;
+  }
+  .header-market {
+    margin-inline-start: auto;
+  }
+  .header-market select {
+    max-width: 130px;
+  }
+  .mobile-menu dialog {
+    width: min(380px, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    overflow: auto;
+  }
+  .mobile-menu-links {
+    display: grid;
+    gap: 0.5rem;
+    margin-block-start: 1rem;
+  }
+  .mobile-menu-links a {
+    display: block;
+    padding: 0.6rem;
+    min-height: 44px;
+  }
+  .mobile-menu-links .language-link {
+    border: 0;
+  }
+}
+@media (max-width: 700px) {
+  .page-heading,
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .launch-how .route-motif {
+    grid-template-columns: 1fr;
+  }
+  .workspace-panel {
+    padding: var(--space-4);
+  }
+  .operations .request-list li {
+    display: block;
+  }
+  .operations .request-list li > a {
+    display: inline-block;
+    padding-block: 0.75rem;
+  }
+  .wizard-progress {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .wizard-progress button {
+    overflow-wrap: anywhere;
+  }
+  .driver-focus {
+    padding: var(--space-4);
+  }
+  .driver-shell {
+    padding-bottom: 6rem;
+  }
+  .brand {
+    font-size: 1.2rem;
+  }
+  .brand-symbol {
+    display: none;
+  }
+  .mobile-menu > button {
+    padding-inline: 0.7rem;
+  }
+  .floating-contact {
+    bottom: 1rem;
+  }
+  .wizard,
+  .customer-home {
+    padding-bottom: 5rem;
+  }
+}
+
+.auth-card {
+  border-radius: var(--radius-surface);
+  box-shadow: var(--elevation-surface);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+.auth-card h1 {
+  font-size: var(--type-title);
+}
+.validation-link {
+  border: 0;
+  background: transparent;
+  color: var(--error);
+  text-decoration: underline;
+  padding: 0.45rem;
+  text-align: start;
+}
+
+/* Keep support available without covering the wizard's next/back controls. */
+body:has(.wizard) .floating-contact {
+  position: static;
+  width: fit-content;
+  margin: 1rem auto;
+}
+@media (max-width: 600px) {
+  .launch-steps {
+    grid-template-columns: 1fr;
+  }
+  .wizard .wizard-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wizard .wizard-progress button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 60px;
+    overflow-wrap: normal;
+    font-size: 0.875rem;
+  }
+  .wizard .wizard-progress button > span {
+    flex-shrink: 0;
+  }
+}

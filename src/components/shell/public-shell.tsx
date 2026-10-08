@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { LocaleLink } from './locale-link';
+import { MobileMenu } from './mobile-menu';
 import { legalContent } from '@/domain/legal/content';
 import { dictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
@@ -39,7 +41,7 @@ export async function Header({ locale }: { locale: Locale }) {
   const t = dictionary(locale);
   const p = publicDictionary(locale);
   const country = await selectedPublicCountry();
-  const other = locale === 'ar' ? 'en' : 'ar';
+
   return (
     <>
       <a className="skip-link" href="#main">
@@ -57,7 +59,8 @@ export async function Header({ locale }: { locale: Locale }) {
               Naql<span>365</span>
             </span>
           </Link>
-          <nav aria-label={t.home}>
+          <nav className="desktop-header-nav" aria-label={t.home}>
+            <Link href={`/${locale}`}>{t.home}</Link>
             <Link className="desktop-nav" href={`/${locale}#services`}>
               {p.services}
             </Link>
@@ -67,16 +70,33 @@ export async function Header({ locale }: { locale: Locale }) {
             <Link className="desktop-nav" href={`/${locale}#tracking`}>
               {p.track}
             </Link>
-            <MarketSelector country={country} locale={locale} />
+            <Link className="desktop-nav" href={`/${locale}#contact`}>
+              {p.contact}
+            </Link>
             <IdentityLink locale={locale} />
             <Link className="button button--primary header-request" href={`/${locale}/request`}>
               {p.request}
             </Link>
-            <Link className="language-link" href={`/${other}`} lang={other} hrefLang={other}>
-              {t.language}
-              <span aria-hidden="true"> ↗</span>
-            </Link>
+            <LocaleLink locale={locale} label={t.language} />
           </nav>
+          <div className="header-market">
+            <MarketSelector country={country} locale={locale} />
+          </div>
+          <MobileMenu
+            label={locale === 'ar' ? 'القائمة' : 'Menu'}
+            close={locale === 'ar' ? 'إغلاق' : 'Close'}
+          >
+            <Link href={`/${locale}`}>{t.home}</Link>
+            <Link href={`/${locale}#services`}>{p.services}</Link>
+            <Link href={`/${locale}#how`}>{p.how}</Link>
+            <Link href={`/${locale}#tracking`}>{p.track}</Link>
+            <Link href={`/${locale}#contact`}>{p.contact}</Link>
+            <IdentityLink locale={locale} />
+            <LocaleLink locale={locale} label={t.language} />
+            <Link className="button button--primary" href={`/${locale}/request`}>
+              {p.request}
+            </Link>
+          </MobileMenu>
         </div>
       </header>
     </>

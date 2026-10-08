@@ -1,3 +1,4 @@
+import { stage1Capture } from '../helpers/stage1-evidence';
 import AxeBuilder from '@axe-core/playwright';
 import { createClient } from '@supabase/supabase-js';
 import { randomUUID } from 'node:crypto';
@@ -228,7 +229,10 @@ export async function acceptedOrder(
   expect(cityResult.error).toBeNull();
   const cityId = cityResult.data!.id;
   await login(page, customerRole);
-  // The runner always creates a fresh customer. Await onboarding hydration before continuing.
+  // A second Market journey reuses this run's customer; await streamed profile markup.
+  await expect(page.locator('#name')).toBeAttached();
+  if (await page.locator('.profile-settings:not([open])').count())
+    await page.locator('.profile-settings > summary').click();
   await page.locator('#name').fill('Phase 4 controlled customer');
   await page.locator('#phone').fill(country === 'SA' ? '+966500000001' : '+201000000001');
   await page.getByRole('button', { name: ct.saveProfile, exact: true }).click();
@@ -242,6 +246,10 @@ export async function acceptedOrder(
   await expect(page.locator('#request-market')).toBeFocused();
   await page.locator('#request-market').press('Tab');
   await axe(page);
+  const customerViewport = page.viewportSize();
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await stage1Capture(page, `customer-${country.toLowerCase()}-ar`);
+  if (customerViewport) await page.setViewportSize(customerViewport);
   await page.locator('#request-market').selectOption(market.id);
   await page.getByRole('button', { name: ct.start, exact: true }).click();
   await expect(page).toHaveURL(/\/request\/[a-f0-9-]+$/);
@@ -250,6 +258,8 @@ export async function acceptedOrder(
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   await expect(page.locator('main')).toContainText(market.name_en);
   await expect(page.locator('main')).toContainText(market.currency);
+  await expect(page.locator('#service')).toBeEnabled();
+  await stage1Capture(page, `request-${country.toLowerCase()}-en-mobile`);
   await axe(page);
   await page.goto('/ar/request/' + requestId, { waitUntil: 'domcontentloaded' });
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');

@@ -3,11 +3,13 @@ import { Alexandria, Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { isLocale, direction, locales } from '@/i18n/config';
 import { dictionary } from '@/i18n/dictionaries';
+import { HistoryRefresh } from '@/components/shell/history-refresh';
 import { Header, Footer } from '@/components/shell/public-shell';
 import { appUrl } from '@/infrastructure/config/server-env';
 import { headers } from 'next/headers';
 import { preventIndexing } from '@/infrastructure/config/deployment-env';
 import '../globals.css';
+import '../../styles/stage1.css';
 const arabic = Alexandria({ subsets: ['arabic'], display: 'swap', variable: '--font-arabic' });
 const english = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-english' });
 
@@ -46,6 +48,7 @@ export default async function LocaleLayout({
       className={`${arabic.variable} ${english.variable}`}
     >
       <body>
+        <HistoryRefresh />
         <Header locale={locale} />
         <main id="main" tabIndex={-1}>
           {children}

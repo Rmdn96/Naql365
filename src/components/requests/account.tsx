@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import { customerRequests } from '@/infrastructure/requests/list';
+import { customerQuotes } from '@/infrastructure/pricing/service';
+import { PageHeader, SummaryCard } from '@/components/ui/presentation';
 import { redirect } from 'next/navigation';
 import type { Locale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
@@ -31,10 +34,76 @@ export async function CustomerAccount({
   if (profile.error || enrollment.error) throw new Error('Account unavailable');
   const onboarding = enrollment.data === 'new';
   const permitted = enrollment.data === 'active';
+  const [requests, quotes] = permitted
+    ? await Promise.all([customerRequests(locale), customerQuotes()])
+    : [[], []];
+  const actionQuotes = quotes.flatMap((q) =>
+    q.quote_versions
+      .filter((v) => v.status === 'SENT')
+      .map((v) => ({ id: v.id, reference: q.reference })),
+  );
   return (
-    <div className="container page narrow">
+    <div className="container page customer-home">
+      <PageHeader
+        title={t.account}
+        description={
+          locale === 'ar'
+            ? 'طلباتك وخطوتك التالية، في مكان واحد.'
+            : 'Your requests and next steps, in one place.'
+        }
+      />
+      {permitted && (
+        <div className="summary-grid">
+          <SummaryCard
+            title={locale === 'ar' ? 'رحلتك الحالية' : 'Your latest journey'}
+            actions={
+              <Link
+                className="button button--primary"
+                href={
+                  requests[0]
+                    ? `/${locale}/account/requests/${requests[0].id}`
+                    : `/${locale}/request`
+                }
+              >
+                {requests[0] ? (locale === 'ar' ? 'متابعة الطلب' : 'Continue request') : t.start}
+              </Link>
+            }
+          >
+            <p>
+              {requests[0]?.reference ??
+                (locale === 'ar'
+                  ? 'ابدأ طلب نقل، وسيراجع فريقنا التفاصيل قبل إرسال عرض السعر.'
+                  : 'Start a transport request. Our team reviews the details before sending your quote.')}
+            </p>
+          </SummaryCard>
+          <SummaryCard title={qt.myQuotes}>
+            {actionQuotes.length ? (
+              <ul className="task-links">
+                {actionQuotes.slice(0, 3).map((q) => (
+                  <li key={q.id}>
+                    <Link href={`/${locale}/account/quotes/${q.id}`}>
+                      {q.reference} · {locale === 'ar' ? 'راجع عرض السعر' : 'Review quote'}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>
+                {locale === 'ar'
+                  ? 'لا يوجد عرض سعر بانتظار ردك الآن.'
+                  : 'No quote is waiting for your response.'}
+              </p>
+            )}
+            <Link href={`/${locale}/account/quotes`}>
+              {locale === 'ar'
+                ? 'العروض والدفع ومتابعة التسليم'
+                : 'Quotes, payment and delivery progress'}
+            </Link>
+          </SummaryCard>
+        </div>
+      )}
       <Card>
-        <h1>{!permitted && !onboarding ? t.forbidden : t.account}</h1>
+        {!permitted && !onboarding && <h2>{t.forbidden}</h2>}
         {!permitted && !onboarding ? (
           <Alert tone="error">
             <p>{t.forbiddenBody}</p>
@@ -49,8 +118,17 @@ export async function CustomerAccount({
                 <StartRequest locale={locale} markets={await availableMarkets()} />
               </nav>
             )}
-            <h2>{onboarding ? t.onboard : t.profile}</h2>
-            <CustomerProfileForm locale={locale} profile={profile.data} />
+            {onboarding ? (
+              <>
+                <h2>{t.onboard}</h2>
+                <CustomerProfileForm locale={locale} profile={profile.data} />
+              </>
+            ) : (
+              <details className="profile-settings">
+                <summary>{t.profile}</summary>
+                <CustomerProfileForm locale={locale} profile={profile.data} />
+              </details>
+            )}
           </>
         )}
         <form action={customerLogout.bind(null, locale)}>

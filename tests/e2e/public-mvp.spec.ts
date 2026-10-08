@@ -45,7 +45,7 @@ test('public country switch updates WhatsApp and guest request without a login w
   await expect(contact).toHaveAttribute('href', /^https:\/\/wa\.me\/966558985250\?/);
   await page.getByLabel('Service country').selectOption('EG');
   await expect(contact).toHaveAttribute('href', /^https:\/\/wa\.me\/201009402374\?/);
-  await page.getByRole('link', { name: 'Start your request', exact: true }).first().click();
+  await page.getByRole('link', { name: 'Request Transport', exact: true }).first().click();
   await expect(page).toHaveURL(/\/en\/request$/);
   await expect(page.locator('#guest-country')).toHaveValue('EG');
   await expect(page.locator('input[type=password]')).toHaveCount(0);

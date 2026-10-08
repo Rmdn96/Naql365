@@ -4,7 +4,15 @@ import { useRouter } from 'next/navigation';
 import type { PublicCountry } from '@/domain/markets/public-contact';
 import type { Locale } from '@/i18n/config';
 import { publicDictionary } from '@/i18n/public';
-export function MarketSelector({ country, locale }: { country: PublicCountry; locale: Locale }) {
+export function MarketSelector({
+  country,
+  locale,
+  id = 'public-market',
+}: {
+  country: PublicCountry;
+  locale: Locale;
+  id?: string;
+}) {
   const router = useRouter(),
     t = publicDictionary(locale);
   const [busy, setBusy] = useState(false),
@@ -28,15 +36,10 @@ export function MarketSelector({ country, locale }: { country: PublicCountry; lo
   }
   return (
     <div className="market-control">
-      <label className="sr-only" htmlFor="public-market">
+      <label className="sr-only" htmlFor={id}>
         {t.country}
       </label>
-      <select
-        id="public-market"
-        value={country}
-        disabled={busy}
-        onChange={(e) => void change(e.target.value)}
-      >
+      <select id={id} value={country} disabled={busy} onChange={(e) => void change(e.target.value)}>
         <option value="SA">🇸🇦 {t.sa}</option>
         <option value="EG">🇪🇬 {t.eg}</option>
       </select>

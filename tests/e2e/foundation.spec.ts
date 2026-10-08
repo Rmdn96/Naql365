@@ -6,7 +6,9 @@ test('root defaults to Arabic and language switch reaches English', async ({ pag
   await expect(page).toHaveURL(/\/ar$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-  await page.getByRole('link', { name: 'English' }).click();
+  const menu = page.getByRole('button', { name: 'القائمة', exact: true });
+  if (await menu.isVisible()) await menu.click();
+  await page.getByRole('link', { name: 'English', exact: true }).filter({ visible: true }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
 });
