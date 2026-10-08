@@ -163,6 +163,7 @@ for (const country of ['SA', 'EG'] as const)
       await executeDelivery(staff, order, country, journey.market.id, journey.cityId);
       await page.goto(`/${locale}/guest/orders/${order}`);
       await guestResponsiveCheck(page);
+      await stage1Capture(page, `guest-${country.toLowerCase()}-tracking`);
       const progress = await guest.rpc('customer_order_progress', { p_order_id: order });
       expect(progress.error).toBeNull();
       expect(progress.data.status).toBe('COMPLETED');
