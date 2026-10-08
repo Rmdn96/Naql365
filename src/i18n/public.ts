@@ -30,7 +30,7 @@ const ar = {
   servicesTitle: 'خدمة تناسب ما تنقله',
   servicesBody: 'الخدمات المتاحة في بلدك، بخطوات واضحة من البداية.',
   noServices: 'تواصل معنا لمعرفة الخدمات والمناطق المتاحة حاليًا.',
-  howTitle: 'أربع خطوات. رحلة واضحة.',
+  howTitle: 'خمس خطوات. رحلة واضحة.',
   steps: [
     ['اطلب', 'ابدأ بتفاصيل النقل، بدون إنشاء حساب.'],
     ['مراجعة الطلب', 'يراجع فريقنا احتياجك وتفاصيل النقل.'],
@@ -103,7 +103,7 @@ const en: typeof ar = {
   servicesTitle: 'The right service for your move',
   servicesBody: 'Available services in your country, with clear steps from the start.',
   noServices: 'Contact us for currently available services and coverage.',
-  howTitle: 'Four steps. One clear journey.',
+  howTitle: 'Five steps. One clear journey.',
   steps: [
     ['Request', 'Tell us what you need to move. No account required.'],
     ['Sales review', 'Our team reviews your needs and transport details.'],

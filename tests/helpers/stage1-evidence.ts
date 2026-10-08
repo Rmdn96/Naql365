@@ -7,6 +7,8 @@ export async function stage1Capture(page: Page, name: string) {
   const directory = process.env.STAGING_UX_SCREENSHOTS;
   if (!directory) return;
   if (!/^[a-z0-9-]+$/.test(name)) throw Error('Invalid screenshot label');
+  await expect(page.locator('main h1')).toBeVisible();
+  await expect(page.locator('.skeleton')).toHaveCount(0);
   await expect(page.locator('input[type=password]:visible')).toHaveCount(0);
   const viewport = page.viewportSize();
   for (const width of [360, 390, 768, 1280, 1440]) {

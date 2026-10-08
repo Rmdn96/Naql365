@@ -129,6 +129,9 @@
 .launch-how .route-motif {
   grid-template-columns: repeat(5, 1fr);
 }
+.launch-steps {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
 .launch-page .container {
   max-width: var(--width-public);
 }
@@ -359,4 +362,30 @@
   text-decoration: underline;
   padding: 0.45rem;
   text-align: start;
+}
+
+/* Keep support available without covering the wizard's next/back controls. */
+body:has(.wizard) .floating-contact {
+  position: static;
+  width: fit-content;
+  margin: 1rem auto;
+}
+@media (max-width: 600px) {
+  .launch-steps {
+    grid-template-columns: 1fr;
+  }
+  .wizard .wizard-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wizard .wizard-progress button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 60px;
+    overflow-wrap: normal;
+    font-size: 0.875rem;
+  }
+  .wizard .wizard-progress button > span {
+    flex-shrink: 0;
+  }
 }

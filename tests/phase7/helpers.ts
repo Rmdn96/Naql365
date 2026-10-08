@@ -264,8 +264,8 @@ export async function executeDelivery(
   await expect(staff).toHaveURL(new RegExp(`/${locale}/driver$`));
   await staff.reload();
   await staff.getByRole('button', { name: dictionary(locale).logout, exact: true }).click();
-  await expect(staff).toHaveURL(new RegExp(`/${locale}/login$`));
+  await expect(staff).toHaveURL(new RegExp(`/${locale}/driver/login$`));
   await staff.goto(`/${locale}/driver`);
-  await expect(staff).toHaveURL(new RegExp(`/${locale}/login$`));
+  await expect(staff).toHaveURL(new RegExp(`/${locale}/driver/login$`));
   return trip;
 }
