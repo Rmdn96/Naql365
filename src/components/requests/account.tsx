@@ -1,3 +1,4 @@
+import { customerExperience } from '@/i18n/customer-experience';
 import Link from 'next/link';
 import { customerRequests } from '@/infrastructure/requests/list';
 import { customerQuotes } from '@/infrastructure/pricing/service';
@@ -43,7 +44,7 @@ export async function CustomerAccount({
       .map((v) => ({ id: v.id, reference: q.reference })),
   );
   return (
-    <div className="container page customer-home">
+    <div className="container page customer-home customer-experience">
       <PageHeader
         title={t.account}
         description={
@@ -101,6 +102,29 @@ export async function CustomerAccount({
             </Link>
           </SummaryCard>
         </div>
+      )}
+      {permitted && requests.length > 0 && (
+        <section className="recent-journeys">
+          <h2>{customerExperience(locale).previousRequests}</h2>
+          <ul className="request-list">
+            {requests.slice(0, 4).map((r) => (
+              <li key={r.id}>
+                <div>
+                  <h3>
+                    <Link href={`/${locale}/account/requests/${r.id}`}>
+                      {r.reference ?? t.request}
+                    </Link>
+                  </h3>
+                  <p>{locale === 'ar' ? r.services?.name_ar : r.services?.name_en}</p>
+                  <p>{r.request_locations.map((l) => l.city).join(' · ')}</p>
+                </div>
+                <Link href={`/${locale}/account/requests/${r.id}`}>
+                  {locale === 'ar' ? 'تفاصيل الطلب' : 'Request details'}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
       <Card>
         {!permitted && !onboarding && <h2>{t.forbidden}</h2>}

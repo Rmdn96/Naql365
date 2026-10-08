@@ -1,3 +1,4 @@
+import { customerExperience } from '@/i18n/customer-experience';
 import { notFound, redirect } from 'next/navigation';
 import { loginDestination } from '@/infrastructure/identity/login-destination';
 import { isLocale } from '@/i18n/config';
@@ -22,10 +23,11 @@ export default async function Login({ params }: { params: Promise<{ locale: stri
   }
   const t = dictionary(locale);
   return (
-    <div className="container page narrow">
+    <div className="container page narrow customer-experience">
       <Card className="auth-card">
         {!getPublicEnv() && <Badge>{t.foundation}</Badge>}
         <h1>{t.login}</h1>
+        <p className="auth-intro">{customerExperience(locale).loginHelp}</p>
         {getPublicEnv() ? (
           <CustomerAuthForm locale={locale} mode="login" />
         ) : stagingAuthEnabled() ? (

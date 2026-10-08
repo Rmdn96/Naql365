@@ -21,7 +21,7 @@ export default async function Page({
   if (!Number.isInteger(page)) notFound();
   const data = await customerRequests(locale, page);
   return (
-    <div className="container page">
+    <div className="container page customer-experience">
       <div className="wizard-top">
         <h1>{t.myRequests}</h1>
         <StartRequest locale={locale} markets={await availableMarkets()} />

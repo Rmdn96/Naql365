@@ -22,7 +22,7 @@ export default async function Page({
     throw error;
   }
   return (
-    <div className="container page">
+    <div className="container page customer-experience">
       <h1>{paymentDictionary(locale).title}</h1>
       <Checkout data={data} locale={locale} />
     </div>

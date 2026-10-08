@@ -1,3 +1,5 @@
+import { JourneyRoute } from '@/components/ui/customer-journey';
+import { customerExperience } from '@/i18n/customer-experience';
 import Link from 'next/link';
 import { MvpView } from '@/components/public/analytics';
 import type { Locale } from '@/i18n/config';
@@ -19,7 +21,7 @@ export function QuoteDetailView({
   const t = quotesDictionary(locale);
   const request = quote.quotes?.requests;
   return (
-    <div className="container page narrow">
+    <div className="container page customer-experience quote-page">
       <MvpView
         event="final_quote_viewed"
         market={request?.markets?.country_code ?? ''}
@@ -34,10 +36,13 @@ export function QuoteDetailView({
       >
         {t.back}
       </Link>
-      <div className="wizard-top">
-        <h1>{t.quoteDetails}</h1>
+      <header className="page-heading">
+        <div>
+          <h1>{t.quoteDetails}</h1>
+          <p className="page-description">{customerExperience(locale).quoteIntro}</p>
+        </div>
         <Badge>{quoteStatusLabel(quote.status, locale)}</Badge>
-      </div>
+      </header>
       <p className="request-reference" dir="ltr">
         {quote.quotes?.reference}
       </p>
@@ -63,58 +68,61 @@ export function QuoteDetailView({
       <p>
         {t.service}: {locale === 'ar' ? request?.services?.name_ar : request?.services?.name_en}
       </p>
-      <p>
-        {t.route}:{' '}
-        {['pickup', 'delivery']
-          .map(
-            (kind) =>
-              request?.request_locations.find((location) => location.kind === kind)?.city ?? '—',
-          )
-          .join(' → ')}
-      </p>
-      <p>
-        {t.distanceKm}: <bdi>{quote.distance_km} km</bdi> · {t.manualVerified}
-      </p>
-      <Table
-        caption={t.quoteDetails}
-        columns={[t.breakdown, t.quantity, t.amount]}
-        rows={[...quote.quote_items]
-          .sort((a, b) => a.position - b.position)
-          .map((line) => [
-            locale === 'ar' ? line.label_ar : line.label_en,
-            <bdi key="q">{line.quantity}</bdi>,
-            <bdi key="a">{formatMoney(line.total_amount_minor, quote.currency, locale)}</bdi>,
-          ])}
+      <JourneyRoute
+        locale={locale}
+        pickup={request?.request_locations.find((l) => l.kind === 'pickup')?.city ?? ''}
+        delivery={request?.request_locations.find((l) => l.kind === 'delivery')?.city ?? ''}
       />
-      <dl className="commercial-summary">
-        <dt>{t.finalSubtotal}</dt>
-        <dd>
-          <bdi>{formatMoney(quote.final_subtotal_minor, quote.currency, locale)}</bdi>
-        </dd>
-        <dt>
-          {(locale === 'ar' ? quote.tax_label_ar : quote.tax_label_en) ?? t.vat} (
-          {quote.vat_rate_bps / 100}%)
-        </dt>
-        <dd>
-          <bdi>{formatMoney(quote.vat_amount_minor, quote.currency, locale)}</bdi>
-        </dd>
-        <dt>{t.total}</dt>
-        <dd>
-          <bdi>{formatMoney(quote.total_minor, quote.currency, locale)}</bdi>
-        </dd>
-        <dt>{t.validUntil}</dt>
-        <dd>
-          <time dateTime={quote.expires_at ?? undefined}>
-            {quote.expires_at
-              ? new Intl.DateTimeFormat(locale, {
-                  dateStyle: 'medium',
-                  timeStyle: 'short',
-                  timeZone: request?.markets?.timezone,
-                }).format(new Date(quote.expires_at))
-              : '—'}
-          </time>
-        </dd>
-      </dl>
+      <div className="quote-layout">
+        <section className="quote-lines">
+          <Table
+            caption={t.quoteDetails}
+            columns={[t.breakdown, t.quantity, t.amount]}
+            rows={[...quote.quote_items]
+              .sort((a, b) => a.position - b.position)
+              .map((line) => [
+                locale === 'ar' ? line.label_ar : line.label_en,
+                <bdi key="q">{line.quantity}</bdi>,
+                <bdi key="a">{formatMoney(line.total_amount_minor, quote.currency, locale)}</bdi>,
+              ])}
+          />
+        </section>
+        <section className="quote-total">
+          <h2>{customerExperience(locale).finalPrice}</h2>
+          <p className="final-amount">
+            <bdi>{formatMoney(quote.total_minor, quote.currency, locale)}</bdi>
+          </p>
+          <dl className="commercial-summary">
+            <dt>{t.finalSubtotal}</dt>
+            <dd>
+              <bdi>{formatMoney(quote.final_subtotal_minor, quote.currency, locale)}</bdi>
+            </dd>
+            <dt>
+              {(locale === 'ar' ? quote.tax_label_ar : quote.tax_label_en) ?? t.vat} (
+              {quote.vat_rate_bps / 100}%)
+            </dt>
+            <dd>
+              <bdi>{formatMoney(quote.vat_amount_minor, quote.currency, locale)}</bdi>
+            </dd>
+            <dt>{t.total}</dt>
+            <dd>
+              <bdi>{formatMoney(quote.total_minor, quote.currency, locale)}</bdi>
+            </dd>
+            <dt>{t.validUntil}</dt>
+            <dd>
+              <time dateTime={quote.expires_at ?? undefined}>
+                {quote.expires_at
+                  ? new Intl.DateTimeFormat(locale, {
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                      timeZone: request?.markets?.timezone,
+                    }).format(new Date(quote.expires_at))
+                  : '—'}
+              </time>
+            </dd>
+          </dl>
+        </section>
+      </div>
       {(quote.status === 'SENT' || quote.status === 'VIEWED') && (
         <QuoteActions
           locale={locale}

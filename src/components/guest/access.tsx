@@ -6,6 +6,7 @@ import { guestSecret, guestContinuationPath, secretFromFragment } from '@/domain
 import { publicCountry, type PublicCountry } from '@/domain/markets/public-contact';
 import { guestDictionary } from '@/i18n/guest';
 import type { Locale } from '@/i18n/config';
+import { customerExperience } from '@/i18n/customer-experience';
 import { Button, Select, Alert } from '@/components/ui/primitives';
 import { quickEntryQuery, type QuickEntry } from '@/domain/requests/quick-entry';
 import { recordMvpEvent } from '@/components/public/analytics';
@@ -77,9 +78,10 @@ export function GuestStart({
     }
   }
   return (
-    <section className="container page">
+    <section className="container page narrow customer-experience guest-access">
       <h1>{journey ? t.keepLink : t.title}</h1>
-      <p>{journey ? t.linkNotice : t.intro}</p>
+      <p className="page-description">{journey ? t.linkNotice : t.intro}</p>
+      <p className="journey-notice">{customerExperience(locale).secureHelp}</p>
       {journey ? (
         <>
           <Button onClick={copy}>{copied ? t.copied : t.copy}</Button>{' '}
@@ -151,7 +153,7 @@ export function GuestExchange({ locale }: { locale: Locale }) {
     void exchange();
   }, [exchange]);
   return (
-    <section className="container page" aria-live="polite">
+    <section className="container page narrow customer-experience guest-access" aria-live="polite">
       <h1>{t.request}</h1>
       {failed ? (
         <>

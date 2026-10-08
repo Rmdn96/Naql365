@@ -1,3 +1,4 @@
+import { stage1Capture } from '../helpers/stage1-evidence';
 import { test, expect, configureProtectedContext } from '../staging/fixtures';
 import { guestQuote, acceptGuest, executeDelivery, guestResponsiveCheck } from './helpers';
 import { admin, login, principal } from '../phase4/helpers';
@@ -33,6 +34,10 @@ for (const country of ['SA', 'EG'] as const)
           .single()
       ).data;
       await guestResponsiveCheck(page);
+      await stage1Capture(
+        page,
+        `guest-${country.toLowerCase()}-${page.url().endsWith('/payment') ? 'payment' : 'tracking'}`,
+      );
       await page.setViewportSize({ width: 390, height: 844 });
       const guest = createClient(
         process.env.STAGING_TEST_API_URL!,

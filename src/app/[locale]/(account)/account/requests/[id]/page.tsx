@@ -18,7 +18,7 @@ export default async function Page({
     details = await detailsPage(locale, id);
   if (details.request.status === 'DRAFT') redirect(`/${locale}/request/${id}`);
   return (
-    <div className="container page">
+    <div className="container page customer-experience">
       <Link href={`/${locale}/account/requests`}>{t.allRequests}</Link>
       <h1>{t.details}</h1>
       <p>

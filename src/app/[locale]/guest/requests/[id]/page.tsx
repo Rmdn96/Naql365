@@ -1,3 +1,4 @@
+import { ReviewNotice } from '@/components/ui/customer-journey';
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { guestDictionary } from '@/i18n/guest';
@@ -35,7 +36,7 @@ export default async function Page({
       ['unauthenticated', 'forbidden', 'not_found'].includes(error.code)
     )
       return (
-        <section className="container page">
+        <section className="container page customer-experience">
           <h1>{t.request}</h1>
           <Alert tone="error">{t.unavailable}</Alert>
         </section>
@@ -63,7 +64,9 @@ export default async function Page({
           {t.reference}: <bdi>{details.request.reference}</bdi>
         </p>
       )}
-      {details.request.status === 'SUBMITTED' && <p>{t.review}</p>}
+      {details.request.status === 'SUBMITTED' &&
+        !quotes.length &&
+        preliminary.state !== 'PRELIMINARY' && <ReviewNotice locale={locale} />}
       <RouteMotif
         journey
         labels={[

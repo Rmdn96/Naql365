@@ -53,6 +53,9 @@ export function Landing({
                 {t.start}
                 <span aria-hidden="true"> ↗</span>
               </Link>
+              <Link href={`/${locale}/guest`} className="hero-track">
+                {t.track}
+              </Link>
               <a href={wa} className="button launch-secondary" rel="noreferrer">
                 {t.whatsapp}
               </a>
@@ -194,6 +197,35 @@ export function Landing({
         <div className="tracking-demo">
           <p className="eyebrow">{t.illustration}</p>
           <RouteMotif labels={[t.received, t.assigned, t.onWay, t.delivered]} />
+        </div>
+      </section>
+      <section
+        className="container launch-section launch-payment-info"
+        aria-labelledby="payment-info-title"
+      >
+        <p className="eyebrow">{locale === 'ar' ? 'الدفع بوضوح' : 'Payment, explained'}</p>
+        <h2 id="payment-info-title">
+          {locale === 'ar'
+            ? 'عرض نهائي أولًا، ثم اختر طريقة الدفع'
+            : 'A final quote first. Then choose how to pay.'}
+        </h2>
+        <div className="payment-explainer">
+          <div>
+            <h3>{locale === 'ar' ? 'نقدًا' : 'Cash'}</h3>
+            <p>
+              {locale === 'ar'
+                ? 'اختر الدفع النقدي من صفحة طلبك بعد قبول العرض. يتولى فريق المالية تسجيل التحصيل.'
+                : 'Select cash from your order after accepting the quote. Our Finance team records collection.'}
+            </p>
+          </div>
+          <div>
+            <h3>{locale === 'ar' ? 'تحويل' : 'Transfer'}</h3>
+            <p>
+              {locale === 'ar'
+                ? 'تظهر وسائل التحويل المتاحة والتعليمات في صفحة الدفع الآمنة فقط. ارفع الإثبات، ثم انتظر تأكيد المالية.'
+                : 'Available transfer methods and instructions appear only in your secure checkout. Submit proof, then wait for Finance confirmation.'}
+            </p>
+          </div>
         </div>
       </section>
       <section className="container launch-business">

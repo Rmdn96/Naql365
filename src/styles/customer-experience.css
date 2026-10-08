@@ -1,0 +1,336 @@
+/* Customer presentation only. Workspace density and domain authority stay separate. */
+.customer-experience {
+  --customer-gap: clamp(1rem, 2.5vw, 2rem);
+  max-width: 1120px;
+  overflow-wrap: anywhere;
+}
+.customer-experience.narrow {
+  max-width: 680px;
+}
+.customer-experience h1 {
+  font-size: var(--type-title);
+}
+.customer-experience h2 {
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+}
+.customer-experience .card {
+  border-radius: 16px;
+  padding: var(--customer-gap);
+  box-shadow: var(--elevation-surface);
+}
+.customer-experience .field {
+  margin-block-end: 1rem;
+}
+.customer-experience .field :is(input, select, textarea) {
+  min-height: 50px;
+  border-radius: 8px;
+}
+.customer-experience .field input[type='checkbox'] {
+  min-height: auto;
+}
+.auth-intro,
+.step-help {
+  color: var(--muted);
+  max-width: 65ch;
+}
+.auth-card {
+  border-block-start: 4px solid var(--blue);
+}
+.auth-alternative {
+  margin-block: 1.5rem 0;
+}
+.customer-experience .auth-form .button {
+  width: 100%;
+}
+.customer-experience .request-list > li {
+  align-items: center;
+  padding: 1.5rem;
+  border-radius: 16px;
+  gap: 1rem;
+}
+.customer-experience .request-list h3 {
+  margin-block-end: 0.5rem;
+}
+.customer-experience .request-list p:last-child {
+  margin-bottom: 0;
+}
+.recent-journeys {
+  margin-block: 2.5rem;
+}
+.journey-route {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-block: 1.5rem 2rem;
+}
+.journey-route > div {
+  position: relative;
+  padding-inline-start: 1.5rem;
+  min-width: 0;
+}
+.journey-route > div::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.45rem;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--action);
+  border-radius: 50%;
+}
+.journey-route > div:last-child::before {
+  background: var(--action);
+}
+.journey-route dt {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.journey-route dd {
+  margin: 0.4rem 0 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.journey-notice {
+  display: flex;
+  align-items: start;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #eaf3ff;
+  border-inline-start: 3px solid var(--action);
+  border-radius: 8px;
+  margin-block: 1.5rem;
+}
+.journey-notice h2 {
+  margin-block-end: 0.5rem;
+}
+.journey-notice p {
+  margin: 0;
+}
+.quote-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: var(--customer-gap);
+  align-items: start;
+  margin-block: 1.5rem;
+}
+.quote-lines,
+.quote-total {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: white;
+  overflow: hidden;
+}
+.quote-total {
+  padding: var(--customer-gap);
+  border-block-start: 4px solid var(--action);
+}
+.quote-total .commercial-summary {
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.quote-total .commercial-summary dt:last-of-type,
+.quote-total .commercial-summary dd:last-of-type {
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+.final-amount {
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-block: 1rem 1.5rem;
+}
+.quote-response {
+  max-width: 740px;
+}
+.quote-response .actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.customer-checkout {
+  max-width: 820px;
+  margin-inline: auto;
+}
+.customer-checkout > .badge {
+  justify-self: start;
+  width: fit-content;
+}
+.customer-checkout dl,
+.customer-tracking #payment-summary-title + dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 0.75rem 1.5rem;
+}
+.customer-checkout dd,
+.customer-tracking dd {
+  margin: 0;
+  text-align: end;
+  overflow-wrap: anywhere;
+}
+.customer-checkout dd strong {
+  font-size: 1.5rem;
+}
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 1rem;
+  margin-block: 1.5rem;
+}
+.payment-methods .button {
+  min-height: 72px;
+  text-wrap: balance;
+}
+.customer-checkout ol {
+  padding-inline-start: 1.5rem;
+}
+.customer-checkout ol li {
+  padding-block: 1rem;
+  border-block-end: 1px solid var(--border);
+}
+.customer-checkout section[aria-label] {
+  background: white;
+  border: 1px dashed var(--action);
+  padding: var(--customer-gap);
+  border-radius: 12px;
+}
+.customer-tracking progress {
+  width: 100%;
+  height: 0.6rem;
+  accent-color: var(--action);
+}
+.customer-tracking .request-list > li {
+  display: block;
+}
+.customer-tracking .request-list > li > div {
+  width: 100%;
+}
+.customer-experience .request-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.customer-experience .request-summary section {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 12px;
+}
+.customer-experience .request-summary dl {
+  display: block;
+}
+.customer-experience .request-summary dt {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.customer-experience .request-summary dd {
+  margin: 0 0 0.75rem;
+}
+.wizard.customer-experience .wizard-fields {
+  padding: clamp(1rem, 3vw, 2rem);
+}
+.wizard.customer-experience .choice {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-block: 0.75rem;
+  background: white;
+}
+.wizard.customer-experience .choice:has(input:checked) {
+  border-color: var(--action);
+  background: #eaf3ff;
+}
+.wizard.customer-experience .wizard-actions {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+}
+.guest-access {
+  padding-block: 3rem;
+}
+.launch-payment-info {
+  padding: 2rem;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+.launch-payment-info .payment-explainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+.launch-payment-info h3 {
+  color: var(--navy);
+}
+.launch-page .launch-services article {
+  border-block-start: 3px solid var(--blue);
+}
+.launch-page .launch-services article a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+}
+.launch-page .launch-services article h3 {
+  min-height: 2.8em;
+}
+.launch-page .launch-hero-copy .actions {
+  flex-wrap: wrap;
+}
+.launch-page .launch-hero-copy .hero-track {
+  color: white;
+  padding: 0.75rem;
+  text-decoration: underline;
+}
+body:has(.customer-experience) .floating-contact {
+  position: static;
+  width: fit-content;
+  margin: 1rem auto;
+}
+@media (max-width: 700px) {
+  .quote-layout,
+  .customer-experience .request-summary,
+  .launch-payment-info .payment-explainer {
+    grid-template-columns: 1fr;
+  }
+  .journey-route {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .customer-experience .request-list > li {
+    display: grid;
+  }
+  .customer-experience .request-list > li > a {
+    padding-block: 0.5rem;
+  }
+  .customer-experience .customer-links {
+    gap: 1rem;
+  }
+  .customer-experience .customer-links a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+  .customer-checkout dl {
+    gap: 0.75rem;
+  }
+  .quote-response .actions {
+    grid-template-columns: 1fr;
+  }
+  .wizard.customer-experience .wizard-progress {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wizard.customer-experience .wizard-state-bar {
+    flex-wrap: wrap;
+  }
+}
