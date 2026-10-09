@@ -1,0 +1,252 @@
+[
+  {
+    "locale": "ar",
+    "state": "signup-initial",
+    "width": 360,
+    "file": "ar-signup-initial-360.png",
+    "sha256": "b1f8c26fb677d066c706e4250f9f76f0336c0f8c7b37303683a4420b96930e8d",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "signup-initial",
+    "width": 390,
+    "file": "ar-signup-initial-390.png",
+    "sha256": "3a90a79a1e659437ac6e26fd9245c95f62e0970369adf6ebfe316ad795c5f78d",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "signup-initial",
+    "width": 768,
+    "file": "ar-signup-initial-768.png",
+    "sha256": "fa0c8599d90b20c6ab7cfa5b84e057de17e4ebbf1f78f59bb0b5133dfc2988d4",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "signup-initial",
+    "width": 1280,
+    "file": "ar-signup-initial-1280.png",
+    "sha256": "940d6b113c2df3bfc1e7548cb366c629cf043fc3c64dbba97d55b3ff2d3a0a8a",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "signup-initial",
+    "width": 1440,
+    "file": "ar-signup-initial-1440.png",
+    "sha256": "eefe49ab26dbf009638b309c9cd35fd0e7a6ae6e5a98a5b8886e484f0db191b6",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "login-initial",
+    "width": 360,
+    "file": "ar-login-initial-360.png",
+    "sha256": "b75266cb992bc8390af1e293b87aa624ac4ed99e531333b8de594454b3ceb68f",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "login-initial",
+    "width": 390,
+    "file": "ar-login-initial-390.png",
+    "sha256": "5e4faebe14e1abe83f2c85cd53ef23fcd78aafd06d24cd206dba7a5ea90a7c65",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "login-initial",
+    "width": 768,
+    "file": "ar-login-initial-768.png",
+    "sha256": "2a1070e42fca576151f8cfce0556a16681c85726f7f8abadbcbd34f3135606e2",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "login-initial",
+    "width": 1280,
+    "file": "ar-login-initial-1280.png",
+    "sha256": "768c966406611ed7ebe09dfe09d775591066d8ecfa1f8cdd11b26045933453c9",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "login-initial",
+    "width": 1440,
+    "file": "ar-login-initial-1440.png",
+    "sha256": "903d12dd344831d50e24ca88c67e47cee222257d94e65e745cd9f10c18c3b86a",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "recovery-request",
+    "width": 360,
+    "file": "ar-recovery-request-360.png",
+    "sha256": "c9ff672a6bbffab340d694110726bb1b6dc083351eff8cc0b0b0aa7364d45fe4",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "recovery-request",
+    "width": 390,
+    "file": "ar-recovery-request-390.png",
+    "sha256": "e548eab25f72ed04c204406b077099ef0112611a26b8621ab7472bed860a86cc",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "recovery-request",
+    "width": 768,
+    "file": "ar-recovery-request-768.png",
+    "sha256": "e517021e42f419e2adc1885ea628950974d8be7646685c7fb7f603a0d2b926d0",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "recovery-request",
+    "width": 1280,
+    "file": "ar-recovery-request-1280.png",
+    "sha256": "4d8a7a3b697833be598e91962d2cb4044ff1bf73eebc5aef21dfaf1fc73474f6",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "recovery-request",
+    "width": 1440,
+    "file": "ar-recovery-request-1440.png",
+    "sha256": "466f650d8eddd3eb55cc6f1e9773ae27cbb73981a3c9081eb17e392ad2cc7f6f",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "native-validation",
+    "width": 360,
+    "file": "ar-native-validation-360.png",
+    "sha256": "76b5b0c777a4d5246f553a13b4c009668f7aef5a685dd75cf1af80d0ad0a02ef",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "native-validation",
+    "width": 390,
+    "file": "ar-native-validation-390.png",
+    "sha256": "1669910a886b903f9990fb7057f13009ec86fddaf626c801f1c44c7e78935f55",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "native-validation",
+    "width": 768,
+    "file": "ar-native-validation-768.png",
+    "sha256": "338d2e4b1bfd5e85f7210c61b7184bad3962eac2071b9719c432f2dc80a7313f",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "native-validation",
+    "width": 1280,
+    "file": "ar-native-validation-1280.png",
+    "sha256": "5f5c86887f98a0c1511e0be2e62c77e548803f532885ce24774636c84201a78e",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "native-validation",
+    "width": 1440,
+    "file": "ar-native-validation-1440.png",
+    "sha256": "aaae18c758d9c657c4beaf6848ee08ebe9e5576c8a6866f2be625ef6edca016b",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "ar",
+    "state": "invalid-confirmation",
+    "width": 360,
+    "file": "ar-invalid-confirmation-360.png",
+    "sha256": "b75266cb992bc8390af1e293b87aa624ac4ed99e531333b8de594454b3ceb68f",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  },
+  {
+    "locale": "ar",
+    "state": "invalid-confirmation",
+    "width": 390,
+    "file": "ar-invalid-confirmation-390.png",
+    "sha256": "5e4faebe14e1abe83f2c85cd53ef23fcd78aafd06d24cd206dba7a5ea90a7c65",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  },
+  {
+    "locale": "ar",
+    "state": "invalid-confirmation",
+    "width": 768,
+    "file": "ar-invalid-confirmation-768.png",
+    "sha256": "2a1070e42fca576151f8cfce0556a16681c85726f7f8abadbcbd34f3135606e2",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  },
+  {
+    "locale": "ar",
+    "state": "invalid-confirmation",
+    "width": 1280,
+    "file": "ar-invalid-confirmation-1280.png",
+    "sha256": "768c966406611ed7ebe09dfe09d775591066d8ecfa1f8cdd11b26045933453c9",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  },
+  {
+    "locale": "ar",
+    "state": "invalid-confirmation",
+    "width": 1440,
+    "file": "ar-invalid-confirmation-1440.png",
+    "sha256": "903d12dd344831d50e24ca88c67e47cee222257d94e65e745cd9f10c18c3b86a",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  }
+]

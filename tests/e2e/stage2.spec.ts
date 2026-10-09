@@ -22,6 +22,7 @@ for (const locale of ['ar', 'en'] as const) {
     await expect(page).toHaveURL(new RegExp(`/${locale}/guest$`));
     await expect(page.getByRole('alert')).toBeVisible();
     await expect(page.locator('main input')).toHaveCount(0);
+    await expect(page).toHaveTitle(/Naql365|نقل/);
     expect(
       (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
         .violations,

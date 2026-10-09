@@ -1,0 +1,45 @@
+{
+  "applicationSha": "fbd355aacc0952db9101d6fff6fe8a0e1c93d13a",
+  "deliverySha": "d8e8868ffdc76e705e90623bceb7f04b6c717279",
+  "difference": "report,17 PNGs,2 evidence JSON files,test capture only; no runtime source or manifest changes",
+  "zeroState": {
+    "identity": "owner-selected mailbox 2",
+    "auth": 0,
+    "profiles": 0,
+    "customers": 0,
+    "memberships": 0,
+    "roles": 0
+  },
+  "historicalMatrix": {
+    "screenshots": 50,
+    "overflow": false,
+    "axeViolations": 0,
+    "invalidConfirmationExplanation": false,
+    "decision": "PARTIAL; invalid callback silently returned to Login"
+  },
+  "fixtureMutations": 0,
+  "automationRevoked": true,
+  "changedFiles": [
+    "docs/reports/Naql365-Launch-Visual-UX-Stage-2.md",
+    "docs/reports/evidence/launch-ux-stage2/ar-desktop.png",
+    "docs/reports/evidence/launch-ux-stage2/ar-mobile.png",
+    "docs/reports/evidence/launch-ux-stage2/customer-eg-en-390.png",
+    "docs/reports/evidence/launch-ux-stage2/customer-sa-ar-1280.png",
+    "docs/reports/evidence/launch-ux-stage2/en-desktop.png",
+    "docs/reports/evidence/launch-ux-stage2/en-mobile.png",
+    "docs/reports/evidence/launch-ux-stage2/guest-eg-payment-390.png",
+    "docs/reports/evidence/launch-ux-stage2/guest-eg-tracking-390.png",
+    "docs/reports/evidence/launch-ux-stage2/guest-sa-payment-390.png",
+    "docs/reports/evidence/launch-ux-stage2/guest-sa-tracking-390.png",
+    "docs/reports/evidence/launch-ux-stage2/index.json",
+    "docs/reports/evidence/launch-ux-stage2/login-ar.png",
+    "docs/reports/evidence/launch-ux-stage2/quote-eg-en-1280.png",
+    "docs/reports/evidence/launch-ux-stage2/quote-sa-ar-390.png",
+    "docs/reports/evidence/launch-ux-stage2/request-sa-en-mobile-390.png",
+    "docs/reports/evidence/launch-ux-stage2/results.json",
+    "docs/reports/evidence/launch-ux-stage2/signup-en-mobile.png",
+    "docs/reports/evidence/launch-ux-stage2/wizard-review-eg-en-1280.png",
+    "docs/reports/evidence/launch-ux-stage2/wizard-review-sa-ar-390.png",
+    "tests/phase7/journey.spec.ts"
+  ]
+}

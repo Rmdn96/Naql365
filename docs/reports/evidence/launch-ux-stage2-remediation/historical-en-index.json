@@ -1,0 +1,252 @@
+[
+  {
+    "locale": "en",
+    "state": "signup-initial",
+    "width": 360,
+    "file": "en-signup-initial-360.png",
+    "sha256": "87dcd48b7652e7bb56ac058b7d625f7ab361fb1bef6fd4f83d977696cc07d314",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "signup-initial",
+    "width": 390,
+    "file": "en-signup-initial-390.png",
+    "sha256": "b6c0477e733239b12fedd04c28e7e022889c3e8d2b437b9aad3a9e0729f36f53",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "signup-initial",
+    "width": 768,
+    "file": "en-signup-initial-768.png",
+    "sha256": "4a6d988324646e5c55833f1c479b80d7f378b2e11f78a36d2268d1d0eb6574b0",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "signup-initial",
+    "width": 1280,
+    "file": "en-signup-initial-1280.png",
+    "sha256": "402c3ca44c56f8cf7ec66cde2ada44aeba4da3a98937f938241af66cf8f33371",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "signup-initial",
+    "width": 1440,
+    "file": "en-signup-initial-1440.png",
+    "sha256": "a5275072b46d8bad7fc06fe5eca394e694c86254ea40741425b0ea3e8d0a0ee1",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "login-initial",
+    "width": 360,
+    "file": "en-login-initial-360.png",
+    "sha256": "ffd7b31bb10235756904e6fbf87b67520e5fb560cbcbd5936dcf690d98683c03",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "login-initial",
+    "width": 390,
+    "file": "en-login-initial-390.png",
+    "sha256": "ce85578fab65335895749026da8c87d61e9c6c715e79651f2cc34eb07184c1a0",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "login-initial",
+    "width": 768,
+    "file": "en-login-initial-768.png",
+    "sha256": "fa9f7b2566ff23827ca57ffb1366eec9260e14f9e5e34e12c33275b0e36931f2",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "login-initial",
+    "width": 1280,
+    "file": "en-login-initial-1280.png",
+    "sha256": "53e21de6ec643fd197e3ab37fccf1072cee3bec31a804d157df81d60d9d6a1b2",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "login-initial",
+    "width": 1440,
+    "file": "en-login-initial-1440.png",
+    "sha256": "47905a00ad2a7a2ea655d6c689dc7d6d4063bb718a22894d37c82c129f10e760",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "recovery-request",
+    "width": 360,
+    "file": "en-recovery-request-360.png",
+    "sha256": "3770a41c19276538aefe8e2611e805e8af1c2aecf553b00eb9595fe522e8c635",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "recovery-request",
+    "width": 390,
+    "file": "en-recovery-request-390.png",
+    "sha256": "2a6cdc92dc80029a7e9a0fe188c3db2531db30bf6bab978260ee007fd0655ff7",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "recovery-request",
+    "width": 768,
+    "file": "en-recovery-request-768.png",
+    "sha256": "632275d944cc76d15c2bae364e43bd6c4356e8939939d35858faeedd51af77dd",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "recovery-request",
+    "width": 1280,
+    "file": "en-recovery-request-1280.png",
+    "sha256": "b21eba6385b23194dd745c197273aa04a42127027c5b3f2f7c49fdf906be8dac",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "recovery-request",
+    "width": 1440,
+    "file": "en-recovery-request-1440.png",
+    "sha256": "4bf493e269cf37e9b05cadc86572dd15c3f95a7a12eabf5108baeae349990f5c",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "native-validation",
+    "width": 360,
+    "file": "en-native-validation-360.png",
+    "sha256": "f20a300cd05b588cb4776c537bb8305f742c8d2d31c4c7bb3f9e83368590b99a",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "native-validation",
+    "width": 390,
+    "file": "en-native-validation-390.png",
+    "sha256": "3e792e2ec65224632d6b0db727d4cf543df95596d7cf10fdf2fc6dec80619d1c",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "native-validation",
+    "width": 768,
+    "file": "en-native-validation-768.png",
+    "sha256": "96aa92363a9f7bae53de20c8e3947fc0b4583add1d683ec74649e66a104c9e7c",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "native-validation",
+    "width": 1280,
+    "file": "en-native-validation-1280.png",
+    "sha256": "dc3739529fe0f6ed4df25934e77c5ddae468c4e605bf3cd3799157de9af61b2f",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "native-validation",
+    "width": 1440,
+    "file": "en-native-validation-1440.png",
+    "sha256": "e48dcd95731ad2b9daf26b011bcfa4b7d4e339afe2efff3269fc3e65adc93e2f",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": null
+  },
+  {
+    "locale": "en",
+    "state": "invalid-confirmation",
+    "width": 360,
+    "file": "en-invalid-confirmation-360.png",
+    "sha256": "ffd7b31bb10235756904e6fbf87b67520e5fb560cbcbd5936dcf690d98683c03",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  },
+  {
+    "locale": "en",
+    "state": "invalid-confirmation",
+    "width": 390,
+    "file": "en-invalid-confirmation-390.png",
+    "sha256": "ce85578fab65335895749026da8c87d61e9c6c715e79651f2cc34eb07184c1a0",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  },
+  {
+    "locale": "en",
+    "state": "invalid-confirmation",
+    "width": 768,
+    "file": "en-invalid-confirmation-768.png",
+    "sha256": "fa9f7b2566ff23827ca57ffb1366eec9260e14f9e5e34e12c33275b0e36931f2",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  },
+  {
+    "locale": "en",
+    "state": "invalid-confirmation",
+    "width": 1280,
+    "file": "en-invalid-confirmation-1280.png",
+    "sha256": "53e21de6ec643fd197e3ab37fccf1072cee3bec31a804d157df81d60d9d6a1b2",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  },
+  {
+    "locale": "en",
+    "state": "invalid-confirmation",
+    "width": 1440,
+    "file": "en-invalid-confirmation-1440.png",
+    "sha256": "47905a00ad2a7a2ea655d6c689dc7d6d4063bb718a22894d37c82c129f10e760",
+    "overflow": false,
+    "axeViolations": 0,
+    "confirmationFailureExplained": false
+  }
+]

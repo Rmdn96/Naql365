@@ -76,3 +76,15 @@ Delivery evidence is a separate commit containing this report, screenshot index 
 ## Final decision
 
 LAUNCH VISUAL & UX STAGE 2 PARTIAL — REMEDIATION REQUIRED
+
+## Final remediation checkpoint — 2026-10-09
+
+Release reconciliation: `d8e8868ffdc76e705e90623bceb7f04b6c717279` differs from deployed `fbd355aacc0952db9101d6fff6fe8a0e1c93d13a` only in report/evidence (17 PNGs and two JSON indexes) and one tracking capture test line. The exact file list is in `evidence/launch-ux-stage2-remediation/release-reconciliation.json`. The delivery HEAD was never treated as the deployed application SHA.
+
+A subsequent read-only hosted identity matrix captured 50 cases: signup initial, login, recovery request, native required-field validation, and missing/invalid confirmation callback, each AR/EN at 360/390/768/1280/1440. No fixture or business mutations occurred. Overflow and axe checks passed, but invalid callback feedback was absent in all ten locale/width combinations. This is historical PARTIAL evidence, not a full matrix PASS. The owned automation credential was revoked and rejected with 302.
+
+The smallest required application correction adds a fixed, localized failed-email-link notice on Login. Existing successful confirmation/recovery destinations, code exchange, role routing and permissions are unchanged; no provider message, code, token or arbitrary query value is echoed. Eight callback regression tests verify missing/rejected and successful flows in both locales. Existing login-routing tests now supply the framework search-parameter prop and still assert authenticated redirects before a form can render. Full local unit/integration rerun: 279/279 PASS. Build/types PASS. Full E2E/CI and redeployment remain pending at this checkpoint, and the original Preview still represents fbd355a until replacement is independently verified.
+
+The owner's first proposed mailbox already existed and was preserved. The replacement mailbox's read-only pre-signup check returned zero Auth/profile/Customer/membership/role records. No public signup, admin link generation, confirmation or bootstrap was performed. Password and mailbox steps await the owner on the final reviewed Preview. The overall Stage 2 decision remains PARTIAL.
+
+Local remediation rerun completed: 279 unit/integration, 40 E2E (two workers, original assertions/timeouts), fresh 46-migration reconstruction, seven SQL/RLS suites, exact official types and all six concurrency suites PASS. Earlier failures are retained: missing search-parameter input in the unit harness; old exact redirect expectation in E2E; concurrent local load/timeouts and streamed-title readiness; stale local test functions and inherited database-password environment. Harness inputs/expected fixed notice were corrected; no authorization assertion, axe rule or timeout was removed. Production/Staging credentials were not changed. Final exact-head CI and hosted replacement remain required.
