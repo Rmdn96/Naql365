@@ -1,0 +1,75 @@
+{
+  "applicationSha": "fbd355aacc0952db9101d6fff6fe8a0e1c93d13a",
+  "deployment": "dpl_Bg1zGn2bJttYJknDnk3ucGjcyhkC",
+  "scope": "Public content and owned synthetic fixtures; screenshots exclude browser chrome and credentials.",
+  "images": [
+    {
+      "file": "ar-desktop.png",
+      "sha256": "f3d2891b46a413054691e0304ecfd1856596e1ae4a24a4d2943a6bd0a82e2389"
+    },
+    {
+      "file": "ar-mobile.png",
+      "sha256": "0989eae022ad3b313554b23e2a6d64d03a475c6ab0ab23036d00007548fd2083"
+    },
+    {
+      "file": "en-desktop.png",
+      "sha256": "7861a6ffaa387d807f8c834846242574f55159cdcef9cae1cc625da08e572c18"
+    },
+    {
+      "file": "en-mobile.png",
+      "sha256": "4c57fbd931e32224abde385e012b3bd703587a430c4dacaaf2f9d9706c9b4486"
+    },
+    {
+      "file": "login-ar.png",
+      "sha256": "e1929c1a4240b63fd89f3b15369c554e4d88a8ff2f10483656448e5f859ad2b9"
+    },
+    {
+      "file": "signup-en-mobile.png",
+      "sha256": "b232aa81b00350f965229b2023748763902bd7d1bde83d6773b6118d86b9dc00"
+    },
+    {
+      "file": "customer-sa-ar-1280.png",
+      "sha256": "ea174e17283ce37952213c4f00befe8d23204563fb1afc6642586559da71d4fa"
+    },
+    {
+      "file": "customer-eg-en-390.png",
+      "sha256": "dd3c4f867b041db40d2ab661cf562da87704793407855754322e2d8eeed7715c"
+    },
+    {
+      "file": "request-sa-en-mobile-390.png",
+      "sha256": "2a1c104e09967612d1a44d9bb3bfee722c4dcba0aa9f6bc4f04ef6ba6db973d3"
+    },
+    {
+      "file": "wizard-review-sa-ar-390.png",
+      "sha256": "99ce81b99ddff174d71155fbfa28c078740b383214467b94bc7bb4404ef1b516"
+    },
+    {
+      "file": "wizard-review-eg-en-1280.png",
+      "sha256": "12d1a5784613518b5c7e33d042ce3d9a70016300c8e3b8c5f97aa59a48124379"
+    },
+    {
+      "file": "quote-sa-ar-390.png",
+      "sha256": "73e753c9c3859558f8500b5042f098349ea720fc52f70235da140e8e283b6a40"
+    },
+    {
+      "file": "quote-eg-en-1280.png",
+      "sha256": "1eea8bb15ea13a0aac44fb4c6fb08e321307d6c8165b0dafd2a96aa521fde6ae"
+    },
+    {
+      "file": "guest-sa-payment-390.png",
+      "sha256": "159977af09cda31833a412e5a3ccb575d0c997b54881cced37a46d856527c605"
+    },
+    {
+      "file": "guest-eg-payment-390.png",
+      "sha256": "228b1d452393fde129d064209ced21ff6c8e3ae4cc85b26481ee77e0ef6a3b4c"
+    },
+    {
+      "file": "guest-sa-tracking-390.png",
+      "sha256": "642da287fe3ba289ba53588270c8bb124f12d55e8a9d3d540a3f25e7ad00cad6"
+    },
+    {
+      "file": "guest-eg-tracking-390.png",
+      "sha256": "1d7a42e9b9d06f3b72f7a8f7722b14842d74a757c4263fb72283aba03b1fccce"
+    }
+  ]
+}

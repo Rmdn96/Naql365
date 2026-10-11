@@ -1,0 +1,17 @@
+{
+  "state": "request-review",
+  "locale": "en",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T15:03:16.828Z",
+  "result": "PASS",
+  "filename": "en-1440-request-review.png",
+  "sha256": "fda789b455e648dd2ac9e1918340780b24a0b649ecae11a07aa9fc2878654395",
+  "fixtureReference": "run-ledger:customer-draft",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

@@ -1,0 +1,18 @@
+{
+  "state": "confirmation-invalid",
+  "locale": "en",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:46:46.187Z",
+  "result": "PASS",
+  "filename": "en-360-confirmation-invalid.png",
+  "sha256": "8965f7a7fcf7da1960806014e06fa4e17220bd03977263b082dad2df02b069d3",
+  "fixtureReference": null,
+  "overflow": false,
+  "axeViolations": 0,
+  "keyboardFocus": true,
+  "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+}

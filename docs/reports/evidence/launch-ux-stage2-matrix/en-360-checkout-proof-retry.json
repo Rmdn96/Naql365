@@ -1,0 +1,17 @@
+{
+  "state": "checkout-proof-retry",
+  "locale": "en",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T21:51:53.997Z",
+  "result": "PASS",
+  "filename": "en-360-checkout-proof-retry.png",
+  "sha256": "fd9d2fd03e0502cc8ba8eaeb90af720d9f3b6feacb6cabf01c62a7154653d0c0",
+  "fixtureReference": "run-ledger:EG-proof",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

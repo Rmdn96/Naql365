@@ -1,0 +1,17 @@
+{
+  "state": "quote-loading",
+  "locale": "en",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T21:51:00.395Z",
+  "result": "PASS",
+  "filename": "en-360-quote-loading.png",
+  "sha256": "bc0f5b4d9ab398584e91cacb4ec85b5ebf35fa343c1bb24d1d0cf6d652717bcf",
+  "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

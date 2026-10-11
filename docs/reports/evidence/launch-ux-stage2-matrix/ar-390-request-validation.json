@@ -1,0 +1,17 @@
+{
+  "state": "request-validation",
+  "locale": "ar",
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T15:02:33.889Z",
+  "result": "PASS",
+  "filename": "ar-390-request-validation.png",
+  "sha256": "ac9dfe3c321da4bbd8b00f37a22a7eaa38b9d3dae8281f98f87473a60ba08cfa",
+  "fixtureReference": "run-ledger:customer-draft",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

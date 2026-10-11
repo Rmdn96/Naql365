@@ -1,4 +1,5 @@
 'use client';
+import { customerExperience } from '@/i18n/customer-experience';
 import { useHydrated } from '@/components/ui/use-hydrated';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -496,7 +497,7 @@ export function RequestWizard({
   );
   const service = details.services.find((s) => s.id === draft.service_id);
   return (
-    <div className="wizard">
+    <div className="wizard customer-experience">
       <p>
         {mt.market}: {locale === 'ar' ? details.market.name_ar : details.market.name_en} ·{' '}
         <bdi>{details.market.currency}</bdi>
@@ -551,6 +552,7 @@ export function RequestWizard({
       <h1 ref={title} tabIndex={-1}>
         {t[steps[step]!]}
       </h1>
+      <p className="step-help">{customerExperience(locale).stepHelp[step]}</p>
       {error && (
         <Alert tone="error">
           {error}

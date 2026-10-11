@@ -1,3 +1,4 @@
+import { stage1Capture } from '../helpers/stage1-evidence';
 import { test, expect } from '../staging/fixtures';
 import { acceptedOrder, admin, org } from '../phase4/helpers';
 import { dictionary } from '../../src/i18n/dictionaries';
@@ -53,6 +54,7 @@ for (const country of ['SA', 'EG'] as const)
     await expect(page).toHaveURL(/\/en\/account$/);
     await page.reload();
     await expect(page).toHaveURL(/\/en\/account$/);
+    await stage1Capture(page, `customer-${country.toLowerCase()}-en`);
     await page.getByRole('button', { name: dictionary('en').logout, exact: true }).click();
     await expect(page).toHaveURL(/\/en\/login$/);
     await page.goto('/en/account');

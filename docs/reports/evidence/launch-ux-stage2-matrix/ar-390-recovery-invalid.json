@@ -1,0 +1,18 @@
+{
+  "state": "recovery-invalid",
+  "locale": "ar",
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:46:30.384Z",
+  "result": "PASS",
+  "filename": "ar-390-recovery-invalid.png",
+  "sha256": "cf01e2cdd3e1d01c4e3accc172af0ef2d998116823df4ab3e2564f97705bf946",
+  "fixtureReference": null,
+  "overflow": false,
+  "axeViolations": 0,
+  "keyboardFocus": true,
+  "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+}

@@ -1,0 +1,17 @@
+{
+  "state": "recovery-valid",
+  "locale": "en",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:54:12.968Z",
+  "result": "PASS",
+  "filename": "en-1440-recovery-valid.png",
+  "sha256": "36dcd9ad8754fe13ab85f2bdc7bf2dcfcad60b7ed0a658e157f192b38e1b164d",
+  "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

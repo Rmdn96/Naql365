@@ -10,6 +10,7 @@ import { headers } from 'next/headers';
 import { preventIndexing } from '@/infrastructure/config/deployment-env';
 import '../globals.css';
 import '../../styles/stage1.css';
+import '../../styles/customer-experience.css';
 const arabic = Alexandria({ subsets: ['arabic'], display: 'swap', variable: '--font-arabic' });
 const english = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-english' });
 

@@ -1,4 +1,5 @@
 'use client';
+import { customerExperience } from '@/i18n/customer-experience';
 import { useHydrated } from '@/components/ui/use-hydrated';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -62,7 +63,9 @@ export function QuoteActions({
     }
   }
   return (
-    <section className="card stack" aria-label={t.quoteDetails}>
+    <section className="card stack quote-response" aria-label={t.quoteDetails} aria-busy={busy}>
+      <h2>{customerExperience(locale).quoteDecision}</h2>
+      <p>{customerExperience(locale).quoteDecisionHelp}</p>
       {message && <Alert tone={message === t.actionFailed ? 'error' : 'success'}>{message}</Alert>}
       <Input
         disabled={!hydrated}

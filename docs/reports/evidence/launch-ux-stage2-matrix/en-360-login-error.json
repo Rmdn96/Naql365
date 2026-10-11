@@ -1,0 +1,18 @@
+{
+  "state": "login-error",
+  "locale": "en",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:46:58.535Z",
+  "result": "PASS",
+  "filename": "en-360-login-error.png",
+  "sha256": "ec4d75c2d276924c69cb9178859f2119ace5fc55967ac0cb5572ccc319642290",
+  "fixtureReference": null,
+  "overflow": false,
+  "axeViolations": 0,
+  "keyboardFocus": true,
+  "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+}

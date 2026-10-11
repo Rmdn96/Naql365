@@ -1,0 +1,17 @@
+{
+  "state": "confirmation-success",
+  "locale": "en",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:53:31.455Z",
+  "result": "PASS",
+  "filename": "en-1440-confirmation-success.png",
+  "sha256": "50dd5796269fde557eb83e4df09b08ce639244f0f7da371c74e565aeaade6b9f",
+  "fixtureReference": "run-ledger:customer; onboarding destination only",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

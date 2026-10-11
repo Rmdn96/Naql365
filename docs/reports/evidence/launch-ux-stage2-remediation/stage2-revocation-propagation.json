@@ -1,0 +1,16 @@
+{
+  "observations": [
+    {
+      "attempt": 1,
+      "status": 200
+    },
+    {
+      "attempt": 2,
+      "status": 302
+    }
+  ],
+  "revoked": true,
+  "denied": true,
+  "automationCredentialCount": 0,
+  "protection": "all_except_custom_domains"
+}

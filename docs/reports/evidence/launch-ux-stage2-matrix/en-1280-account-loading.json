@@ -1,0 +1,17 @@
+{
+  "state": "account-loading",
+  "locale": "en",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T15:03:35.138Z",
+  "result": "PASS",
+  "filename": "en-1280-account-loading.png",
+  "sha256": "1727fa0b1ac2d3cdf9cecf7e4eaa623e78f2860a7a1fef8edab17dbbd290d81b",
+  "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

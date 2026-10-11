@@ -1,0 +1,16 @@
+{
+  "classification": "browser/test-runner issue",
+  "historicalResult": "FAIL",
+  "operation": "in-app browser tab.screenshot(fullPage)",
+  "safeError": "Unable to capture screenshot",
+  "fileWriteReached": false,
+  "pageRenderedBeforeFailure": true,
+  "lowLevelCause": "Browser tool supplied no lower-level diagnostic; not established",
+  "applicationDefectEstablished": false,
+  "newHarnessFailure": {
+    "result": "FAIL",
+    "operation": "keyboard focus assertion",
+    "applicationChanged": false,
+    "cause": "Locator selected hidden framework input; corrected to visible non-hidden input"
+  }
+}

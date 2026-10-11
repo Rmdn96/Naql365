@@ -1,4 +1,5 @@
 'use client';
+import { customerExperience } from '@/i18n/customer-experience';
 import { useActionState, useState } from 'react';
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
@@ -79,6 +80,13 @@ export function CustomerAuthForm({
         {mode !== 'register' && <Link href={`/${locale}/register`}>{t.register}</Link>}
         {mode !== 'recover' && <Link href={`/${locale}/recover`}>{t.recover}</Link>}
       </nav>
+      {mode === 'register' && (
+        <p className="auth-alternative">
+          <Link href={`/${locale}/request`}>
+            {customerExperience(locale).requestWithoutAccount}
+          </Link>
+        </p>
+      )}
     </>
   );
 }
@@ -95,7 +103,8 @@ export function CustomerProfileForm({
   const [phone, setPhone] = useState(profile.phone ?? '');
   const [preferredLocale, setPreferredLocale] = useState(profile.locale);
   return (
-    <form action={action} className="stack">
+    <form action={action} className="stack profile-form" aria-busy={pending}>
+      <p className="muted">{customerExperience(locale).profileHelp}</p>
       <Input
         id="name"
         name="name"

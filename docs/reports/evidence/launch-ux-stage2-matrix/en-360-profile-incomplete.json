@@ -1,0 +1,17 @@
+{
+  "state": "profile-incomplete",
+  "locale": "en",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:53:26.069Z",
+  "result": "PASS",
+  "filename": "en-360-profile-incomplete.png",
+  "sha256": "2b1a674a3e84767b5263e4e934b2251ebd9b2b32cd912b08bece5687ca9c1171",
+  "fixtureReference": "run-ledger:customer",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

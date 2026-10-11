@@ -1,3 +1,4 @@
+import { stage1Capture } from '../helpers/stage1-evidence';
 import { test, expect, configureProtectedContext } from '../staging/fixtures';
 import { guestQuote, acceptGuest, executeDelivery, guestResponsiveCheck } from './helpers';
 import { admin, login, principal } from '../phase4/helpers';
@@ -33,6 +34,10 @@ for (const country of ['SA', 'EG'] as const)
           .single()
       ).data;
       await guestResponsiveCheck(page);
+      await stage1Capture(
+        page,
+        `guest-${country.toLowerCase()}-${page.url().endsWith('/payment') ? 'payment' : 'tracking'}`,
+      );
       await page.setViewportSize({ width: 390, height: 844 });
       const guest = createClient(
         process.env.STAGING_TEST_API_URL!,
@@ -158,6 +163,7 @@ for (const country of ['SA', 'EG'] as const)
       await executeDelivery(staff, order, country, journey.market.id, journey.cityId);
       await page.goto(`/${locale}/guest/orders/${order}`);
       await guestResponsiveCheck(page);
+      await stage1Capture(page, `guest-${country.toLowerCase()}-tracking`);
       const progress = await guest.rpc('customer_order_progress', { p_order_id: order });
       expect(progress.error).toBeNull();
       expect(progress.data.status).toBe('COMPLETED');

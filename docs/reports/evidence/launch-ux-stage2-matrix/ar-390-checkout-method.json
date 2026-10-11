@@ -1,0 +1,17 @@
+{
+  "state": "checkout-method",
+  "locale": "ar",
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T21:51:09.347Z",
+  "result": "PASS",
+  "filename": "ar-390-checkout-method.png",
+  "sha256": "6c8b63f535be250dae857cf9bfd40219d3c47439916559358140b65f4eb5e13a",
+  "fixtureReference": "run-ledger:EG-guest-order",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

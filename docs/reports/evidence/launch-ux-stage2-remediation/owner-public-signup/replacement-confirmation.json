@@ -1,0 +1,62 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "identity": "owner-approved fresh external mailbox 96",
+  "ownerReportedActualEmailConfirmation": true,
+  "observedOrigin": "https://naql365-staging-ux-stage2-naql365.vercel.app",
+  "observedPath": "/en/account",
+  "authCount": 1,
+  "confirmedCount": 1,
+  "profileCount": 1,
+  "customerCount": 0,
+  "membershipCount": 0,
+  "roleCount": 0,
+  "adminConfirmationUsed": false,
+  "profileNotYetSubmitted": true,
+  "captures": [
+    {
+      "file": "en-confirmed-onboarding-360.jpg",
+      "width": 360,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "onboarding": true,
+      "overflow": false,
+      "sha256": "50401a17afecc1590d2394c2912058e6cd7f16674832eb7b61d9ac37cd167f57"
+    },
+    {
+      "file": "en-confirmed-onboarding-390.jpg",
+      "width": 390,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "onboarding": true,
+      "overflow": false,
+      "sha256": "96b2d17c16380335fb1c8afa869decfbf6684ab4821889d00cd51f31098e6a4a"
+    },
+    {
+      "file": "en-confirmed-onboarding-768.jpg",
+      "width": 768,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "onboarding": true,
+      "overflow": false,
+      "sha256": "e32ae28fc2c8b3729727a8246c0de4c83040d7ce76869166d2d540a6a64c7982"
+    },
+    {
+      "file": "en-confirmed-onboarding-1280.jpg",
+      "width": 1280,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "onboarding": true,
+      "overflow": false,
+      "sha256": "db7570a53450bcd83fe079d2b5f58c6b8735f0a2ffd587abed8438c4e62a8437"
+    },
+    {
+      "file": "en-confirmed-onboarding-1440.jpg",
+      "width": 1440,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "onboarding": true,
+      "overflow": false,
+      "sha256": "ad0c6dadffa9595d3955577f1b158a37d35fb9024c1474bbcd5d6b3a3fb9e6be"
+    }
+  ]
+}

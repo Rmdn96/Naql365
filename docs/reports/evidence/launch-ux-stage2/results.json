@@ -1,0 +1,73 @@
+{
+  "applicationSha": "fbd355aacc0952db9101d6fff6fe8a0e1c93d13a",
+  "applicationCi": "37796140216",
+  "unitIntegration": 271,
+  "localE2E": 40,
+  "migrations": 46,
+  "migrationChanges": 0,
+  "concurrencyAssertions": 44,
+  "hostedRuns": [
+    {
+      "cases": [
+        "passed: hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration; durationMs=168975",
+        "passed: hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration; durationMs=205683",
+        "passed: hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order; durationMs=50437",
+        "passed: hosted-phase7 > manual-customer.spec.ts > SA registered customer manual quote and CASH regression; durationMs=89573",
+        "passed: hosted-phase7 > manual-customer.spec.ts > EG registered customer manual quote and CASH regression; durationMs=83846",
+        "passed: hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact; durationMs=12605",
+        "passed: hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact; durationMs=12881",
+        "passed: hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed; durationMs=5521",
+        "passed: hosted-phase7 > stage1-session.spec.ts > ar normal SUPER_ADMIN session, explicit logout and history denial; durationMs=23465",
+        "passed: hosted-phase7 > stage1-session.spec.ts > en normal SUPER_ADMIN session, explicit logout and history denial; durationMs=19687"
+      ],
+      "suitePassed": true,
+      "cleanupPassed": true,
+      "credentialRevoked": true
+    },
+    {
+      "cases": [
+        "passed: hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration; durationMs=167466",
+        "passed: hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration; durationMs=228508",
+        "passed: hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order; durationMs=46823",
+        "passed: hosted-phase7 > manual-customer.spec.ts > SA registered customer manual quote and CASH regression; durationMs=80744",
+        "passed: hosted-phase7 > manual-customer.spec.ts > EG registered customer manual quote and CASH regression; durationMs=85385",
+        "passed: hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact; durationMs=12375",
+        "passed: hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact; durationMs=14258",
+        "passed: hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed; durationMs=5938",
+        "passed: hosted-phase7 > stage1-session.spec.ts > ar normal SUPER_ADMIN session, explicit logout and history denial; durationMs=21497",
+        "passed: hosted-phase7 > stage1-session.spec.ts > en normal SUPER_ADMIN session, explicit logout and history denial; durationMs=22378"
+      ],
+      "suitePassed": true,
+      "cleanupPassed": true,
+      "credentialRevoked": true
+    }
+  ],
+  "protection": {
+    "automationCredentialCount": 0,
+    "protection": "all_except_custom_domains",
+    "revokedCredentialStatus": 302
+  },
+  "preservation": {
+    "customers": 3,
+    "quoteVersions": 0,
+    "orders": 0,
+    "digestsUnchanged": true
+  },
+  "runtimeLogSample": {
+    "deployment": "dpl_Bg1zGn2bJttYJknDnk3ucGjcyhkC",
+    "sampleCount": 50,
+    "window": "1h",
+    "limit": 200,
+    "statusCounts": {
+      "0": 5,
+      "200": 45
+    },
+    "secretPatternDetected": false
+  },
+  "limitations": [
+    "Full state-by-state visual matrix remains incomplete.",
+    "External-mailbox confirmation not repeated for Stage 2.",
+    "Account uses existing projection; no expanded query authority."
+  ],
+  "decision": "LAUNCH VISUAL & UX STAGE 2 PARTIAL — REMEDIATION REQUIRED"
+}

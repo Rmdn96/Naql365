@@ -1,0 +1,17 @@
+{
+  "state": "signup-email-sent",
+  "locale": "en",
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-11T06:53:43.389Z",
+  "result": "PASS",
+  "filename": "en-390-signup-email-sent.png",
+  "sha256": "a95da17d98d8c2b008cebbc3f296ad8613ee59fedafe25b7d2c427486115e264",
+  "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

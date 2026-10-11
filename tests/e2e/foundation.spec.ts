@@ -77,5 +77,7 @@ test('callback rejects external destinations when no valid code is present', asy
   const response = await request.get('/auth/callback?next=https://evil.example', {
     maxRedirects: 0,
   });
-  expect(response.headers().location).toBe('http://127.0.0.1:3000/ar/login');
+  expect(response.headers().location).toBe(
+    'http://127.0.0.1:3000/ar/login?notice=confirmation-link',
+  );
 });

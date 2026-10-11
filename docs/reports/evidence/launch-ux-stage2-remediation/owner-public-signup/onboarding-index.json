@@ -1,0 +1,86 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "state": "confirmed public identity; normal login; initial onboarding",
+  "captures": [
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "width": 360,
+      "file": "ar-onboarding-initial-360.jpg",
+      "sha256": "e299213bc93e5ad2b83459e845f3abe2bc54460a28cc1de6985e48b1d0048ab1"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "width": 390,
+      "file": "ar-onboarding-initial-390.jpg",
+      "sha256": "389ae7f46569e2019800e62be99d7241bfe44e3ba94402e90d11ad2e87fbf420"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "width": 768,
+      "file": "ar-onboarding-initial-768.jpg",
+      "sha256": "8f405e7ea6379b1a7d398d85af6b07fdd39f86d603659f585901cab5ff67d3d7"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "width": 1280,
+      "file": "ar-onboarding-initial-1280.jpg",
+      "sha256": "e1c805c1f1fc26bd698886f82f11aa4cd740bbb9994d4a4cb09e8e88ca716c8b"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "width": 1440,
+      "file": "ar-onboarding-initial-1440.jpg",
+      "sha256": "db269eb5c0b9210ad431f096c24d669014256b47e523cdbbad56fc7c3d2ebc4d"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "ltr",
+      "overflow": false,
+      "width": 360,
+      "file": "en-onboarding-initial-360.jpg",
+      "sha256": "50401a17afecc1590d2394c2912058e6cd7f16674832eb7b61d9ac37cd167f57"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "ltr",
+      "overflow": false,
+      "width": 390,
+      "file": "en-onboarding-initial-390.jpg",
+      "sha256": "96b2d17c16380335fb1c8afa869decfbf6684ab4821889d00cd51f31098e6a4a"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "ltr",
+      "overflow": false,
+      "width": 768,
+      "file": "en-onboarding-initial-768.jpg",
+      "sha256": "e32ae28fc2c8b3729727a8246c0de4c83040d7ce76869166d2d540a6a64c7982"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "ltr",
+      "overflow": false,
+      "width": 1280,
+      "file": "en-onboarding-initial-1280.jpg",
+      "sha256": "db7570a53450bcd83fe079d2b5f58c6b8735f0a2ffd587abed8438c4e62a8437"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "ltr",
+      "overflow": false,
+      "width": 1440,
+      "file": "en-onboarding-initial-1440.jpg",
+      "sha256": "ad0c6dadffa9595d3955577f1b158a37d35fb9024c1474bbcd5d6b3a3fb9e6be"
+    }
+  ]
+}

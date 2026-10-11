@@ -1,0 +1,17 @@
+{
+  "state": "account-success",
+  "locale": "ar",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T15:03:08.186Z",
+  "result": "PASS",
+  "filename": "ar-360-account-success.png",
+  "sha256": "09d70a0098babe392e58e1f746040b64a03b4c8d8c1599ca4f7e3c2cc2c5c1f4",
+  "fixtureReference": "run-ledger:customer-draft",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

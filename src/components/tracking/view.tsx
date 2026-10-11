@@ -12,6 +12,8 @@ import { trackingDictionary } from '@/i18n/tracking';
 import type { Locale } from '@/i18n/config';
 import { operationalStatus } from '@/i18n/operations';
 import { createSupabaseBrowserClient } from '@/infrastructure/supabase/browser';
+import { Skeleton } from '@/components/ui/presentation';
+import { customerDictionary } from '@/i18n/customer';
 import { OpenStreetMap } from './map';
 const responseSchema = z.object({ trips: trackingTrip.array().max(50), policy: trackingPolicy });
 export function TrackingView({
@@ -128,7 +130,7 @@ export function TrackingView({
           freshness(p.active, p.location?.receivedAt ?? null, data.policy, now) === filter.fresh),
     ) ?? [];
   return (
-    <section>
+    <section className={operations ? undefined : 'customer-live-tracking'}>
       <h2>{t.title}</h2>
       {operations && (
         <form
@@ -195,7 +197,8 @@ export function TrackingView({
       <button type="button" onClick={() => setReload((v) => v + 1)}>
         {t.retry}
       </button>
-      {!trips.length && <p>{t.empty}</p>}
+      {!data && !error && <Skeleton label={customerDictionary(locale).loading} />}
+      {data && !trips.length && <p>{t.empty}</p>}
       <OpenStreetMap
         locale={locale}
         points={trips.flatMap((p) =>

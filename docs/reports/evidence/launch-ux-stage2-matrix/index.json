@@ -1,0 +1,5362 @@
+{
+  "summary": {
+    "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+    "required": 310,
+    "pass": 310,
+    "na": 0,
+    "fail": 0,
+    "complete": true
+  },
+  "matrix": [
+    {
+      "state": "signup-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:51.699Z",
+      "result": "PASS",
+      "filename": "ar-360-signup-initial.png",
+      "sha256": "b9e35d6e7338d24425f0c9151f847581f3e251ed02d4fd9d8cf33b7480889407",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:52.217Z",
+      "result": "PASS",
+      "filename": "ar-390-signup-initial.png",
+      "sha256": "42bf3143c742c095d682914867183426befb894ffeb264c983098f6f54c28158",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:52.760Z",
+      "result": "PASS",
+      "filename": "ar-768-signup-initial.png",
+      "sha256": "9a53ecc2e72aa5742ecb71bb2ef301c4ab3b50e4646e4ea803b646141f08a161",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:53.341Z",
+      "result": "PASS",
+      "filename": "ar-1280-signup-initial.png",
+      "sha256": "9227e43dfadf8e567c2dafd76c0ef8e6139edb265dfe390fe5bea67f9035516b",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:53.918Z",
+      "result": "PASS",
+      "filename": "ar-1440-signup-initial.png",
+      "sha256": "756a066cbf51492f9af54ae10cb0a0b9105a8872bef0b7a2665e0e111e88905f",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:35.529Z",
+      "result": "PASS",
+      "filename": "en-360-signup-initial.png",
+      "sha256": "79ac828db69ff324bcb21fab95ea0dd618d7d2663f31e720c28056a8627ecd7f",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:36.122Z",
+      "result": "PASS",
+      "filename": "en-390-signup-initial.png",
+      "sha256": "1300c543e0d7f6ad48f36a47fed7dc6a355312118a3b0f819d3b52ef65899e7d",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:36.675Z",
+      "result": "PASS",
+      "filename": "en-768-signup-initial.png",
+      "sha256": "31c68a913fb3ae9cd4b57c415f2f9aa8364a8a50f792a6f03b496d4cf92e1ee9",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:37.300Z",
+      "result": "PASS",
+      "filename": "en-1280-signup-initial.png",
+      "sha256": "94aa2cc4c37d32d911f397a6bf84626a40c940b730c6a7ed52fbd01ad93d1c37",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:37.858Z",
+      "result": "PASS",
+      "filename": "en-1440-signup-initial.png",
+      "sha256": "bf290e83e5669c3dc044661989c0dc315e1c623e98bea975e4e7ec8ae97aecd4",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:56.456Z",
+      "result": "PASS",
+      "filename": "ar-360-signup-validation.png",
+      "sha256": "b9e35d6e7338d24425f0c9151f847581f3e251ed02d4fd9d8cf33b7480889407",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:56.966Z",
+      "result": "PASS",
+      "filename": "ar-390-signup-validation.png",
+      "sha256": "42bf3143c742c095d682914867183426befb894ffeb264c983098f6f54c28158",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:57.533Z",
+      "result": "PASS",
+      "filename": "ar-768-signup-validation.png",
+      "sha256": "ef0cfe6bcb89fb1137d4eb8695030369da77ad1e5bbbfe0ceaeac42f7defe232",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:58.168Z",
+      "result": "PASS",
+      "filename": "ar-1280-signup-validation.png",
+      "sha256": "d3d56f828826fb8101ed162bee3d60bacff4d48b508823e3a6b440875dd5dcf0",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:45:58.765Z",
+      "result": "PASS",
+      "filename": "ar-1440-signup-validation.png",
+      "sha256": "6931750b9502699822d46fc7aa21f461ab53ed9d577e581b3b4aff8eb398a47f",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:40.394Z",
+      "result": "PASS",
+      "filename": "en-360-signup-validation.png",
+      "sha256": "79ac828db69ff324bcb21fab95ea0dd618d7d2663f31e720c28056a8627ecd7f",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:40.932Z",
+      "result": "PASS",
+      "filename": "en-390-signup-validation.png",
+      "sha256": "1300c543e0d7f6ad48f36a47fed7dc6a355312118a3b0f819d3b52ef65899e7d",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:41.512Z",
+      "result": "PASS",
+      "filename": "en-768-signup-validation.png",
+      "sha256": "b026909264e4c2b0e82e211ec73b9d2f6c3f8efce8f759bd0cf37f345f5fee45",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:42.167Z",
+      "result": "PASS",
+      "filename": "en-1280-signup-validation.png",
+      "sha256": "fd200070daf763ac5d0f1a71bfb38c1590889b2fe2ed38948426e1eaddb6547f",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:42.842Z",
+      "result": "PASS",
+      "filename": "en-1440-signup-validation.png",
+      "sha256": "683d29e5aa8e1d557b5969dafde73a6c3abbb56a67f36fd6e031fce56f2fcc32",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:36.717Z",
+      "result": "PASS",
+      "filename": "ar-360-signup-email-sent.png",
+      "sha256": "836c6074f1b5817b0a52c1ca8c88b8029956146a701c52df4e6e7b0292e1b2e3",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:37.469Z",
+      "result": "PASS",
+      "filename": "ar-390-signup-email-sent.png",
+      "sha256": "24b884836b2290e3a3ac0b5754727384811f0ed450c9e2a88b7e228ffb55946e",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:38.697Z",
+      "result": "PASS",
+      "filename": "ar-768-signup-email-sent.png",
+      "sha256": "c5b9b2b8221df2530535df455c944de668cfc695ca821183e84f873220b4222d",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:39.431Z",
+      "result": "PASS",
+      "filename": "ar-1280-signup-email-sent.png",
+      "sha256": "867b5ecdb6b588c25aa72acbfc7fc95f2871a537f0a3446ace6b398aba5c0000",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:40.084Z",
+      "result": "PASS",
+      "filename": "ar-1440-signup-email-sent.png",
+      "sha256": "4fb5d258648a76242eab9b86fcfddb964ac14be5ac7b887f43b92d1f20f9202c",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:42.783Z",
+      "result": "PASS",
+      "filename": "en-360-signup-email-sent.png",
+      "sha256": "477d72a525f8669af011b012935cce57171e3e64eb97c8957b8f271be605a526",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:43.389Z",
+      "result": "PASS",
+      "filename": "en-390-signup-email-sent.png",
+      "sha256": "a95da17d98d8c2b008cebbc3f296ad8613ee59fedafe25b7d2c427486115e264",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:44.117Z",
+      "result": "PASS",
+      "filename": "en-768-signup-email-sent.png",
+      "sha256": "470056a4279fa4ca22b3ee6ee92f17e0e7cdb3a25231e0a9dab8fc4a6640479e",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:44.726Z",
+      "result": "PASS",
+      "filename": "en-1280-signup-email-sent.png",
+      "sha256": "67df3e4e138ed957876a782f05ac6cd587aba0223e7d52b75ce9117a2a107e17",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "signup-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:53:45.323Z",
+      "result": "PASS",
+      "filename": "en-1440-signup-email-sent.png",
+      "sha256": "b49bbd3677c276f36deaee451505469bf04e994d3494de0b35969867fcd53ac2",
+      "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:17.366Z",
+      "result": "PASS",
+      "filename": "ar-360-confirmation-success.png",
+      "sha256": "4e677f07f292a0de317c58091586faaa4add48da8854eeb3c97034e1c431fbe7",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:17.868Z",
+      "result": "PASS",
+      "filename": "ar-390-confirmation-success.png",
+      "sha256": "97f397aefd8b3366b37f52bca0827e89498d65b13301e3bef1bfe7559b3bd3dd",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:18.392Z",
+      "result": "PASS",
+      "filename": "ar-768-confirmation-success.png",
+      "sha256": "b329314d439a994a447a2189d616d89f42f0f89d908bdd3ef2bf40c077331fac",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:18.944Z",
+      "result": "PASS",
+      "filename": "ar-1280-confirmation-success.png",
+      "sha256": "d7e8c77f0901f32ebefa0907202ff5fee5580c11d17120b1dea4a8a5e42ae2e0",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:19.574Z",
+      "result": "PASS",
+      "filename": "ar-1440-confirmation-success.png",
+      "sha256": "9d616a44031bb5cc09e81553d897c7d8bcf052f4822b0beb69e82979c0c32520",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:29.003Z",
+      "result": "PASS",
+      "filename": "en-360-confirmation-success.png",
+      "sha256": "2b1a674a3e84767b5263e4e934b2251ebd9b2b32cd912b08bece5687ca9c1171",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:29.591Z",
+      "result": "PASS",
+      "filename": "en-390-confirmation-success.png",
+      "sha256": "67fa45501d33315faba179100966aa0b107626b142db79ad2a564890b0a3a0a9",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:30.183Z",
+      "result": "PASS",
+      "filename": "en-768-confirmation-success.png",
+      "sha256": "b2ba9e3196995674c5a979b51cc2fbf62a36e703b93b10ec16d4cf6e11f1f352",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:30.833Z",
+      "result": "PASS",
+      "filename": "en-1280-confirmation-success.png",
+      "sha256": "fcb316cd4df4271e001d7e30263897c0d7d39c2e63537202ea47e621b91f5ffd",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-success",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:31.455Z",
+      "result": "PASS",
+      "filename": "en-1440-confirmation-success.png",
+      "sha256": "50dd5796269fde557eb83e4df09b08ce639244f0f7da371c74e565aeaade6b9f",
+      "fixtureReference": "run-ledger:customer; onboarding destination only",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:02.568Z",
+      "result": "PASS",
+      "filename": "ar-360-confirmation-invalid.png",
+      "sha256": "57937a09a82832d459bdc3ad4d20b9984402389dcad91aaeb4bffafaa152c20f",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:03.068Z",
+      "result": "PASS",
+      "filename": "ar-390-confirmation-invalid.png",
+      "sha256": "cf01e2cdd3e1d01c4e3accc172af0ef2d998116823df4ab3e2564f97705bf946",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:03.577Z",
+      "result": "PASS",
+      "filename": "ar-768-confirmation-invalid.png",
+      "sha256": "55bcf74eb9e58bfbf5e7bcf76b5dedfef9719532f34e6d85ec73316e4465ae54",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:04.107Z",
+      "result": "PASS",
+      "filename": "ar-1280-confirmation-invalid.png",
+      "sha256": "f988907eb968e84091efd9a2059731943ef9dddad83eb78d33b80ce7763cf0ed",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:04.662Z",
+      "result": "PASS",
+      "filename": "ar-1440-confirmation-invalid.png",
+      "sha256": "a9f90d60dfd6cf0c4831e2eaa173d4c112e85b2c610216426d45c89173be8dcc",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:46.187Z",
+      "result": "PASS",
+      "filename": "en-360-confirmation-invalid.png",
+      "sha256": "8965f7a7fcf7da1960806014e06fa4e17220bd03977263b082dad2df02b069d3",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:46.788Z",
+      "result": "PASS",
+      "filename": "en-390-confirmation-invalid.png",
+      "sha256": "f0dab76dbc692c13e83bb873d3a13708e3f41cf648db2ba3912034619cf42c7c",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:47.444Z",
+      "result": "PASS",
+      "filename": "en-768-confirmation-invalid.png",
+      "sha256": "ab951c34d1cc534b2639c06894a9127079c3236f0cdca80319d2cb27d074cdb9",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:48.077Z",
+      "result": "PASS",
+      "filename": "en-1280-confirmation-invalid.png",
+      "sha256": "94755c5d2a4b27427b2884627764e4935b3cc9f07553eaf482d969706d741b93",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "confirmation-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:48.750Z",
+      "result": "PASS",
+      "filename": "en-1440-confirmation-invalid.png",
+      "sha256": "9d3e4aa50094641cd801fcbae79396b08072a84ada2802d82db9b01fc2cc1dae",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:07.248Z",
+      "result": "PASS",
+      "filename": "ar-360-login-initial.png",
+      "sha256": "76b5b0c777a4d5246f553a13b4c009668f7aef5a685dd75cf1af80d0ad0a02ef",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:07.729Z",
+      "result": "PASS",
+      "filename": "ar-390-login-initial.png",
+      "sha256": "1669910a886b903f9990fb7057f13009ec86fddaf626c801f1c44c7e78935f55",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:08.203Z",
+      "result": "PASS",
+      "filename": "ar-768-login-initial.png",
+      "sha256": "5148f36e7d2c2eb9a5f65534ec67b4bca3a05c991b4493cd13bbd94d0292e7cc",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:08.761Z",
+      "result": "PASS",
+      "filename": "ar-1280-login-initial.png",
+      "sha256": "0b40435278a25b42c81d8fdf9dbd7ce7abb12fbbab27b971cbeee0269fecdc59",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:09.341Z",
+      "result": "PASS",
+      "filename": "ar-1440-login-initial.png",
+      "sha256": "deb4d92e882c515dd05e0d63212b6de76663ebc5ca08b5d8ae94d4cc99950459",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:51.813Z",
+      "result": "PASS",
+      "filename": "en-360-login-initial.png",
+      "sha256": "f20a300cd05b588cb4776c537bb8305f742c8d2d31c4c7bb3f9e83368590b99a",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:52.432Z",
+      "result": "PASS",
+      "filename": "en-390-login-initial.png",
+      "sha256": "3e792e2ec65224632d6b0db727d4cf543df95596d7cf10fdf2fc6dec80619d1c",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:53.137Z",
+      "result": "PASS",
+      "filename": "en-768-login-initial.png",
+      "sha256": "b86394271df64da0ab8beada15dfe01bca08f2033b28b0f2a0b4b59b42e22bbe",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:53.736Z",
+      "result": "PASS",
+      "filename": "en-1280-login-initial.png",
+      "sha256": "1df9c23dec772df049fb1064472b3c4f5b0b7abe4853bb7170f663ae3f43be72",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-initial",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:54.321Z",
+      "result": "PASS",
+      "filename": "en-1440-login-initial.png",
+      "sha256": "eab81561d888d7097218766d672e4a6467954d584bda449b84e0ee4b4b2a8271",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:13.386Z",
+      "result": "PASS",
+      "filename": "ar-360-login-error.png",
+      "sha256": "6b6c3c5ff9783f7e004e44797a83fb82077b6a9323031d5e9f3b6b548ea5ebef",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:13.886Z",
+      "result": "PASS",
+      "filename": "ar-390-login-error.png",
+      "sha256": "4a51757b9993cfd7fb40363a0a386ad5598832cb02e9ac953bf45493c9a6dc21",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:14.466Z",
+      "result": "PASS",
+      "filename": "ar-768-login-error.png",
+      "sha256": "d5e7ca9de49888b64ab9bef95de7796fdc566cbfd0b39a39c624a79bd20145df",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:15.020Z",
+      "result": "PASS",
+      "filename": "ar-1280-login-error.png",
+      "sha256": "58d24748b65f00df5300c54efbd8c673766f93a4c2107012848c557a902eb422",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:15.542Z",
+      "result": "PASS",
+      "filename": "ar-1440-login-error.png",
+      "sha256": "bdda08f4fb201e21087b7f51b84389517bf74b204e95a53809ae7c89218e1e8a",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:58.535Z",
+      "result": "PASS",
+      "filename": "en-360-login-error.png",
+      "sha256": "ec4d75c2d276924c69cb9178859f2119ace5fc55967ac0cb5572ccc319642290",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:59.153Z",
+      "result": "PASS",
+      "filename": "en-390-login-error.png",
+      "sha256": "3c16c15714265b3d2a578acb0e383936b98b9ba82aa8f3332626e2c4b484bbe5",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:59.710Z",
+      "result": "PASS",
+      "filename": "en-768-login-error.png",
+      "sha256": "61720760982c23152abcb26ea3a20afe8512f4075054cbaca38b8293289f94ee",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:00.270Z",
+      "result": "PASS",
+      "filename": "en-1280-login-error.png",
+      "sha256": "7d098e97bb8ca09bd0235dda95e0797d5b781620fb0e656dc6b8c48e34fe0e4a",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "login-error",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:00.840Z",
+      "result": "PASS",
+      "filename": "en-1440-login-error.png",
+      "sha256": "579105fc72689ed0a8946b2c9fc13b3a241a583bc741486ccd3446506066015b",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:18.413Z",
+      "result": "PASS",
+      "filename": "ar-360-recovery-request.png",
+      "sha256": "486f4cea7b6af2dc8b779ef502c7081814b61dcf5a66709404e730bbb1508c2f",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:18.897Z",
+      "result": "PASS",
+      "filename": "ar-390-recovery-request.png",
+      "sha256": "5f41741f55996c74bf5c35123abb785017aa44010336fef8c6595e7d66127c5d",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:19.388Z",
+      "result": "PASS",
+      "filename": "ar-768-recovery-request.png",
+      "sha256": "fe7229ecef0a66fe34accdf8624a349bce3af5f8215c5b29d5ab15b7b3295672",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:19.943Z",
+      "result": "PASS",
+      "filename": "ar-1280-recovery-request.png",
+      "sha256": "9d2e72e39792eaa84ccc7184214ecaeeedf81856c9b989d533bdce0e33854df6",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:20.522Z",
+      "result": "PASS",
+      "filename": "ar-1440-recovery-request.png",
+      "sha256": "6ea30a32fb78ef7abc538130548e5b485464a8e919a28c0824a7cfc0e09751c1",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:03.101Z",
+      "result": "PASS",
+      "filename": "en-360-recovery-request.png",
+      "sha256": "9cc37b4d21168c871c946170421d38d40871ad462963704fe8aa9eb6bf9a5129",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:03.611Z",
+      "result": "PASS",
+      "filename": "en-390-recovery-request.png",
+      "sha256": "ba5c0aa72ea8cbf05247a10081503ea87ea6dd4eb6485a59ba69d69a974cd6b1",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:04.154Z",
+      "result": "PASS",
+      "filename": "en-768-recovery-request.png",
+      "sha256": "2310e2e104173a6a07c5d3077654648b7356cfd9606166c9dd90ca3f11b61f1a",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:04.665Z",
+      "result": "PASS",
+      "filename": "en-1280-recovery-request.png",
+      "sha256": "80eb4a2f1d3c1200a10565021164736a285f0d236d225b3e88750cd62268ff1d",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-request",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:05.172Z",
+      "result": "PASS",
+      "filename": "en-1440-recovery-request.png",
+      "sha256": "52ba4eb9bc13f4f28d4f8e647ffbf24fef19a4dd5e182caa232535d3e7c89c3b",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:24.568Z",
+      "result": "PASS",
+      "filename": "ar-360-recovery-email-sent.png",
+      "sha256": "b48634d7509cce88584c87fb2c299749d5c8c99453c31dd6e599eef56129387d",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:25.067Z",
+      "result": "PASS",
+      "filename": "ar-390-recovery-email-sent.png",
+      "sha256": "61a3b6458ba72da78308e505b81c4eb05df094cdf0c2caf0b50efcb329fcdb6a",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:25.576Z",
+      "result": "PASS",
+      "filename": "ar-768-recovery-email-sent.png",
+      "sha256": "ee538436366154e66d9343e8e6171f5a44905bbe28e694218f54b5adfb32e6f1",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:26.125Z",
+      "result": "PASS",
+      "filename": "ar-1280-recovery-email-sent.png",
+      "sha256": "0570da616b7e5c93163261b7c5c31d92a3deed7714fa8fb3d50dedb624528398",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:26.701Z",
+      "result": "PASS",
+      "filename": "ar-1440-recovery-email-sent.png",
+      "sha256": "3e3df14791a34ca989a64f46b5c6eec5b181b1a96a827c6f282bf1e03cf84b9d",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:09.049Z",
+      "result": "PASS",
+      "filename": "en-360-recovery-email-sent.png",
+      "sha256": "8b0410a04861a829f40ecb4afb2ff002ed4485f58d4091d3bec19e3c3b75a509",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:09.550Z",
+      "result": "PASS",
+      "filename": "en-390-recovery-email-sent.png",
+      "sha256": "8d4949e790201ceaebf00bbb4f9912b82fd0e5bb77ca76b31d4675381f5b6103",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:10.065Z",
+      "result": "PASS",
+      "filename": "en-768-recovery-email-sent.png",
+      "sha256": "fcf0cd905364eb42da65f2fa66f76ad9cd4d1ccd068563675bd7828713860ee2",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:10.627Z",
+      "result": "PASS",
+      "filename": "en-1280-recovery-email-sent.png",
+      "sha256": "7ef5955e4702cb4b93f13185386afc5b2be61916a4d0be409e928cb2a1d804cd",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-email-sent",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:11.202Z",
+      "result": "PASS",
+      "filename": "en-1440-recovery-email-sent.png",
+      "sha256": "104d62d774ffe363bbf30b13ee463e752ec698fd9eb1075c6d2196a120d23146",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:50.047Z",
+      "result": "PASS",
+      "filename": "ar-360-recovery-valid.png",
+      "sha256": "9d11fcc4a83fcfe1dd8049fbc3eddb92410c956df5da65ab0f02ac4bbbc90a89",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:50.546Z",
+      "result": "PASS",
+      "filename": "ar-390-recovery-valid.png",
+      "sha256": "06fc39088e1eb3abdc603299c2dc0eacf71ea86a32117437af35d5a6eee20f1f",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:51.053Z",
+      "result": "PASS",
+      "filename": "ar-768-recovery-valid.png",
+      "sha256": "9cbdcdb13964a9ffc8912cf62fc383e882d691908224d17bf1c5be3869bee59f",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:51.633Z",
+      "result": "PASS",
+      "filename": "ar-1280-recovery-valid.png",
+      "sha256": "a9edeb296947a4daa5e083c9fd5d85ae5ced6ee8ec84a2140c2fe8fe997ae7b1",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:52.174Z",
+      "result": "PASS",
+      "filename": "ar-1440-recovery-valid.png",
+      "sha256": "23d33a6eb2ba3082e0957e1241e0953596521c4c83be837e52e1eb45132c5acc",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:10.929Z",
+      "result": "PASS",
+      "filename": "en-360-recovery-valid.png",
+      "sha256": "fb92a9bb03af5bb3b5139d54b973524ae6b9dbc0532f94f5c8916a3434b92213",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:11.427Z",
+      "result": "PASS",
+      "filename": "en-390-recovery-valid.png",
+      "sha256": "0a7f47dfe6b40098c108ba26c8c57211b5a4dda551f52836623c606c56274e5f",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:11.919Z",
+      "result": "PASS",
+      "filename": "en-768-recovery-valid.png",
+      "sha256": "dcf4a82470442d05c48a68076172bf4cd6ad55afdc6738c9d425a053708a5ce5",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:12.448Z",
+      "result": "PASS",
+      "filename": "en-1280-recovery-valid.png",
+      "sha256": "c97b595b2eee3f515edfd061f9ac33cff776bc4e865cccd0c85f9ce0991e8327",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-valid",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:12.968Z",
+      "result": "PASS",
+      "filename": "en-1440-recovery-valid.png",
+      "sha256": "36dcd9ad8754fe13ab85f2bdc7bf2dcfcad60b7ed0a658e157f192b38e1b164d",
+      "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:29.850Z",
+      "result": "PASS",
+      "filename": "ar-360-recovery-invalid.png",
+      "sha256": "4db60ab658a1b8b19ec9a46e6b9faddd90101b30f3cb2acf41113a5ac0aac9de",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:30.384Z",
+      "result": "PASS",
+      "filename": "ar-390-recovery-invalid.png",
+      "sha256": "cf01e2cdd3e1d01c4e3accc172af0ef2d998116823df4ab3e2564f97705bf946",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:31.063Z",
+      "result": "PASS",
+      "filename": "ar-768-recovery-invalid.png",
+      "sha256": "55bcf74eb9e58bfbf5e7bcf76b5dedfef9719532f34e6d85ec73316e4465ae54",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:31.744Z",
+      "result": "PASS",
+      "filename": "ar-1280-recovery-invalid.png",
+      "sha256": "f988907eb968e84091efd9a2059731943ef9dddad83eb78d33b80ce7763cf0ed",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:46:32.428Z",
+      "result": "PASS",
+      "filename": "ar-1440-recovery-invalid.png",
+      "sha256": "a9f90d60dfd6cf0c4831e2eaa173d4c112e85b2c610216426d45c89173be8dcc",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:14.513Z",
+      "result": "PASS",
+      "filename": "en-360-recovery-invalid.png",
+      "sha256": "b513b5606701aef25b8803d0c72a0beba9133886638b2d636b2580733be2ff46",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:15.034Z",
+      "result": "PASS",
+      "filename": "en-390-recovery-invalid.png",
+      "sha256": "f0dab76dbc692c13e83bb873d3a13708e3f41cf648db2ba3912034619cf42c7c",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:15.556Z",
+      "result": "PASS",
+      "filename": "en-768-recovery-invalid.png",
+      "sha256": "ab951c34d1cc534b2639c06894a9127079c3236f0cdca80319d2cb27d074cdb9",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:16.105Z",
+      "result": "PASS",
+      "filename": "en-1280-recovery-invalid.png",
+      "sha256": "94755c5d2a4b27427b2884627764e4935b3cc9f07553eaf482d969706d741b93",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "recovery-invalid",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:47:16.658Z",
+      "result": "PASS",
+      "filename": "en-1440-recovery-invalid.png",
+      "sha256": "9d3e4aa50094641cd801fcbae79396b08072a84ada2802d82db9b01fc2cc1dae",
+      "fixtureReference": null,
+      "overflow": false,
+      "axeViolations": 0,
+      "keyboardFocus": true,
+      "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:14.514Z",
+      "result": "PASS",
+      "filename": "ar-360-profile-incomplete.png",
+      "sha256": "4e677f07f292a0de317c58091586faaa4add48da8854eeb3c97034e1c431fbe7",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:15.070Z",
+      "result": "PASS",
+      "filename": "ar-390-profile-incomplete.png",
+      "sha256": "97f397aefd8b3366b37f52bca0827e89498d65b13301e3bef1bfe7559b3bd3dd",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:15.671Z",
+      "result": "PASS",
+      "filename": "ar-768-profile-incomplete.png",
+      "sha256": "b329314d439a994a447a2189d616d89f42f0f89d908bdd3ef2bf40c077331fac",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:16.259Z",
+      "result": "PASS",
+      "filename": "ar-1280-profile-incomplete.png",
+      "sha256": "d7e8c77f0901f32ebefa0907202ff5fee5580c11d17120b1dea4a8a5e42ae2e0",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:16.815Z",
+      "result": "PASS",
+      "filename": "ar-1440-profile-incomplete.png",
+      "sha256": "9d616a44031bb5cc09e81553d897c7d8bcf052f4822b0beb69e82979c0c32520",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:26.069Z",
+      "result": "PASS",
+      "filename": "en-360-profile-incomplete.png",
+      "sha256": "2b1a674a3e84767b5263e4e934b2251ebd9b2b32cd912b08bece5687ca9c1171",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:26.634Z",
+      "result": "PASS",
+      "filename": "en-390-profile-incomplete.png",
+      "sha256": "67fa45501d33315faba179100966aa0b107626b142db79ad2a564890b0a3a0a9",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:27.231Z",
+      "result": "PASS",
+      "filename": "en-768-profile-incomplete.png",
+      "sha256": "b2ba9e3196995674c5a979b51cc2fbf62a36e703b93b10ec16d4cf6e11f1f352",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:27.826Z",
+      "result": "PASS",
+      "filename": "en-1280-profile-incomplete.png",
+      "sha256": "fcb316cd4df4271e001d7e30263897c0d7d39c2e63537202ea47e621b91f5ffd",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-incomplete",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:28.455Z",
+      "result": "PASS",
+      "filename": "en-1440-profile-incomplete.png",
+      "sha256": "50dd5796269fde557eb83e4df09b08ce639244f0f7da371c74e565aeaade6b9f",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:21.175Z",
+      "result": "PASS",
+      "filename": "ar-360-profile-validation.png",
+      "sha256": "46cbb097a5300c75641516a39b22bf1d75eef8d08e522339f33f8708828917c7",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:21.806Z",
+      "result": "PASS",
+      "filename": "ar-390-profile-validation.png",
+      "sha256": "e5908ae2151fb002f7c90e5b965e7c0a8132b65dcfd8c5a5cbf75817854e19a8",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:22.311Z",
+      "result": "PASS",
+      "filename": "ar-768-profile-validation.png",
+      "sha256": "b253e45e97427ceb97d34ee76726cd6152ed6f57f0457c3ee94d9581846a3429",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:22.946Z",
+      "result": "PASS",
+      "filename": "ar-1280-profile-validation.png",
+      "sha256": "2bea4ba4f0db9811bef055a25730ff2c63009ae756fe65f89a6db97c3faee1be",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:23.505Z",
+      "result": "PASS",
+      "filename": "ar-1440-profile-validation.png",
+      "sha256": "c32d3c2c141029b3229d9a3d913aced0423ea02fd6920b7f77fe7fa50ee5b84c",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:32.922Z",
+      "result": "PASS",
+      "filename": "en-360-profile-validation.png",
+      "sha256": "6c2b5bfb266f6c3f3243b691abdc23d1a74d2a3896ad8967af7d7d9a129d821e",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:33.421Z",
+      "result": "PASS",
+      "filename": "en-390-profile-validation.png",
+      "sha256": "103c8a9f0652479a8e7a28e4fe9c5b0a6161a8303500a05667a5b866d48c7b63",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:33.939Z",
+      "result": "PASS",
+      "filename": "en-768-profile-validation.png",
+      "sha256": "b50fbc0889e54863559bfa483801a53e63647d2c25868fe35149b98939ba958f",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:34.516Z",
+      "result": "PASS",
+      "filename": "en-1280-profile-validation.png",
+      "sha256": "3053de3fe13bc17391194341970221bde055d155ba0a9be6e83795e128463966",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:35.085Z",
+      "result": "PASS",
+      "filename": "en-1440-profile-validation.png",
+      "sha256": "f518ed3d32b4e00f5f9d3e21e6d6a94455e2f8804269d27787a5d380ed4b9d58",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:40.256Z",
+      "result": "PASS",
+      "filename": "ar-360-profile-success.png",
+      "sha256": "5b61cd00860eb833315ad56f43b025f743f7adb8f7ae858d0275b13f49a3adea",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:40.776Z",
+      "result": "PASS",
+      "filename": "ar-390-profile-success.png",
+      "sha256": "2a09a404caca6df959c8338c05f62168d0dfc6fc5551286c36f4ab0ef72d8942",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:41.331Z",
+      "result": "PASS",
+      "filename": "ar-768-profile-success.png",
+      "sha256": "6707431d9c96b0cf288be20ee2f64fbf5a012a33fddc5638a8465bbebc9e5e5c",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:41.930Z",
+      "result": "PASS",
+      "filename": "ar-1280-profile-success.png",
+      "sha256": "47501168ecada7dd2bd83efb0de6f51e64253968e61d1f57635c181f73d77c21",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:42.500Z",
+      "result": "PASS",
+      "filename": "ar-1440-profile-success.png",
+      "sha256": "e7ecb4903e0469748b8186127727d221fc9d02be0ed5654ba1b55dc1c0fd01d7",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:00.801Z",
+      "result": "PASS",
+      "filename": "en-360-profile-success.png",
+      "sha256": "3e9a76e9c654c24a4b5974f787b0d152fac2abc682675cf85edbd380ef8955ec",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:01.393Z",
+      "result": "PASS",
+      "filename": "en-390-profile-success.png",
+      "sha256": "123d06006b7ef941a838ea6660a1b986b9c2dcfc119701d236d5c5bcb61f881a",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:01.998Z",
+      "result": "PASS",
+      "filename": "en-768-profile-success.png",
+      "sha256": "7e7f85989080edf9a3068c6b48cae3b55032f7113c5f20d2baafe266e3da2814",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:02.583Z",
+      "result": "PASS",
+      "filename": "en-1280-profile-success.png",
+      "sha256": "bf0300320faa8ea5b9d7425c80502b15e2d11c397c15d8f70a1d455abab1b1df",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "profile-success",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:03.173Z",
+      "result": "PASS",
+      "filename": "en-1440-profile-success.png",
+      "sha256": "cb3d7b54221392c4aa572590d9151692dc8ca0f4ff225aaf621aeba117f837c2",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:28.857Z",
+      "result": "PASS",
+      "filename": "ar-360-request-loading.png",
+      "sha256": "7065fc679a3e311b896f35dc70ea77232f69e0e7728fe0a47335b12e971a52f6",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:29.401Z",
+      "result": "PASS",
+      "filename": "ar-390-request-loading.png",
+      "sha256": "7a24e655e1ee65f916cddd9295bc5280f58befb3b4c3dbe5438d59ca86521b3b",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:29.940Z",
+      "result": "PASS",
+      "filename": "ar-768-request-loading.png",
+      "sha256": "92b9530e83dc4090ba84c9cb7cf655b936127e802dca7baaac006098b1d27980",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:30.556Z",
+      "result": "PASS",
+      "filename": "ar-1280-request-loading.png",
+      "sha256": "344b8026c9565879bfd1669cee28ff123b0bef90b9146cb9e2e11e141ff0ab5e",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:31.160Z",
+      "result": "PASS",
+      "filename": "ar-1440-request-loading.png",
+      "sha256": "51873d41cf2749186e7ce5db5d5159c45a51109ae83dd52ae6e5d8109ef305b0",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:37.943Z",
+      "result": "PASS",
+      "filename": "en-360-request-loading.png",
+      "sha256": "8674e13b75ee8e07af4713bbcfc4958e6aaa096273496da980246dd5f098e596",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:38.367Z",
+      "result": "PASS",
+      "filename": "en-390-request-loading.png",
+      "sha256": "1a0f7a43085c5f8b1a0890468d3cbdd6ee1ca9a2714389fd8c4344a1c3b9d7e9",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:38.859Z",
+      "result": "PASS",
+      "filename": "en-768-request-loading.png",
+      "sha256": "709381e837903810102105da045f2f9e4d0fed62a7f97a467f7d08ced2102295",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:39.462Z",
+      "result": "PASS",
+      "filename": "en-1280-request-loading.png",
+      "sha256": "bca27eb490571d295811c7757613e89d9e93c28e80a9b302e5b43496b6680315",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:40.046Z",
+      "result": "PASS",
+      "filename": "en-1440-request-loading.png",
+      "sha256": "1bcc3ebbccca8020acaf7c7b9739bf0f103abf4d5d59e920a3abe7abe6d34499",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:33.167Z",
+      "result": "PASS",
+      "filename": "ar-360-request-validation.png",
+      "sha256": "885f4313897acf9ba4db1a3579294ef0414d412c415ad3b4b13f9a4620e3cecd",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:33.889Z",
+      "result": "PASS",
+      "filename": "ar-390-request-validation.png",
+      "sha256": "ac9dfe3c321da4bbd8b00f37a22a7eaa38b9d3dae8281f98f87473a60ba08cfa",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:34.596Z",
+      "result": "PASS",
+      "filename": "ar-768-request-validation.png",
+      "sha256": "17286116411e6feb713e8b2f335021e951f7e3e19bcf76ca1cb145eaeb9bd42b",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:35.352Z",
+      "result": "PASS",
+      "filename": "ar-1280-request-validation.png",
+      "sha256": "16a5b00be43c1d065531b908f85c810a66ad5ddee4ace70db74dec75efdfd6d0",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:36.128Z",
+      "result": "PASS",
+      "filename": "ar-1440-request-validation.png",
+      "sha256": "3a66d3eafd1d367cefe3c1eb043b79ca2a03fdb27fa320f2fa9df02916c5c8fb",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:39.309Z",
+      "result": "PASS",
+      "filename": "en-360-request-validation.png",
+      "sha256": "3dc265f2937f8df4acdd9e090b5355ebf6e32e4452510367579a00acdcbcac9a",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:40.029Z",
+      "result": "PASS",
+      "filename": "en-390-request-validation.png",
+      "sha256": "e53fbacc1fb927bd4538467533f7f5f2f2ac0e58a4afa5f89d1d89839522b7b1",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:40.756Z",
+      "result": "PASS",
+      "filename": "en-768-request-validation.png",
+      "sha256": "4e3d5db5d14b4a939cbe3bc8e02f45359bb66edec34330e7e4ca5a82b1f869dc",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:41.513Z",
+      "result": "PASS",
+      "filename": "en-1280-request-validation.png",
+      "sha256": "27af662da55b5c62662f06021c55c75d8afb66799bd8893490cfc7e9ebf96729",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-validation",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:02:42.300Z",
+      "result": "PASS",
+      "filename": "en-1440-request-validation.png",
+      "sha256": "70f02d4d5ca33488c9ea93525f4d5633f1fa10165b0690788cf97aa9d1e4b888",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:02.237Z",
+      "result": "PASS",
+      "filename": "ar-360-request-review.png",
+      "sha256": "3d27406bc42d294b4baff7c537ad1649e2a971ea1b25e0e1995655e2ea8c0efe",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:02.937Z",
+      "result": "PASS",
+      "filename": "ar-390-request-review.png",
+      "sha256": "66b391a7bbe2efb6d50bd950f613f7f8a74a8d4806702929b138cd28f29c1f6c",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:03.652Z",
+      "result": "PASS",
+      "filename": "ar-768-request-review.png",
+      "sha256": "45d6e60d56d7773fdc117994f8bf1e45b2c346bc34fac6b75696ce8565aabbf0",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:04.421Z",
+      "result": "PASS",
+      "filename": "ar-1280-request-review.png",
+      "sha256": "c5280555b2bc131e247b908b04ef599a9c2513dfd21cd8a71b2eccf7c54f5ee2",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:05.208Z",
+      "result": "PASS",
+      "filename": "ar-1440-request-review.png",
+      "sha256": "a5d1f887b8c774a1cde568e759c5a7cda59c4b374221aaf949c130a5e8707ecd",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:13.741Z",
+      "result": "PASS",
+      "filename": "en-360-request-review.png",
+      "sha256": "57c72b421c70661ae5e2c353929e4f1e2016dbaa13b08f792297782e6473df76",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:14.459Z",
+      "result": "PASS",
+      "filename": "en-390-request-review.png",
+      "sha256": "ae99aabc5c76cc053ea39354e806b7a9668ad0b3bd45cda11c8004f8c7c4becb",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:15.203Z",
+      "result": "PASS",
+      "filename": "en-768-request-review.png",
+      "sha256": "16155fbc4fc6d32362fc43585325975e6563d5c9b11b47f339a5996c96998834",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:16.015Z",
+      "result": "PASS",
+      "filename": "en-1280-request-review.png",
+      "sha256": "0d14f1d3aed616009bbf02d178d5a4b4b325dbbcdcabc44a4822177ceb079d4a",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "request-review",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:16.828Z",
+      "result": "PASS",
+      "filename": "en-1440-request-review.png",
+      "sha256": "fda789b455e648dd2ac9e1918340780b24a0b649ecae11a07aa9fc2878654395",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:24.211Z",
+      "result": "PASS",
+      "filename": "ar-360-account-loading.png",
+      "sha256": "4edfb5cfe2ecf26203eb317fde5c09095c37d86cb680fd62ded53f2acf8d7c99",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:24.790Z",
+      "result": "PASS",
+      "filename": "ar-390-account-loading.png",
+      "sha256": "830cfb372ce0ca6478c99c4e78599fa9d95f9bf67977b84e21e4be2d2fd27c3b",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:25.363Z",
+      "result": "PASS",
+      "filename": "ar-768-account-loading.png",
+      "sha256": "c82524123cbd4a7f2f17e7ce98384fe9bf314f0005c77a6b4957a33f60250a9f",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:25.933Z",
+      "result": "PASS",
+      "filename": "ar-1280-account-loading.png",
+      "sha256": "3e4e06b480a9c3fd397358ae5ca08ae9bc4d7092fc644a26d968742535b50c45",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:26.535Z",
+      "result": "PASS",
+      "filename": "ar-1440-account-loading.png",
+      "sha256": "7022dd7f65cc73cc136fb65b184c18f7fd2bb1b85c40fa902f84b0d1880eca6b",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:33.401Z",
+      "result": "PASS",
+      "filename": "en-360-account-loading.png",
+      "sha256": "93dee0b2491aacecee2770b9016108f7c07d90a80ebe4a13105806be702129f0",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:33.982Z",
+      "result": "PASS",
+      "filename": "en-390-account-loading.png",
+      "sha256": "f8c92a1120e1fe7c7add33784aa5845764ab4bef0291c6fd0f74eeeb37cb6427",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:34.533Z",
+      "result": "PASS",
+      "filename": "en-768-account-loading.png",
+      "sha256": "4e097013ed304ebe27736f21a6a9836ea55cc93a6821f4ecc3f2f77b52c713b4",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:35.138Z",
+      "result": "PASS",
+      "filename": "en-1280-account-loading.png",
+      "sha256": "1727fa0b1ac2d3cdf9cecf7e4eaa623e78f2860a7a1fef8edab17dbbd290d81b",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:35.742Z",
+      "result": "PASS",
+      "filename": "en-1440-account-loading.png",
+      "sha256": "e8c43f187dcee153951df810cf6cfcacf8ddddc569cff4e090045a9b67b0c870",
+      "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:45.455Z",
+      "result": "PASS",
+      "filename": "ar-360-account-empty.png",
+      "sha256": "c062ee7ef5882da13e1678c2e58ce42acfff4e09611616c2afe4973409fbae62",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:45.960Z",
+      "result": "PASS",
+      "filename": "ar-390-account-empty.png",
+      "sha256": "34283a52f9532a04b96a30623a4f1cbc6c8965e4df28bb48b8421c982d207eb4",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:46.496Z",
+      "result": "PASS",
+      "filename": "ar-768-account-empty.png",
+      "sha256": "23d8cd5704b299323a2cd23c3bc99246f72f080253c4b7969cb383ad59bc73a1",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:47.075Z",
+      "result": "PASS",
+      "filename": "ar-1280-account-empty.png",
+      "sha256": "fc98e8259cf2080c24a3347159c64cf413c420309633c2c0d9c1aabea048ba1c",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:53:47.646Z",
+      "result": "PASS",
+      "filename": "ar-1440-account-empty.png",
+      "sha256": "88a4b72e540aaf137b2b076700aca02b041d98736120560c038ff5f9ab354a7d",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:06.138Z",
+      "result": "PASS",
+      "filename": "en-360-account-empty.png",
+      "sha256": "ebcb399d7974e5de18b8914c380b16638ae80c58eb0757bfb9292c1ca5c06908",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:06.689Z",
+      "result": "PASS",
+      "filename": "en-390-account-empty.png",
+      "sha256": "0825f1ddce14f959f30482b2789d320b18b49ee1b23406179518c916f01341bf",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:07.228Z",
+      "result": "PASS",
+      "filename": "en-768-account-empty.png",
+      "sha256": "375f4fb3dd4ccf1cec0856422ac475605e23222771cf1d3b87b50c78750f7f48",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:07.813Z",
+      "result": "PASS",
+      "filename": "en-1280-account-empty.png",
+      "sha256": "24e46aa7476a40d9671314948a79afb0d8734bb98bcab3df65f29221f08b12ff",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-empty",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T14:54:08.406Z",
+      "result": "PASS",
+      "filename": "en-1440-account-empty.png",
+      "sha256": "f2c4926d16a0db566445e6ad82544f10be9b7e6ac18c9fe48242ad02476c7eb4",
+      "fixtureReference": "run-ledger:customer",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:08.186Z",
+      "result": "PASS",
+      "filename": "ar-360-account-success.png",
+      "sha256": "09d70a0098babe392e58e1f746040b64a03b4c8d8c1599ca4f7e3c2cc2c5c1f4",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:08.702Z",
+      "result": "PASS",
+      "filename": "ar-390-account-success.png",
+      "sha256": "536c9ded6b3b9c83932ae0d07a55831a2026bc2e639ea28f24182b4078782415",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:09.228Z",
+      "result": "PASS",
+      "filename": "ar-768-account-success.png",
+      "sha256": "21403b2957141819c924e1649710dca9f071e5618656e8fbb89e4f420f907a77",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:09.827Z",
+      "result": "PASS",
+      "filename": "ar-1280-account-success.png",
+      "sha256": "b9eff44a34948057e39b9999702d44765449916975d8ecf63b110d97f9337042",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:10.416Z",
+      "result": "PASS",
+      "filename": "ar-1440-account-success.png",
+      "sha256": "3ccabe319d0bd8427e2b63f405d609cd4a189277d0825793fd6c9737cba54e0a",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:20.115Z",
+      "result": "PASS",
+      "filename": "en-360-account-success.png",
+      "sha256": "33c8c9e25d41ed6eb40a03d5e6d632faf345b8924b004910235a78d311a7cf19",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:20.672Z",
+      "result": "PASS",
+      "filename": "en-390-account-success.png",
+      "sha256": "712cf28a20af5c4ba31198df1df9c8388bb1d2e6fddb5dd55291237030e3b2a4",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:21.231Z",
+      "result": "PASS",
+      "filename": "en-768-account-success.png",
+      "sha256": "d003c90fe172387d3bd7a3d319fa6bbc0bbfbc4418480175d326e3d8c26b278d",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:21.831Z",
+      "result": "PASS",
+      "filename": "en-1280-account-success.png",
+      "sha256": "75bf6e58d51f1c9ed3a172771adf498d9f232e1765d1840c1cc9af5b067f11b4",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "account-success",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T15:03:22.458Z",
+      "result": "PASS",
+      "filename": "en-1440-account-success.png",
+      "sha256": "e86cb8738f440eb0d395cf4a82d5c37c934c8d3fcc84eabd56c02de3272586d4",
+      "fixtureReference": "run-ledger:customer-draft",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:56.447Z",
+      "result": "PASS",
+      "filename": "ar-360-quote-loading.png",
+      "sha256": "b3e2276a7b5f5497750860a7fd04032e56f4d89c7b51055a1113bb5b1b7e3704",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:57.046Z",
+      "result": "PASS",
+      "filename": "ar-390-quote-loading.png",
+      "sha256": "8be7b404366c77a2615abfd2ea710b2447dc9984cb6f1a41ad9da2187c2fcc63",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:57.630Z",
+      "result": "PASS",
+      "filename": "ar-768-quote-loading.png",
+      "sha256": "ea808fcd2eb4c71043f8b3ce59bf1f6142855d11d10a4b0fa48d81751f5816da",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:58.255Z",
+      "result": "PASS",
+      "filename": "ar-1280-quote-loading.png",
+      "sha256": "1ee706d4a61d4a88c8216682b51d325b61de173de0ee65efef87cb79cd4bd96f",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:58.895Z",
+      "result": "PASS",
+      "filename": "ar-1440-quote-loading.png",
+      "sha256": "7a48f20635488a45ba92ddec221c60ac68958508e7ce45a1ad2b07729a3dc19a",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:00.395Z",
+      "result": "PASS",
+      "filename": "en-360-quote-loading.png",
+      "sha256": "bc0f5b4d9ab398584e91cacb4ec85b5ebf35fa343c1bb24d1d0cf6d652717bcf",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:00.881Z",
+      "result": "PASS",
+      "filename": "en-390-quote-loading.png",
+      "sha256": "d03ba987a3c3ff9d3318ab03c4f486001b2cf65bb895091925582a9ab8b528a5",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:01.457Z",
+      "result": "PASS",
+      "filename": "en-768-quote-loading.png",
+      "sha256": "2ac7be6b72e19e6dd8053deefc70a734c0b765d84c2b2bfcbef0e98cbed308cf",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:02.121Z",
+      "result": "PASS",
+      "filename": "en-1280-quote-loading.png",
+      "sha256": "13a002085e20f9905e92f56518be9ca5b864dc4966189ff259635b7e5efaa729",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:02.828Z",
+      "result": "PASS",
+      "filename": "en-1440-quote-loading.png",
+      "sha256": "ae937e18033fa31bf04197016cd7833fab9d8979ac95d9a276c73bbe6b692040",
+      "fixtureReference": "run-ledger:EG-guest-quote; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:47.483Z",
+      "result": "PASS",
+      "filename": "ar-360-quote-final.png",
+      "sha256": "e9fe04c287162785d451af4e20c6447c213e5a5a000ae97aed1c821876f2a229",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:48.062Z",
+      "result": "PASS",
+      "filename": "ar-390-quote-final.png",
+      "sha256": "963161fe8f599f549f364adb08c3aacd46dad9e826415551842a96b92436df09",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:48.657Z",
+      "result": "PASS",
+      "filename": "ar-768-quote-final.png",
+      "sha256": "352bb90a92410bc6f7bba9ec258bdd1cfea85b43fc2ec3dcc315afd26b5b6ba5",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:49.286Z",
+      "result": "PASS",
+      "filename": "ar-1280-quote-final.png",
+      "sha256": "d0510360beb1719b79575366f90f151c0fcbc6a95d59eacec2c4ce1bd0db932b",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:49.947Z",
+      "result": "PASS",
+      "filename": "ar-1440-quote-final.png",
+      "sha256": "b9bbc6ec1ba91ba128c26f0b883cd72fc0f86e2bd4a2a33cc14be78237bc258f",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:51.765Z",
+      "result": "PASS",
+      "filename": "en-360-quote-final.png",
+      "sha256": "b8e0c04e9175933ffa061e1fd036be99070b152f900df032fba3557cf57fde20",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:52.346Z",
+      "result": "PASS",
+      "filename": "en-390-quote-final.png",
+      "sha256": "555faea4b1e7e29dd806bda53b48a9bd2fe0e3787e212abf99874bc7f89da342",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:52.945Z",
+      "result": "PASS",
+      "filename": "en-768-quote-final.png",
+      "sha256": "da3e5e2e619be7f757c1cbb9d77e641b67df8938b8191ed782ced797adb603f0",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:53.565Z",
+      "result": "PASS",
+      "filename": "en-1280-quote-final.png",
+      "sha256": "47502eed8212c4bafaef490e55662d1791541ed94447737a205f922050d2f2e2",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-final",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:50:54.170Z",
+      "result": "PASS",
+      "filename": "en-1440-quote-final.png",
+      "sha256": "c0d830843b74e65d4807ecb55888e7a7a7d6721db09d1509fcd277cf280de9df",
+      "fixtureReference": "run-ledger:EG-guest-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:12.684Z",
+      "result": "PASS",
+      "filename": "ar-360-quote-rejected-expired-error.png",
+      "sha256": "206d55e6377a79e3d97a6589ac61139b3bd551ccaff63995352bdb5af622cac5",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:13.302Z",
+      "result": "PASS",
+      "filename": "ar-390-quote-rejected-expired-error.png",
+      "sha256": "beaa1acb46453a49511e21f45d546e33af3c7111d8b118fdfd9e4946f0e90135",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:13.978Z",
+      "result": "PASS",
+      "filename": "ar-768-quote-rejected-expired-error.png",
+      "sha256": "a04f3e85231a53976de17abb67dee98182e80e42bf64eee6e1a20efd18af36ae",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:14.661Z",
+      "result": "PASS",
+      "filename": "ar-1280-quote-rejected-expired-error.png",
+      "sha256": "e1917e71e43a87bda346446ab73034ff5d1f97c35561805babd1f9f493678946",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:15.281Z",
+      "result": "PASS",
+      "filename": "ar-1440-quote-rejected-expired-error.png",
+      "sha256": "4d709dcef14236e483ca0adef09c389ba0acc86b94d084937cfc848290dee2c6",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:17.800Z",
+      "result": "PASS",
+      "filename": "en-360-quote-rejected-expired-error.png",
+      "sha256": "33b9f85eb0ec737214e48a1d4177049ab3811bdc4e1ea26692963599a1526733",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:18.365Z",
+      "result": "PASS",
+      "filename": "en-390-quote-rejected-expired-error.png",
+      "sha256": "dbbe2b3b1e1c92debf8f1cd361042cc4f1a594619a0949b9cff32d6886758850",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:18.954Z",
+      "result": "PASS",
+      "filename": "en-768-quote-rejected-expired-error.png",
+      "sha256": "c49cd7e4ed7c672be4442435fb89438a31ef16507da717bf941dd9406bc65050",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:19.577Z",
+      "result": "PASS",
+      "filename": "en-1280-quote-rejected-expired-error.png",
+      "sha256": "33b98ad5612090657544f932d5f829057f6e46334a14c7a54e455d600a79af75",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "quote-rejected-expired-error",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:53:20.180Z",
+      "result": "PASS",
+      "filename": "en-1440-quote-rejected-expired-error.png",
+      "sha256": "bc7c67c12c5cfded8e4d0c7661b997169a42df730f643cf97617210d380ac3cc",
+      "fixtureReference": "run-ledger:SA-rejected-quote",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:08.785Z",
+      "result": "PASS",
+      "filename": "ar-360-checkout-method.png",
+      "sha256": "b569125db05ab76f88a3e338138fae1abf955f215b3da61c91ec6998590bf5c0",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:09.347Z",
+      "result": "PASS",
+      "filename": "ar-390-checkout-method.png",
+      "sha256": "6c8b63f535be250dae857cf9bfd40219d3c47439916559358140b65f4eb5e13a",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:09.904Z",
+      "result": "PASS",
+      "filename": "ar-768-checkout-method.png",
+      "sha256": "44e02f4b0041b7f1e1d25a3c1fd1986a074e77b772b8cc7fe81f6597847b4e3a",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:10.565Z",
+      "result": "PASS",
+      "filename": "ar-1280-checkout-method.png",
+      "sha256": "23a45711258c18b05a4bbbe58fd160be9f9cac60cae1c83397d7188c1bdf24a1",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:11.124Z",
+      "result": "PASS",
+      "filename": "ar-1440-checkout-method.png",
+      "sha256": "985fea54c8759bece7eafd7383e67694947df9d54b9c89add7c61c73fd3a34fd",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:12.781Z",
+      "result": "PASS",
+      "filename": "en-360-checkout-method.png",
+      "sha256": "5992c307af59edb4b14fa1dc96e54a387611e766e50e57de0a8edeedc8025dd1",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:13.341Z",
+      "result": "PASS",
+      "filename": "en-390-checkout-method.png",
+      "sha256": "5128908f840bf925b779e064c6157ea2697167c954cb9645c9e79c5128ce2fed",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:14.005Z",
+      "result": "PASS",
+      "filename": "en-768-checkout-method.png",
+      "sha256": "6b1416560f3b29fbf2fa5d9e71b56bf02d91efc85cdcf2bfc403027018fcdd1d",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:14.634Z",
+      "result": "PASS",
+      "filename": "en-1280-checkout-method.png",
+      "sha256": "e46c39b3ffc4ab8656e5bb12c74b2fd9b2164db9ce5fa63fd2db88f02cacc962",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-method",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:15.275Z",
+      "result": "PASS",
+      "filename": "en-1440-checkout-method.png",
+      "sha256": "05df3df49be1cf452f2aa483f9f79deda8aa9a53fc3da606123213199ef6a46d",
+      "fixtureReference": "run-ledger:EG-guest-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:22.619Z",
+      "result": "PASS",
+      "filename": "ar-360-checkout-proof-pending.png",
+      "sha256": "c66bcdb4df1618c76cb54ba88dde5395e71b24e1af3c1207b696e3e551708330",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:23.139Z",
+      "result": "PASS",
+      "filename": "ar-390-checkout-proof-pending.png",
+      "sha256": "93422d8c70443be4ced2cc3e21478480dec85ec53f6c18aa8b1edd95622ba2dd",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:23.698Z",
+      "result": "PASS",
+      "filename": "ar-768-checkout-proof-pending.png",
+      "sha256": "8e5a47b4a727308bf4a813c20e200c5ec97fffb2b73c6ca6a6c3e0fe8e986e70",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:24.303Z",
+      "result": "PASS",
+      "filename": "ar-1280-checkout-proof-pending.png",
+      "sha256": "85728c24bda8a03c0c2b34f16810071733bf1e1a5d0411ee2251127c50dd7172",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:24.892Z",
+      "result": "PASS",
+      "filename": "ar-1440-checkout-proof-pending.png",
+      "sha256": "b892464ce0fdca83ce5da3a82d4043e26662b9642eb4ed380d407790710a9f30",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:26.595Z",
+      "result": "PASS",
+      "filename": "en-360-checkout-proof-pending.png",
+      "sha256": "afa85d22a2c973d925a3f77988ded4d592fdf55b3741a16cbbf1a6dd9c415b98",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:27.172Z",
+      "result": "PASS",
+      "filename": "en-390-checkout-proof-pending.png",
+      "sha256": "23a9f054767b22b9ceca82646eb1032ecab8f42644f87b3cfecaea6106ebb237",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:27.820Z",
+      "result": "PASS",
+      "filename": "en-768-checkout-proof-pending.png",
+      "sha256": "504afda3d9c76eda3bdbfee73269d7dce2d40a2078f0eda216a805f7983c5107",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:28.481Z",
+      "result": "PASS",
+      "filename": "en-1280-checkout-proof-pending.png",
+      "sha256": "26008e01b2548548d7b08056253ab20fe4892577aeb20c255c0606e0a20668e5",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-pending",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:29.127Z",
+      "result": "PASS",
+      "filename": "en-1440-checkout-proof-pending.png",
+      "sha256": "6f85480472e7a033a3802d0fa504f3db7ac2dceb20714506d1dd98a5a94cb79a",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:49.743Z",
+      "result": "PASS",
+      "filename": "ar-360-checkout-proof-retry.png",
+      "sha256": "2d25c6698a007f45655cdbd118def44bcb160260335e93fb8054aa1b64bb9689",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:50.305Z",
+      "result": "PASS",
+      "filename": "ar-390-checkout-proof-retry.png",
+      "sha256": "2b17aad4231cb540bdf6a1a6dbc4f56fe8dee99f80ea615a78525ecd547ac9f4",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:50.925Z",
+      "result": "PASS",
+      "filename": "ar-768-checkout-proof-retry.png",
+      "sha256": "fa9bc1558eaf5978134436ca53f7abe84020bf3eda8cbd8b8eb69b9461d2df79",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:51.571Z",
+      "result": "PASS",
+      "filename": "ar-1280-checkout-proof-retry.png",
+      "sha256": "5540e3dd2a5b540f6220bc24e83a5a44e550b9969e1b110616692cf66f01a74b",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:52.166Z",
+      "result": "PASS",
+      "filename": "ar-1440-checkout-proof-retry.png",
+      "sha256": "dbd496e526c8ed1fe9285c4ee611924b15604673cbaa08b650fb5f3c009bd70d",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:53.997Z",
+      "result": "PASS",
+      "filename": "en-360-checkout-proof-retry.png",
+      "sha256": "fd9d2fd03e0502cc8ba8eaeb90af720d9f3b6feacb6cabf01c62a7154653d0c0",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:54.557Z",
+      "result": "PASS",
+      "filename": "en-390-checkout-proof-retry.png",
+      "sha256": "890462259ec61bd357403d0e0763d65a8beb8721de4f6d0293fc93520637f74c",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:55.210Z",
+      "result": "PASS",
+      "filename": "en-768-checkout-proof-retry.png",
+      "sha256": "23bca0636dd9bb6e8b7b26b77e55168decf87dd1ea169e364770994cf44d51a5",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:55.885Z",
+      "result": "PASS",
+      "filename": "en-1280-checkout-proof-retry.png",
+      "sha256": "6053bf0f46fcb3add1698ffbab58a7ac4a9cf3eb4b58aeb9efc9a35b95938b42",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-proof-retry",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-10T21:51:56.610Z",
+      "result": "PASS",
+      "filename": "en-1440-checkout-proof-retry.png",
+      "sha256": "0d8c838fa711bf96e6628875fdb143cd5d15fee798ee8a383eeec67584938d59",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:52.239Z",
+      "result": "PASS",
+      "filename": "ar-360-checkout-confirmed.png",
+      "sha256": "5aa99b5ba0e8614859dc5e899550a40c7a33c60e90e87378ad403ba70c6dabfa",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:52.818Z",
+      "result": "PASS",
+      "filename": "ar-390-checkout-confirmed.png",
+      "sha256": "7f61dbbba0e38b144ef5cad2a2f7f7ae88e0157604706caafd0bcb94621b4462",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:53.470Z",
+      "result": "PASS",
+      "filename": "ar-768-checkout-confirmed.png",
+      "sha256": "8eb869fdb1f730aeed03b08cc8beed99479c7c71ad7c924b2d17953e949ada1b",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:54.138Z",
+      "result": "PASS",
+      "filename": "ar-1280-checkout-confirmed.png",
+      "sha256": "c88518713429c8222b1594ae7404716307ca0ec1bf9dbbcccc883cc2bca4d8ec",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:54.799Z",
+      "result": "PASS",
+      "filename": "ar-1440-checkout-confirmed.png",
+      "sha256": "af3749254c2829c7ff5030cb39d7e13af2f4ebc4f23628b3cebc4acc9b70f9f0",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:56.496Z",
+      "result": "PASS",
+      "filename": "en-360-checkout-confirmed.png",
+      "sha256": "d841e062de4e481a386929e41c40339e32a2f511a25887fade347754c3262795",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:57.101Z",
+      "result": "PASS",
+      "filename": "en-390-checkout-confirmed.png",
+      "sha256": "d12b555ebcaefc8e7ad2eb359c1e981e1f65fed798a39f5cfb0b07c8b88e20b6",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:57.692Z",
+      "result": "PASS",
+      "filename": "en-768-checkout-confirmed.png",
+      "sha256": "082a917b6e01a5355696b1e8a1ae5f3c3eaaf608de847f7255ba8387dc5161a6",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:58.448Z",
+      "result": "PASS",
+      "filename": "en-1280-checkout-confirmed.png",
+      "sha256": "8729b25bb2309211b6ee1477f31dfbe58989a81ee3767175b0bd7070ded3404d",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "checkout-confirmed",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:42:59.092Z",
+      "result": "PASS",
+      "filename": "en-1440-checkout-confirmed.png",
+      "sha256": "4488d346c1222b283ad36a4e3a8c76cd8cb778ceb421cec189e3988ac97147f5",
+      "fixtureReference": "run-ledger:EG-proof",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:52.775Z",
+      "result": "PASS",
+      "filename": "ar-360-tracking-loading.png",
+      "sha256": "a659daef7fcb970bd1eb26016475bb08da36a2a90adcda2e7fd0cb13814d8e6e",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:53.517Z",
+      "result": "PASS",
+      "filename": "ar-390-tracking-loading.png",
+      "sha256": "606eaed7ff85abe5ae89115782935a69d7a599f8e2e99f9c850cc1dac9c40f8d",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:54.466Z",
+      "result": "PASS",
+      "filename": "ar-768-tracking-loading.png",
+      "sha256": "20b54eb92d7dcf58d23aab5fe507a498ec0ca849a0d8e78aff8893f2c426ad4d",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:55.113Z",
+      "result": "PASS",
+      "filename": "ar-1280-tracking-loading.png",
+      "sha256": "fc86db7b589119db991401e75965a1ca93051df0ffc4bb899b9d49cf64f92d5b",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:55.740Z",
+      "result": "PASS",
+      "filename": "ar-1440-tracking-loading.png",
+      "sha256": "9652285b8bd8f9776e3c5675388d98d82d706c663234f6ae3a9b78c6a9b09508",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:57.796Z",
+      "result": "PASS",
+      "filename": "en-360-tracking-loading.png",
+      "sha256": "74e6201d04546264f1910f1a673f0635a8bbf342cfb24da6db300acb62083c8b",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:58.330Z",
+      "result": "PASS",
+      "filename": "en-390-tracking-loading.png",
+      "sha256": "c7600ce69dd4a6b50f0e185b169a58f9218e67a0a2e4d803c6bd30fad3feee29",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:58.919Z",
+      "result": "PASS",
+      "filename": "en-768-tracking-loading.png",
+      "sha256": "43abe5712fcfea0d1bfdf4f8235376cf4db91a773adc39e9f32f3c7bda5cd882",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:59.517Z",
+      "result": "PASS",
+      "filename": "en-1280-tracking-loading.png",
+      "sha256": "3296a6aa742eac107abcb2f4a4f3c7dae2913676614a90bb20441071355c5fb9",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-loading",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:48:00.214Z",
+      "result": "PASS",
+      "filename": "en-1440-tracking-loading.png",
+      "sha256": "50cb2ca34b0ed21c137b27979b0958cd84484cdc10966abf1716b24422496aba",
+      "fixtureReference": "run-ledger:SA-order; delayed scripts",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:43.371Z",
+      "result": "PASS",
+      "filename": "ar-360-tracking-active.png",
+      "sha256": "a659daef7fcb970bd1eb26016475bb08da36a2a90adcda2e7fd0cb13814d8e6e",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:43.973Z",
+      "result": "PASS",
+      "filename": "ar-390-tracking-active.png",
+      "sha256": "606eaed7ff85abe5ae89115782935a69d7a599f8e2e99f9c850cc1dac9c40f8d",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:44.613Z",
+      "result": "PASS",
+      "filename": "ar-768-tracking-active.png",
+      "sha256": "20b54eb92d7dcf58d23aab5fe507a498ec0ca849a0d8e78aff8893f2c426ad4d",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:45.293Z",
+      "result": "PASS",
+      "filename": "ar-1280-tracking-active.png",
+      "sha256": "fc86db7b589119db991401e75965a1ca93051df0ffc4bb899b9d49cf64f92d5b",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:45.959Z",
+      "result": "PASS",
+      "filename": "ar-1440-tracking-active.png",
+      "sha256": "9652285b8bd8f9776e3c5675388d98d82d706c663234f6ae3a9b78c6a9b09508",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:47.783Z",
+      "result": "PASS",
+      "filename": "en-360-tracking-active.png",
+      "sha256": "74e6201d04546264f1910f1a673f0635a8bbf342cfb24da6db300acb62083c8b",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:48.382Z",
+      "result": "PASS",
+      "filename": "en-390-tracking-active.png",
+      "sha256": "c7600ce69dd4a6b50f0e185b169a58f9218e67a0a2e4d803c6bd30fad3feee29",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:49.033Z",
+      "result": "PASS",
+      "filename": "en-768-tracking-active.png",
+      "sha256": "43abe5712fcfea0d1bfdf4f8235376cf4db91a773adc39e9f32f3c7bda5cd882",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:49.687Z",
+      "result": "PASS",
+      "filename": "en-1280-tracking-active.png",
+      "sha256": "3296a6aa742eac107abcb2f4a4f3c7dae2913676614a90bb20441071355c5fb9",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-active",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:47:50.338Z",
+      "result": "PASS",
+      "filename": "en-1440-tracking-active.png",
+      "sha256": "50cb2ca34b0ed21c137b27979b0958cd84484cdc10966abf1716b24422496aba",
+      "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:12.560Z",
+      "result": "PASS",
+      "filename": "ar-360-tracking-completed.png",
+      "sha256": "96c36dd6b57b95616686f11b69ce9d482553fa59a2122ccabed73fe9b5258f0a",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:13.127Z",
+      "result": "PASS",
+      "filename": "ar-390-tracking-completed.png",
+      "sha256": "9c5208a3ad3a79943f9c3395c3d951dbaee168a93245fc249660330900d1633a",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:13.729Z",
+      "result": "PASS",
+      "filename": "ar-768-tracking-completed.png",
+      "sha256": "60b552e57973d24bfaa6adfdafc9df9fcdce211e6edd23a5dd3ff638cd786728",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:14.411Z",
+      "result": "PASS",
+      "filename": "ar-1280-tracking-completed.png",
+      "sha256": "5f55db43e8247c0190306ffb1f6ba1db2ed64ac2ef4e23dcafe6b47252ffd2a1",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:15.021Z",
+      "result": "PASS",
+      "filename": "ar-1440-tracking-completed.png",
+      "sha256": "f02086fab1f8a8f1ac52983e47b3931eb340deeb4233e3293e2df38594993cd2",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:16.750Z",
+      "result": "PASS",
+      "filename": "en-360-tracking-completed.png",
+      "sha256": "f2b482cb1af9d3f265c1e1c767449a59605f292d82d7e8740fec266bea2059b8",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:17.374Z",
+      "result": "PASS",
+      "filename": "en-390-tracking-completed.png",
+      "sha256": "44d764c57104e1ff64b5fa1cdaff6c19322b326c7377b0e7dbf80b50a0724eee",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:17.939Z",
+      "result": "PASS",
+      "filename": "en-768-tracking-completed.png",
+      "sha256": "a8b0124188cd4b5530c1e90f1317773527adc87e6351eedf9bd9a6a270b02af7",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:18.563Z",
+      "result": "PASS",
+      "filename": "en-1280-tracking-completed.png",
+      "sha256": "f67aa63a8e2278045130f2b2e5160daca1f9a33b431d9cfe3902f320b56ab66d",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-completed",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:19.204Z",
+      "result": "PASS",
+      "filename": "en-1440-tracking-completed.png",
+      "sha256": "a5dd814431b3abf1acfc3b44a37c5585f81b76fc30fc8536d4cdff66b90c0182",
+      "fixtureReference": "run-ledger:SA-completed-order",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:35.531Z",
+      "result": "PASS",
+      "filename": "ar-360-tracking-empty-error.png",
+      "sha256": "7ecf3a8dc3ef0b75306ff64d5096c1c325d9be5f3e0d82bce848cd10704f6a5f",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:36.007Z",
+      "result": "PASS",
+      "filename": "ar-390-tracking-empty-error.png",
+      "sha256": "07f7039be2134246315594fc3f789509871cc2b9ae6bb91e60a3f60e57343da5",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:36.476Z",
+      "result": "PASS",
+      "filename": "ar-768-tracking-empty-error.png",
+      "sha256": "b45df44e897ff763112b6689161cb25cfa6e2aaf1f5b219795dd0c93cfd8a31d",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:36.979Z",
+      "result": "PASS",
+      "filename": "ar-1280-tracking-empty-error.png",
+      "sha256": "6cb5be4bbe89ba0e10481aefc201eb819388ed1b5cc8ef5387fb2857b63d09fc",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "ar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:37.503Z",
+      "result": "PASS",
+      "filename": "ar-1440-tracking-empty-error.png",
+      "sha256": "71ac43af0f44c5af1abc1270a42bfec6305dc60425c39c7711ffec023bdd30a5",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "en",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:39.280Z",
+      "result": "PASS",
+      "filename": "en-360-tracking-empty-error.png",
+      "sha256": "750e0eb8a7a3c31bc8286275ea58f39dea99c289c2f101ce8dd5ef9ef5b3495d",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:39.730Z",
+      "result": "PASS",
+      "filename": "en-390-tracking-empty-error.png",
+      "sha256": "ea980c82d48686f7b924108fc2938251a25e7a12a24b4f5510c269456b2f6b40",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "en",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:40.195Z",
+      "result": "PASS",
+      "filename": "en-768-tracking-empty-error.png",
+      "sha256": "3a543f58034682d9aa118bf3bf8217028ceff4ea2c73cb8ae843ba9f9eaad99b",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "en",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:40.699Z",
+      "result": "PASS",
+      "filename": "en-1280-tracking-empty-error.png",
+      "sha256": "795eeb70dee990d9c3f38e35bf31ef062d28364fe9ee505c1b22b7463e5e39dd",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    },
+    {
+      "state": "tracking-empty-error",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+      "capturedAt": "2026-10-11T06:49:41.195Z",
+      "result": "PASS",
+      "filename": "en-1440-tracking-empty-error.png",
+      "sha256": "9ac9c0047fbaaab1a8fec138662a9f57dd0bacbbb46c25a00053201583416547",
+      "fixtureReference": "random-unowned-order; safe not-found",
+      "overflow": false,
+      "axeViolations": 0,
+      "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+    }
+  ]
+}

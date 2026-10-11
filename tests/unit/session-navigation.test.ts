@@ -38,12 +38,19 @@ it.each(['account', 'portal', 'driver', 'membership', 'provisioning', 'server'])
     const route = ['account', 'portal', 'driver'].includes(destination)
       ? destination
       : 'auth-complete';
-    await expect(Login({ params: Promise.resolve({ locale: 'en' }) })).rejects.toMatchObject({
+    await expect(
+      Login({
+        params: Promise.resolve({ locale: 'en' }),
+        searchParams: Promise.resolve({ notice: 'confirmation-link' }),
+      }),
+    ).rejects.toMatchObject({
       digest: expect.stringContaining(`/en/${route}`),
     });
   },
 );
 it('only an unauthenticated request gets the login form', async () => {
   mocks.destination.mockResolvedValue('unauthenticated');
-  expect(await Login({ params: Promise.resolve({ locale: 'ar' }) })).toBeTruthy();
+  expect(
+    await Login({ params: Promise.resolve({ locale: 'ar' }), searchParams: Promise.resolve({}) }),
+  ).toBeTruthy();
 });

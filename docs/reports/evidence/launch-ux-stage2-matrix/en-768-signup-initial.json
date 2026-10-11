@@ -1,0 +1,18 @@
+{
+  "state": "signup-initial",
+  "locale": "en",
+  "viewport": {
+    "width": 768,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:46:36.675Z",
+  "result": "PASS",
+  "filename": "en-768-signup-initial.png",
+  "sha256": "31c68a913fb3ae9cd4b57c415f2f9aa8364a8a50f792a6f03b496d4cf92e1ee9",
+  "fixtureReference": null,
+  "overflow": false,
+  "axeViolations": 0,
+  "keyboardFocus": true,
+  "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+}

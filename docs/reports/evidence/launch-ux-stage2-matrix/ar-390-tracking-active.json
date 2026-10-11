@@ -1,0 +1,17 @@
+{
+  "state": "tracking-active",
+  "locale": "ar",
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-11T06:47:43.973Z",
+  "result": "PASS",
+  "filename": "ar-390-tracking-active.png",
+  "sha256": "606eaed7ff85abe5ae89115782935a69d7a599f8e2e99f9c850cc1dac9c40f8d",
+  "fixtureReference": "run-ledger:SA-active-order-before-dispatch",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

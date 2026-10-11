@@ -1,0 +1,17 @@
+{
+  "state": "account-empty",
+  "locale": "ar",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:53:47.075Z",
+  "result": "PASS",
+  "filename": "ar-1280-account-empty.png",
+  "sha256": "fc98e8259cf2080c24a3347159c64cf413c420309633c2c0d9c1aabea048ba1c",
+  "fixtureReference": "run-ledger:customer",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

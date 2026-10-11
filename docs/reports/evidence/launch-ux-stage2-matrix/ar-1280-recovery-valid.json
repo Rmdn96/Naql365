@@ -1,0 +1,17 @@
+{
+  "state": "recovery-valid",
+  "locale": "ar",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:53:51.633Z",
+  "result": "PASS",
+  "filename": "ar-1280-recovery-valid.png",
+  "sha256": "a9edeb296947a4daa5e083c9fd5d85ae5ced6ee8ec84a2140c2fe8fe997ae7b1",
+  "fixtureReference": "run-ledger:customer; authenticated password form, no password mutation",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

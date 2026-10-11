@@ -1,4 +1,5 @@
 'use client';
+import { customerExperience } from '@/i18n/customer-experience';
 import { useHydrated } from '@/components/ui/use-hydrated';
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -84,8 +85,29 @@ export function Checkout({
   const submitted = data.attempts.find((a) => a.state === 'SUBMITTED');
   const confirmation = { amountMinor: data.totalMinor, currency: data.currency, reference, note };
   return (
-    <div className="stack">
+    <div
+      className={finance ? 'stack' : 'stack customer-experience customer-checkout'}
+      aria-busy={busy}
+    >
+      {!finance && <p className="page-description">{customerExperience(locale).paymentIntro}</p>}
       <Badge>{t.states[data.status]}</Badge>
+      {!finance && ['UNDER_REVIEW', 'TRANSFER_REJECTED', 'PAID'].includes(data.status) && (
+        <Alert
+          tone={
+            data.status === 'PAID'
+              ? 'success'
+              : data.status === 'TRANSFER_REJECTED'
+                ? 'error'
+                : 'info'
+          }
+        >
+          {data.status === 'PAID'
+            ? customerExperience(locale).paymentConfirmed
+            : data.status === 'TRANSFER_REJECTED'
+              ? customerExperience(locale).paymentRejected
+              : customerExperience(locale).paymentReview}
+        </Alert>
+      )}
       <Card>
         <h2>
           <bdi>{data.reference}</bdi>
@@ -105,7 +127,7 @@ export function Checkout({
       {!finance && data.canSwitch && (
         <Card>
           <h2>{t.choose}</h2>
-          <div className="actions">
+          <div className={finance ? 'actions' : 'payment-methods'}>
             <Button
               disabled={!hydrated || busy || data.method === 'CASH'}
               onClick={() => void act({ action: 'choose', payload: { method: 'CASH' } })}
@@ -134,6 +156,9 @@ export function Checkout({
               </Button>
             ))}
           </div>
+          {!data.destinations.length && (
+            <p className="muted">{customerExperience(locale).transferUnavailable}</p>
+          )}
         </Card>
       )}
       {data.method === 'CASH' && <p>{t.cashHelp}</p>}

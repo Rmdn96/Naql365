@@ -1,3 +1,4 @@
+import { customerExperience } from '@/i18n/customer-experience';
 import Link from 'next/link';
 import { MvpView } from '@/components/public/analytics';
 import { launchFlags } from '@/infrastructure/config/launch';
@@ -28,9 +29,11 @@ export function OrderProgress({
   const id = data.id;
   const pt = paymentDictionary(locale);
   return (
-    <div className="container page">
+    <div className="container page customer-experience customer-tracking">
       <MvpView event="tracking_viewed" market={payment.country} context="tracking" />
+      <p className="eyebrow">{customerExperience(locale).journey}</p>
       <h1>{t.tracking}</h1>
+      <p className="page-description">{customerExperience(locale).trackingIntro}</p>
       <p>
         {locale === 'ar' ? data.market.nameAr : data.market.nameEn} ·{' '}
         <bdi>{data.market.currency}</bdi>
@@ -98,6 +101,11 @@ export function OrderProgress({
                 <p>
                   {t.completedStops}: {trip.completedStops} / {trip.totalStops}
                 </p>
+                <progress
+                  max={Math.max(1, trip.totalStops)}
+                  value={trip.completedStops}
+                  aria-label={t.completedStops}
+                />
                 <p>{trip.podCaptured ? t.podCaptured : t.pendingPod}</p>
               </div>
             </li>

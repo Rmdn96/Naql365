@@ -1,0 +1,15 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "identity": "owner-approved fresh external mailbox 96",
+  "ownerPerformedPasswordLogin": true,
+  "accountRendered": true,
+  "refresh": true,
+  "arToEnNavigation": true,
+  "authenticatedDirectLoginReturnedToAccount": true,
+  "staffPortalDenied": true,
+  "requestEntryRendered": true,
+  "requestDraftCreated": false,
+  "canonicalReadback": "replacement-profile-save-readback.json",
+  "secondPasswordLogin": "PENDING",
+  "secretValuesRecorded": false
+}

@@ -23,7 +23,9 @@ export async function GET(request: NextRequest) {
       return response;
     }
   }
-  const response = NextResponse.redirect(new URL(`/${locale}/login`, origin));
+  const response = NextResponse.redirect(
+    new URL(`/${locale}/login?notice=confirmation-link`, origin),
+  );
   response.headers.set('Cache-Control', 'private, no-store');
   return response;
 }

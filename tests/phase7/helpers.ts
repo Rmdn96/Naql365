@@ -1,3 +1,4 @@
+import { customerExperience } from '../../src/i18n/customer-experience';
 import { stage1Capture } from '../helpers/stage1-evidence';
 import { appendFileSync } from 'node:fs';
 import { createHash, randomUUID } from 'node:crypto';
@@ -123,6 +124,7 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   await page.locator('#contact_phone').fill(country === 'SA' ? '+966500000001' : '+201000000001');
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
+  await stage1Capture(page, `wizard-review-${country.toLowerCase()}-${locale}`);
   await page.getByRole('button', { name: ct.submit, exact: true }).click();
   await expect(page.getByRole('heading', { name: gt.received, exact: true })).toBeVisible();
   const request = (
@@ -151,7 +153,9 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   expect(mode.data?.pricing_mode).toBe('MANUAL');
   await expect(staff.getByRole('button', { name: qt.calculate, exact: true })).toHaveCount(0);
   await page.reload();
-  await expect(page.getByText(gt.review, { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: customerExperience(locale).reviewTitle, exact: true }),
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: gt.preliminary, exact: true })).toHaveCount(0);
   await staff.locator('#manual-subtotal').fill('123.45');
   await staff.getByRole('button', { name: qt.createDraft, exact: true }).click();
@@ -167,6 +171,7 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   const versionId = quote.quote_versions.find((v) => v.status === 'SENT')!.id;
   await page.goto(`/${locale}/guest/quotes/${versionId}`);
   await guestResponsiveCheck(page);
+  await stage1Capture(page, `quote-${country.toLowerCase()}-${locale}`);
   return {
     locale: locale as 'ar' | 'en',
     country,

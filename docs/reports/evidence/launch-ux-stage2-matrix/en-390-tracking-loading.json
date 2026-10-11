@@ -1,0 +1,17 @@
+{
+  "state": "tracking-loading",
+  "locale": "en",
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-11T06:47:58.330Z",
+  "result": "PASS",
+  "filename": "en-390-tracking-loading.png",
+  "sha256": "c7600ce69dd4a6b50f0e185b169a58f9218e67a0a2e4d803c6bd30fad3feee29",
+  "fixtureReference": "run-ledger:SA-order; delayed scripts",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

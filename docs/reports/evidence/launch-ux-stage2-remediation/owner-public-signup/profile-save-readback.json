@@ -1,0 +1,20 @@
+{
+  "readOnly": true,
+  "ownerProfileSaved": true,
+  "state": {
+    "active_customer_memberships": 1,
+    "auth_count": 1,
+    "canonical_customer_roles": 1,
+    "canonical_customers": 1,
+    "complete_profiles": 1,
+    "confirmed_count": 1,
+    "customers": 1,
+    "memberships": 1,
+    "profiles": 1,
+    "roles": 1,
+    "staff_driver_roles": 0
+  },
+  "privateProfileValuesRecorded": false,
+  "observedSaveOrigin": "https://naql365-staging-l2et1jst5-naql365.vercel.app",
+  "currentCandidateProfileSaveVerified": false
+}

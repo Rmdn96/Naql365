@@ -1,0 +1,12 @@
+{
+  "revoked": true,
+  "denied": true,
+  "probes": [
+    {
+      "attempt": 1,
+      "status": 302
+    }
+  ],
+  "remainingAutomationCredentials": 0,
+  "protection": "all_except_custom_domains"
+}

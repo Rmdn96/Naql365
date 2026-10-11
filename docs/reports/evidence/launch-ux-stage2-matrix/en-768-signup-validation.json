@@ -1,0 +1,18 @@
+{
+  "state": "signup-validation",
+  "locale": "en",
+  "viewport": {
+    "width": 768,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:46:41.512Z",
+  "result": "PASS",
+  "filename": "en-768-signup-validation.png",
+  "sha256": "b026909264e4c2b0e82e211ec73b9d2f6c3f8efce8f759bd0cf37f345f5fee45",
+  "fixtureReference": null,
+  "overflow": false,
+  "axeViolations": 0,
+  "keyboardFocus": true,
+  "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+}
