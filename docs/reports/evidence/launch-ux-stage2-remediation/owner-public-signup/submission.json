@@ -1,0 +1,25 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "ownerReportedSubmission": true,
+  "publicEmailSentStateObserved": true,
+  "before": {
+    "auth": 0,
+    "confirmed": 0,
+    "profiles": 0,
+    "customers": 0,
+    "memberships": 0,
+    "roles": 0
+  },
+  "afterSubmission": {
+    "auth": 1,
+    "confirmed": 0,
+    "profiles": 1,
+    "customers": 0,
+    "memberships": 0,
+    "roles": 0
+  },
+  "adminConfirmationUsed": false,
+  "adminGenerateLinkUsed": false,
+  "fixtureBootstrapUsed": false,
+  "confirmation": "PENDING OWNER MAILBOX STEP"
+}

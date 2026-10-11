@@ -1,0 +1,13 @@
+{
+  "recordedAt": "2026-10-11T06:37:56.813Z",
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "result": "FAIL",
+  "classification": "protected Preview access check issue",
+  "cause": "Direct node fetch with newly-created Vercel bypass header returned 302 to Vercel SSO; the existing Playwright origin-scoped protection adapter is the supported access path.",
+  "beforeFixtures": true,
+  "fixturesCreated": 0,
+  "credentialsRevoked": true,
+  "protectionUnchanged": true,
+  "applicationChanged": false,
+  "remediation": "Use deployment readback plus the existing Playwright protection adapter; do not use an unproven direct-fetch preflight."
+}

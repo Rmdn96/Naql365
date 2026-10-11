@@ -1,0 +1,9 @@
+{
+  "interruptedRun": "2026-10-09T07:56:37.237Z",
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "hostedResult": "INCOMPLETE — process interrupted",
+  "ownedIdentitiesRemoved": 16,
+  "isolatedOrganizationsRemoved": 1,
+  "guestPolicyRestored": true,
+  "cleanup": "PASS"
+}

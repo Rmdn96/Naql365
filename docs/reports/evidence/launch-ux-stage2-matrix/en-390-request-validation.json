@@ -1,0 +1,17 @@
+{
+  "state": "request-validation",
+  "locale": "en",
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T15:02:40.029Z",
+  "result": "PASS",
+  "filename": "en-390-request-validation.png",
+  "sha256": "e53fbacc1fb927bd4538467533f7f5f2f2ac0e58a4afa5f89d1d89839522b7b1",
+  "fixtureReference": "run-ledger:customer-draft",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

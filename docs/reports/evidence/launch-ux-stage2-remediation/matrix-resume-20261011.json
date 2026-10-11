@@ -1,0 +1,41 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "recordedAt": "2026-10-11T04:56:12.189Z",
+  "matrix": {
+    "required": 310,
+    "pass": 250,
+    "na": 0,
+    "missing": 60
+  },
+  "accepted190HashPreservation": "PASS",
+  "batchB": {
+    "required": 70,
+    "pass": 60,
+    "missing": 10,
+    "scenariosPassed": 1,
+    "scenariosFailed": 1,
+    "failedAttemptPreserved": "batch-b-first-attempt.json",
+    "cleanup": "batch-b-first-cleanup.json"
+  },
+  "network": {
+    "restoredInitially": true,
+    "restrictedAgain": true,
+    "hosts": [
+      "api.vercel.com",
+      "registry.npmjs.org",
+      "naql365-staging-ux-stage2-naql365.vercel.app"
+    ],
+    "dns": "ENOTFOUND",
+    "note": "Access succeeded in unrestricted runner context, then failed after explicit switch to restricted-network context. No application, platform protection, DNS, or firewall setting changed."
+  },
+  "remaining": [
+    "checkout-confirmed",
+    "tracking-loading",
+    "tracking-active",
+    "tracking-completed",
+    "tracking-empty-error",
+    "signup-email-sent"
+  ],
+  "applicationChanged": false,
+  "migrations": 46
+}

@@ -1,0 +1,17 @@
+{
+  "state": "tracking-completed",
+  "locale": "en",
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-11T06:49:17.374Z",
+  "result": "PASS",
+  "filename": "en-390-tracking-completed.png",
+  "sha256": "44d764c57104e1ff64b5fa1cdaff6c19322b326c7377b0e7dbf80b50a0724eee",
+  "fixtureReference": "run-ledger:SA-completed-order",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

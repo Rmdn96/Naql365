@@ -1,0 +1,17 @@
+{
+  "state": "checkout-proof-pending",
+  "locale": "en",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T21:51:28.481Z",
+  "result": "PASS",
+  "filename": "en-1280-checkout-proof-pending.png",
+  "sha256": "26008e01b2548548d7b08056253ab20fe4892577aeb20c255c0606e0a20668e5",
+  "fixtureReference": "run-ledger:EG-proof",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

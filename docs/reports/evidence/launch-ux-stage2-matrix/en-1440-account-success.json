@@ -1,0 +1,17 @@
+{
+  "state": "account-success",
+  "locale": "en",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T15:03:22.458Z",
+  "result": "PASS",
+  "filename": "en-1440-account-success.png",
+  "sha256": "e86cb8738f440eb0d395cf4a82d5c37c934c8d3fcc84eabd56c02de3272586d4",
+  "fixtureReference": "run-ledger:customer-draft",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

@@ -1,0 +1,21 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "ownerReportedRealEmailOpened": true,
+  "authConfirmed": 1,
+  "profiles": 1,
+  "customers": 0,
+  "memberships": 0,
+  "roles": 0,
+  "observedLandingOrigin": "https://naql365-staging-l2et1jst5-naql365.vercel.app",
+  "expectedLandingOrigin": "https://naql365-staging-ux-stage2-naql365.vercel.app",
+  "result": "FAIL — wrong Preview callback destination",
+  "liveConfigDiffBeforeRemediation": {
+    "updates": 0,
+    "remoteOnly": 9,
+    "localOnly": 0,
+    "currentPreviewCallbackAbsent": true
+  },
+  "adminConfirmationUsed": false,
+  "accountPreserved": true,
+  "afterConfigChangeRetest": "PENDING"
+}

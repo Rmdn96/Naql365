@@ -1,0 +1,17 @@
+{
+  "state": "profile-success",
+  "locale": "en",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:54:00.801Z",
+  "result": "PASS",
+  "filename": "en-360-profile-success.png",
+  "sha256": "3e9a76e9c654c24a4b5974f787b0d152fac2abc682675cf85edbd380ef8955ec",
+  "fixtureReference": "run-ledger:customer",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

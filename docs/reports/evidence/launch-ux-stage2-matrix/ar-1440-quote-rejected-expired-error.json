@@ -1,0 +1,17 @@
+{
+  "state": "quote-rejected-expired-error",
+  "locale": "ar",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T21:53:15.281Z",
+  "result": "PASS",
+  "filename": "ar-1440-quote-rejected-expired-error.png",
+  "sha256": "4d709dcef14236e483ca0adef09c389ba0acc86b94d084937cfc848290dee2c6",
+  "fixtureReference": "run-ledger:SA-rejected-quote",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

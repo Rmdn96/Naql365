@@ -1,0 +1,58 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "identity": "owner-approved fresh external mailbox 96",
+  "publicSubmission": true,
+  "authCount": 1,
+  "confirmedCount": 0,
+  "profileCount": 1,
+  "customerCount": 0,
+  "membershipCount": 0,
+  "roleCount": 0,
+  "captures": [
+    {
+      "file": "en-signup-email-sent-360.jpg",
+      "width": 360,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "overflow": false,
+      "sent": true,
+      "sha256": "975baebbb3a39895baae41a5df0d1f81b681ef5b92b6a566be50a8a0417b70e6"
+    },
+    {
+      "file": "en-signup-email-sent-390.jpg",
+      "width": 390,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "overflow": false,
+      "sent": true,
+      "sha256": "2589b388806845023449f87a38040d5631a241883c8f93b2208119c7d25aa6d6"
+    },
+    {
+      "file": "en-signup-email-sent-768.jpg",
+      "width": 768,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "overflow": false,
+      "sent": true,
+      "sha256": "c6611b7b98b043d21e5132740dd298b4e6c22334bc553fa3fa0f338336821684"
+    },
+    {
+      "file": "en-signup-email-sent-1280.jpg",
+      "width": 1280,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "overflow": false,
+      "sent": true,
+      "sha256": "f3015c09b0e0f1cd5265a65482409044b2848e9b3022a5b0a8a920b878c0ddeb"
+    },
+    {
+      "file": "en-signup-email-sent-1440.jpg",
+      "width": 1440,
+      "dir": "ltr",
+      "inputsBlank": true,
+      "overflow": false,
+      "sent": true,
+      "sha256": "6b121921f7741e2dd7830aead059779bc5b5fba667c3771ad472e0b23bcd1104"
+    }
+  ]
+}

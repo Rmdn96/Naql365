@@ -1,0 +1,16 @@
+{
+  "environment": "Staging",
+  "projectRef": "zuvyfeflkzlciuaauxba",
+  "change": "Four exact Stage 2 confirmation/recovery callbacks added",
+  "currentOrigin": "https://naql365-staging-ux-stage2-naql365.vercel.app",
+  "locales": ["ar", "en"],
+  "previousCallbacksPreserved": 4,
+  "totalExactCallbacks": 8,
+  "wildcardCallbacks": 0,
+  "siteUrlUnchanged": true,
+  "otherConfiguredAuthSettingsUnchanged": true,
+  "remainingRemoteOnlySettings": 9,
+  "readback": "PASS",
+  "productionChanged": false,
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72"
+}

@@ -1,0 +1,11 @@
+{
+  "revoked": true,
+  "revokedCredentialStatus": 302,
+  "revocationProbes": [
+    {
+      "attempt": 1,
+      "status": 302
+    }
+  ],
+  "productionChanged": false
+}

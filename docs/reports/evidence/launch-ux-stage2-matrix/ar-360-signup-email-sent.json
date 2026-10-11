@@ -1,0 +1,17 @@
+{
+  "state": "signup-email-sent",
+  "locale": "ar",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-11T06:53:36.717Z",
+  "result": "PASS",
+  "filename": "ar-360-signup-email-sent.png",
+  "sha256": "836c6074f1b5817b0a52c1ca8c88b8029956146a701c52df4e6e7b0292e1b2e3",
+  "fixtureReference": "run-ledger:customer; existing-account nondisclosure; no delivered-mail claim",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

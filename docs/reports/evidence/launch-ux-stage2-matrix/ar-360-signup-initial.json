@@ -1,0 +1,18 @@
+{
+  "state": "signup-initial",
+  "locale": "ar",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:45:51.699Z",
+  "result": "PASS",
+  "filename": "ar-360-signup-initial.png",
+  "sha256": "b9e35d6e7338d24425f0c9151f847581f3e251ed02d4fd9d8cf33b7480889407",
+  "fixtureReference": null,
+  "overflow": false,
+  "axeViolations": 0,
+  "keyboardFocus": true,
+  "scope": "Automated geometry/axe/focus and capture checks; manual visual inspection separately required"
+}

@@ -1,0 +1,12 @@
+{
+  "deployment": "dpl_3DZmJNfNZUZCu7hBbNgMbEZUwCff",
+  "sampleCount": 50,
+  "window": "1h",
+  "limit": 200,
+  "statusCounts": {
+    "0": 12,
+    "200": 37,
+    "303": 1
+  },
+  "secretPatternDetected": false
+}

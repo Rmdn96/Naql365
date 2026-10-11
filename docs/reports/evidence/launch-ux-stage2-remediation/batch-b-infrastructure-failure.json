@@ -1,0 +1,31 @@
+{
+  "recordedAt": "2026-10-10T20:44:41.304Z",
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "result": "FAIL",
+  "classification": "browser/test-runner issue",
+  "cause": "Runner DNS resolution failure; underlying network/resolver cause not established",
+  "hosts": [
+    {
+      "host": "api.vercel.com",
+      "dns": "ENOTFOUND",
+      "https": "ENOTFOUND"
+    },
+    {
+      "host": "registry.npmjs.org",
+      "dns": "ENOTFOUND",
+      "https": "ENOTFOUND"
+    },
+    {
+      "host": "naql365-staging-ux-stage2-naql365.vercel.app",
+      "dns": "ENOTFOUND",
+      "https": "ENOTFOUND"
+    }
+  ],
+  "stage": "First read-only deployment lookup, before protection credential creation and fixture runner",
+  "newAutomationCredentials": 0,
+  "newFixtureIdentities": 0,
+  "newBusinessRecords": 0,
+  "newStorageObjects": 0,
+  "applicationChanged": false,
+  "protectionChanged": false
+}

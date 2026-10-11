@@ -1,0 +1,90 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "locales": ["ar", "en"],
+  "widths": [360, 390, 768, 1280, 1440],
+  "completedCaptures": 50,
+  "states": [
+    {
+      "state": "signup-initial",
+      "result": "PASS",
+      "evidence": "remediated/index.json"
+    },
+    {
+      "state": "login",
+      "result": "PASS",
+      "evidence": "remediated/index.json"
+    },
+    {
+      "state": "password-recovery-request",
+      "result": "PASS",
+      "evidence": "remediated/index.json"
+    },
+    {
+      "state": "native-required-field-validation",
+      "result": "PASS",
+      "evidence": "remediated/index.json"
+    },
+    {
+      "state": "invalid-confirmation-guidance",
+      "result": "PASS",
+      "evidence": "remediated/index.json"
+    },
+    {
+      "state": "signup-submitted-email-sent",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    },
+    {
+      "state": "confirmation-success",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    },
+    {
+      "state": "recovery-email-sent",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    },
+    {
+      "state": "new-password-recovery-completion",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    },
+    {
+      "state": "profile-onboarding",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    },
+    {
+      "state": "loading",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    },
+    {
+      "state": "empty",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    },
+    {
+      "state": "server-error-presentation",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    },
+    {
+      "state": "retry-recoverable",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    },
+    {
+      "state": "success",
+      "result": "PENDING",
+      "note": "Full locale/width matrix not yet verified; no claim based on earlier release or fixture preparation"
+    }
+  ],
+  "genuineExternalMailbox": {
+    "result": "PENDING",
+    "zeroStateVerified": true,
+    "signupSubmitted": false,
+    "adminConfirmationUsed": false
+  },
+  "final": "PARTIAL"
+}

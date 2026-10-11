@@ -1,0 +1,17 @@
+{
+  "state": "quote-final",
+  "locale": "en",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T21:50:53.565Z",
+  "result": "PASS",
+  "filename": "en-1280-quote-final.png",
+  "sha256": "47502eed8212c4bafaef490e55662d1791541ed94447737a205f922050d2f2e2",
+  "fixtureReference": "run-ledger:EG-guest-quote",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

@@ -1,0 +1,51 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "state": "public signup submitted; confirmation not yet opened",
+  "captures": [
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "sentVisible": true,
+      "width": 360,
+      "file": "ar-signup-email-sent-360.jpg",
+      "sha256": "0f688a6e6b8dfb653f545f85d7661df8e233e0386015c2704c966623f456e775"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "sentVisible": true,
+      "width": 390,
+      "file": "ar-signup-email-sent-390.jpg",
+      "sha256": "43a3fb893d024d6c662a9b7e8eb4544ca4db69d2ae4fd11bdc16d1f50766763c"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "sentVisible": true,
+      "width": 768,
+      "file": "ar-signup-email-sent-768.jpg",
+      "sha256": "da6b1b2eacdb6ab5b481760d5b026be211a5d9fa493ef12884e72b97c74caa74"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "sentVisible": true,
+      "width": 1280,
+      "file": "ar-signup-email-sent-1280.jpg",
+      "sha256": "0b7a1d7bc26311f547ca89dffc49fad9c0e02dc5c540266bd285ba1cf7c5581d"
+    },
+    {
+      "blankVisibleInputs": true,
+      "dir": "rtl",
+      "overflow": false,
+      "sentVisible": true,
+      "width": 1440,
+      "file": "ar-signup-email-sent-1440.jpg",
+      "sha256": "d10e77bdec057891394c21cddda410657f528455ac3ea445a748e4c4413123df"
+    }
+  ]
+}

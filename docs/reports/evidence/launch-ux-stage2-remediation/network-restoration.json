@@ -1,0 +1,33 @@
+{
+  "observedAt": "2026-10-10T21:49:06.655Z",
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "priorFailure": "batch-b-infrastructure-failure.json",
+  "classification": "acceptance runner/network interruption",
+  "rootCause": "Previous runner reported restricted network; current runner permits network. Resolver internals unavailable; no more specific cause established.",
+  "remediation": "Same controlled runner resumed after network access restoration; no application or DNS configuration change",
+  "probes": [
+    {
+      "host": "api.vercel.com",
+      "dns": "PASS",
+      "status": 308
+    },
+    {
+      "host": "registry.npmjs.org",
+      "dns": "PASS",
+      "status": 200
+    },
+    {
+      "host": "naql365-staging-ux-stage2-naql365.vercel.app",
+      "dns": "PASS",
+      "status": 302
+    }
+  ],
+  "beforeRestart": {
+    "automationCredentials": 0,
+    "previewProtection": "all_except_custom_domains",
+    "failedRunFixtures": 0,
+    "failedRunFiles": 0,
+    "failedRunPrivileges": 0,
+    "evidence": "Failure at first read-only deployment lookup before credential creation or fixture child process invocation"
+  }
+}

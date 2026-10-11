@@ -1,0 +1,17 @@
+{
+  "state": "checkout-confirmed",
+  "locale": "ar",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-11T06:42:54.799Z",
+  "result": "PASS",
+  "filename": "ar-1440-checkout-confirmed.png",
+  "sha256": "af3749254c2829c7ff5030cb39d7e13af2f4ebc4f23628b3cebc4acc9b70f9f0",
+  "fixtureReference": "run-ledger:EG-proof",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

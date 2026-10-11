@@ -11,15 +11,45 @@ export async function verifyDriverAcceptance(phase) {
   process.chdir(fileURLToPath(new URL('../../', import.meta.url)));
   const args = process.argv.slice(2);
   if (
-    args.some((arg) => arg !== '--session-only' && !(phase === 6 && arg === '--payment-diagnostic'))
+    args.some(
+      (arg) =>
+        arg !== '--session-only' &&
+        !(phase === 6 && arg === '--payment-diagnostic') &&
+        !(
+          phase === 7 &&
+          [
+            '--visual-matrix',
+            '--visual-batch-a',
+            '--visual-batch-b',
+            '--visual-batch-c',
+            '--visual-c1',
+            '--visual-c2',
+            '--visual-c3',
+          ].includes(arg)
+        ),
+    )
   )
     throw new Error('Unknown verification option');
   // Session-only is supplemental evidence; the default includes both execution journeys.
-  const selectedTests = args.includes('--session-only')
-    ? [`tests/phase${phase}/session.spec.ts`]
-    : args.includes('--payment-diagnostic')
-      ? ['--grep', 'SA CASH']
-      : [];
+  const selectedTests = args.includes('--visual-c1')
+    ? ['tests/phase7/visual-batch-b.spec.ts', '--grep', 'owned Quote']
+    : args.includes('--visual-c2')
+      ? ['tests/phase7/visual-batch-c.spec.ts', '--grep', 'tracking lifecycle']
+      : args.includes('--visual-c3')
+        ? ['tests/phase7/visual-batch-c.spec.ts', '--grep', 'registration nondisclosing']
+        : args.includes('--visual-batch-c')
+          ? ['tests/phase7/visual-batch-c.spec.ts']
+          : args.includes('--visual-batch-b')
+            ? ['tests/phase7/visual-batch-b.spec.ts']
+            : args.includes('--visual-batch-a')
+              ? ['tests/phase7/visual-batch-a.spec.ts']
+              : args.includes('--visual-matrix')
+                ? ['tests/phase7/visual-matrix.spec.ts']
+                : args.includes('--session-only')
+                  ? [`tests/phase${phase}/session.spec.ts`]
+                  : args.includes('--payment-diagnostic')
+                    ? ['--grep', 'SA CASH']
+                    : [];
   acceptanceTarget();
   const release = acquireHostedRun();
   const ledger =

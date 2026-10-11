@@ -1,0 +1,17 @@
+{
+  "state": "profile-validation",
+  "locale": "ar",
+  "viewport": {
+    "width": 390,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:53:21.806Z",
+  "result": "PASS",
+  "filename": "ar-390-profile-validation.png",
+  "sha256": "e5908ae2151fb002f7c90e5b965e7c0a8132b65dcfd8c5a5cbf75817854e19a8",
+  "fixtureReference": "run-ledger:customer",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

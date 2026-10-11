@@ -1,0 +1,13 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "result": "PARTIAL",
+  "passedScenarios": 1,
+  "failedScenarios": 1,
+  "passedNewCaptures": 60,
+  "classification": "timeout/hydration issue",
+  "failure": "Second proof upload click timed out after retry capture navigation",
+  "evidence": "Input uses existing disabled-until-hydrated guard; test setInputFiles lacked an enabled wait. No application mutation performed.",
+  "remediation": "Test now waits for upload input enabled before setting file; confirm with rerun",
+  "retainedPriorCaptures": 190,
+  "appChanged": false
+}

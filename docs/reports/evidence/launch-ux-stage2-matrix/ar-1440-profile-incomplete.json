@@ -1,0 +1,17 @@
+{
+  "state": "profile-incomplete",
+  "locale": "ar",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T14:53:16.815Z",
+  "result": "PASS",
+  "filename": "ar-1440-profile-incomplete.png",
+  "sha256": "9d616a44031bb5cc09e81553d897c7d8bcf052f4822b0beb69e82979c0c32520",
+  "fixtureReference": "run-ledger:customer",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

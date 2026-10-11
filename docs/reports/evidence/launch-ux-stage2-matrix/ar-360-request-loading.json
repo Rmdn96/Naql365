@@ -1,0 +1,17 @@
+{
+  "state": "request-loading",
+  "locale": "ar",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-10T15:03:28.857Z",
+  "result": "PASS",
+  "filename": "ar-360-request-loading.png",
+  "sha256": "7065fc679a3e311b896f35dc70ea77232f69e0e7728fe0a47335b12e971a52f6",
+  "fixtureReference": "run-ledger:customer-draft; delayed application scripts",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}

@@ -1,0 +1,17 @@
+{
+  "identityLabel": "owner-selected replacement mailbox 96",
+  "beforePublicSignup": {
+    "auth": 0,
+    "confirmed": 0,
+    "profiles": 0,
+    "customers": 0,
+    "memberships": 0,
+    "roles": 0
+  },
+  "currentPreview": "https://naql365-staging-ux-stage2-naql365.vercel.app",
+  "locale": "en",
+  "exactCallbacksReadbackMatches": true,
+  "existingIdentityPreserved": true,
+  "signupSubmitted": false,
+  "adminPreparation": false
+}

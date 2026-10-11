@@ -1,0 +1,29 @@
+{
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "result": "PASS",
+  "passed": 10,
+  "cases": [
+    "passed: hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration; durationMs=164042",
+    "passed: hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration; durationMs=211551",
+    "passed: hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order; durationMs=46365",
+    "passed: hosted-phase7 > manual-customer.spec.ts > SA registered customer manual quote and CASH regression; durationMs=83509",
+    "passed: hosted-phase7 > manual-customer.spec.ts > EG registered customer manual quote and CASH regression; durationMs=86396",
+    "passed: hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact; durationMs=12321",
+    "passed: hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact; durationMs=12441",
+    "passed: hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed; durationMs=5031",
+    "passed: hosted-phase7 > stage1-session.spec.ts > ar normal SUPER_ADMIN session, explicit logout and history denial; durationMs=21233",
+    "passed: hosted-phase7 > stage1-session.spec.ts > en normal SUPER_ADMIN session, explicit logout and history denial; durationMs=19362"
+  ],
+  "fixtureCleanup": "PASS",
+  "automationCleanup": {
+    "revoked": true,
+    "revokedCredentialStatus": 302,
+    "revocationProbes": [
+      {
+        "attempt": 1,
+        "status": 302
+      }
+    ],
+    "productionChanged": false
+  }
+}

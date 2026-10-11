@@ -1,0 +1,17 @@
+{
+  "state": "tracking-empty-error",
+  "locale": "en",
+  "viewport": {
+    "width": 360,
+    "height": 900
+  },
+  "applicationSha": "23c3ab7d22b3f103069f852010b2b0fba2aaaf72",
+  "capturedAt": "2026-10-11T06:49:39.280Z",
+  "result": "PASS",
+  "filename": "en-360-tracking-empty-error.png",
+  "sha256": "750e0eb8a7a3c31bc8286275ea58f39dea99c289c2f101ce8dd5ef9ef5b3495d",
+  "fixtureReference": "random-unowned-order; safe not-found",
+  "overflow": false,
+  "axeViolations": 0,
+  "scope": "Automated layout, axe, focus and capture; synthetic fixture only"
+}
