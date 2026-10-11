@@ -10,6 +10,7 @@ This delivery is pre-production polish only. It does not deploy Production, modi
 
 - Accepted `develop` baseline: `3f5a80e2a4373f20c0cd57fdae73977ae2c0c52f`
 - Stage 3 branch: `feature/launch-visual-ux-stage-3-staff-operations-finance`
+- Application/report candidate SHA: `6306f5a` (full SHA is recorded by Git)
 - Migrations: 46, unchanged
 - Source changes: staff workspace presentation only; no schema, RPC, RLS, RBAC, lifecycle, pricing, payment, or authority changes
 - Preview: not deployed in this pass; hosted staff regression and visual evidence remain open
