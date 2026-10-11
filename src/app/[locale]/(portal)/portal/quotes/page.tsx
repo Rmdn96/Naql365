@@ -5,6 +5,8 @@ import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { salesQueue } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
 import { Badge, EmptyState } from '@/components/ui/primitives';
+import { PageHeader } from '@/components/ui/presentation';
+import { StaffWorkspaceNav } from '@/components/shell/staff-workspace-nav';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
@@ -20,35 +22,65 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     throw error;
   }
   return (
-    <div className="container page">
-      <h1>{t.salesQuotes}</h1>
-      <h2>{t.awaiting}</h2>
-      {!data.length ? (
-        <EmptyState title={t.awaiting}>{t.noRequests}</EmptyState>
-      ) : (
-        <ul className="request-list">
-          {data.map((r) => (
-            <li key={r.id}>
-              <div>
-                <Badge>
-                  {quoteStatusLabel(
-                    r.quotes.flatMap((q) => q.quote_versions).at(-1)?.status ?? r.status,
-                    locale,
-                  )}
-                </Badge>
-                <h2>
-                  <bdi>{r.reference}</bdi>
-                </h2>
-                <p>{r.contact_name}</p>
-                <p>{r.request_locations.map((l) => l.city).join(' → ')}</p>
-              </div>
-              <Link className="button button--primary" href={`/${locale}/portal/quotes/${r.id}`}>
-                {t.open}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="container page staff-page">
+      <StaffWorkspaceNav locale={locale} active="sales" />
+      <PageHeader
+        eyebrow={locale === 'ar' ? 'المبيعات · مساحة العمل' : 'Sales · Workspace'}
+        title={t.salesQuotes}
+        description={
+          locale === 'ar'
+            ? 'راجع الطلبات وأكمل التسعير اليدوي وأرسل العرض التالي بوضوح.'
+            : 'Review requests, complete manual pricing, and send the next quote with confidence.'
+        }
+      />
+      <section className="staff-panel">
+        <div className="staff-section-heading">
+          <div>
+            <p className="eyebrow">{locale === 'ar' ? 'قائمة العمل' : 'Work queue'}</p>
+            <h2>{t.awaiting}</h2>
+          </div>
+          <span className="staff-count">{data.length}</span>
+        </div>
+        {!data.length ? (
+          <EmptyState title={t.awaiting}>{t.noRequests}</EmptyState>
+        ) : (
+          <ul className="request-list staff-queue">
+            {data.map((r) => (
+              <li key={r.id}>
+                <div className="staff-queue-main">
+                  <div className="staff-queue-meta">
+                    <span className="staff-label">{t.request}</span>
+                    <Badge>
+                      {quoteStatusLabel(
+                        r.quotes.flatMap((q) => q.quote_versions).at(-1)?.status ?? r.status,
+                        locale,
+                      )}
+                    </Badge>
+                  </div>
+                  <h2>
+                    <bdi>{r.reference}</bdi>
+                  </h2>
+                  <p className="staff-queue-customer">{r.contact_name}</p>
+                  <p className="staff-route">
+                    {r.request_locations.map((l) => l.city).join(' → ')}
+                  </p>
+                </div>
+                <div className="staff-queue-action">
+                  <span className="staff-label">
+                    {locale === 'ar' ? 'الإجراء التالي' : 'Next action'}
+                  </span>
+                  <Link
+                    className="button button--primary"
+                    href={`/${locale}/portal/quotes/${r.id}`}
+                  >
+                    {t.open}
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }

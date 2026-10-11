@@ -8,6 +8,7 @@ import { AppError } from '@/domain/shared/errors';
 import { PageHeader } from '@/components/ui/presentation';
 import Link from 'next/link';
 import { Workspace } from '@/components/operations/workspace';
+import { StaffWorkspaceNav } from '@/components/shell/staff-workspace-nav';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
@@ -24,6 +25,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   }
   return (
     <div className="container page operations">
+      <StaffWorkspaceNav locale={locale} active="operations" />
       <PageHeader
         title={t.title}
         eyebrow={locale === 'ar' ? 'مساحة العمل · Naql365' : 'Workspace · Naql365'}

@@ -9,6 +9,8 @@ import { InAppNotifications } from '@/components/tracking/notifications';
 import { z } from 'zod';
 import { paymentStates } from '@/domain/payments/model';
 import { formatMoney } from '@/domain/markets/model';
+import { PageHeader } from '@/components/ui/presentation';
+import { StaffWorkspaceNav } from '@/components/shell/staff-workspace-nav';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({
@@ -42,12 +44,25 @@ export default async function Page({
   const href = (value: number) =>
     `/${locale}/portal/finance?offset=${value}${status ? `&status=${status}` : ''}`;
   return (
-    <div className="container page">
-      <h1>{t.finance}</h1>
-      {bankAccess.status === 'authorized' && (
-        <Link href={`/${locale}/portal/finance/banks`}>{t.bankAdmin}</Link>
-      )}
-      <nav className="finance-filters" aria-label={t.finance}>
+    <div className="container page staff-page">
+      <StaffWorkspaceNav locale={locale} active="finance" />
+      <PageHeader
+        eyebrow={locale === 'ar' ? 'التحصيل · مساحة العمل' : 'Collections · Workspace'}
+        title={t.finance}
+        description={
+          locale === 'ar'
+            ? 'راجع حالة التحصيل وإثباتات التحويل قبل السماح بالتنفيذ.'
+            : 'Review collection status and transfer proof before execution is cleared.'
+        }
+        actions={
+          bankAccess.status === 'authorized' ? (
+            <Link className="button button--secondary" href={`/${locale}/portal/finance/banks`}>
+              {t.bankAdmin}
+            </Link>
+          ) : undefined
+        }
+      />
+      <nav className="finance-filters staff-filter-bar" aria-label={t.finance}>
         <Link href={`/${locale}/portal/finance`} aria-current={!status ? 'page' : undefined}>
           {t.finance}
         </Link>
@@ -62,48 +77,64 @@ export default async function Page({
         ))}
       </nav>
       <InAppNotifications locale={locale} />
-      {rows.length ? (
-        <ul className="request-list">
-          {rows.map((p) => (
-            <li key={p.orderId}>
-              <div>
-                <h2>
-                  <Link href={`/${locale}/portal/finance/${p.orderId}`}>
-                    <bdi>{p.reference}</bdi>
-                  </Link>
-                </h2>
-                <Badge>{t.states[p.status]}</Badge>
-                <p>
-                  {t.customer}: {p.customerName || p.customerId}
-                </p>
-                <p>
-                  {locale === 'ar' ? p.marketNameAr : p.marketNameEn} ·{' '}
-                  {p.method === 'CASH'
-                    ? t.cash
-                    : p.method === 'BANK_TRANSFER'
-                      ? t.transfer
-                      : t.states.PENDING}
-                </p>
-                {p.latestProof && (
-                  <p>
-                    {locale === 'ar' ? p.latestProof.bankNameAr : p.latestProof.bankNameEn} ·{' '}
-                    <time dateTime={p.latestProof.submittedAt}>
-                      {new Intl.DateTimeFormat(locale, {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                        timeZone: p.timezone,
-                      }).format(new Date(p.latestProof.submittedAt))}
-                    </time>
+      <section className="staff-panel">
+        {rows.length ? (
+          <ul className="request-list staff-queue finance-queue">
+            {rows.map((p) => (
+              <li key={p.orderId}>
+                <div className="staff-queue-main">
+                  <div className="staff-queue-meta">
+                    <span className="staff-label">{t.status}</span>
+                    <Badge>{t.states[p.status]}</Badge>
+                  </div>
+                  <h2>
+                    <Link href={`/${locale}/portal/finance/${p.orderId}`}>
+                      <bdi>{p.reference}</bdi>
+                    </Link>
+                  </h2>
+                  <p className="staff-queue-customer">
+                    {t.customer}: {p.customerName || p.customerId}
                   </p>
-                )}
-                <p>{formatMoney(p.amountMinor, p.currency, locale)}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <EmptyState title={t.finance}>{t.empty}</EmptyState>
-      )}
+                  <p className="staff-route">
+                    {locale === 'ar' ? p.marketNameAr : p.marketNameEn} ·{' '}
+                    {p.method === 'CASH'
+                      ? t.cash
+                      : p.method === 'BANK_TRANSFER'
+                        ? t.transfer
+                        : t.states.PENDING}
+                  </p>
+                  {p.latestProof && (
+                    <p className="staff-proof-note">
+                      {locale === 'ar' ? p.latestProof.bankNameAr : p.latestProof.bankNameEn} ·{' '}
+                      <time dateTime={p.latestProof.submittedAt}>
+                        {new Intl.DateTimeFormat(locale, {
+                          dateStyle: 'short',
+                          timeStyle: 'short',
+                          timeZone: p.timezone,
+                        }).format(new Date(p.latestProof.submittedAt))}
+                      </time>
+                    </p>
+                  )}
+                  <p className="staff-amount">{formatMoney(p.amountMinor, p.currency, locale)}</p>
+                </div>
+                <div className="staff-queue-action">
+                  <span className="staff-label">
+                    {locale === 'ar' ? 'الإجراء التالي' : 'Next action'}
+                  </span>
+                  <Link
+                    className="button button--secondary"
+                    href={`/${locale}/portal/finance/${p.orderId}`}
+                  >
+                    {locale === 'ar' ? 'مراجعة الدفعة' : 'Review payment'}
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <EmptyState title={t.finance}>{t.empty}</EmptyState>
+        )}
+      </section>
       <div className="actions">
         {offset > 0 && <Link href={href(Math.max(0, offset - 30))}>{t.previous}</Link>}
         {rows.length === 30 && offset < 9990 && <Link href={href(offset + 30)}>{t.next}</Link>}
