@@ -6,7 +6,6 @@ import { salesQueue } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
 import { Badge, EmptyState } from '@/components/ui/primitives';
 import { PageHeader } from '@/components/ui/presentation';
-import { StaffWorkspaceNav } from '@/components/shell/staff-workspace-nav';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
@@ -23,7 +22,6 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   }
   return (
     <div className="container page staff-page">
-      <StaffWorkspaceNav locale={locale} active="sales" />
       <PageHeader
         eyebrow={locale === 'ar' ? 'المبيعات · مساحة العمل' : 'Sales · Workspace'}
         title={t.salesQuotes}
@@ -39,7 +37,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             <p className="eyebrow">{locale === 'ar' ? 'قائمة العمل' : 'Work queue'}</p>
             <h2>{t.awaiting}</h2>
           </div>
-          <span className="staff-count">{data.length}</span>
+          <span className="staff-count">
+            {locale === 'ar' ? 'العناصر المعروضة' : 'Displayed items'}: {data.length} / 100
+          </span>
         </div>
         {!data.length ? (
           <EmptyState title={t.awaiting}>{t.noRequests}</EmptyState>
@@ -52,7 +52,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
                     <span className="staff-label">{t.request}</span>
                     <Badge>
                       {quoteStatusLabel(
-                        r.quotes.flatMap((q) => q.quote_versions).at(-1)?.status ?? r.status,
+                        r.quotes
+                          .flatMap((q) => q.quote_versions)
+                          .sort((a, b) => b.version - a.version)[0]?.status ?? r.status,
                         locale,
                       )}
                     </Badge>

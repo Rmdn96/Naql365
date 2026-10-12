@@ -145,3 +145,51 @@ The owner authorized one dedicated Stage 3 canonical Preview. The manifest adds 
 Predeployment local checks: 279 unit/integration PASS, strict TypeScript PASS, lint PASS, formatting PASS, build PASS, tracked/history secret-pattern scans PASS. All 46 migrations are identical to accepted develop. Public Supabase project configuration readback matches `zuvyfeflkzlciuaauxba`; publishable-key SHA-256 is `818b0ed06a8a4ad0f02a032e4974b5cc9790a989c7e2521b74f28e03ab2d4d0d` (no key value recorded). Deployment creation, callback updates, hosted three-role smoke, and fresh private-context Stage 2 owner login are still pending at this checkpoint. This preparation is not an Auth closeout or Stage 3 acceptance PASS.
 
 Live deployment-specific APP_ENV/APP_URL, backend build/runtime coherence, and fresh SUPER_ADMIN/DRIVER session/logout results remain to be verified. Anonymous HTTP probes on both deployment and alias hosts returned 302 to Vercel protection. No overall fix PASS is claimed. No deployment, environment, account, protection, migration, main, Production, DNS, or Hostinger mutation occurred. Migration count remains 46. This update is documentation only, with no new application SHA or CI claim.
+
+### Dedicated Stage 3 Preview — deployed checkpoint
+
+Authoritative application/configuration SHA: `afc34a5cdffa5392e490a8e7259f9214dfd961b4`. This adds the exact Stage 3 manifest origin to the earlier presentation application; Auth/RLS/RBAC source is unchanged. Delivery is not confused with the Stage 2 deployed artifact.
+
+- Canonical origin: https://naql365-staging-ux-stage3-naql365.vercel.app
+- Deployment: `dpl_7vY6iez2wXj8pmD2raHuaZiPvho6`, READY / Preview, exact SHA verified.
+- Branch-scoped Preview settings: APP_ENV staging, APP_URL exact canonical origin, STAGING_AUTH_SMOKE_ENABLED false. Staging public backend configuration is inherited; no service-role runtime credential was added.
+- Historical automatic attempt `dpl_Gz8QTE2pUMb8nK1sn54FTERjP7ux` failed with `ENV_STAGING_ORIGIN_NOT_APPROVED` before branch configuration completion. It remains a failed deployment, not PASS. A fresh build of the same SHA after configuration succeeded.
+- Canonical unauthenticated probe: 302 to Vercel protection. Authorized CLI login-page probe: 200, CSP present, private/no-store cache policy. No-code callback: 307 to the exact Stage 3 canonical /ar/login?notice=confirmation-link, proving effective APP_URL routing. These probes do not prove password login/session issuance.
+- Supabase Staging: four exact Stage 3 callbacks appended (AR/EN confirmation and recovery); eight existing callbacks preserved. Minimal config diff showed one update only; post-push readback showed zero declared configuration drift and fourteen unchanged remote-only settings. Site URL and other Auth/security settings were preserved.
+- Local E2E: 40/40 PASS. Exact-head CI: 38164851603 PASS on afc34a5cdffa5392e490a8e7259f9214dfd961b4. All 46 migrations remain unchanged.
+- Fresh owner-operated Incognito Stage 2 login/refresh/logout remains pending. Stage 3 CUSTOMER, SUPER_ADMIN and DRIVER password/session/role smoke remains pending. No fixture/account mutations or temporary automation credentials were created in this checkpoint.
+
+Status remains: LAUNCH VISUAL & UX STAGE 3 PARTIAL — AUTH REGRESSION UNDER INVESTIGATION. The dedicated Preview is ready; Auth closeout and visual acceptance are not claimed.
+
+### Frozen-candidate Auth control continuation
+
+Application remains afc34a5cdffa5392e490a8e7259f9214dfd961b4; no source/configuration changes in this continuation. Fresh Stage 2 private-context owner login is pending; it is neither STAGE2_CONTROL_PASS nor STAGE2_CONTROL_FAIL without execution evidence. No Stage 3 role fixtures were created before this control.
+
+Read-only Supabase config comparison confirms all twelve exact accepted callback entries match (four Stage 3 plus eight prior), no callback drift. Remote Site URL remains the historical l2et1jst5 Preview. Browser navigation on the canonical Stage 3 hostname exercised AR/EN callback and AR/EN recovery callback paths without a code. All four reached the same Stage 3 localized login path with notice=confirmation-link and localized safe error copy; none redirected to Stage 2. This verifies invalid/missing-code routing only, not successful confirmation/recovery exchange. Default Site URL fallback remains distinct from explicit application callback routing.
+
+CUSTOMER/SUPER_ADMIN/DRIVER hosted session matrices and live cookie-attribute inspection remain pending. No owner record mutation, no synthetic fixture, no temporary credential, and no new code commit/CI claim. Investigation remains PARTIAL pending the fresh private-window control.
+
+### Approved staff-shell implementation — local verification in progress (2026-10-12)
+
+This checkpoint supersedes the frozen UI scope after the owner's explicit backend decision. The previous afc34a5 deployment and CI remain historical; the new uncommitted staff implementation is not deployed and must not inherit that PASS.
+
+- Persistent/collapsible staff sidebar, mobile dialog navigation, compact Market/locale/logout bar and bounded role-safe attention queues added. Existing Sales/Operations/Finance loaders remain the data authority. No global metrics were introduced.
+- One active STAFF organization context gates navigation and staff loaders; ambiguous contexts fail closed. CUSTOMER_SERVICE gets no pricing, Finance, Dispatch or guest-link mutation grants.
+- Migration 47: `20261012000100_support_request_queue.sql`. Authenticated active STAFF + support.read AND requests.read, tenant/active Market validation, paired keyset cursor, stable createdAt/UUID ordering, max 30 rows. Approved support contact/reference/service/city/journey/timestamp fields only. No changes to existing business records or policies. Official types add the one RPC.
+- Local verification: 293/293 unit/integration PASS; 40/40 existing browser E2E PASS; SQL test suite PASS; official local types generated; all six independent-connection concurrency suites PASS. Populated 46→47 additionally preserves every existing table record, policy and role grant in the upgrade test. Migrations 1–46 have no diff against afc34a5.
+- Historical local E2E start attempt failed `ENV_BUILD_RUNTIME_MISMATCH` because the build omitted APP_URL while Playwright supplied the loopback origin. Rebuilding and starting with the same loopback configuration resolved this; guard unchanged.
+- Restricted staff browser harness is new, local-only and uses normal password login with scoped synthetic identities. Initial selector assumptions failed; the first cleanup also hit the tenant audit-log foreign key. Scoped recovery completed and independently verified identity removal. Subsequent interrupted runs cleaned their own fixtures. These attempts are not PASS; their ledgers remain under test-results/staff-local-*.
+- First successful dashboard captures exposed presentation cascade conflicts (desktop drawer trigger and oversized empty panels). CSS ordering/density correction is under renewed local browser verification, not yet accepted hosted evidence.
+- No new hosted fixture, Preview automation credential, Staging migration application or deployment was performed in this checkpoint. Owner accounts are untouched. Full canonical hosted CUSTOMER/SUPER_ADMIN/DRIVER matrices and populated staff visual/state matrix remain open. No exact-head CI claim for the uncommitted changes.
+
+Current result remains **LAUNCH VISUAL & UX STAGE 3 PARTIAL — REMEDIATION REQUIRED**.
+
+Restricted-role local browser checkpoint: 12/12 role×locale groups PASS (SUPER_ADMIN, SALES, OPERATIONS, DISPATCHER, FINANCE, CUSTOMER_SERVICE × AR/EN), with 60 indexed/hashed empty-dashboard captures across 360/390/768/1280/1440. Normal password login, refresh, direct-login recognition, permission-derived module visibility, granted module route smoke, drawer Escape/return-focus, RTL/LTR, overflow, axe smoke, explicit logout and protected-portal denial passed. Evidence: `test-results/staff-local-1791794431131/index.json`; ledger confirms owned tenant/identities removed. These are LOCAL empty-state checks, not the required populated hosted matrix or WCAG certification. Earlier interrupted harness runs remain historical. The logout harness was corrected to await the application's redirect before navigating, with no Auth source change. Repository database CI now runs this local restricted-role harness and retains its safe evidence artifact.
+
+A repeat SQL run after concurrency encountered leftover local concurrency fixtures (existing test helper and duplicate synthetic reference). A fresh local reconstruction restored isolation and all eight SQL files/TAP reports passed. This is retained as a local test-order/environment interruption, not relabeled application PASS. Git blob comparison proves all 46 accepted migration blobs unchanged; nine working files differ in Windows CRLF representation only, with no normalized-content differences.
+
+Post-checkpoint reruns: a concurrent heavy local run timed out the existing market-fixture isolation test at 30s (292 passed, one timeout). Its isolated rerun passed in 8.24s without source/timeout changes. Expanded direct forbidden-route browser checks first expected a redirect from payment configuration; that page correctly returns 404, so the harness assertion was corrected to its established denial behavior. Application authorization was not changed for this mismatch. Generated official types still match the staged RPC-only type diff.
+
+The final restricted-role harness also verifies direct forbidden module navigation, including localized not-found denial for payment configuration and read-denied support. No page is authorized merely because its sidebar link is hidden. Captures remain synthetic empty-state local evidence; hosted populated-state acceptance is still required.
+
+Final expanded local role run: 12/12 groups PASS including direct forbidden module routes; 60/60 captures indexed and hashed at `test-results/staff-local-1791808823601/index.json`, scoped cleanup PASS. Lint and strict TypeScript PASS after harness correction. This is the current local role evidence; earlier 60 captures remain historical. No cloud migration or deployment is claimed by this implementation checkpoint.

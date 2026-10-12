@@ -3,14 +3,13 @@ import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { paymentDictionary } from '@/i18n/payments';
 import { getFinanceQueue } from '@/infrastructure/payments/service';
-import { portalAccess } from '@/infrastructure/identity/access';
+import { staffAccess as portalAccess } from '@/infrastructure/identity/staff-context';
 import { EmptyState, Badge } from '@/components/ui/primitives';
 import { InAppNotifications } from '@/components/tracking/notifications';
 import { z } from 'zod';
 import { paymentStates } from '@/domain/payments/model';
 import { formatMoney } from '@/domain/markets/model';
 import { PageHeader } from '@/components/ui/presentation';
-import { StaffWorkspaceNav } from '@/components/shell/staff-workspace-nav';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({
@@ -45,7 +44,6 @@ export default async function Page({
     `/${locale}/portal/finance?offset=${value}${status ? `&status=${status}` : ''}`;
   return (
     <div className="container page staff-page">
-      <StaffWorkspaceNav locale={locale} active="finance" />
       <PageHeader
         eyebrow={locale === 'ar' ? 'التحصيل · مساحة العمل' : 'Collections · Workspace'}
         title={t.finance}
@@ -93,7 +91,8 @@ export default async function Page({
                     </Link>
                   </h2>
                   <p className="staff-queue-customer">
-                    {t.customer}: {p.customerName || p.customerId}
+                    {t.customer}:{' '}
+                    {p.customerName || (locale === 'ar' ? 'الاسم غير متاح' : 'Name unavailable')}
                   </p>
                   <p className="staff-route">
                     {locale === 'ar' ? p.marketNameAr : p.marketNameEn} ·{' '}

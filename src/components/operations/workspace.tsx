@@ -192,30 +192,40 @@ export function Workspace({ locale, data }: { locale: Locale; data: OperationsWo
           </form>
         </div>
         <ul className="request-list">
-          {data.drivers.map((d) => (
-            <li key={d.id}>
-              {marketName(d.market_id)} · {d.display_name} —{' '}
-              {d.driver_type === 'EXTERNAL' ? t.external : t.internal}
-              <ResourceToggle
-                locale={locale}
-                organizationId={data.organizationId}
-                id={d.id}
-                active={d.active}
-                driver
-              />
-            </li>
-          ))}
-          {data.vehicles.map((v) => (
-            <li key={v.id}>
-              {marketName(v.market_id)} · {v.identifier} — {v.vehicle_type}
-              <ResourceToggle
-                locale={locale}
-                organizationId={data.organizationId}
-                id={v.id}
-                active={v.active}
-              />
-            </li>
-          ))}
+          <li className="staff-resource-heading">
+            <h3>{t.driver}</h3>
+          </li>
+          {data.drivers
+            .filter((d) => !marketFilter || d.market_id === marketFilter)
+            .map((d) => (
+              <li key={d.id}>
+                {marketName(d.market_id)} · {d.display_name} —{' '}
+                {d.driver_type === 'EXTERNAL' ? t.external : t.internal}
+                <ResourceToggle
+                  locale={locale}
+                  organizationId={data.organizationId}
+                  id={d.id}
+                  active={d.active}
+                  driver
+                />
+              </li>
+            ))}
+          <li className="staff-resource-heading">
+            <h3>{t.vehicleType}</h3>
+          </li>
+          {data.vehicles
+            .filter((v) => !marketFilter || v.market_id === marketFilter)
+            .map((v) => (
+              <li key={v.id}>
+                {marketName(v.market_id)} · {v.identifier} — {v.vehicle_type}
+                <ResourceToggle
+                  locale={locale}
+                  organizationId={data.organizationId}
+                  id={v.id}
+                  active={v.active}
+                />
+              </li>
+            ))}
         </ul>
       </section>
     </>

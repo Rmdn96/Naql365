@@ -7,7 +7,7 @@ import {
   quoteResponseInput,
   manualQuoteInput,
 } from '@/domain/pricing/model';
-import { portalAccess } from '@/infrastructure/identity/access';
+import { staffAccess as portalAccess } from '@/infrastructure/identity/staff-context';
 import { customerClient } from '@/infrastructure/requests/service';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { guestSessionClient } from '@/infrastructure/guest/session';

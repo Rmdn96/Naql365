@@ -52,7 +52,7 @@ export default async function Page({
       {!data.trip.started_at && !['CANCELLED', 'FAILED', 'COMPLETED'].includes(data.trip.status) ? (
         <TripPlanner key={`plan-${data.trip.revision}`} locale={locale} data={data} />
       ) : (
-        <section>
+        <section className="staff-dashboard-panel">
           <h2>{t.stops}</h2>
           <ol>
             {data.stops.map((s) => (
@@ -75,14 +75,20 @@ export default async function Page({
       {clearance.executionAllowed && <p>{paymentDictionary(locale).executionAllowed}</p>}
       {clearance.status && <Badge>{paymentDictionary(locale).states[clearance.status]}</Badge>}
       {!clearance.executionAllowed && <Alert>{paymentDictionary(locale).executionBlocked}</Alert>}
-      <TripControls
-        key={`controls-${data.trip.revision}`}
-        locale={locale}
-        data={data}
-        executionAllowed={clearance.executionAllowed}
-      />
-      <section>
+      <section className="staff-dashboard-panel">
+        <h2>{locale === 'ar' ? 'التعيين والتنفيذ' : 'Assignment & execution'}</h2>
+        <TripControls
+          key={`controls-${data.trip.revision}`}
+          locale={locale}
+          data={data}
+          executionAllowed={clearance.executionAllowed}
+        />
+      </section>
+      <section className="staff-dashboard-panel">
         <h2>{dt.issues}</h2>
+        {!issues.length && (
+          <p>{locale === 'ar' ? 'لا توجد بلاغات لهذه الرحلة.' : 'No issues for this trip.'}</p>
+        )}
         {issues.map((issue) => {
           const category = issueCategories.find((c) => c === issue.category) ?? 'OTHER';
           return (
@@ -99,7 +105,7 @@ export default async function Page({
           );
         })}
       </section>
-      <section>
+      <section className="staff-dashboard-panel">
         <h2>{t.events}</h2>
         <ol>
           {data.events.map((e) => {

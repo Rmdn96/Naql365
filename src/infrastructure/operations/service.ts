@@ -7,7 +7,7 @@ import {
   podInput,
   progressSchema,
 } from '@/domain/operations/model';
-import { portalAccess } from '@/infrastructure/identity/access';
+import { staffAccess as portalAccess } from '@/infrastructure/identity/staff-context';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { customerClient } from '@/infrastructure/requests/service';
 import { guestSessionClient } from '@/infrastructure/guest/session';

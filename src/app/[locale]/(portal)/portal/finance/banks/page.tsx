@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { paymentDictionary } from '@/i18n/payments';
 import { getBankConfiguration } from '@/infrastructure/payments/service';
-import { portalAccess } from '@/infrastructure/identity/access';
+import { staffAccess as portalAccess } from '@/infrastructure/identity/staff-context';
 import { BankForm } from '@/components/payments/bank-admin';
 import { transferDestinationType } from '@/domain/payments/model';
 export const dynamic = 'force-dynamic';
