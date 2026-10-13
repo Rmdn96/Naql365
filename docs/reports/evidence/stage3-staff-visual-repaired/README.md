@@ -1,0 +1,19 @@
+# Stage 3 repaired staff visual matrix
+
+Application: `8062e3ec5884827b507e8e18dab7747c369e9927`. Protected canonical Preview: https://naql365-staging-ux-stage3-naql365.vercel.app . Deployment: `dpl_E76q5BwzafRsT3rMQ2yKhvnAqF2K`. Application CI `38406521342`: both required jobs PASS.
+
+Matrix execution PASS: 670/670 required combinations, zero missing, zero N/A. Definition: 67 implemented state families × AR/EN × 360/390/768/1280/1440. Completeness and all image hashes were checked programmatically. The independently retained 60 empty-shell screenshots are historical accepted evidence on `1b1e02f`; the CSS correction does not change their dashboard rendering. They are not relabeled as new-SHA captures. Combined accepted coverage is 730 captures, with the two application identities explicit.
+
+The earlier detailed index at `../stage3-staff-visual/index.json` preserves 222 successful captures and the failed operational layout evidence on the old application. A genuine nested-sticky-action overlap required the four-line operational CSS correction. This new directory keeps application identity separate and does not silently overwrite those files.
+
+Each new item records route, effective permission set, persona, locale, viewport, state, capture time, application SHA, REAL_HOSTED versus CONTROLLED_PRESENTATION, checks, filename and SHA-256. The runner validates prior files before resuming, skips accepted IDs, and atomically appends new entries. Batch completeness fails on any missing applicable combination.
+
+Real hosted records are synthetic and owned by one ledger-scoped organization. Existing trusted commands produce manual Quotes, decisions, Orders, payment review, assignment, execution and POD states. Screenshots never open private evidence files or display signed URLs. Synthetic payment configuration is STAGING_TEST only. No owner account, catalogue or commercial record is a fixture.
+
+Controlled presentation states use only the owned browser: command response 503/busy interception and the existing committed `portal/loading.tsx`, transpiled and rendered verbatim inside an already-authorized hosted shell. The initial streaming-prefix assumption failed because the completed HTML response contained no loading component; those attempts remain historical failures. The 100 loading captures prove implemented component presentation, not actual network-transition timing. They are not business acceptance or deployed bypasses. Read-only Support has no commercial mutation, validation-save or success-toast state; these are not fabricated. Queue pages do not receive fake save forms. The historical README documents the implemented-state and privileged fixture-cleanup boundaries.
+
+Counts: Sales 110, Support 50, six populated permission-driven dashboards 60, Operations/Dispatcher 120, Finance 130, privileged bank configuration 50, shared loading 100, empty queues/configuration 50. `closeout.json` records batch counts and actual effective navigation permissions; `run-history.json` retains failed attempts and cleanup/revocation results. The `planned` family denotes the pre-execution planning/assignment interface, not a claim that every Trip retains the PLANNED enum after an assignment-success test. No backward lifecycle mutation is used.
+
+All ten routes share the same portal error/retry component without route-specific overrides. Source and rendered-markup equivalence are tested, with ten representative localized/viewport error captures indexed in `shared-error-equivalence.json`. This proves identical presentation, not that every route experienced an actual server outage. No global service failure was manufactured.
+
+Automated overflow, direction, labels, action geometry, focus, drawer and axe checks are bounded smoke coverage, not WCAG certification. Representative images must also be inspected. Cleanup and temporary platform credential revocation/reuse denial are required after every batch.

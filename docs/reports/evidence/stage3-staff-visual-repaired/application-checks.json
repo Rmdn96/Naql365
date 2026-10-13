@@ -1,0 +1,42 @@
+{
+  "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+  "deployment": "dpl_E76q5BwzafRsT3rMQ2yKhvnAqF2K",
+  "canonicalOrigin": "https://naql365-staging-ux-stage3-naql365.vercel.app",
+  "state": "READY",
+  "environment": "Preview",
+  "protection": "all_except_custom_domains",
+  "sourceChanges": ["src/styles/staff-experience.css"],
+  "migrationCount": 47,
+  "first46Immutable": true,
+  "local": {
+    "unitIntegration": {
+      "pass": 295
+    },
+    "e2e": {
+      "pass": 40
+    },
+    "sqlSuites": {
+      "pass": 8
+    },
+    "generatedTypes": "EXACT",
+    "concurrencySuites": {
+      "pass": 6
+    },
+    "lint": "PASS",
+    "strictTypes": "PASS",
+    "productionBuild": "PASS",
+    "operationalLayout": {
+      "locales": ["ar", "en"],
+      "widths": [360, 390, 768, 1280, 1440],
+      "overlappingPairs": 0,
+      "unlabelledFields": 0,
+      "fixtureCleanup": "PASS"
+    }
+  },
+  "applicationCI": {
+    "run": 38406521342,
+    "quality": "PASS",
+    "database": "PASS"
+  },
+  "timestamp": "2026-10-13T13:50:35.957Z"
+}

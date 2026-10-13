@@ -1,0 +1,133 @@
+{
+  "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+  "runs": [
+    {
+      "run": 1791894336944,
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "FAIL"
+      },
+      "recovery": {
+        "result": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        },
+        "timestamp": "2026-10-13T12:29:13.304Z"
+      },
+      "layoutDiagnostic": null
+    },
+    {
+      "run": 1791894626347,
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "FAIL"
+      },
+      "recovery": {
+        "result": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        },
+        "timestamp": "2026-10-13T12:38:27.222Z"
+      },
+      "layoutDiagnostic": null
+    },
+    {
+      "run": 1791894969872,
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": null,
+      "recovery": {
+        "result": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        },
+        "timestamp": "2026-10-13T12:38:48.246Z"
+      },
+      "layoutDiagnostic": null
+    },
+    {
+      "run": 1791895191536,
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "layoutDiagnostic": null
+    },
+    {
+      "run": 1791895351857,
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "layoutDiagnostic": null
+    },
+    {
+      "run": 1791895535429,
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "layoutDiagnostic": null
+    },
+    {
+      "run": 1791896501708,
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 6,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "layoutDiagnostic": null
+    },
+    {
+      "run": 1791897579294,
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 6,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "layoutDiagnostic": {
+        "checkpoint": "operations-planned-ar-768",
+        "overlapping": 2,
+        "unlabelled": 0
+      }
+    }
+  ]
+}
