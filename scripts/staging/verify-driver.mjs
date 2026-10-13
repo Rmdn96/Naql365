@@ -39,6 +39,7 @@ export async function verifyDriverAcceptance(phase) {
         'tests/phase7/public.spec.ts',
         'tests/phase7/security.spec.ts',
         'tests/phase7/stage1-session.spec.ts',
+        '--max-failures=1',
       ]
     : args.includes('--visual-c1')
       ? ['tests/phase7/visual-batch-b.spec.ts', '--grep', 'owned Quote']

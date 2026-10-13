@@ -110,7 +110,9 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   await page.locator('#description').fill('PHASE7 TEST ONLY');
   await page.getByRole('button', { name: ct.addItem, exact: true }).click();
   await page.locator('#item-0').fill('TEST box');
+  await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
+  await expect(page.locator('#pickup-floor')).toBeVisible();
   for (const kind of ['pickup', 'delivery']) {
     await page.locator(`#${kind}-floor`).fill('0');
     await page.locator(`#${kind}-elevator`).selectOption('true');

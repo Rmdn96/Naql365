@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-10-13T06:44:34.825Z",
+  "classification": "INTERRUPTED_HOSTED_RUN",
+  "cleanup": {
+    "banks": 0,
+    "customers": 0,
+    "files": 0,
+    "identities": 0,
+    "isolation_organizations": 0,
+    "memberships": 0,
+    "profiles": 0,
+    "roles": 0,
+    "storage": 0
+  },
+  "guestPolicy": {
+    "creations_per_hour": 30,
+    "enabled": true,
+    "lifetime_days": 30
+  },
+  "credentialRevocation": {
+    "revoked": 1,
+    "reuseDenied": true,
+    "timestamp": "2026-10-13T06:40:10.611Z"
+  },
+  "staleLockRemoved": true,
+  "interruptedAttempt": {
+    "status": "INCOMPLETE_NOT_PASS",
+    "safeObservedState": "SA and EG guest wizard shipment step with validation message; process exited before closeout",
+    "snapshots": [
+      {
+        "market": "SA",
+        "sha256": "3ab8b278eebb85c82cb4b32f02ac7c4296a61a4dc2d02d2d7956f1954972c101"
+      },
+      {
+        "market": "EG",
+        "sha256": "ec448086cf4a7a593ee597fb778a0b18e07a64fd131d9bcdf067655beffbecf9"
+      }
+    ]
+  }
+}

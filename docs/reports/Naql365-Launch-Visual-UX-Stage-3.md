@@ -2,11 +2,13 @@
 
 ## Decision
 
-`LAUNCH VISUAL & UX STAGE 3 PARTIAL — DEPLOYMENT-WIDE AUTH REGRESSION UNDER INVESTIGATION`
+`LAUNCH VISUAL & UX STAGE 3 PARTIAL — REMEDIATION REQUIRED`
+
+Current deployed application: `1b1e02fc6c316950d53d70e671faeeca82be004e`, protected canonical Stage 3 Preview. The six canonical CUSTOMER/SUPER_ADMIN/DRIVER localized session groups and ten hosted business regression groups passed. The populated staff visual/state matrix remains incomplete. Current migration count is 47, including the owner-approved support read projection. Earlier checkpoints below retain their original scope and outcomes and are not current deployment claims.
 
 This delivery is pre-production polish only. It does not deploy Production, modify `main`, change DNS, configure Hostinger Production, start Stage 4, or start Phase 8.
 
-## Baseline and scope
+## Historical initial baseline and scope
 
 - Accepted `develop` baseline: `3f5a80e2a4373f20c0cd57fdae73977ae2c0c52f`
 - Stage 3 branch: `feature/launch-visual-ux-stage-3-staff-operations-finance`
@@ -215,3 +217,17 @@ Canonical session follow-up: **6/6 hosted role×locale cycles PASS** on the same
 The first two session harness attempts matched both desktop and mobile identity links, causing strict locator failure after successful login. The harness now checks desktop-link destination and the visible mobile-drawer link separately. Those failed attempts remain historical, with cleanup/revocation PASS. No application Auth source changed. This closes the reproduced canonical login/session failure path; the previously rejected noncanonical deployment origin is not an approved acceptance URL. Full assigned-trip isolation/execution and populated staff workflow/visual acceptance remain separate pending gates; neither empty-shell screenshots nor session checks substitute for them.
 
 Hosted database verification also passed after the role/session fixtures were cleaned: 47/47 migration versions match the repository; all 60 public tables retain RLS; the transactional SQL/security assertions (including support permission/tenant/field/pagination checks) passed; hosted generated public types match canonical CLI types. Evidence: `test-results/stage3-hosted-database.json`. This check uses rollback-scoped SQL fixtures and does not activate or modify Production configuration.
+
+### Hosted business recovery and regression — 2026-10-13
+
+Application source remains `1b1e02fc6c316950d53d70e671faeeca82be004e`; no application/Auth/migration changes were made. Previous delivery `48173086cb8e7aade20bcee50ca16bde4a152914` has exact-head Foundation CI `38305927564` PASS. New test/evidence edits require their own CI and do not inherit that result.
+
+The October 12 business runner disappeared before finalization. Its SA/EG snapshots showed the guest wizard shipment step with a validation message. This interrupted attempt remains INCOMPLETE, not PASS. Recovery removed its 16 run-owned identities and associated fixture data; independent readback found zero identities/profiles/customers/memberships/roles/bank fixtures/file metadata/owned Storage objects/isolation organizations. The temporary credential was revoked and reuse returned 302. The temporarily raised guest quota was restored to the documented 30/hour, preserving enabled=true and 30-day lifetime. Recovery evidence and original snapshot hashes: `evidence/stage3-staff-shell/interrupted-business-recovery.json`.
+
+The existing guest journey harness advanced immediately after editing an item, unlike the previously successful visual harness which waits for Saved. A test-only Saved assertion and next-step visibility assertion now bound that transition. No application behavior was altered. Playwright outputs now have a dedicated `test-results/phase7-playwright` directory, preventing deletion of unrelated evidence/helpers. Stage 3 business mode stops after its first failed test. The 60 previously accepted staff-shell captures remain hash-valid.
+
+Rerun `1791874031495` passed all 10 hosted groups on the same canonical protected deployment: SA guest CASH through delivery, EG guest synthetic transfer/proof rejection/reupload/Finance confirmation through delivery, guest Quote rejection without Order, SA/EG registered manual Quote/CASH, AR/EN public responsive/axe/security contact checks, capability replay/isolation, and AR/EN SUPER_ADMIN navigation/logout/history denial. Transient polling assertions logged by the safe reporter were followed by successful authoritative state transitions; no final test failed. Result: `evidence/stage3-staff-shell/business-results.json`.
+
+Scoped fixture cleanup passed; independent readback confirmed zero Auth fixtures in the run window and guest quota 30/hour. Temporary credential revoked, reuse denied, hosted lock released. Owner records/catalogues were preserved. Formatting, targeted ESLint, strict TypeScript, 30 focused staff/session tests, tracked secret-pattern scan and history scan passed. Secret scans are heuristic, not proof that every possible secret format is absent.
+
+Remaining launch gate: populated restricted-role staff visual/state evidence across the approved locale/viewport matrix, including loading/validation/error/retry/success and detailed Sales/Operations/Finance/support screens. The empty-shell captures, role session tests and business regressions do not replace that visual matrix. Stage 3 remains PARTIAL; no merge, main, Production, DNS, Hostinger or Phase 8 action occurred.
