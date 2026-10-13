@@ -266,6 +266,10 @@
   outline: 3px solid #1677ff;
   outline-offset: 4px;
 }
+.staff-workspace-content .operations .wizard-actions {
+  position: static;
+  flex-wrap: wrap;
+}
 .staff-sidebar :focus-visible,
 .staff-drawer :focus-visible {
   outline-color: #22c7e8;
