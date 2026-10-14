@@ -87,7 +87,7 @@ try {
         await page.locator('input[name="email"]').fill(email);
         await page.locator('input[name="password"]').fill(password);
         checkpoint = role + ' ' + locale + ' submit';
-        await page.locator('.auth-form button').click();
+        await page.locator('.auth-form button:not([type=button])').click();
         checkpoint = role + ' ' + locale + ' destination';
         await expect(page).toHaveURL(new RegExp('/' + locale + '/portal$'), { timeout: 20000 });
         await expect(page.locator('.staff-app')).toBeVisible();

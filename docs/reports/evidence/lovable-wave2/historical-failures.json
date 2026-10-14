@@ -14,6 +14,12 @@
       "category": "Local accessibility",
       "result": "40 E2E PASS / 4 new E2E FAIL",
       "detail": "Existing brand numeric suffix inherited action blue on new navy story surface; contrast 2.91 vs required 3. Scoped story suffix changed to existing cyan token; no Auth behavior change."
+    },
+    {
+      "category": "Exact-head CI restricted staff harness",
+      "run": 38595733160,
+      "result": "Quality PASS / database job FAIL at staff browser submit",
+      "detail": "Accepted staff harness selected .auth-form button. Password reveal adds a second button; selector now excludes type=button, preserving compatibility with prior default-submit markup. No Auth/application source change. SQL/RLS/types/concurrency steps had already passed; fixture cleanup PASS."
     }
   ]
 }

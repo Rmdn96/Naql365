@@ -337,7 +337,7 @@ try {
     await page.goto(origin + '/' + locale + '/login');
     await page.locator('#email').fill(identities[role].email);
     await page.locator('#password').fill(identities[role].password);
-    await page.locator('.auth-form button').click();
+    await page.locator('.auth-form button:not([type=button])').click();
     await expect(page).toHaveURL(new RegExp('/' + locale + '/portal$'));
     await expect(page.locator('.staff-app')).toBeVisible();
     const nav = page.locator('.staff-sidebar nav');

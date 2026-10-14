@@ -89,7 +89,7 @@ try {
         await page.goto(origin + '/' + locale + '/login');
         await page.locator('#email').fill(email);
         await page.locator('#password').fill(password);
-        await page.locator('.auth-form button').click();
+        await page.locator('.auth-form button:not([type=button])').click();
         await expect(page).toHaveURL(new RegExp('/' + locale + '/' + destination + '$'));
         const authCookies = (await context.cookies()).filter((c) =>
           /^sb-.*-auth-token(?:\.\d+)?$/.test(c.name),
