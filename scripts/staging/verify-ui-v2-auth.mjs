@@ -33,7 +33,7 @@ const admin = createClient(
 const org = randomUUID(),
   users = [],
   ledger = { org, users, cleanup: false };
-const output = 'test-results/ui-v2-auth-' + Date.now();
+const output = 'supabase/.temp/ui-v2-auth-' + Date.now();
 mkdirSync(output, { recursive: true });
 const save = () => writeFileSync(output + '/ledger.json', JSON.stringify(ledger, null, 2));
 const sql = (input) => {
@@ -51,6 +51,13 @@ async function captureFamily(page, locale, state) {
     await page.locator('main h1').first().waitFor();
     if (!(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)))
       throw Error('HOSTED_OVERFLOW');
+    if (await page.locator('.auth-v2').count()) {
+      if (
+        (await page.locator('.floating-contact').evaluate((e) => getComputedStyle(e).position)) !==
+        'static'
+      )
+        throw Error('HOSTED_ACTION_OVERLAP_RISK');
+    }
     const unlabelled = await page
       .locator('main input, main select')
       .evaluateAll(
@@ -137,6 +144,11 @@ try {
             await page.goto(origin + '/' + locale + '/' + path);
             await captureFamily(page, locale, path + '-initial');
           }
+          await page.goto(origin + '/' + locale + '/register');
+          await page.locator('#email').fill('not-an-email');
+          await page.locator('.auth-form button[type=submit]').click();
+          await expect(page.locator('#email:invalid')).toHaveCount(1);
+          await captureFamily(page, locale, 'signup-native-validation');
           await page.goto(origin + '/auth/callback?locale=' + locale);
           await expect(page).toHaveURL(
             new RegExp('/' + locale + '/login\\?notice=confirmation-link$'),
@@ -146,8 +158,24 @@ try {
           await page.goto(origin + '/' + locale + '/register');
           await page.locator('#email').fill(email);
           await page.locator('#password').fill(password);
-          await page.locator('.auth-form button[type=submit]').click();
+          let releasePost;
+          const postReady = new Promise((resolve) => {
+            releasePost = resolve;
+          });
+          const holdPost = async (route) => {
+            if (route.request().method() === 'POST') await postReady;
+            await route.fallback();
+          };
+          await page.route(origin + '/' + locale + '/register', holdPost);
+          try {
+            await page.locator('.auth-form button[type=submit]').click();
+            await expect(page.locator('.auth-form')).toHaveAttribute('aria-busy', 'true');
+            await captureFamily(page, locale, 'signup-pending-controlled-request-delay');
+          } finally {
+            releasePost();
+          }
           await expect(page.locator('.auth-form [role=status]')).toBeVisible();
+          await page.unroute(origin + '/' + locale + '/register', holdPost);
           await page.locator('#password').fill('');
           await page.locator('#email').fill('');
           await captureFamily(page, locale, 'signup-email-sent-existing-fixture');
@@ -175,6 +203,11 @@ try {
         if (role === 'CUSTOMER') {
           await page.locator('.profile-settings summary').click();
           await captureFamily(page, locale, 'profile-existing-authorized-fields');
+          await page.locator('#name').fill('Synthetic profile');
+          await page.locator('#phone').fill('invalid');
+          await page.locator('.profile-form button').click();
+          await expect(page.locator('#phone')).toHaveAttribute('aria-invalid', 'true');
+          await captureFamily(page, locale, 'profile-server-validation');
           await page.goto(origin + '/' + locale + '/password');
           await expect(page.locator('#password')).toHaveAttribute('autocomplete', 'new-password');
           const reveal = page.locator('.auth-v2-reveal');

@@ -13,6 +13,11 @@ for (const locale of ['ar', 'en']) {
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
           true,
         );
+        expect(
+          await page
+            .locator('.floating-contact')
+            .evaluate((element) => getComputedStyle(element).position),
+        ).toBe('static');
       }
       expect(
         (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())

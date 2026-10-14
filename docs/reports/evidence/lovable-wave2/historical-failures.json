@@ -20,6 +20,17 @@
       "run": 38595733160,
       "result": "Quality PASS / database job FAIL at staff browser submit",
       "detail": "Accepted staff harness selected .auth-form button. Password reveal adds a second button; selector now excludes type=button, preserving compatibility with prior default-submit markup. No Auth/application source change. SQL/RLS/types/concurrency steps had already passed; fixture cleanup PASS."
+    },
+    {
+      "category": "Hosted visual review",
+      "applicationSha": "1298411f45b5214b859232fe3c92f76f30adc4fe",
+      "result": "MOBILE ACTION OVERLAP",
+      "detail": "Floating WhatsApp control covered signup CTA at 390px. Scoped auth-v2 CSS places support in normal document flow. Prior 90 visual captures are historical, not final evidence for the repaired application."
+    },
+    {
+      "category": "Hosted evidence output lifecycle",
+      "result": "6/6 session groups PASS; visual evidence not retained; writer closeout FAIL",
+      "detail": "Concurrent local Playwright run reset shared test-results directory. Independent ledger persisted in supabase/.temp; read-only recovery confirmed zero run-owned Auth, Customer, Driver, membership or organization rows. Temporary credential revoked and reuse denied. Output moved outside local Playwright lifecycle. Prior 90 captures are not counted as final evidence."
     }
   ]
 }

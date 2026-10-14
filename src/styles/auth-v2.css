@@ -1,4 +1,9 @@
 /* Wave 2 presentation only. No simulated authentication states or hidden controls. */
+body:has(.auth-v2) .floating-contact {
+  position: static;
+  width: fit-content;
+  margin: 1rem auto;
+}
 .auth-v2 {
   background: var(--v2-ink);
   padding-block: clamp(1.5rem, 4vw, 3rem);
