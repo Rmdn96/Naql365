@@ -5,6 +5,7 @@ import type { Locale } from '@/i18n/config';
 import { publicDictionary } from '@/i18n/public';
 import { whatsappUrl, type PublicCountry } from '@/domain/markets/public-contact';
 import { RouteMotif } from '@/components/ui/route-motif';
+import { RouteStory } from './route-story';
 
 export function Landing({
   locale,
@@ -25,7 +26,8 @@ export function Landing({
 }) {
   const t = publicDictionary(locale),
     request = `/${locale}/request`,
-    wa = whatsappUrl(country, locale);
+    wa = whatsappUrl(country, locale),
+    headlineBreak = t.headline.indexOf(locale === 'ar' ? '…' : '.') + 1;
   const coverage =
     locale === 'ar'
       ? country === 'SA'
@@ -35,13 +37,16 @@ export function Landing({
         ? 'Within Riyadh and from Riyadh to activated destinations only.'
         : 'Within Cairo and from Cairo to activated destinations only.';
   return (
-    <div className="launch-page">
+    <div className="launch-page public-v2">
       <MvpView event="homepage_viewed" market={country} context="home" />
       <section className="launch-hero">
         <div className="container launch-hero-grid">
           <div className="launch-hero-copy">
             <p className="eyebrow">{country === 'SA' ? t.sa : t.eg} · Naql365</p>
-            <h1>{t.headline}</h1>
+            <h1>
+              {t.headline.slice(0, headlineBreak)}{' '}
+              <strong>{t.headline.slice(headlineBreak).trim()}</strong>
+            </h1>
             <p className="launch-lead">{t.intro}</p>
             <p className="coverage-note">{coverage}</p>
             <div className="actions">
@@ -58,26 +63,10 @@ export function Landing({
             </div>
             <p className="launch-assurance">{t.noAccount}</p>
           </div>
-          <figure className="route-illustration">
-            <div className="route-grid" aria-hidden="true" />
-            <div className="route-visual-line" aria-hidden="true" />
-            <div className="route-visual-card route-visual-card--first">
-              <span className="route-dot" aria-hidden="true" />
-              <strong>{t.received}</strong>
-              <span>{t.pickup}</span>
-            </div>
-            <div className="route-visual-card route-visual-card--middle">
-              <span className="route-dot route-dot--blue" aria-hidden="true" />
-              <strong>{t.review}</strong>
-              <span>Naql365</span>
-            </div>
-            <div className="route-visual-card route-visual-card--last">
-              <span className="route-dot route-dot--cyan" aria-hidden="true" />
-              <strong>{t.delivered}</strong>
-              <span>{t.delivery}</span>
-            </div>
-            <figcaption>{t.illustration}</figcaption>
-          </figure>
+          <RouteStory
+            labels={[t.pickup, t.review, t.assigned, t.onWay, t.delivered]}
+            caption={t.illustration}
+          />
         </div>
       </section>
       <section className="container launch-quick" aria-labelledby="quick-title">

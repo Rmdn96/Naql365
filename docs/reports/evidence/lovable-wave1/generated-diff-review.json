@@ -1,0 +1,95 @@
+{
+  "project": "45d7c85b-e937-48ee-8d57-251cc16a57b8",
+  "baseline": "1d45227642534d8e825186713b1833d31a4cb220",
+  "exportSha256": "a97b93bad5fdaadfb35d62e91aa68597ba07ac466d48121ce97ecc8496cd4cd9",
+  "reviewedAt": "2026-10-14T07:59:11.219Z",
+  "changed": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "c2b47297cefef0c8e830a18a417f0a347417877e8bd90e4ee260d09abfc414f6",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "DESIGN-LAB.md",
+      "sha256": "02cb38f35da7e697b07c8ac0f6ce508e671d1812a0efc1eadefd7e36e2e9a7a2",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "roadmap.md",
+      "sha256": "9ef8ee055a5159c1a250410117b2714046376cf95360f8eaaec587f375a2d4b3",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "src/assets/route-map.jpg",
+      "sha256": "c2c2fec641b7d3568794188414523c506a5ec0a8371062debbe86eb1e6928194",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "src/components/naql/action-dialog.tsx",
+      "sha256": "a1df52b8e24c001f7e99d20c1485b5f8cf6e6b09cd857cb8efe95da0af85f44f",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "src/components/naql/brand.tsx",
+      "sha256": "53592febad0e56f9020fcb5074b7879ed0acf8278a086f5dc0cc7e6af7d32222",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "src/components/naql/route-scene.tsx",
+      "sha256": "efd5784be81f47213d254df2a20146a4174ff6f0700d2ac82c88bdaff0aee1a8",
+      "decision": "Adapt visual concepts only; existing canonical CSS/React primitives"
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "sha256": "fd3c9f41f73970bf6e6fccbc6285d628218656ca03cfba193c80539765bdc85f",
+      "decision": "Adapt visual concepts only; existing canonical CSS/React primitives"
+    },
+    {
+      "path": "src/components/ui/sheet.tsx",
+      "sha256": "d9c5a1694628bc0110566e5a5d3efb475de844158868ccbbd744efc8d8c76dfc",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "src/lib/naql/content.test.ts",
+      "sha256": "6cbb85aef908daeea28a140efebba5aa59349cc5851efbc6fa6929c0a30ebd26",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "src/lib/naql/content.ts",
+      "sha256": "d1bdda6d0816287c5cd10f0c3874848f9bf00615a6a8cf8cee51dccd494701e9",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "src/routes/index.tsx",
+      "sha256": "18213322c4f81cc9b6c6fe1c0139d0e74acf3a654bc56c9c53bb0283772f2703",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "src/routes/__root.tsx",
+      "sha256": "97dbab40e3ae308fc0b4cbd9e9382d6da7f1865429876c6ccc67b5e485ee409e",
+      "decision": "Do not import; retain canonical architecture, commands, catalogue, routing and content"
+    },
+    {
+      "path": "src/styles.css",
+      "sha256": "f252ce0defba33943946871b26489f448adadc7787da9bf82f8a9478d0a3c90c",
+      "decision": "Adapt visual concepts only; existing canonical CSS/React primitives"
+    }
+  ],
+  "noGeneratedCodeExecution": true,
+  "credentialsOrBackendConnections": "None provided or configured",
+  "canonicalPort": [
+    "src/styles/design-system-v2.css",
+    "src/components/public/route-story.tsx",
+    "src/components/public/landing.tsx",
+    "src/components/shell/public-shell.tsx",
+    "src/app/globals.css",
+    "src/components/shell/brand-link.tsx"
+  ],
+  "previewConfiguration": {
+    "origin": "https://naql365-staging-ui-v2-naql365.vercel.app",
+    "scope": "Exact Staging allowlist entry and Preview-only APP_URL/APP_ENV for this branch",
+    "supabaseProjectUnchanged": true,
+    "productionManifest": null,
+    "authCallbacksUnchanged": true
+  }
+}

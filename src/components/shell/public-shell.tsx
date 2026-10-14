@@ -10,6 +10,7 @@ import { MarketSelector } from './market-selector';
 import { PublicContact } from './public-contact';
 import { loginDestination } from '@/infrastructure/identity/login-destination';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
+import { BrandLink } from './brand-link';
 
 export async function IdentityLink({ locale }: { locale: Locale }) {
   const destination = getPublicEnv() ? await loginDestination() : 'unauthenticated';
@@ -47,18 +48,9 @@ export async function Header({ locale }: { locale: Locale }) {
       <a className="skip-link" href="#main">
         {t.skip}
       </a>
-      <header className="site-header">
+      <header className="site-header public-v2-header">
         <div className="container header-inner">
-          <Link href={`/${locale}`} className="brand" aria-label={t.brand}>
-            <span className="brand-symbol" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            <span dir="ltr">
-              Naql<span>365</span>
-            </span>
-          </Link>
+          <BrandLink href={`/${locale}`} label={t.brand} />
           <nav className="desktop-header-nav" aria-label={t.home}>
             <Link href={`/${locale}`}>{t.home}</Link>
             <Link className="desktop-nav" href={`/${locale}#services`}>
@@ -107,9 +99,19 @@ export async function Footer({ locale }: { locale: Locale }) {
   const p = publicDictionary(locale);
   const country = await selectedPublicCountry();
   return (
-    <footer className="site-footer">
+    <footer className="site-footer public-v2-footer">
       <div className="container footer-inner">
-        <p>{t.rights}</p>
+        <div className="footer-brand">
+          <BrandLink href={`/${locale}`} label={t.brand} />
+          <p>{t.positioning}</p>
+          <small>{t.rights}</small>
+        </div>
+        <nav aria-label={p.services}>
+          <Link href={`/${locale}#services`}>{p.services}</Link>
+          <Link href={`/${locale}#how`}>{p.how}</Link>
+          <Link href={`/${locale}#coverage`}>{locale === 'ar' ? 'نطاق الخدمة' : 'Coverage'}</Link>
+          <Link href={`/${locale}#tracking`}>{p.track}</Link>
+        </nav>
         <nav aria-label={t.positioning}>
           <Link href={`/${locale}/request`}>{p.request}</Link>
           <IdentityLink locale={locale} />
