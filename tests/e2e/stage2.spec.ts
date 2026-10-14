@@ -20,7 +20,7 @@ for (const locale of ['ar', 'en'] as const) {
     }
     await page.locator('.hero-track').click();
     await expect(page).toHaveURL(new RegExp(`/${locale}/guest$`));
-    await expect(page.getByRole('alert')).toBeVisible();
+    await expect(page.locator('main').getByRole('alert')).toBeVisible();
     await expect(page.locator('main input')).toHaveCount(0);
     await expect(page).toHaveTitle(/Naql365|نقل/);
     expect(

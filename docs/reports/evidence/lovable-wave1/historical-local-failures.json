@@ -67,5 +67,21 @@
     "result": "STOPPED_WITHOUT_ENVIRONMENT_CHANGE",
     "cause": "Vercel requires the new branch to exist remotely before branch-scoped APP_URL can be created",
     "remediation": "Publish the reviewed source branch, then configure Preview-only branch values and rebuild if necessary"
+  },
+  "exactHeadCI": {
+    "run": 38535219643,
+    "source": "8a6636292fd3421a23b619ed6f14fac2f301ecb4",
+    "result": "FAIL",
+    "e2e": {
+      "passed": 39,
+      "failed": 1
+    },
+    "classification": "TEST_HARNESS_SELECTOR",
+    "cause": "Global alert selector matched business denial and Next route announcer",
+    "remediation": "Assert business alert inside main; preserve existing route, absence-of-input and accessibility assertions; no application/Auth change",
+    "artifact": {
+      "id": 11879113783,
+      "sha256": "5557ed5d6dd1d20a9b538825eb6d904e8fed50371555a533d3f98663b7aee1ab"
+    }
   }
 }
