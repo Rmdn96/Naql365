@@ -1,12 +1,38 @@
 # Naql365 Launch Visual & UX Stage 3 — Staff / Operations / Finance
 
-## Decision
+## Current final decision — 2026-10-14
 
-`LAUNCH VISUAL & UX STAGE 3 PARTIAL — REMEDIATION REQUIRED`
+`LAUNCH VISUAL & UX STAGE 3 PASS`
 
-Current deployed application: `1b1e02fc6c316950d53d70e671faeeca82be004e`, protected canonical Stage 3 Preview. The six canonical CUSTOMER/SUPER_ADMIN/DRIVER localized session groups and ten hosted business regression groups passed. The populated staff visual/state matrix remains incomplete. Current migration count is 47, including the owner-approved support read projection. Earlier checkpoints below retain their original scope and outcomes and are not current deployment claims.
+Current authoritative application SHA: **`8062e3ec5884827b507e8e18dab7747c369e9927`**. Protected canonical Preview: https://naql365-staging-ux-stage3-naql365.vercel.app . Deployment: `dpl_E76q5BwzafRsT3rMQ2yKhvnAqF2K`.
+
+Accepted evidence/delivery SHA: **`c7e3217fe30b1dba2049b9f26ead22dd8e48b8f9`**. Exact delivery CI [38427388735](https://github.com/Rmdn96/Naql365/actions/runs/38427388735): **PASS**, including both required jobs, **Supabase migrations and RLS** and **Lint, types, tests and production build**. Evidence/harness/documentation changes after the application SHA did not change application/runtime source. This documentation-only correction does not change that application identity; its own commit is subject to the repository's feature-branch CI and is reported separately.
+
+- Final detailed staff visual matrix: **670/670 PASS**, zero missing, zero N/A; index and screenshot hashes verified at `evidence/stage3-staff-visual-repaired/index.json`.
+- Original **60 captures preserved and hash-valid**, retaining their original application SHA. Combined accepted coverage is 730 captures with the application identities explicitly separated.
+- Hosted business acceptance **10/10 PASS retained**; canonical CUSTOMER/SUPER_ADMIN/DRIVER localized session acceptance **6/6 PASS retained**.
+- **47 migrations**; migrations **1–46 unchanged** from accepted develop, and migration **47 unchanged** (`20261012000100_support_request_queue.sql`).
+- **Cleanup PASS**, owned fixtures removed and owner records preserved; temporary automation credentials **revoked, reuse denied**; Preview protection **retained**.
+- The sole application closeout correction was the scoped CSS repair for Trip planner action overlap. It made **no Auth, RBAC, RLS or business-rule change**.
+
+### Unit/integration count reconciliation
+
+Existing exact-head CI logs establish the categories below; no application test rerun was needed to reconcile the wording.
+
+| Evidence scope                                           | Categories                                                                                                                                      | Result                                            |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Application CI `38406521342`, application SHA `8062e3e…` | Existing application unit/integration suite; 52 files                                                                                           | **293/293 PASS**                                  |
+| Local full repair regression recorded below              | 293 existing tests + 2 evidence-index integrity/resume tests in `staff-visual-evidence.test.ts`                                                 | **295/295 PASS**                                  |
+| Delivery CI `38427388735`, evidence SHA `c7e3217…`       | 293 existing tests + 2 evidence-index tests + 2 shared error/loading component equivalence tests in `staff-error-equivalence.test.ts`; 54 files | **297/297 PASS**                                  |
+| Focused evidence/component check                         | The same 2 evidence-index tests + the same 2 component tests, run as a subset                                                                   | **4/4 PASS**, not four additional tests above 297 |
+
+The historical 295 count and final 297 count therefore describe different test inventories, not conflicting results. Local and delivery-CI E2E remain **40/40 PASS**. Loading/error presentation controls remain explicitly distinguished from real hosted business states; automated accessibility smoke is not WCAG certification.
 
 This delivery is pre-production polish only. It does not deploy Production, modify `main`, change DNS, configure Hostinger Production, start Stage 4, or start Phase 8.
+
+## Historical checkpoints below
+
+All following sections retain their original checkpoint scope and outcomes, including earlier PARTIAL decisions, failed/interrupted attempts and then-pending gates. They are historical evidence, not the current final decision above. No failed or interrupted attempt is relabeled PASS.
 
 ## Historical initial baseline and scope
 
