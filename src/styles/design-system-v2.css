@@ -1,0 +1,354 @@
+/* Lovable visual direction, scoped adaptation. Accepted workspace tokens stay unchanged. */
+:root {
+  --v2-ink: #0b1625;
+  --v2-navy: #0b1f33;
+  --v2-surface: #142436;
+  --v2-surface-raised: #1c3045;
+  --v2-paper: #f3f5f7;
+  --v2-white: #ffffff;
+  --v2-text: #ecf2f8;
+  --v2-muted: #b0c1d2;
+  --v2-blue: #427dff;
+  --v2-action: #075bcb;
+  --v2-cyan: #66d7e8;
+  --v2-line: #35495d;
+  --v2-focus: #66d7e8;
+  --v2-success: #147344;
+  --v2-warning: #8a5100;
+  --v2-error: #b42318;
+  --v2-control-radius: 6px;
+  --v2-card-radius: 12px;
+  --v2-feature-radius: 20px;
+  --v2-shadow: 0 16px 40px #06122126;
+  --v2-space-tight: 0.75rem;
+  --v2-space-card: 1.5rem;
+  --v2-space-section: clamp(3rem, 6vw, 5rem);
+  --v2-title: clamp(2.25rem, 4vw, 3.75rem);
+  --v2-section-title: clamp(1.6rem, 2.7vw, 2.35rem);
+  --v2-width: 1280px;
+}
+
+.public-v2 {
+  background: var(--v2-ink);
+  color: var(--v2-text);
+  --launch-radius: var(--v2-card-radius);
+  --border: var(--v2-line);
+  --muted: var(--v2-muted);
+}
+.public-v2 .container {
+  max-width: var(--v2-width);
+}
+.public-v2 h1 {
+  font-size: var(--v2-title);
+  line-height: 1.5;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.public-v2 h1 strong {
+  display: block;
+  color: #82a9ff;
+  font-weight: inherit;
+}
+html[lang='en'] .public-v2 h1 {
+  line-height: 1.15;
+}
+.public-v2 h2 {
+  font-size: var(--v2-section-title);
+  line-height: 1.5;
+}
+.public-v2 .eyebrow {
+  color: var(--v2-cyan);
+  font-size: 0.82rem;
+}
+.public-v2 p {
+  color: var(--v2-muted);
+}
+.public-v2 a:not(.button),
+.public-v2 .hero-track {
+  color: var(--v2-text);
+}
+.public-v2 :focus-visible,
+.public-v2-header :focus-visible,
+.public-v2-footer :focus-visible {
+  outline-color: var(--v2-focus);
+}
+.public-v2 .button {
+  border-radius: var(--v2-control-radius);
+  min-height: 48px;
+}
+.public-v2 .button--primary {
+  background: var(--v2-action);
+  color: white;
+  border-color: var(--v2-action);
+}
+.public-v2 .button--secondary,
+.public-v2 .launch-secondary {
+  color: var(--v2-text);
+  background: var(--v2-surface);
+  border-color: var(--v2-line);
+}
+.public-v2 .launch-hero {
+  background: var(--v2-ink);
+}
+.public-v2 .launch-hero-grid {
+  padding-block: 64px 48px;
+  gap: 48px;
+  grid-template-columns: 1.1fr 1fr;
+}
+.public-v2 .launch-lead {
+  font-size: 1.05rem;
+  line-height: 2;
+}
+.public-v2 .coverage-note {
+  padding-inline-start: 16px;
+  border-inline-start: 2px solid var(--v2-cyan);
+  font-size: 0.92rem;
+}
+.public-v2 .launch-assurance {
+  line-height: 1.9;
+}
+.public-v2 .launch-quick {
+  position: relative;
+  margin-block: 0;
+  inset-block-start: auto;
+  box-shadow: none;
+  background: var(--v2-surface);
+  border: 0;
+  border-radius: var(--v2-card-radius);
+  padding: 32px;
+}
+.public-v2 .launch-quick label {
+  color: var(--v2-text);
+}
+.public-v2 .launch-quick select {
+  background: var(--v2-ink);
+  color: var(--v2-text);
+  border-color: #6d8297;
+  border-radius: var(--v2-control-radius);
+}
+.public-v2 .launch-section {
+  padding-block: var(--v2-space-section);
+}
+.public-v2 .launch-how {
+  background: var(--v2-ink);
+}
+.public-v2 .launch-process li {
+  border: 0;
+  border-block-start: 1px solid var(--v2-line);
+  border-radius: 0;
+  padding: 22px 0 0;
+  background: transparent;
+}
+.public-v2 .process-node {
+  color: var(--v2-cyan);
+  background: var(--v2-surface);
+  border-color: var(--v2-line);
+}
+.public-v2 .launch-services {
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.public-v2 .launch-services article {
+  background: var(--v2-surface);
+  color: var(--v2-text);
+  border: 0;
+  padding: 28px;
+  border-radius: var(--v2-card-radius);
+  min-height: 170px;
+}
+.public-v2 .service-index {
+  color: var(--v2-cyan);
+}
+.public-v2 .launch-services article a {
+  font-size: 0.9rem;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.public-v2 .coverage-cities li {
+  background: var(--v2-surface);
+  color: var(--v2-text);
+  border: 0;
+  border-radius: var(--v2-control-radius);
+}
+.public-v2 .tracking-demo,
+.public-v2 .payment-explainer > div {
+  background: var(--v2-surface);
+  border: 0;
+  border-radius: var(--v2-card-radius);
+}
+.public-v2 .launch-payment-info {
+  background: var(--v2-ink);
+  color: var(--v2-text);
+}
+.public-v2 .payment-explainer h3 {
+  color: var(--v2-text);
+}
+.public-v2 .tracking-demo li {
+  color: var(--v2-text);
+}
+.public-v2 .launch-business {
+  background: var(--v2-surface);
+  border: 0;
+  border-radius: var(--v2-card-radius);
+  margin-block: 0 32px;
+}
+.public-v2 .launch-benefits {
+  border-block: 1px solid var(--v2-line);
+  padding-block: 30px;
+  color: var(--v2-text);
+}
+.public-v2 .launch-faq details {
+  border-color: var(--v2-line);
+  background: transparent;
+  color: var(--v2-text);
+}
+.public-v2 .launch-final {
+  background: var(--v2-surface);
+  border-block-start: 1px solid var(--v2-line);
+  padding-block: 48px;
+}
+.site-header.public-v2-header {
+  background: var(--v2-ink);
+  color: var(--v2-text);
+  border-block-end: 1px solid var(--v2-line);
+}
+.public-v2-header .brand,
+.public-v2-header a:not(.button) {
+  color: var(--v2-text);
+}
+.public-v2-header .brand span span {
+  color: #82a9ff;
+}
+.public-v2-header .market-control select {
+  background: var(--v2-surface);
+  color: var(--v2-text);
+  border-color: var(--v2-line);
+}
+.public-v2-header .mobile-menu > button {
+  background: var(--v2-surface);
+  color: var(--v2-text);
+  border-color: var(--v2-line);
+}
+.public-v2-header dialog {
+  background: var(--v2-ink);
+  color: var(--v2-text);
+}
+.site-footer.public-v2-footer {
+  --muted: var(--v2-muted);
+  --link: var(--v2-text);
+  background: var(--v2-ink);
+  color: var(--v2-muted);
+  border-block-start: 1px solid var(--v2-line);
+  padding-block: 36px;
+}
+.public-v2-footer a {
+  color: var(--v2-text);
+}
+.public-v2-footer .footer-inner {
+  max-width: var(--v2-width);
+  gap: 28px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  align-items: start;
+}
+.public-v2-footer .footer-inner nav {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+.public-v2-footer .footer-brand p {
+  margin-block: 12px;
+}
+.public-v2-footer .footer-brand small {
+  color: var(--v2-muted);
+}
+.v2-route-story {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+  padding: 24px;
+  border-radius: var(--v2-feature-radius);
+  background: var(--v2-navy);
+  box-shadow: var(--v2-shadow);
+  overflow: hidden;
+}
+.v2-route-story > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.v2-route-story ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.v2-route-story li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  grid-column: 2;
+  background: var(--v2-surface-raised);
+  border-radius: var(--v2-control-radius);
+  padding: 14px;
+  font-size: 0.85rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.v2-route-story li:nth-child(even) {
+  grid-column: 1;
+}
+.v2-route-story li span {
+  color: var(--v2-cyan);
+  font-size: 0.75rem;
+}
+.v2-route-story figcaption {
+  position: relative;
+  color: var(--v2-muted);
+  font-size: 0.8rem;
+  margin-block-start: 22px;
+  text-align: center;
+}
+@media (max-width: 1000px) {
+  .public-v2 .launch-hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .v2-route-story {
+    width: min(100%, 600px);
+    margin-inline: auto;
+  }
+  .public-v2 .launch-services {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .public-v2-footer .footer-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+  .public-v2-footer .footer-brand {
+    grid-column: 1 / -1;
+  }
+  .public-v2 .launch-hero-grid {
+    padding-block: 36px;
+    gap: 32px;
+  }
+  .public-v2 .launch-quick {
+    padding: 24px;
+  }
+  .public-v2 .launch-services {
+    grid-template-columns: 1fr;
+  }
+  .v2-route-story {
+    padding: 18px;
+  }
+  .v2-route-story li {
+    padding: 10px;
+    gap: 8px;
+  }
+}

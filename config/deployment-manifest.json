@@ -10,7 +10,8 @@
       "https://naql365-staging-manual-pricing-naql365.vercel.app",
       "https://naql365-staging-ux-stage1-naql365.vercel.app",
       "https://naql365-staging-ux-stage2-naql365.vercel.app",
-      "https://naql365-staging-ux-stage3-naql365.vercel.app"
+      "https://naql365-staging-ux-stage3-naql365.vercel.app",
+      "https://naql365-staging-ui-v2-naql365.vercel.app"
     ],
     "hostingerOrigins": [],
     "hostingerProtection": {}
