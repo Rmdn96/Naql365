@@ -143,10 +143,15 @@ export async function CustomerAccount({
               </nav>
             )}
             {onboarding ? (
-              <>
+              <section className="profile-v2-onboarding">
+                <p>
+                  {locale === 'ar'
+                    ? 'خطوة أخيرة قبل طلبك الأول'
+                    : 'One last step before your first request'}
+                </p>
                 <h2>{t.onboard}</h2>
                 <CustomerProfileForm locale={locale} profile={profile.data} />
-              </>
+              </section>
             ) : (
               <details className="profile-settings">
                 <summary>{t.profile}</summary>

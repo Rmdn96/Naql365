@@ -1,6 +1,7 @@
 @import '../styles/tokens.css';
 @import '../styles/launch.css';
 @import '../styles/design-system-v2.css';
+@import '../styles/auth-v2.css';
 * {
   box-sizing: border-box;
 }

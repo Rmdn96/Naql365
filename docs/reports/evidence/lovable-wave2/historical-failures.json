@@ -1,0 +1,19 @@
+{
+  "attempts": [
+    {
+      "category": "Lovable submission infrastructure",
+      "result": "FAILED BEFORE GENERATION",
+      "detail": "Connection/unexpected error; draft retained and submitted after session refresh."
+    },
+    {
+      "category": "Local lint test style",
+      "result": "FAIL",
+      "detail": "React no-children-prop in new presentation test; test uses a props object."
+    },
+    {
+      "category": "Local accessibility",
+      "result": "40 E2E PASS / 4 new E2E FAIL",
+      "detail": "Existing brand numeric suffix inherited action blue on new navy story surface; contrast 2.91 vs required 3. Scoped story suffix changed to existing cyan token; no Auth behavior change."
+    }
+  ]
+}
