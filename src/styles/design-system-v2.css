@@ -23,7 +23,7 @@
   --v2-space-tight: 0.75rem;
   --v2-space-card: 1.5rem;
   --v2-space-section: clamp(3rem, 6vw, 5rem);
-  --v2-title: clamp(2.25rem, 4vw, 3.75rem);
+  --v2-title: clamp(2rem, 3.5vw, 3.25rem);
   --v2-section-title: clamp(1.6rem, 2.7vw, 2.35rem);
   --v2-width: 1280px;
 }
@@ -48,6 +48,9 @@
   display: block;
   color: #82a9ff;
   font-weight: inherit;
+}
+.launch-page.public-v2 .launch-hero-copy h1 {
+  max-width: none;
 }
 html[lang='en'] .public-v2 h1 {
   line-height: 1.15;
@@ -293,7 +296,7 @@ html[lang='en'] .public-v2 h1 {
   display: flex;
   gap: 12px;
   align-items: center;
-  grid-column: 2;
+  grid-column: 1;
   background: var(--v2-surface-raised);
   border-radius: var(--v2-control-radius);
   padding: 14px;
@@ -302,7 +305,25 @@ html[lang='en'] .public-v2 h1 {
   overflow-wrap: anywhere;
 }
 .v2-route-story li:nth-child(even) {
-  grid-column: 1;
+  grid-column: 2;
+}
+.v2-route-story li:nth-child(1) {
+  grid-row: 1;
+}
+.v2-route-story li:nth-child(2) {
+  grid-row: 2;
+}
+.v2-route-story li:nth-child(3) {
+  grid-row: 3;
+}
+.v2-route-story li:nth-child(4) {
+  grid-row: 4;
+}
+.v2-route-story li:nth-child(5) {
+  grid-row: 5;
+}
+html[dir='ltr'] .v2-route-story > svg {
+  transform: scaleX(-1);
 }
 .v2-route-story li span {
   color: var(--v2-cyan);

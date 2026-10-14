@@ -83,7 +83,8 @@
     "src/components/public/landing.tsx",
     "src/components/shell/public-shell.tsx",
     "src/app/globals.css",
-    "src/components/shell/brand-link.tsx"
+    "src/components/shell/brand-link.tsx",
+    "src/i18n/public.ts"
   ],
   "previewConfiguration": {
     "origin": "https://naql365-staging-ui-v2-naql365.vercel.app",
@@ -91,5 +92,12 @@
     "supabaseProjectUnchanged": true,
     "productionManifest": null,
     "authCallbacksUnchanged": true
-  }
+  },
+  "reviewNotes": [
+    "Generated TanStack router/runtime, dependency files, external Google font wiring and AGENTS.md were not imported",
+    "Lab action dialogs and example catalogue were rejected; canonical links and existing authorized active catalogue remain",
+    "Existing Naql365 route-slash brand retained rather than adopting generated N symbol",
+    "Only public header/footer, landing, illustrative route and scoped V2 styling changed; no Auth/server action/domain/RPC source changed",
+    "Read-only hosted review prompted a narrower typography override and five sequential illustrative route rows; no new business state"
+  ]
 }

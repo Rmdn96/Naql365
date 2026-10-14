@@ -64,7 +64,7 @@ export function Landing({
             <p className="launch-assurance">{t.noAccount}</p>
           </div>
           <RouteStory
-            labels={[t.pickup, t.review, t.assigned, t.onWay, t.delivered]}
+            labels={[t.pickup, t.planning, t.driverStage, t.onWay, t.delivered]}
             caption={t.illustration}
           />
         </div>
