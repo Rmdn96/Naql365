@@ -1,6 +1,6 @@
 # Lovable UI migration — Wave 2: Authentication and onboarding
 
-Status: IN PROGRESS. Baseline: `70cba96307745bb8c6de2538eb1059676cd3d901`; branch `feature/lovable-ui-experience-v2`. Official acceptance origin: `https://naql365-staging-ui-v2-naql365.vercel.app`. Design lab: existing Naql365 Design Lab. All 47 migrations are immutable.
+Current decision: **LOVABLE UI MIGRATION — WAVE 2 READY FOR OWNER REVIEW**. Baseline: `70cba96307745bb8c6de2538eb1059676cd3d901`; branch `feature/lovable-ui-experience-v2`. Official acceptance origin: `https://naql365-staging-ui-v2-naql365.vercel.app`. Design lab: existing Naql365 Design Lab. All 47 migrations are immutable. Application SHA: `a3a96256c43b06d3d30306a713eacc15b7fa7a4f`. See the [closeout report](reports/Naql365-Lovable-UI-Wave-2.md) for evidence and historical limitations.
 
 ## Presentation boundary
 

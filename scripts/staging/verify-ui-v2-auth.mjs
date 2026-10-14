@@ -1,3 +1,4 @@
+import { authFixtureCleanupSql } from './auth-fixture-cleanup.mjs';
 // Hosted restricted-role shell smoke. Scoped synthetic tenant; canonical protected Staging only.
 import { randomUUID, randomBytes, createHash } from 'node:crypto';
 import AxeBuilder from '@axe-core/playwright';
@@ -324,6 +325,75 @@ try {
       }
     }
   }
+  checkpoint = 'onboarding fixture';
+  const onboardingEmail = 'wave2-onboarding-' + randomUUID() + '@example.invalid',
+    onboardingPassword = randomBytes(24).toString('base64url');
+  const createdOnboarding = await admin.auth.admin.createUser({
+    email: onboardingEmail,
+    password: onboardingPassword,
+    email_confirm: true,
+  });
+  if (createdOnboarding.error || !createdOnboarding.data.user)
+    throw Error('HOSTED_IDENTITY_FAILED');
+  users.push(createdOnboarding.data.user.id);
+  release.track('auth', createdOnboarding.data.user.id);
+  save();
+  const onboardingContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await onboardingContext.route('**/*', (route) =>
+    route.continue({
+      headers: {
+        ...route.request().headers(),
+        ...(new URL(route.request().url()).origin === origin ? headers : {}),
+      },
+    }),
+  );
+  const onboardingPage = await onboardingContext.newPage();
+  try {
+    await onboardingPage.goto(origin + '/en/login');
+    await onboardingPage.locator('#email').fill(onboardingEmail);
+    await onboardingPage.locator('#password').fill(onboardingPassword);
+    await onboardingPage.locator('.auth-form button[type=submit]').click();
+    await expect(onboardingPage).toHaveURL(new RegExp('/en/account$'));
+    for (const lang of ['ar', 'en']) {
+      checkpoint = 'onboarding ' + lang;
+      await onboardingPage.goto(origin + '/' + lang + '/account');
+      await expect(onboardingPage.locator('.profile-v2-onboarding')).toBeVisible();
+      await captureFamily(onboardingPage, lang, 'onboarding-incomplete');
+      await onboardingPage.locator('#name').fill('Synthetic onboarding');
+      await onboardingPage.locator('#phone').fill('invalid');
+      await onboardingPage.locator('.profile-form button').click();
+      await expect(onboardingPage.locator('#phone')).toHaveAttribute('aria-invalid', 'true');
+      await captureFamily(onboardingPage, lang, 'onboarding-validation');
+    }
+    checkpoint = 'onboarding save';
+    await onboardingPage.locator('#phone').fill('+966500000001');
+    await onboardingPage.locator('#locale').selectOption('en');
+    await onboardingPage.locator('.profile-form button').click();
+    await expect(onboardingPage).toHaveURL(new RegExp('/en/account\\?profile=saved$'));
+    for (const lang of ['en', 'ar']) {
+      await onboardingPage.goto(origin + '/' + lang + '/account?profile=saved');
+      await expect(onboardingPage.locator('main [role=status]')).toBeVisible();
+      await captureFamily(onboardingPage, lang, 'onboarding-saved-authoritative-profile');
+    }
+    const proof = query(
+      ref,
+      `select (select count(*)::int from public.profiles where id='${createdOnboarding.data.user.id}') profiles,(select count(*)::int from public.customers where profile_id='${createdOnboarding.data.user.id}') customers,(select count(*)::int from public.organization_memberships where profile_id='${createdOnboarding.data.user.id}' and member_type='customer' and status='active') memberships,(select count(*)::int from public.user_roles where profile_id='${createdOnboarding.data.user.id}') roles`,
+    );
+    if (proof.length !== 1 || Object.values(proof[0]).some((x) => x !== 1))
+      throw Error('HOSTED_IDENTITY_DUPLICATION');
+    await onboardingPage.getByRole('button', { name: 'تسجيل الخروج', exact: true }).click();
+    await expect(onboardingPage).toHaveURL(new RegExp('/ar/login$'));
+    console.log(
+      'PASS hosted onboarding: normal profile action, canonical bootstrap, no duplicates, logout',
+    );
+  } finally {
+    await onboardingContext.close();
+  }
+  if (
+    visuals.length !== 150 ||
+    new Set(visuals.map((v) => [v.locale, v.width, v.state].join(':'))).size !== 150
+  )
+    throw Error('HOSTED_MATRIX_INCOMPLETE');
   const counts = query(
     ref,
     `select m.profile_id,count(distinct m.organization_id)::int memberships,count(distinct ur.role_id)::int roles from public.organization_memberships m join public.user_roles ur on ur.organization_id=m.organization_id and ur.profile_id=m.profile_id where m.organization_id='${org}' group by m.profile_id`,
@@ -349,9 +419,7 @@ try {
 } finally {
   await browser?.close();
   // Only this run's exact tenant and identity ledger. No business/Storage fixtures are created.
-  sql(
-    `begin; delete from public.drivers where organization_id='${org}'; delete from public.customers where organization_id='${org}'; delete from public.user_roles where organization_id='${org}'; delete from public.organization_memberships where organization_id='${org}'; delete from public.markets where organization_id='${org}'; delete from public.audit_logs where organization_id='${org}'; delete from public.organizations where id='${org}'; commit;`,
-  );
+  sql(authFixtureCleanupSql(org, users));
   for (const id of users) {
     const r = await admin.auth.admin.deleteUser(id);
     if (r.error) throw Error('HOSTED_CLEANUP_FAILED');
