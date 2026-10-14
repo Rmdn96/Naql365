@@ -32,7 +32,7 @@ it('fixture cleanup handles onboarding in an existing tenant and preserves unrel
     expect(
       (
         await db.query(
-          `select count(*)::int as count from public.audit_logs where actor_id='${user}'`,
+          `select count(*)::int as count from public.audit_logs where actor_id='${user}' or (entity_type in ('organization_memberships','user_roles') and entity_id='${user}')`,
         )
       ).rows[0],
     ).toEqual({ count: 0 });

@@ -42,6 +42,11 @@
       "category": "Local cleanup test development",
       "result": "Two initial test failures preserved",
       "detail": "First assertion did not scope pre-existing catalogue audit events; second SQL dollar-quote construction was malformed. Both corrected in test/operator tooling, then 2/2 focused tests PASS. No database migration or application change."
+    },
+    {
+      "category": "Cleanup completeness follow-up",
+      "result": "PASS after exact-owned audit cleanup",
+      "detail": "Final readback found two membership/role audit rows linked to the onboarding fixture after its identity relations were removed. Helper and integration assertion now cover exact fixture identity audit links; two rows removed, zero remain, unrelated tenant audit preserved. Application source unchanged."
     }
   ]
 }

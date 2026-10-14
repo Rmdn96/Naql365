@@ -1720,7 +1720,8 @@
       "memberships": 0,
       "organizations": 0,
       "profiles": 0,
-      "roles": 0
+      "roles": 0,
+      "ownedMembershipRoleAudit": 0
     },
     "businessFixtures": 0,
     "storageObjects": 0,
@@ -1728,7 +1729,8 @@
     "originalRunnerExit": 1,
     "originalFailure": "Harness cleanup referenced actor_profile_id; actual generated schema uses actor_id. Original failure retained.",
     "temporaryCredential": "revoked/reuse denied",
-    "timestamp": "2026-10-14T16:34:26.049Z"
+    "timestamp": "2026-10-14T16:34:26.049Z",
+    "ownedAuditRowsRemoved": 2
   },
   "scope": "Auth/onboarding presentation, session and destination smoke; automated axe is not WCAG certification; no new genuine external-mail delivery assertion."
 }

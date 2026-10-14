@@ -17,7 +17,7 @@ delete from public.customers where organization_id='${org}' or profile_id=any(${
 delete from public.user_roles where organization_id='${org}' or profile_id=any(${ids});
 delete from public.organization_memberships where organization_id='${org}' or profile_id=any(${ids});
 delete from public.markets where organization_id='${org}';
-delete from public.audit_logs where organization_id='${org}' or actor_id=any(${ids}) or (entity_type='customers' and entity_id=any(owned_customers));
+delete from public.audit_logs where organization_id='${org}' or actor_id=any(${ids}) or (entity_type='customers' and entity_id=any(owned_customers)) or (entity_type in ('organization_memberships','user_roles') and entity_id=any(${ids}));
 delete from public.organizations where id='${org}';
 end $$;
 commit;`;
