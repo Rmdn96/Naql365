@@ -1,21 +1,21 @@
 /* Lovable visual direction, scoped adaptation. Accepted workspace tokens stay unchanged. */
 :root {
-  --v2-ink: #0b1625;
-  --v2-navy: #0b1f33;
-  --v2-surface: #142436;
-  --v2-surface-raised: #1c3045;
-  --v2-paper: #f3f5f7;
-  --v2-white: #ffffff;
-  --v2-text: #ecf2f8;
-  --v2-muted: #b0c1d2;
-  --v2-blue: #427dff;
-  --v2-action: #075bcb;
-  --v2-cyan: #66d7e8;
-  --v2-line: #35495d;
-  --v2-focus: #66d7e8;
-  --v2-success: #147344;
-  --v2-warning: #8a5100;
-  --v2-error: #b42318;
+  --v2-ink: var(--theme-background);
+  --v2-navy: var(--theme-text-primary);
+  --v2-surface: var(--theme-surface);
+  --v2-surface-raised: var(--theme-surface-elevated);
+  --v2-paper: var(--theme-surface-muted);
+  --v2-white: var(--theme-surface);
+  --v2-text: var(--theme-text-primary);
+  --v2-muted: var(--theme-text-secondary);
+  --v2-blue: var(--theme-brand);
+  --v2-action: var(--theme-brand-hover);
+  --v2-cyan: var(--theme-accent);
+  --v2-line: var(--theme-border);
+  --v2-focus: var(--theme-focus);
+  --v2-success: var(--theme-success);
+  --v2-warning: var(--theme-warning);
+  --v2-error: var(--theme-destructive);
   --v2-control-radius: 6px;
   --v2-card-radius: 12px;
   --v2-feature-radius: 20px;
@@ -46,7 +46,7 @@
 }
 .public-v2 h1 strong {
   display: block;
-  color: #82a9ff;
+  color: var(--theme-brand);
   font-weight: inherit;
 }
 .launch-page.public-v2 .launch-hero-copy h1 {
@@ -220,7 +220,7 @@ html[lang='en'] .public-v2 h1 {
   color: var(--v2-text);
 }
 .public-v2-header .brand span span {
-  color: #82a9ff;
+  color: var(--theme-brand);
 }
 .public-v2-header .market-control select {
   background: var(--v2-surface);
@@ -264,6 +264,106 @@ html[lang='en'] .public-v2 h1 {
 }
 .public-v2-footer .footer-brand small {
   color: var(--v2-muted);
+}
+
+/* Theme foundation applies to Wave 1 and Wave 2 surfaces without changing flow authority. */
+body {
+  background: var(--theme-background);
+  color: var(--theme-text-primary);
+}
+.site-header,
+.site-footer,
+.card,
+.summary-card,
+.workspace-panel,
+.workspace-sections,
+.staff-panel,
+.request-summary section,
+.request-list > li,
+.driver-focus {
+  background: var(--theme-surface);
+  border-color: var(--theme-border);
+  color: var(--theme-text-primary);
+  box-shadow: var(--theme-shadow);
+}
+.field input,
+.field select,
+.field textarea,
+.auth-v2 :is(input, select),
+.profile-v2 :is(input, select),
+.wizard-progress button,
+.choice {
+  background: var(--theme-surface-elevated);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border);
+}
+.theme-control {
+  display: inline-flex;
+  align-items: center;
+}
+.theme-control select {
+  min-height: 36px;
+  max-width: 112px;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--v2-control-radius);
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+}
+.market-control [role='alert'] {
+  color: var(--theme-destructive);
+  line-height: 1.35;
+  margin-block-start: 0.2rem;
+}
+.auth-v2-surface {
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  box-shadow: var(--theme-shadow);
+}
+.auth-v2-kicker,
+.auth-v2 .auth-intro,
+.profile-v2-intro,
+.profile-v2-onboarding > p {
+  color: var(--theme-text-secondary);
+}
+.profile-v2 {
+  background: var(--theme-surface-muted);
+  border-color: var(--theme-brand);
+}
+.auth-v2 .alert--error,
+.alert--error {
+  background: color-mix(in srgb, var(--theme-destructive) 12%, var(--theme-surface));
+  color: var(--theme-text-primary);
+}
+.auth-v2 .alert--success,
+.alert--success {
+  background: color-mix(in srgb, var(--theme-success) 12%, var(--theme-surface));
+  color: var(--theme-text-primary);
+}
+@media (max-width: 700px) {
+  .header-inner {
+    min-height: 64px;
+    align-items: center;
+  }
+  .header-market {
+    max-width: 150px;
+  }
+  .header-market .market-control {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .header-market .market-control select {
+    min-height: 38px;
+    max-width: 145px;
+    padding-block: 0.2rem;
+  }
+  .header-market .market-control [role='alert'] {
+    max-width: 145px;
+    font-size: 0.72rem;
+  }
+  .theme-control select {
+    max-width: 100%;
+  }
 }
 .v2-route-story {
   position: relative;

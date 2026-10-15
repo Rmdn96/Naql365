@@ -11,6 +11,7 @@ import { PublicContact } from './public-contact';
 import { loginDestination } from '@/infrastructure/identity/login-destination';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { BrandLink } from './brand-link';
+import { ThemeControl } from './theme-control';
 
 export async function IdentityLink({ locale }: { locale: Locale }) {
   const destination = getPublicEnv() ? await loginDestination() : 'unauthenticated';
@@ -38,7 +39,13 @@ export async function IdentityLink({ locale }: { locale: Locale }) {
   );
 }
 
-export async function Header({ locale }: { locale: Locale }) {
+export async function Header({
+  locale,
+  themeMode,
+}: {
+  locale: Locale;
+  themeMode: 'light' | 'dark' | 'system';
+}) {
   const t = dictionary(locale);
   const p = publicDictionary(locale);
   const country = await selectedPublicCountry();
@@ -70,6 +77,7 @@ export async function Header({ locale }: { locale: Locale }) {
               {p.request}
             </Link>
             <LocaleLink locale={locale} label={t.language} />
+            <ThemeControl locale={locale} initialMode={themeMode} />
           </nav>
           <div className="header-market">
             <MarketSelector country={country} locale={locale} />
@@ -85,6 +93,7 @@ export async function Header({ locale }: { locale: Locale }) {
             <Link href={`/${locale}#contact`}>{p.contact}</Link>
             <IdentityLink locale={locale} />
             <LocaleLink locale={locale} label={t.language} />
+            <ThemeControl locale={locale} initialMode={themeMode} />
             <Link className="button button--primary" href={`/${locale}/request`}>
               {p.request}
             </Link>
