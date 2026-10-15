@@ -1,6 +1,7 @@
 /* Wave 3: Lovable visual concepts adapted to existing authorized Next.js views. */
 html[data-theme] .customer-experience {
   --navy: var(--theme-text-primary);
+  --white: var(--theme-surface);
   --muted: var(--theme-text-secondary);
   --border: var(--theme-border);
   --action: var(--theme-brand-hover);
@@ -188,8 +189,13 @@ html[data-theme] .customer-workspace-nav a[aria-current='page'] {
   overflow-wrap: anywhere;
 }
 .customer-experience .commercial-summary {
+  background: var(--theme-surface);
   padding-block-start: 20px;
   border-block-start: 1px solid var(--theme-border);
+}
+html[data-theme] .customer-checkout.customer-experience section[aria-label] {
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
 }
 html[data-theme] .customer-experience :is(table, th, td) {
   background: transparent;
