@@ -61,6 +61,7 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   await page.locator('#quick-deliveryCity').selectOption(cityId);
   await page.getByRole('button', { name: pt.quickAction, exact: true }).click();
   await expect(page.locator('input[type=password]')).toHaveCount(0);
+  await stage1Capture(page, `guest-start-${country.toLowerCase()}-${locale}`);
   // Record only a one-way verifier before sending, so cleanup also finds a
   // committed creation whose HTTP response was lost. Never persist the capability.
   await page.route('**/api/guest/start', async (route) => {
@@ -102,6 +103,13 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
   await expect(page.locator('.save-status')).toHaveText(ct.saved);
   await guestResponsiveCheck(page);
   await page.getByRole('button', { name: ct.next, exact: true }).click();
+  if (process.env.STAGING_WAVE3_CAPTURE_DIR) {
+    await page.locator('.wizard-progress button').nth(7).click();
+    await page.getByRole('button', { name: ct.submit, exact: true }).click();
+    await expect(page.locator('main [role=alert]')).toBeVisible();
+    await stage1Capture(page, `request-validation-${country.toLowerCase()}-${locale}`);
+    await page.locator('.wizard-progress button').nth(1).click();
+  }
   for (const kind of ['pickup', 'delivery']) {
     await expect(page.locator(`#${kind}-city`)).toHaveValue(cityId);
     await page.locator(`#${kind}-address`).fill('TEST disposable ' + kind);
@@ -159,6 +167,7 @@ export async function guestQuote(page: Page, staff: Page, country: 'SA' | 'EG') 
     page.getByRole('heading', { name: customerExperience(locale).reviewTitle, exact: true }),
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: gt.preliminary, exact: true })).toHaveCount(0);
+  await stage1Capture(page, `request-under-review-${country.toLowerCase()}-${locale}`);
   await staff.locator('#manual-subtotal').fill('123.45');
   await staff.getByRole('button', { name: qt.createDraft, exact: true }).click();
   await staff.getByRole('button', { name: qt.sendQuote, exact: true }).click();

@@ -5,6 +5,11 @@ import { join } from 'node:path';
 import { expect } from '../staging/fixtures';
 // Call only on public pages or the current run's owned synthetic identity.
 export async function stage1Capture(page: Page, name: string) {
+  if (process.env.STAGING_WAVE3_CAPTURE_DIR) {
+    const { wave3Capture } = await import('./wave3-evidence');
+    await wave3Capture(page, name);
+    return;
+  }
   const directory = process.env.STAGING_UX_SCREENSHOTS;
   if (!directory) return;
   if (!/^[a-z0-9-]+$/.test(name)) throw Error('Invalid screenshot label');

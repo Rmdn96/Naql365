@@ -273,6 +273,7 @@ html[data-theme] .wizard.customer-experience .wizard-progress button span {
   margin-block: 0 24px;
 }
 .wizard.customer-experience .wizard-state-bar {
+  background: var(--theme-surface);
   margin-block: 16px 8px;
   font-size: 0.875rem;
   color: var(--theme-text-secondary);
