@@ -137,7 +137,7 @@ export function Checkout({
               disabled={!hydrated || busy || data.method === 'CASH'}
               onClick={() => void act({ action: 'choose', payload: { method: 'CASH' } })}
             >
-              {t.cash}
+              <span aria-hidden="true">◈</span> {t.cash}
             </Button>
             {data.destinations.map((destination) => (
               <Button
@@ -156,7 +156,7 @@ export function Checkout({
                   })
                 }
               >
-                {t.transfer}
+                <span aria-hidden="true">▤</span> {t.transfer}
                 {data.destinations.length > 1
                   ? ` · ${locale === 'ar' ? destination.nameAr : destination.nameEn}`
                   : ''}

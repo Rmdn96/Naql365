@@ -216,12 +216,7 @@ html[data-theme] .customer-checkout .customer-method {
   text-align: start;
   padding: 16px;
 }
-.customer-method--cash::before {
-  content: '◈';
-  margin-inline-end: 10px;
-}
-.customer-method--transfer::before {
-  content: '▤';
+.customer-method > span[aria-hidden] {
   margin-inline-end: 10px;
 }
 .customer-payment-state p {
