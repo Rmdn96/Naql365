@@ -1,6 +1,6 @@
 // Test runner only: exact protected Staging, normal password sessions, run-owned tenant.
 import { randomUUID, randomBytes, createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { chromium, expect as baseExpect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -22,6 +22,10 @@ if (process.env.ACCEPTANCE_OIDC_ENV_FILE)
 delete process.env.SUPABASE_ACCESS_TOKEN;
 const applicationSha = process.env.WAVE4_APPLICATION_SHA;
 if (!/^[a-f0-9]{40}$/.test(applicationSha ?? '')) throw Error('EXACT_APPLICATION_SHA_REQUIRED');
+const checkStop = () => {
+  if (existsSync('supabase/.temp/wave4-stop')) throw Error('RUN_STOP_REQUESTED');
+};
+checkStop();
 const expect = baseExpect.configure({ timeout: 20000 });
 const batch = process.argv[2];
 if (!['sales-support', 'operations', 'finance', 'loading', 'empty', 'all'].includes(batch))
@@ -108,6 +112,7 @@ const record = (kind, data) => {
   writeFileSync(ledgerPath, JSON.stringify({ run, org, ledger }, null, 2));
 };
 record('organization', { id: org });
+record('run-meta', { applicationSha, evidenceDirectory: store.directory });
 release.track('organization', org);
 let browser,
   fixture,
@@ -383,6 +388,7 @@ try {
   }
   async function capture(page, family, locale, mode = 'REAL_HOSTED', extra = {}) {
     for (const view of presentations(family)) {
+      checkStop();
       const { width, theme, system } = view;
       const id = matrixId(family, locale, view);
       if (store.has(id)) continue;
@@ -591,6 +597,7 @@ try {
         };
         try {
           for (const f of families.filter((f) => f.batch === activeBatch && f.role === role)) {
+            checkStop();
             if (presentations(f).every((view) => store.has(matrixId(f, locale, view)))) continue;
             checkpoint = f.id + '-' + locale;
             if (f.id.startsWith('empty-')) {

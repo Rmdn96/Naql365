@@ -145,6 +145,7 @@ html[data-theme] .staff-app--collapsed {
   max-width: 58rem;
 }
 .staff-app .staff-dashboard-grid {
+  align-items: start;
   gap: 18px;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
 }
@@ -183,6 +184,10 @@ html[data-theme] .staff-app--collapsed {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
+}
+.staff-app .staff-dashboard-grid .staff-dashboard-panel li {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
 }
 .staff-app .staff-window-note {
   color: var(--theme-text-secondary);

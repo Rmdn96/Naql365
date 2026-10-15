@@ -64,7 +64,7 @@ export const requiredMatrix = () =>
 
 export function matrixStore(
   applicationSha,
-  directory = 'docs/reports/evidence/lovable-wave4-staff',
+  directory = 'docs/reports/evidence/lovable-wave4-staff-final',
 ) {
   if (!/^[a-f0-9]{40}$/.test(applicationSha)) throw Error('EXACT_APPLICATION_SHA_REQUIRED');
   mkdirSync(directory, { recursive: true });
