@@ -195,6 +195,7 @@ html[lang='en'] .public-v2 h1 {
 }
 .public-v2 .launch-business {
   background: var(--v2-surface);
+  color: var(--v2-text);
   border: 0;
   border-radius: var(--v2-card-radius);
   margin-block: 0 32px;
@@ -211,6 +212,7 @@ html[lang='en'] .public-v2 h1 {
 }
 .public-v2 .launch-final {
   background: var(--v2-surface);
+  color: var(--v2-text);
   border-block-start: 1px solid var(--v2-line);
   padding-block: 48px;
 }
@@ -386,7 +388,7 @@ html[data-theme] .auth-v2 .alert--success,
   min-width: 0;
   padding: 24px;
   border-radius: var(--v2-feature-radius);
-  background: var(--v2-navy);
+  background: var(--theme-surface-muted);
   box-shadow: var(--v2-shadow);
   overflow: hidden;
 }
