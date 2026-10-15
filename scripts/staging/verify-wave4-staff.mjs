@@ -290,6 +290,24 @@ try {
     };
     fixture.op('plan', trip, plan);
     trips = { planned: trip };
+    // Locale-specific success fixtures preserve forward-only assignment lifecycle.
+    if (batches.includes('operations')) {
+      const enOrder = newOrder('assignmentEn');
+      fixture.pay(enOrder, 'choose', { method: 'CASH' });
+      const enJob = fixture.op('create_job', enOrder);
+      trips.assignmentEn = fixture.op('create_trip', enJob);
+      fixture.op('plan', trips.assignmentEn, plan);
+      trips.assignmentDriverEn = fixture.op('create_driver', org, {
+        marketId: fixture.sa,
+        type: 'EXTERNAL',
+        name: 'TEST English assignment driver',
+      });
+      trips.assignmentVehicleEn = fixture.op('create_vehicle', org, {
+        marketId: fixture.sa,
+        type: 'Truck',
+        identifier: 'TEST-VISUAL-EN',
+      });
+    }
     checkpoint = 'trip-transitions';
     for (const name of ['active', 'complete'])
       fixture.pay(order[name], 'choose', { method: 'CASH' });
@@ -738,7 +756,9 @@ try {
                 ? trips.active
                 : f.state === 'completed'
                   ? trips.complete
-                  : trip;
+                  : f.state === 'assignment-success' && locale === 'en'
+                    ? trips.assignmentEn
+                    : trip;
               await go('/operations/trips/' + t);
               if (f.state === 'reassignment-dialog') {
                 await page
@@ -759,8 +779,20 @@ try {
                   f.state,
                 )
               ) {
-                await page.locator('#assign-driver').selectOption(driver);
-                await page.locator('#assign-vehicle').selectOption(vehicle);
+                await page
+                  .locator('#assign-driver')
+                  .selectOption(
+                    f.state === 'assignment-success' && locale === 'en'
+                      ? trips.assignmentDriverEn
+                      : driver,
+                  );
+                await page
+                  .locator('#assign-vehicle')
+                  .selectOption(
+                    f.state === 'assignment-success' && locale === 'en'
+                      ? trips.assignmentVehicleEn
+                      : vehicle,
+                  );
                 const button = await page
                   .locator('form')
                   .filter({ has: page.locator('#assign-driver') })

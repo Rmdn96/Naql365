@@ -324,6 +324,14 @@ html[data-theme] .staff-app--collapsed {
 .staff-app :is(input, select):not([type='checkbox']):not([type='radio']) {
   min-height: 44px;
 }
+html[data-theme='dark'] .staff-app input[type='datetime-local'] {
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  html[data-theme='system'] .staff-app input[type='datetime-local'] {
+    color-scheme: dark;
+  }
+}
 .staff-app .field {
   gap: 6px;
 }
