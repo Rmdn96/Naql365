@@ -94,8 +94,11 @@ html[lang='en'] .public-v2 h1 {
   background: var(--v2-ink);
   color: var(--v2-text);
 }
-.public-v2 a.floating-contact {
+.public-v2-footer a.floating-contact {
   color: white;
+}
+html[data-theme] .public-v2 .launch-hero-copy .hero-track {
+  color: var(--theme-text-primary);
 }
 .public-v2 .launch-hero-grid {
   padding-block: 64px 48px;

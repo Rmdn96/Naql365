@@ -1,22 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import type { Locale } from '@/i18n/config';
 
 type ThemeMode = 'light' | 'dark' | 'system';
 const themeCookie = 'naql365_theme';
+const themeChange = 'naql365-theme-change';
+
+function subscribe(listener: () => void) {
+  window.addEventListener(themeChange, listener);
+  return () => window.removeEventListener(themeChange, listener);
+}
+
+function currentTheme(): ThemeMode {
+  const value = document.documentElement.dataset.theme;
+  return value === 'light' || value === 'dark' ? value : 'system';
+}
 
 export function ThemeControl({ locale, initialMode }: { locale: Locale; initialMode: ThemeMode }) {
-  const [mode, setMode] = useState<ThemeMode>(initialMode);
+  const mode = useSyncExternalStore(subscribe, currentTheme, () => initialMode);
   const labels =
     locale === 'ar'
       ? { label: 'المظهر', light: 'فاتح', dark: 'داكن', system: 'حسب النظام' }
       : { label: 'Theme', light: 'Light', dark: 'Dark', system: 'System' };
 
   function changeTheme(next: ThemeMode) {
-    setMode(next);
     document.documentElement.dataset.theme = next;
     document.cookie = `${themeCookie}=${next}; Path=/; Max-Age=31536000; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+    window.dispatchEvent(new Event(themeChange));
   }
 
   return (

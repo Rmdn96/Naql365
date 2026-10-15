@@ -5,6 +5,7 @@ for (const locale of ['ar', 'en']) {
   test(`${locale} semantic themes persist and follow system across public/auth widths`, async ({
     page,
   }) => {
+    test.setTimeout(120000);
     await page.goto(`/${locale}`);
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'system');
     for (const mode of ['light', 'dark', 'system']) {
@@ -13,6 +14,29 @@ for (const locale of ['ar', 'en']) {
         .getByLabel(locale === 'ar' ? 'المظهر' : 'Theme', { exact: true })
         .filter({ visible: true })
         .selectOption(mode);
+      await expect
+        .poll(() =>
+          page
+            .locator('.theme-control select')
+            .evaluateAll((controls) =>
+              controls.map((control) => (control as HTMLSelectElement).value),
+            ),
+        )
+        .toEqual([mode, mode]);
+      await page.setViewportSize({ width: 390, height: 900 });
+      const menu = page.getByRole('button', {
+        name: locale === 'ar' ? 'القائمة' : 'Menu',
+        exact: true,
+      });
+      await menu.click();
+      await expect(page.getByRole('dialog')).toBeVisible();
+      await expect(
+        page
+          .getByLabel(locale === 'ar' ? 'المظهر' : 'Theme', { exact: true })
+          .filter({ visible: true }),
+      ).toHaveValue(mode);
+      await page.keyboard.press('Escape');
+      await expect(menu).toBeFocused();
       await page.reload();
       await expect(page.locator('html')).toHaveAttribute('data-theme', mode);
       const initialHtml = await (await page.request.get(`/${locale}`)).text();
@@ -24,11 +48,13 @@ for (const locale of ['ar', 'en']) {
           expect(
             await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
           ).toBe(true);
+          if (width === 360 || width === 1440) {
+            expect(
+              (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
+                .violations,
+            ).toEqual([]);
+          }
         }
-        expect(
-          (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
-            .violations,
-        ).toEqual([]);
       }
     }
     await page.emulateMedia({ colorScheme: 'dark' });
@@ -49,7 +75,7 @@ for (const locale of ['ar', 'en']) {
       await page.locator('#public-market').selectOption(country);
       const response = await responsePromise;
       expect(response.status()).toBe(200);
-      expect(response.request().headers().origin).toBe('http://127.0.0.1:3000');
+      expect((await response.request().allHeaders()).origin).toBe('http://127.0.0.1:3000');
       const setCookie = response.headers()['set-cookie'];
       expect(setCookie).toContain('HttpOnly');
       expect(setCookie).toMatch(/SameSite=strict/i);
