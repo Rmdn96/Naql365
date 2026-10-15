@@ -41,7 +41,7 @@ export async function CustomerAccount({
     : [[], []];
   const actionQuotes = quotes.flatMap((q) =>
     q.quote_versions
-      .filter((v) => v.status === 'SENT')
+      .filter((v) => v.status === 'SENT' || v.status === 'VIEWED')
       .map((v) => ({ id: v.id, reference: q.reference })),
   );
   return (

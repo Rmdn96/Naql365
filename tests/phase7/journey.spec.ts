@@ -221,6 +221,7 @@ for (const country of ['SA', 'EG'] as const)
       await expect(
         page.getByText(guestDictionary(locale).unavailable, { exact: true }),
       ).toBeVisible();
+      await stage1Capture(page, `guest-revoked-${country.toLowerCase()}-${locale}`);
     } finally {
       await staffContext.close();
     }
