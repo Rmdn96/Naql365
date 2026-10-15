@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from 'react';
 import type { Locale } from '@/i18n/config';
+import { useHydrated } from '@/components/ui/use-hydrated';
 
 type ThemeMode = 'light' | 'dark' | 'system';
 const themeCookie = 'naql365_theme';
@@ -19,6 +20,7 @@ function currentTheme(): ThemeMode {
 
 export function ThemeControl({ locale, initialMode }: { locale: Locale; initialMode: ThemeMode }) {
   const mode = useSyncExternalStore(subscribe, currentTheme, () => initialMode);
+  const hydrated = useHydrated();
   const labels =
     locale === 'ar'
       ? { label: 'المظهر', light: 'فاتح', dark: 'داكن', system: 'حسب النظام' }
@@ -35,6 +37,8 @@ export function ThemeControl({ locale, initialMode }: { locale: Locale; initialM
       <span className="sr-only">{labels.label}</span>
       <select
         aria-label={labels.label}
+        disabled={!hydrated}
+        aria-busy={!hydrated}
         value={mode}
         onChange={(event) => changeTheme(event.target.value as ThemeMode)}
       >
