@@ -1,0 +1,93 @@
+{
+  "project": "45d7c85b-e937-48ee-8d57-251cc16a57b8",
+  "base": "cbe4112a4c1457b83a02179bdae11d6a2476bf82",
+  "head": "dd9399162de0f1c5e42a56ef24e09e128bce0067",
+  "reviewedAt": "2026-10-15T15:17:54.566Z",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "action": "edit",
+      "sha256": "b4fff9b8f3a61eea5241aa1cfb180414a5b66feb9de7affff91ed5d1160ca7c4",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "DESIGN-LAB.md",
+      "action": "edit",
+      "sha256": "1ed08d8e53259709605002f776febd1f81f69f73645f69c6ea4d52542d441718",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "roadmap.md",
+      "action": "edit",
+      "sha256": "c2df4d8f61c1759b6e9325703a6f4051e63c494c3cb509763f99e9539620f6cc",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/components/naql/customer-preview.tsx",
+      "action": "edit",
+      "sha256": "95a2daf00c15355c0fb635b17cd268a03894750caebf2561b35acb1ab6955197",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/components/naql/staff-preview.tsx",
+      "action": "new",
+      "sha256": "7571b77477896337508cc1aa582b6b08a5b428c327ed9bb4bc755e7cd0249371",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/components/naql/staff-primitives.tsx",
+      "action": "new",
+      "sha256": "c5c982b188807e4b455e1254c0fb496f337728aed26ac9e65c7d7a294d64fbb9",
+      "decision": "Visual patterns adapted only; no generated runtime copied"
+    },
+    {
+      "path": "src/lib/naql/customer-concept.ts",
+      "action": "edit",
+      "sha256": "4a115d6930b75c04af4aa42b0505177b4febba74716907e84f9ed13d1de5d583",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/lib/naql/staff-concept.test.ts",
+      "action": "new",
+      "sha256": "94d1c0ea958368656f7e4810781fe6a5d5f0d51ade08f179d9dfcaea4aa025c0",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/lib/naql/staff-concept.ts",
+      "action": "new",
+      "sha256": "edfaeb86a549723316058828ccd226a1eb7461bcedce5e3f7160c27d3caa1e9c",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/lib/naql/staff-content.ts",
+      "action": "new",
+      "sha256": "1cd390a660a0c6e45f3100c68bb689089296ed45f3c8d79e0b0b8eaeddd66dc2",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/routeTree.gen.ts",
+      "action": "edit",
+      "sha256": "231c503b30dd2a3c6e056deff778066bd25102bf6fe284535f8c4cdd96c8c05d",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/routes/index.tsx",
+      "action": "edit",
+      "sha256": "e2190f2ca3282ecb6df62dd442a8b9b184c4100dfcce4284240acb341883e5a5",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/routes/staff-preview.tsx",
+      "action": "new",
+      "sha256": "1b7ebff610d12985a9288120f6623fe57e0134b251f929f5ffa1c15b02d8ea2f",
+      "decision": "Not ported: lab instructions, demo state/role predicates, synthetic records, router/runtime or unrelated customer changes"
+    },
+    {
+      "path": "src/styles.css",
+      "action": "edit",
+      "sha256": "d8918483d91e78d4fc6d46f201726042d19c26c8559b3a2855769a8be242fc18",
+      "decision": "Visual patterns adapted only; no generated runtime copied"
+    }
+  ],
+  "canonicalBoundary": "Existing Next.js permission-filtered links, commands, theme cookie and loaders retained. No backend/schema/Auth change."
+}

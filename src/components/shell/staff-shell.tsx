@@ -5,17 +5,20 @@ import { useRef, useState } from 'react';
 import type { Locale } from '@/i18n/config';
 import { LocaleLink } from './locale-link';
 import { MarketSelector } from './market-selector';
+import { ThemeControl } from './theme-control';
 import type { PublicCountry } from '@/domain/markets/public-contact';
 export type StaffLink = { href: string; label: string; symbol: string };
 export function StaffShell({
   locale,
   country,
+  themeMode,
   links,
   logout,
   children,
 }: {
   locale: Locale;
   country: PublicCountry;
+  themeMode: 'light' | 'dark' | 'system';
   links: StaffLink[];
   logout: React.ReactNode;
   children: React.ReactNode;
@@ -42,6 +45,7 @@ export function StaffShell({
         <Link
           key={l.href}
           href={l.href}
+          className={l.href.includes('#') ? 'staff-nav-child' : undefined}
           aria-current={active?.href === l.href ? 'page' : undefined}
           title={l.label}
           {...(mobile ? { onClick: close } : {})}
@@ -93,6 +97,7 @@ export function StaffShell({
           <div className="staff-topbar-actions">
             <MarketSelector country={country} locale={locale} id="staff-market" />
             <LocaleLink locale={locale} label={ar ? 'English' : 'العربية'} />
+            <ThemeControl locale={locale} initialMode={themeMode} />
             <span className="staff-identity">
               {ar ? 'عضوية موظف معتمدة' : 'Verified staff membership'}
             </span>

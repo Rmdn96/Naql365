@@ -1,4 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import { dictionary } from '@/i18n/dictionaries';
 import { isLocale } from '@/i18n/config';
 import { staffModules } from '@/infrastructure/identity/staff-context';
@@ -83,10 +84,13 @@ export default async function Layout({
       label: ar ? 'دعم العملاء' : 'Customer Support',
       symbol: '◎',
     });
+  const theme = (await cookies()).get('naql365_theme')?.value;
+  const themeMode = theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
   return (
     <StaffShell
       locale={locale}
       country={await selectedPublicCountry()}
+      themeMode={themeMode}
       links={links}
       logout={
         <form action={customerLogout.bind(null, locale)}>
