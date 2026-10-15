@@ -1,0 +1,100 @@
+{
+  "applicationSha": "8e340a537a8f469324e13e5f050077881489d0de",
+  "total": 590,
+  "pass": 590,
+  "missing": 0,
+  "failures": 0,
+  "hashVerification": "PASS",
+  "byRole": {
+    "SUPER_ADMIN": 78,
+    "SALES": 144,
+    "OPERATIONS": 148,
+    "DISPATCHER": 22,
+    "FINANCE": 138,
+    "CUSTOMER_SERVICE": 60
+  },
+  "byLocale": {
+    "ar": 295,
+    "en": 295
+  },
+  "byWidth": {
+    "360": 226,
+    "390": 46,
+    "768": 46,
+    "1280": 46,
+    "1440": 226
+  },
+  "byTheme": {
+    "light": 406,
+    "dark": 92,
+    "system": 92
+  },
+  "byEvidenceMode": {
+    "REAL_HOSTED": 504,
+    "CONTROLLED_PRESENTATION": 86
+  },
+  "historicalStage3Captures": {
+    "index": "docs/reports/evidence/stage3-staff-shell/index.json",
+    "count": 60,
+    "sha256": "3524424f1e368e34bc15d07c6ad06c4ee13ff53dd021d244ea1b9b3c581a328b",
+    "hashesVerified": true,
+    "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+    "applicability": "Historical Stage 3 evidence retained and hash-verified. Wave 4 rendering has changed; these captures are not reused as Wave 4 acceptance."
+  },
+  "cleanupAndDisposal": [
+    {
+      "run": "1792099243460",
+      "cleanup": "PASS",
+      "credentialDisposal": {
+        "result": "IDENTITY_DELETION_VERIFIED",
+        "reuseProbe": "Not performed in this earlier batch",
+        "operatorCredentialProvisioned": false
+      }
+    },
+    {
+      "run": "1792100024280",
+      "cleanup": "PASS",
+      "credentialDisposal": {
+        "kind": "credential-disposal",
+        "result": "PASS",
+        "identities": 7,
+        "reuse": "DENIED",
+        "operatorCredentialProvisioned": false
+      }
+    },
+    {
+      "run": "1792100673963",
+      "cleanup": "PASS",
+      "credentialDisposal": {
+        "kind": "credential-disposal",
+        "result": "PASS",
+        "identities": 7,
+        "reuse": "DENIED",
+        "operatorCredentialProvisioned": false
+      }
+    },
+    {
+      "run": "1792101250077",
+      "cleanup": "PASS",
+      "credentialDisposal": {
+        "kind": "credential-disposal",
+        "result": "PASS",
+        "identities": 7,
+        "reuse": "DENIED",
+        "operatorCredentialProvisioned": false
+      }
+    },
+    {
+      "run": "1792101501763",
+      "cleanup": "PASS",
+      "credentialDisposal": {
+        "kind": "credential-disposal",
+        "result": "PASS",
+        "identities": 7,
+        "reuse": "DENIED",
+        "operatorCredentialProvisioned": false
+      }
+    }
+  ],
+  "operatorCredential": "No new privileged operator credential provisioned; existing owner CLI authentication preserved. Owned short-lived runner file is disposed after final verification."
+}

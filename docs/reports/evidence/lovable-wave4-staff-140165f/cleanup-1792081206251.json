@@ -1,0 +1,24 @@
+{
+  "run": 1792081206251,
+  "result": "PASS",
+  "ownedIdentities": 7,
+  "remaining": {
+    "auth": 0,
+    "banks": 0,
+    "customers": 0,
+    "files": 0,
+    "jobs": 0,
+    "memberships": 0,
+    "orders": 0,
+    "organizations": 0,
+    "profiles": 0,
+    "quote_versions": 0,
+    "quotes": 0,
+    "requests": 0,
+    "roles": 0,
+    "storage": 0,
+    "trips": 0
+  },
+  "baselinePreservation": "The batch independently compared its before/after non-owned catalogue/configuration/grants fingerprint.",
+  "verifiedAt": "2026-10-15T16:36:50.535Z"
+}

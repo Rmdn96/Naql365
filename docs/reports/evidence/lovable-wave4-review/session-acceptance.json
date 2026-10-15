@@ -1,0 +1,69 @@
+{
+  "applicationSha": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+  "result": "PASS",
+  "sessions": [
+    {
+      "role": "CUSTOMER",
+      "locale": "ar",
+      "result": "PASS",
+      "applicationSha": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+      "cookies": "Secure Lax / host-only",
+      "timestamp": "2026-10-15T15:56:31.786Z"
+    },
+    {
+      "role": "CUSTOMER",
+      "locale": "en",
+      "result": "PASS",
+      "applicationSha": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+      "cookies": "Secure Lax / host-only",
+      "timestamp": "2026-10-15T15:57:24.870Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "locale": "ar",
+      "result": "PASS",
+      "applicationSha": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+      "cookies": "Secure Lax / host-only",
+      "timestamp": "2026-10-15T15:58:49.587Z"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "locale": "en",
+      "result": "PASS",
+      "applicationSha": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+      "cookies": "Secure Lax / host-only",
+      "timestamp": "2026-10-15T15:59:42.626Z"
+    },
+    {
+      "role": "DRIVER",
+      "locale": "ar",
+      "result": "PASS",
+      "applicationSha": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+      "cookies": "Secure Lax / host-only",
+      "timestamp": "2026-10-15T16:00:45.240Z"
+    },
+    {
+      "role": "DRIVER",
+      "locale": "en",
+      "result": "PASS",
+      "applicationSha": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+      "cookies": "Secure Lax / host-only",
+      "timestamp": "2026-10-15T16:01:47.931Z"
+    }
+  ],
+  "cleanup": {
+    "result": "PASS",
+    "identities": 3,
+    "remaining": {
+      "auth": 0,
+      "customers": 0,
+      "drivers": 0,
+      "memberships": 0,
+      "organizations": 0,
+      "profiles": 0,
+      "roles": 0
+    },
+    "scope": "Exact run-owned tenant/identity ledger; no business or Storage fixtures created."
+  },
+  "verifiedAt": "2026-10-15T16:02:55.035Z"
+}

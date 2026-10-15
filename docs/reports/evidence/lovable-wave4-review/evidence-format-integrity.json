@@ -1,0 +1,216 @@
+{
+  "result": "PASS",
+  "scope": "JSON formatting only; records, timestamps, decisions and screenshot hashes remain identical.",
+  "rows": [
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/application-ci.json",
+      "rawSha256": "07bf30f379d94dd3a27011bfa075d2250cdd95bb0bfa81d7c9d3aa8151344c84",
+      "formattedSha256": "07bf30f379d94dd3a27011bfa075d2250cdd95bb0bfa81d7c9d3aa8151344c84",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/dashboard-finding-19b5cf1.json",
+      "rawSha256": "cad5d165494ab7986e2ffc84bae8c017d92639f890ebe66242351de50011084f",
+      "formattedSha256": "cad5d165494ab7986e2ffc84bae8c017d92639f890ebe66242351de50011084f",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/dependency-audit.json",
+      "rawSha256": "d86f47a816575594d3feece8f8402a8a10d34b7b0bfdc9e788a20daf05a31561",
+      "formattedSha256": "1802eea74ab45167724ec1bde59d08992bd0d646a97cc2fbf7b5a0c3f52a0785",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/diff-review.json",
+      "rawSha256": "5f5c7c6ea2773bb980bcaa2108c8d411247a279a7b270d13c8d41857ba7a262a",
+      "formattedSha256": "5f5c7c6ea2773bb980bcaa2108c8d411247a279a7b270d13c8d41857ba7a262a",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/final-integrity.json",
+      "rawSha256": "713d7e63ce64ffbce65b5d86a822f93ad887b4dec22346f19bf4be9531537453",
+      "formattedSha256": "713d7e63ce64ffbce65b5d86a822f93ad887b4dec22346f19bf4be9531537453",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/final-manual-review.json",
+      "rawSha256": "a9e72c4eb1735f4e9c687e475ef35361c9fa1486915e6a86335078be48042011",
+      "formattedSha256": "a9e72c4eb1735f4e9c687e475ef35361c9fa1486915e6a86335078be48042011",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/final-matrix-summary.json",
+      "rawSha256": "3148e8c5698ee01b1bade1cc15c17a4636cb50ddcb99442f6cb97f6fefbca94e",
+      "formattedSha256": "3148e8c5698ee01b1bade1cc15c17a4636cb50ddcb99442f6cb97f6fefbca94e",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/historical-capture-integrity.json",
+      "rawSha256": "633559b4b484ce8fe5ec06e3fd8a553147d9dfad9318fa41fdf8e908396d394a",
+      "formattedSha256": "633559b4b484ce8fe5ec06e3fd8a553147d9dfad9318fa41fdf8e908396d394a",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/integrity.json",
+      "rawSha256": "93c979d7e853d3c2649fc822358f273f4f009e6891ada37991698faead46fdfe",
+      "formattedSha256": "93c979d7e853d3c2649fc822358f273f4f009e6891ada37991698faead46fdfe",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/manual-review.json",
+      "rawSha256": "457cf9df4ef927ed3c9d5cc58628b491accb205548eaf1ff7db0a026e71fe5dd",
+      "formattedSha256": "457cf9df4ef927ed3c9d5cc58628b491accb205548eaf1ff7db0a026e71fe5dd",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/native-calendar-finding-140165f.json",
+      "rawSha256": "91791e837b936609f0754e941fce472accd8c4e3191ad3b351d7f4946013c9b7",
+      "formattedSha256": "91791e837b936609f0754e941fce472accd8c4e3191ad3b351d7f4946013c9b7",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/native-repaired-ci.json",
+      "rawSha256": "8635e99de53e2d7461ba81cd710cd933f2d9e859091fd9d1a51649a57cc7f93b",
+      "formattedSha256": "8635e99de53e2d7461ba81cd710cd933f2d9e859091fd9d1a51649a57cc7f93b",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/native-repaired-preview.json",
+      "rawSha256": "de41ed2b141aed8c0c3f51e5adc41fa1347af51e96b7735ef176dab2ef8d84e9",
+      "formattedSha256": "3bd567897e28ffe8a818bb2df2ee7f82f95ada94a4d8eee77546263197768029",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/repaired-application-ci.json",
+      "rawSha256": "35086589b5ca447351d0e6ef05178eba31001cda6107a54acd6eddc4218de176",
+      "formattedSha256": "35086589b5ca447351d0e6ef05178eba31001cda6107a54acd6eddc4218de176",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/repaired-integrity.json",
+      "rawSha256": "307f68afea2bf50ab97c40df0b08564cea8c28d22ede4af151d9ba34a6d9656d",
+      "formattedSha256": "307f68afea2bf50ab97c40df0b08564cea8c28d22ede4af151d9ba34a6d9656d",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/repaired-preview.json",
+      "rawSha256": "27cc2376b7fa71597879bb52f8e0b3142345f217032bcfe0da4a6080d43c573c",
+      "formattedSha256": "27cc2376b7fa71597879bb52f8e0b3142345f217032bcfe0da4a6080d43c573c",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-review/session-acceptance.json",
+      "rawSha256": "f78920ac0d0985b75b680482e271940759323145538353f96e8c47263f1f0734",
+      "formattedSha256": "f78920ac0d0985b75b680482e271940759323145538353f96e8c47263f1f0734",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff/cleanup-1792078271179.json",
+      "rawSha256": "a7411925caaf546406d815d0561c43927a69a7ee1462619a95c136bde5819626",
+      "formattedSha256": "a7411925caaf546406d815d0561c43927a69a7ee1462619a95c136bde5819626",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff/index.json",
+      "rawSha256": "2065abd139add3d9a5cfac7b37994920174ab1a8a79bbabc3224fcf273b9656c",
+      "formattedSha256": "2065abd139add3d9a5cfac7b37994920174ab1a8a79bbabc3224fcf273b9656c",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-140165f/cleanup-1792080198799.json",
+      "rawSha256": "af68aae483758740b1d18f8512ec956f89d3f4321b686b7ccdb996ad53e0e769",
+      "formattedSha256": "af68aae483758740b1d18f8512ec956f89d3f4321b686b7ccdb996ad53e0e769",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-140165f/cleanup-1792081206251.json",
+      "rawSha256": "562bb25da2c7df9a174d8b8d3caf90377b9eb33a28e6db14b8cf6dc2e020c009",
+      "formattedSha256": "562bb25da2c7df9a174d8b8d3caf90377b9eb33a28e6db14b8cf6dc2e020c009",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-140165f/index.json",
+      "rawSha256": "09e4e8b6f87e2e74252985960104e9b958440098cad5fd8dfe640ef116210535",
+      "formattedSha256": "abb8f3d9931cdcc9b292916a131751b3df7ec5d6eb5a848a75baa721fc7414ea",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-140165f/navigation-sales-support-1792080198799.json",
+      "rawSha256": "73660348f5c240b968fc43294af0994dc7176d104d69b62e2016d46260196c5f",
+      "formattedSha256": "933535d816a05388e7d5ff0ffeaa9de6e93150fa94e5727c0d801cd41d15a646",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/cleanup-1792099243460.json",
+      "rawSha256": "fe4d11c78a1fe4df2ff969495971caa63069d440c3c7713e34bcf8a772d8c9fa",
+      "formattedSha256": "fe4d11c78a1fe4df2ff969495971caa63069d440c3c7713e34bcf8a772d8c9fa",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/cleanup-1792100024280.json",
+      "rawSha256": "db20ffd7f20cc5397481ab633db594dfb398e1207fd16a8f50ec24038b1a8e40",
+      "formattedSha256": "db20ffd7f20cc5397481ab633db594dfb398e1207fd16a8f50ec24038b1a8e40",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/cleanup-1792100673963.json",
+      "rawSha256": "f751ec84ec5b1e8c2582d31a7e442ccb67aea89528be14f9d7ad73da8b75ad11",
+      "formattedSha256": "f751ec84ec5b1e8c2582d31a7e442ccb67aea89528be14f9d7ad73da8b75ad11",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/cleanup-1792101250077.json",
+      "rawSha256": "7baa42f7e516c66e1570dba1b710c5831c76ef968f1d6945bfeda470cb3647f3",
+      "formattedSha256": "7baa42f7e516c66e1570dba1b710c5831c76ef968f1d6945bfeda470cb3647f3",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/cleanup-1792101501763.json",
+      "rawSha256": "4307363604bc526534890322d236fa45039bfe01591b426d4a9a983621712f34",
+      "formattedSha256": "4307363604bc526534890322d236fa45039bfe01591b426d4a9a983621712f34",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/index.json",
+      "rawSha256": "823753589a010760ea30a6d969e03f2c3ceeafea01640f3c36c1ae08dfc008ce",
+      "formattedSha256": "26fa7229791e68dd355882ac03e492719431018765494abc14ea8e03dafcfb5e",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/market-theme-smoke.json",
+      "rawSha256": "cd135e49830be286f10055dd73d890558bfef4d40dcec2eb28b2cc04d95b2629",
+      "formattedSha256": "70e4ddabf5e993f066dff27f8022ea6c4e875cc42bdfdd36a27d50c68766a1d3",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/navigation-empty-1792101501763.json",
+      "rawSha256": "5f0bd79849e0d280c662985ded38de30b55aec8d8dc7749ffb9dd79d787e1187",
+      "formattedSha256": "7a467ee62b25ff71765bbab37ee11671831cb8091a19b06ec790ded0d2def7f7",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/navigation-finance-1792100673963.json",
+      "rawSha256": "18d78b8f8e213355c5358b519d5a7f7f70e0d400edabd587eaef4320f4188ef8",
+      "formattedSha256": "fd97c01e9947e82201541524747d2a66cb37693674d4d86cb31ab73ccbe69101",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/navigation-loading-1792101250077.json",
+      "rawSha256": "1ca8f72c627c76c1c82d2889d252dcfda34b941e2738f5bcdb31913fabb73eca",
+      "formattedSha256": "61df367334844a9198f5b32681a196b79a66764d96dde6fa1518272e1fa34a03",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/navigation-operations-1792100024280.json",
+      "rawSha256": "0668e9edc8bd77ae9a5a63592f21c7368ca0bd68295737c24b0198148b75be98",
+      "formattedSha256": "5a481f9312a7f14096ed1eebaa39707e982b2412fbcf656a4511c281c200a561",
+      "semanticEquality": "PASS"
+    },
+    {
+      "path": "docs/reports/evidence/lovable-wave4-staff-final/navigation-sales-support-1792099243460.json",
+      "rawSha256": "73660348f5c240b968fc43294af0994dc7176d104d69b62e2016d46260196c5f",
+      "formattedSha256": "933535d816a05388e7d5ff0ffeaa9de6e93150fa94e5727c0d801cd41d15a646",
+      "semanticEquality": "PASS"
+    }
+  ]
+}

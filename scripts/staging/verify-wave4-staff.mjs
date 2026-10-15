@@ -128,6 +128,7 @@ const roleModules = {
   CUSTOMER_SERVICE: ['support'],
 };
 const bank = [];
+const marketChecks = [];
 // Browser-only presentation control renders the existing committed component verbatim.
 // It is not an application endpoint, authorization bypass, or network-loading claim.
 const loadingSourcePath = 'src/app/[locale]/(portal)/portal/loading.tsx';
@@ -614,6 +615,66 @@ try {
           await expect(page.locator('.staff-workspace-content h1')).toBeVisible();
         };
         try {
+          if (activeBatch === 'empty') {
+            await go('');
+            for (const country of ['EG', 'SA']) {
+              const changed = page.waitForResponse(
+                (r) =>
+                  new URL(r.url()).pathname === '/api/public/market' &&
+                  r.request().method() === 'POST',
+              );
+              await page.locator('#staff-market').selectOption(country);
+              expect((await changed).status()).toBe(200);
+              await expect(page.locator('#staff-market')).toHaveValue(country);
+              await page.reload();
+              await expect(page.locator('#staff-market')).toHaveValue(country);
+              for (const theme of ['light', 'dark', 'system']) {
+                const width = theme === 'light' ? 1440 : 360;
+                await page.setViewportSize({ width, height: 900 });
+                await page.emulateMedia({ colorScheme: theme === 'light' ? 'light' : 'dark' });
+                await page.locator('.staff-topbar .theme-control select').selectOption(theme);
+                await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+                await expect(page.locator('html')).toHaveAttribute(
+                  'dir',
+                  locale === 'ar' ? 'rtl' : 'ltr',
+                );
+                expect(
+                  await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+                ).toBe(true);
+                await expect(page.locator('.staff-workspace-content h1')).toBeVisible();
+                const row = {
+                  role,
+                  locale,
+                  country,
+                  theme,
+                  width,
+                  route: '/portal',
+                  applicationSha,
+                  fixture: 'run-' + run,
+                  result: 'PASS',
+                  checks: [
+                    'market POST 200',
+                    'refresh persistence',
+                    'theme',
+                    'direction',
+                    'overflow',
+                  ],
+                  capturedAt: new Date().toISOString(),
+                };
+                if (role === 'SUPER_ADMIN') {
+                  await expect(page.locator('input[type=password]')).toHaveCount(0);
+                  const filename =
+                    'market-' + country + '-' + locale + '-' + width + '-' + theme + '.png';
+                  await page.screenshot({ path: join(store.directory, filename), fullPage: true });
+                  row.filename = filename;
+                  row.sha256 = createHash('sha256')
+                    .update(readFileSync(join(store.directory, filename)))
+                    .digest('hex');
+                }
+                marketChecks.push(row);
+              }
+            }
+          }
           for (const f of families.filter((f) => f.batch === activeBatch && f.role === role)) {
             checkStop();
             if (presentations(f).every((view) => store.has(matrixId(f, locale, view)))) continue;
@@ -925,6 +986,24 @@ try {
         }
       }
   for (const checkedBatch of batches) store.complete(checkedBatch);
+  if (batch === 'empty') {
+    if (marketChecks.length !== 60) throw Error('MARKET_THEME_SMOKE_INCOMPLETE');
+    writeFileSync(
+      join(store.directory, 'market-theme-smoke.json'),
+      JSON.stringify(
+        {
+          applicationSha,
+          result: 'PASS',
+          total: marketChecks.length,
+          rows: marketChecks,
+          scope:
+            'Supplemental role/locale/Market/theme shell checks, separate from 590 state matrix; synthetic empty tenant, no financial destination.',
+        },
+        null,
+        2,
+      ),
+    );
+  }
   writeFileSync(
     join(store.directory, `navigation-${batch}-${run}.json`),
     JSON.stringify(bank, null, 2),
@@ -964,6 +1043,25 @@ try {
       cleanupResult = await fixture.cleanup(admin, ledger);
       if (fixture.snapshot() !== baseline) throw Error('BASELINE_CHANGED');
     } else for (const user of Object.values(identities)) await admin.auth.admin.deleteUser(user.id);
+    const publicClient = createClient(
+      'https://' + ref + '.supabase.co',
+      keys.find((k) => k.type === 'publishable').api_key,
+      { auth: { persistSession: false, autoRefreshToken: false } },
+    );
+    for (const user of Object.values(identities)) {
+      const retry = await publicClient.auth.signInWithPassword({
+        email: user.email,
+        password: user.password,
+      });
+      if (!retry.error || retry.error.code !== 'invalid_credentials' || retry.data.session)
+        throw Error('DISPOSED_FIXTURE_CREDENTIAL_REUSE_NOT_DENIED');
+    }
+    record('credential-disposal', {
+      result: 'PASS',
+      identities: Object.keys(identities).length,
+      reuse: 'DENIED',
+      operatorCredentialProvisioned: false,
+    });
     record('cleanup', { result: 'PASS', remaining: cleanupResult });
     console.log('Visual run-owned fixture cleanup PASS');
   } catch {

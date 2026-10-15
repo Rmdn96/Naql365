@@ -1,0 +1,13 @@
+{
+  "applicationSha": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+  "result": "REMEDIATION_REQUIRED",
+  "classification": "APPLICATION_PRESENTATION_DEFECT",
+  "evidence": {
+    "filename": "operations-planned-ar-1440-dark-light.png",
+    "sha256": "075e9db8cbbc39714c1dbd7e32e8c41b08d381d15b309f28fd72a61cec7e527a"
+  },
+  "rootCause": "Staff datetime-local inputs receive dark semantic backgrounds but retain the user-agent light color scheme, leaving the native calendar icon black.",
+  "repair": "Set native datetime-local color-scheme to dark for explicit Dark and System with dark OS preference, scoped inside staff shell. No date, scheduling, Auth or business behavior changes.",
+  "required": "New application identity and required regression/CI. Preserve prior captures historically; do not retag them to repaired SHA.",
+  "observedAt": "2026-10-15T16:32:22.795Z"
+}

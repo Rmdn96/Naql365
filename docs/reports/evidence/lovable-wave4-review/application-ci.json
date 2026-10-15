@@ -1,0 +1,185 @@
+{
+  "run": 38760060254,
+  "sha": "19b5cf1b537b28759668986e464476171047a31a",
+  "url": "https://github.com/Rmdn96/Naql365/actions/runs/38760060254",
+  "result": "PASS",
+  "jobs": [
+    {
+      "name": "Supabase migrations and RLS",
+      "result": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "result": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "result": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "result": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run db:start",
+          "result": "success"
+        },
+        {
+          "name": "Run npx supabase db reset",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run db:types",
+          "result": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run test:db",
+          "result": "success"
+        },
+        {
+          "name": "Run node scripts/test-operations-concurrency.mjs",
+          "result": "success"
+        },
+        {
+          "name": "Run node scripts/test-driver-concurrency.mjs",
+          "result": "success"
+        },
+        {
+          "name": "Run node scripts/test-tracking-concurrency.mjs",
+          "result": "success"
+        },
+        {
+          "name": "Run node scripts/test-payment-concurrency.mjs",
+          "result": "success"
+        },
+        {
+          "name": "Run node scripts/test-manual-pricing-concurrency.mjs",
+          "result": "success"
+        },
+        {
+          "name": "Run node scripts/test-guest-concurrency.mjs",
+          "result": "success"
+        },
+        {
+          "name": "Run npx playwright install --with-deps chromium",
+          "result": "success"
+        },
+        {
+          "name": "Run node scripts/test-staff-workspace.mjs",
+          "result": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+          "result": "success"
+        },
+        {
+          "name": "Run git diff --exit-code -- src/infrastructure/supabase/database.types.ts",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run typecheck",
+          "result": "success"
+        },
+        {
+          "name": "Run npx supabase stop --no-backup",
+          "result": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "result": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "result": "success"
+        },
+        {
+          "name": "Complete job",
+          "result": "success"
+        }
+      ]
+    },
+    {
+      "name": "Lint, types, tests and production build",
+      "result": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "result": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "result": "success"
+        },
+        {
+          "name": "Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "result": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run check:secrets",
+          "result": "success"
+        },
+        {
+          "name": "Run node scripts/check-secret-history.mjs",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run format:check",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run lint",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run typecheck",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run test:unit",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run build",
+          "result": "success"
+        },
+        {
+          "name": "Run npx playwright install --with-deps chromium",
+          "result": "success"
+        },
+        {
+          "name": "Run npm run test:e2e",
+          "result": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+          "result": "skipped"
+        },
+        {
+          "name": "Post Run actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38",
+          "result": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "result": "success"
+        },
+        {
+          "name": "Complete job",
+          "result": "success"
+        }
+      ]
+    }
+  ],
+  "verifiedAt": "2026-10-15T15:31:33.239Z"
+}

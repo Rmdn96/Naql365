@@ -1,0 +1,17 @@
+{
+  "applicationSha": "19b5cf1b537b28759668986e464476171047a31a",
+  "result": "REMEDIATION_REQUIRED",
+  "classification": "APPLICATION_PRESENTATION_DEFECT",
+  "affected": "Dashboard grid/card row layout only",
+  "findings": [
+    "Short queue cards stretch to their tallest sibling with excessive unused surface.",
+    "Long reference becomes cramped beside long status text."
+  ],
+  "repair": "Dashboard grid align-items:start; dashboard reference/status use stacked rows.",
+  "evidence": [
+    "shell-super_admin-ar-1440-dark-light.png",
+    "shell-super_admin-ar-360-light-light.png"
+  ],
+  "required": "New application SHA, full regression/CI and fresh visual evidence; previous captures remain historical.",
+  "observedAt": "2026-10-15T15:39:38.960Z"
+}
