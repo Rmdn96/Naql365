@@ -76,10 +76,11 @@ for (const locale of ['ar', 'en']) {
       const response = await responsePromise;
       expect(response.status()).toBe(200);
       expect((await response.request().allHeaders()).origin).toBe('http://127.0.0.1:3000');
-      const setCookie = response.headers()['set-cookie'];
-      expect(setCookie).toContain('HttpOnly');
-      expect(setCookie).toMatch(/SameSite=strict/i);
-      expect(setCookie).toContain('Path=/');
+      const setCookie = (await response.allHeaders())['set-cookie'] ?? '';
+      // Playwright's synchronous headers() omits security headers; assert only safe flags.
+      expect(/(?:^|;)\s*HttpOnly(?:;|$)/i.test(setCookie)).toBe(true);
+      expect(/(?:^|;)\s*SameSite=strict(?:;|$)/i.test(setCookie)).toBe(true);
+      expect(/(?:^|;)\s*Path=\/(?:;|$)/i.test(setCookie)).toBe(true);
       await expect(page.locator('#public-market')).toHaveValue(country);
       await page.reload();
       await expect(page.locator('#public-market')).toHaveValue(country);
