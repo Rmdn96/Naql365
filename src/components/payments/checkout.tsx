@@ -90,7 +90,10 @@ export function Checkout({
       aria-busy={busy}
     >
       {!finance && <p className="page-description">{customerExperience(locale).paymentIntro}</p>}
-      <Badge>{t.states[data.status]}</Badge>
+      <div className={finance ? undefined : 'customer-payment-state'}>
+        <Badge>{t.states[data.status]}</Badge>
+        {!finance && data.method && <p>{data.method === 'CASH' ? t.cashHelp : t.transferHelp}</p>}
+      </div>
       {!finance && ['UNDER_REVIEW', 'TRANSFER_REJECTED', 'PAID'].includes(data.status) && (
         <Alert
           tone={
@@ -129,6 +132,8 @@ export function Checkout({
           <h2>{t.choose}</h2>
           <div className={finance ? 'actions' : 'payment-methods'}>
             <Button
+              className="customer-method customer-method--cash"
+              aria-pressed={data.method === 'CASH'}
               disabled={!hydrated || busy || data.method === 'CASH'}
               onClick={() => void act({ action: 'choose', payload: { method: 'CASH' } })}
             >
@@ -137,6 +142,8 @@ export function Checkout({
             {data.destinations.map((destination) => (
               <Button
                 key={destination.id}
+                className="customer-method customer-method--transfer"
+                aria-pressed={data.method === 'BANK_TRANSFER' && data.bank?.id === destination.id}
                 disabled={
                   !hydrated ||
                   busy ||

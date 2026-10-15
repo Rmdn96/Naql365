@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { customerRequests } from '@/infrastructure/requests/list';
 import { customerQuotes } from '@/infrastructure/pricing/service';
 import { PageHeader, SummaryCard } from '@/components/ui/presentation';
+import { CustomerWorkspaceNav } from '@/components/ui/customer-workspace';
 import { redirect } from 'next/navigation';
 import type { Locale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
@@ -45,7 +46,9 @@ export async function CustomerAccount({
   );
   return (
     <div className="container page customer-home customer-experience">
+      {permitted && <CustomerWorkspaceNav locale={locale} current="account" />}
       <PageHeader
+        eyebrow={locale === 'ar' ? 'نقل 365 · مساحة العميل' : 'Naql365 · Your transport workspace'}
         title={t.account}
         description={
           locale === 'ar'
@@ -53,6 +56,51 @@ export async function CustomerAccount({
             : 'Your requests and next steps, in one place.'
         }
       />
+      {permitted && (
+        <section className="customer-next-action" aria-labelledby="customer-next-title">
+          <div>
+            <p className="eyebrow">{locale === 'ar' ? 'خطوتك التالية' : 'Your next step'}</p>
+            <h2 id="customer-next-title">
+              {actionQuotes[0]
+                ? locale === 'ar'
+                  ? 'عرض سعر بانتظار قرارك'
+                  : 'A quote is ready for your decision'
+                : requests[0]
+                  ? locale === 'ar'
+                    ? 'تابع تفاصيل طلبك'
+                    : 'Continue your transport journey'
+                  : locale === 'ar'
+                    ? 'لنبدأ رحلة النقل الأولى'
+                    : 'Start your first transport request'}
+            </h2>
+            <p>
+              {locale === 'ar'
+                ? 'من تفاصيل الطلب إلى عرض السعر النهائي والتسليم، تابع الخطوة المتاحة لك.'
+                : 'From request details to your final quote and delivery, follow the next available action.'}
+            </p>
+          </div>
+          <Link
+            className="button button--primary"
+            href={
+              actionQuotes[0]
+                ? `/${locale}/account/quotes/${actionQuotes[0].id}`
+                : requests[0]
+                  ? `/${locale}/account/requests/${requests[0].id}`
+                  : `/${locale}/request`
+            }
+          >
+            {actionQuotes[0]
+              ? locale === 'ar'
+                ? 'مراجعة العرض'
+                : 'Review quote'
+              : requests[0]
+                ? locale === 'ar'
+                  ? 'متابعة الطلب'
+                  : 'Continue request'
+                : t.start}
+          </Link>
+        </section>
+      )}
       {permitted && (
         <div className="summary-grid">
           <SummaryCard
