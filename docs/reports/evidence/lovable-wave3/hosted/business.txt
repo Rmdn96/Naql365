@@ -1,0 +1,71 @@
+Vercel CLI 60.1.3 (Node.js 24.18.0)
+Retrieving project…
+Downloading `preview` environment variables
+Loaded env from C:\Users\DELL\Documents\Codex\2026-09-09\project-naql365-phase-0-foundation-architecture\work\Naql365\.env.local
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: phase7/helpers.ts:267
+Failed test step: phase7/helpers.ts:267
+Failed test step: phase7/helpers.ts:267
+Failed test step: phase7/helpers.ts:267
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+passed: hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration; durationMs=206623
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: phase7/helpers.ts:267
+Failed test step: phase7/helpers.ts:267
+Failed test step: phase7/helpers.ts:267
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+Failed test step: helpers/driver-journey.ts:99
+passed: hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration; durationMs=299082
+Suspension probe: Private proof read: status=200, elapsedMs=720, ttlSeconds=10
+Suspension probe: Private proof read: status=200, elapsedMs=513, ttlSeconds=10
+Failed test step: phase7/journey.spec.ts:239
+passed: hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order; durationMs=90454
+passed: hosted-phase7 > manual-customer.spec.ts > SA registered customer manual quote and CASH regression; durationMs=180703
+Suspension probe: action-disabled-until-hydration=true; server-action-visible=true
+Suspension probe: action-disabled-until-hydration=true; server-action-visible=false
+passed: hosted-phase7 > manual-customer.spec.ts > EG registered customer manual quote and CASH regression; durationMs=195150
+Suspension probe: action-disabled-until-hydration=true; server-action-visible=false
+Suspension probe: action-disabled-until-hydration=true; server-action-visible=false
+passed: hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact; durationMs=11185
+passed: hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact; durationMs=11079
+passed: hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed; durationMs=5997
+passed: hosted-phase7 > stage1-session.spec.ts > ar normal SUPER_ADMIN session, explicit logout and history denial; durationMs=21975
+passed: hosted-phase7 > stage1-session.spec.ts > en normal SUPER_ADMIN session, explicit logout and history denial; durationMs=20388
+Staging suite: passed
+Driver synthetic fixture cleanup PASS; existing catalogues retained
+Wave 3 independent identity/configuration cleanup PASS

@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "scopedGuestRequests": 2,
+  "scopedUsers": 16,
+  "readback": {
+    "guest_grants": 0,
+    "guest_requests": 0,
+    "migrations": 47,
+    "user_owned_storage_objects": 0
+  },
+  "scope": "Two ledger-preserved Guest request IDs and all 16 run-owned Auth IDs; complete business graph and Guest Storage cleanup additionally asserted by the main runner"
+}

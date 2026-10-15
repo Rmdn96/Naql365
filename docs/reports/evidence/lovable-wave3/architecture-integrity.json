@@ -1,0 +1,20 @@
+{
+  "baseline": "2e10349cd6ca84fb42f64a7187513c393b1ece49",
+  "applicationSha": "f758f42868f97984999a5673d2f5ed0ca5d13b89",
+  "result": "PASS",
+  "protectedPaths": [
+    "src/domain",
+    "src/application",
+    "src/infrastructure",
+    "src/app/auth",
+    "src/app/api",
+    "supabase/migrations",
+    "config",
+    "next.config.ts",
+    "package.json",
+    "package-lock.json"
+  ],
+  "changedFiles": [],
+  "mainReference": "184ac2374a7e9611b4b265efc7dac21b57b7a2b1",
+  "scope": "Canonical source comparison; no claim about unrelated external actors"
+}

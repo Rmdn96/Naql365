@@ -1,6 +1,6 @@
 {
   "baseline": "2e10349cd6ca84fb42f64a7187513c393b1ece49",
-  "applicationSha": "452d5406c9b7cca8ef32c615f27a12e01f3d738d",
+  "applicationSha": "f758f42868f97984999a5673d2f5ed0ca5d13b89",
   "count": 47,
   "result": "PASS",
   "comparison": "byte-for-byte canonical Git blobs",
