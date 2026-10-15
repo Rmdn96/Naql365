@@ -140,6 +140,7 @@ body:has(.auth-v2) .floating-contact {
   width: 100%;
   background: var(--v2-action);
   border-color: var(--v2-action);
+  color: var(--theme-on-brand);
 }
 .auth-v2 .customer-links {
   display: flex;

@@ -36,7 +36,8 @@
   --theme-border: #dce3ea;
   --theme-brand: #1677ff;
   --theme-brand-hover: #075bcb;
-  --theme-accent: #087f97;
+  --theme-on-brand: #ffffff;
+  --theme-accent: #076b80;
   --theme-success: #147344;
   --theme-warning: #854d0e;
   --theme-destructive: #b42318;
@@ -55,6 +56,7 @@ html[data-theme='system'] {
   --theme-border: #35495d;
   --theme-brand: #6e9cff;
   --theme-brand-hover: #8fb1ff;
+  --theme-on-brand: #0b1f33;
   --theme-accent: #66d7e8;
   --theme-success: #5fd39a;
   --theme-warning: #f3b562;
@@ -74,7 +76,8 @@ html[data-theme='system'] {
     --theme-border: #dce3ea;
     --theme-brand: #1677ff;
     --theme-brand-hover: #075bcb;
-    --theme-accent: #087f97;
+    --theme-on-brand: #ffffff;
+    --theme-accent: #076b80;
     --theme-success: #147344;
     --theme-warning: #854d0e;
     --theme-destructive: #b42318;

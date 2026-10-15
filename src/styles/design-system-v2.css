@@ -81,7 +81,7 @@ html[lang='en'] .public-v2 h1 {
 }
 .public-v2 .button--primary {
   background: var(--v2-action);
-  color: white;
+  color: var(--theme-on-brand);
   border-color: var(--v2-action);
 }
 .public-v2 .button--secondary,
@@ -92,6 +92,10 @@ html[lang='en'] .public-v2 h1 {
 }
 .public-v2 .launch-hero {
   background: var(--v2-ink);
+  color: var(--v2-text);
+}
+.public-v2 a.floating-contact {
+  color: white;
 }
 .public-v2 .launch-hero-grid {
   padding-block: 64px 48px;
@@ -267,7 +271,7 @@ html[lang='en'] .public-v2 h1 {
 }
 
 /* Theme foundation applies to Wave 1 and Wave 2 surfaces without changing flow authority. */
-body {
+html[data-theme] body {
   background: var(--theme-background);
   color: var(--theme-text-primary);
 }
@@ -286,11 +290,11 @@ body {
   color: var(--theme-text-primary);
   box-shadow: var(--theme-shadow);
 }
-.field input,
-.field select,
-.field textarea,
-.auth-v2 :is(input, select),
-.profile-v2 :is(input, select),
+html[data-theme] .field input,
+html[data-theme] .field select,
+html[data-theme] .field textarea,
+html[data-theme] .auth-v2 :is(input, select),
+html[data-theme] .profile-v2 :is(input, select),
 .wizard-progress button,
 .choice {
   background: var(--theme-surface-elevated);
@@ -320,28 +324,28 @@ body {
   color: var(--theme-text-primary);
   box-shadow: var(--theme-shadow);
 }
-.auth-v2-kicker,
-.auth-v2 .auth-intro,
-.profile-v2-intro,
-.profile-v2-onboarding > p {
+html[data-theme] .auth-v2-kicker,
+html[data-theme] .auth-v2 .auth-intro,
+html[data-theme] .profile-v2-intro,
+html[data-theme] .profile-v2-onboarding > p {
   color: var(--theme-text-secondary);
 }
-.profile-v2 {
+html[data-theme] .profile-v2 {
   background: var(--theme-surface-muted);
   border-color: var(--theme-brand);
 }
-.auth-v2 .alert--error,
+html[data-theme] .auth-v2 .alert--error,
 .alert--error {
   background: color-mix(in srgb, var(--theme-destructive) 12%, var(--theme-surface));
   color: var(--theme-text-primary);
 }
-.auth-v2 .alert--success,
+html[data-theme] .auth-v2 .alert--success,
 .alert--success {
   background: color-mix(in srgb, var(--theme-success) 12%, var(--theme-surface));
   color: var(--theme-text-primary);
 }
 @media (max-width: 700px) {
-  .header-inner {
+  .public-v2-header .header-inner {
     min-height: 64px;
     align-items: center;
   }
@@ -349,6 +353,7 @@ body {
     max-width: 150px;
   }
   .header-market .market-control {
+    position: relative;
     display: grid;
     gap: 0.15rem;
   }
@@ -358,8 +363,18 @@ body {
     padding-block: 0.2rem;
   }
   .header-market .market-control [role='alert'] {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline-end: 0;
+    z-index: 30;
+    width: 145px;
     max-width: 145px;
     font-size: 0.72rem;
+    padding: 0.5rem;
+    background: var(--theme-surface-elevated);
+    border: 1px solid var(--theme-destructive);
+    border-radius: var(--v2-control-radius);
+    box-shadow: var(--theme-shadow);
   }
   .theme-control select {
     max-width: 100%;

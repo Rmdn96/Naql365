@@ -1,6 +1,6 @@
 # Naql365 Lovable UI V2 — Market Fix + Theme Foundation
 
-Current decision: **LOVABLE UI V2 — MARKET FIX + THEME FOUNDATION READY FOR OWNER REVIEW**
+Current decision: **Verification in progress — required CI and hosted coverage pending**
 
 This gate is on `feature/lovable-ui-experience-v2`, based on Wave 2 delivery `bd2495c010fe6f50c09532b2f7efb07643033b82`. It is a presentation and public market-context change. No production deployment, DNS change, Hostinger deployment, Commerce schema, or migration was introduced.
 
@@ -17,7 +17,7 @@ The current canonical Preview successfully completed both directions after the n
 | English / LTR | Saudi Arabia → Egypt | PASS   | Egypt market heading and Cairo coverage  |
 | English / LTR | Egypt → Saudi Arabia | PASS   | Saudi market heading and Riyadh coverage |
 
-Refresh and locale navigation retained the selected market during the browser verification. The earlier owner report is therefore retained as historical Preview evidence; it was not reproduced on the current canonical deployment. No weakening of origin validation was necessary or made. The safe current classification is a stale or transient Preview/configuration condition, without enough bounded runtime evidence to claim a narrower server root cause.
+Refresh and locale navigation retained the selected market during the browser verification. The earlier owner report is retained as historical Preview evidence; it was not reproduced on the current canonical deployment. The original cause remains undetermined: successful canonical-origin tests alone cannot establish whether the earlier failure was stale deployment configuration, transient infrastructure, or another condition. No market endpoint or origin configuration change has been made.
 
 ## Theme foundation
 
@@ -45,6 +45,7 @@ No market endpoint, Auth flow, RLS/RBAC, business command, or database migration
 - Prettier check: PASS.
 - Secret/history scan: PASS (2288 tracked files).
 - Theme contract tests: 2 PASS.
+- Initial exact-head CI `38705876300`: 308 unit/integration PASS; database/RLS/generated types/concurrency PASS; production build PASS; E2E 26 PASS / 18 FAIL. The failures exposed light-theme accent contrast, inherited white hero text, and the floating contact link foreground. These are retained as failed application presentation evidence and corrected in the next commit; they are not attributed to the local runner limitations.
 - Market integration/database coverage remains the accepted baseline.
 - The full Vitest run was attempted; Windows worker/SSR sandbox file linkage failed for the existing database and visual-evidence suites before execution. The failures are environmental (`ENOENT`/`EPERM`) and did not identify an application assertion failure.
 - Production build was attempted with Webpack after the local Turbopack junction restriction. The sandbox could not resolve `fonts.googleapis.com`, and Next also reported the existing Windows junction permission limitation. No source conclusion is drawn from that environment failure.
