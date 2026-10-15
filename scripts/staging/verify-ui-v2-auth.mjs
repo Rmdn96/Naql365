@@ -6,6 +6,7 @@ import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { chromium, expect as baseExpect } from '@playwright/test';
 const expect = baseExpect.configure({ timeout: 20000 });
+const sessionOnly = process.env.UI_V2_AUTH_SESSION_ONLY === '1';
 import { acceptanceTarget, protectionHeaders } from './target.mjs';
 import { stagingProject, supabase, query } from './supabase.mjs';
 import { acquireHostedRun } from './exclusive-run.mjs';
@@ -139,7 +140,7 @@ try {
         }),
       );
       try {
-        if (role === 'CUSTOMER') {
+        if (role === 'CUSTOMER' && !sessionOnly) {
           checkpoint = 'public visual ' + locale;
           for (const path of ['login', 'register', 'recover']) {
             await page.goto(origin + '/' + locale + '/' + path);
@@ -201,7 +202,7 @@ try {
         await page.locator('#password').fill(password);
         await page.locator('.auth-form button[type=submit]').click();
         await expect(page).toHaveURL(new RegExp('/' + locale + '/' + destination + '$'));
-        if (role === 'CUSTOMER') {
+        if (role === 'CUSTOMER' && !sessionOnly) {
           await page.locator('.profile-settings summary').click();
           await captureFamily(page, locale, 'profile-existing-authorized-fields');
           await page.locator('#name').fill('Synthetic profile');
@@ -281,6 +282,7 @@ try {
           .getByRole('button', { name: locale === 'ar' ? 'تسجيل الخروج' : 'Sign out', exact: true })
           .click();
         await expect(page).toHaveURL(new RegExp('/' + locale + '/(driver/)?login'));
+        checkpoint = role + ' ' + locale + ' Back after logout';
         await page.goBack();
         await expect(
           page.locator(
@@ -291,8 +293,13 @@ try {
                 : '.customer-home',
           ),
         ).toHaveCount(0);
+        // Back can restore a protected pathname while its server redirect is still in flight.
+        // Prove that denial finishes before issuing a second navigation with reload().
+        await expect(page).toHaveURL(new RegExp('/' + locale + '/(driver/)?login'));
+        checkpoint = role + ' ' + locale + ' refresh after logout';
         await page.reload();
         await expect(page).toHaveURL(new RegExp('/' + locale + '/(driver/)?login'));
+        checkpoint = role + ' ' + locale + ' protected route after logout';
         await page.goto(origin + '/' + locale + '/' + destination);
         await expect(page).toHaveURL(new RegExp('/' + locale + '/(driver/)?login'));
         evidence.push({
@@ -312,11 +319,23 @@ try {
             path: new URL(page.url()).pathname,
             strict: error.message?.includes('strict mode violation'),
             timeout: error.name === 'TimeoutError',
+            errorClass: error.name,
+            assertion:
+              error.message?.match(
+                /toHaveURL|toHaveCount|toHaveAttribute|Execution context was destroyed|frame was detached|Target closed|page\.goBack|page\.reload|page\.goto|locator\.click/,
+              )?.[0] ?? 'other',
             identityLinks: await page
               .locator('header .identity-link')
-              .evaluateAll((es) => es.map((e) => e.getAttribute('href'))),
-            marketCount: await page.locator('#public-market').count(),
-            alerts: await page.getByRole('alert').count(),
+              .evaluateAll((es) => es.map((e) => e.getAttribute('href')))
+              .catch(() => 'navigation unavailable'),
+            marketCount: await page
+              .locator('#public-market')
+              .count()
+              .catch(() => null),
+            alerts: await page
+              .getByRole('alert')
+              .count()
+              .catch(() => null),
           }),
         );
         throw error;
@@ -325,75 +344,79 @@ try {
       }
     }
   }
-  checkpoint = 'onboarding fixture';
-  const onboardingEmail = 'wave2-onboarding-' + randomUUID() + '@example.invalid',
-    onboardingPassword = randomBytes(24).toString('base64url');
-  const createdOnboarding = await admin.auth.admin.createUser({
-    email: onboardingEmail,
-    password: onboardingPassword,
-    email_confirm: true,
-  });
-  if (createdOnboarding.error || !createdOnboarding.data.user)
-    throw Error('HOSTED_IDENTITY_FAILED');
-  users.push(createdOnboarding.data.user.id);
-  release.track('auth', createdOnboarding.data.user.id);
-  save();
-  const onboardingContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
-  await onboardingContext.route('**/*', (route) =>
-    route.continue({
-      headers: {
-        ...route.request().headers(),
-        ...(new URL(route.request().url()).origin === origin ? headers : {}),
-      },
-    }),
-  );
-  const onboardingPage = await onboardingContext.newPage();
-  try {
-    await onboardingPage.goto(origin + '/en/login');
-    await onboardingPage.locator('#email').fill(onboardingEmail);
-    await onboardingPage.locator('#password').fill(onboardingPassword);
-    await onboardingPage.locator('.auth-form button[type=submit]').click();
-    await expect(onboardingPage).toHaveURL(new RegExp('/en/account$'));
-    for (const lang of ['ar', 'en']) {
-      checkpoint = 'onboarding ' + lang;
-      await onboardingPage.goto(origin + '/' + lang + '/account');
-      await expect(onboardingPage.locator('.profile-v2-onboarding')).toBeVisible();
-      await captureFamily(onboardingPage, lang, 'onboarding-incomplete');
-      await onboardingPage.locator('#name').fill('Synthetic onboarding');
-      await onboardingPage.locator('#phone').fill('invalid');
+  if (!sessionOnly) {
+    checkpoint = 'onboarding fixture';
+    const onboardingEmail = 'wave2-onboarding-' + randomUUID() + '@example.invalid',
+      onboardingPassword = randomBytes(24).toString('base64url');
+    const createdOnboarding = await admin.auth.admin.createUser({
+      email: onboardingEmail,
+      password: onboardingPassword,
+      email_confirm: true,
+    });
+    if (createdOnboarding.error || !createdOnboarding.data.user)
+      throw Error('HOSTED_IDENTITY_FAILED');
+    users.push(createdOnboarding.data.user.id);
+    release.track('auth', createdOnboarding.data.user.id);
+    save();
+    const onboardingContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    await onboardingContext.route('**/*', (route) =>
+      route.continue({
+        headers: {
+          ...route.request().headers(),
+          ...(new URL(route.request().url()).origin === origin ? headers : {}),
+        },
+      }),
+    );
+    const onboardingPage = await onboardingContext.newPage();
+    try {
+      await onboardingPage.goto(origin + '/en/login');
+      await onboardingPage.locator('#email').fill(onboardingEmail);
+      await onboardingPage.locator('#password').fill(onboardingPassword);
+      await onboardingPage.locator('.auth-form button[type=submit]').click();
+      await expect(onboardingPage).toHaveURL(new RegExp('/en/account$'));
+      for (const lang of ['ar', 'en']) {
+        checkpoint = 'onboarding ' + lang;
+        await onboardingPage.goto(origin + '/' + lang + '/account');
+        await expect(onboardingPage.locator('.profile-v2-onboarding')).toBeVisible();
+        await captureFamily(onboardingPage, lang, 'onboarding-incomplete');
+        await onboardingPage.locator('#name').fill('Synthetic onboarding');
+        await onboardingPage.locator('#phone').fill('invalid');
+        await onboardingPage.locator('.profile-form button').click();
+        await expect(onboardingPage.locator('#phone')).toHaveAttribute('aria-invalid', 'true');
+        await captureFamily(onboardingPage, lang, 'onboarding-validation');
+      }
+      checkpoint = 'onboarding save';
+      await onboardingPage.locator('#phone').fill('+966500000001');
+      await onboardingPage.locator('#locale').selectOption('en');
       await onboardingPage.locator('.profile-form button').click();
-      await expect(onboardingPage.locator('#phone')).toHaveAttribute('aria-invalid', 'true');
-      await captureFamily(onboardingPage, lang, 'onboarding-validation');
+      await expect(onboardingPage).toHaveURL(new RegExp('/en/account\\?profile=saved$'));
+      for (const lang of ['en', 'ar']) {
+        await onboardingPage.goto(origin + '/' + lang + '/account?profile=saved');
+        await expect(onboardingPage.locator('main [role=status]')).toBeVisible();
+        await captureFamily(onboardingPage, lang, 'onboarding-saved-authoritative-profile');
+      }
+      const proof = query(
+        ref,
+        `select (select count(*)::int from public.profiles where id='${createdOnboarding.data.user.id}') profiles,(select count(*)::int from public.customers where profile_id='${createdOnboarding.data.user.id}') customers,(select count(*)::int from public.organization_memberships where profile_id='${createdOnboarding.data.user.id}' and member_type='customer' and status='active') memberships,(select count(*)::int from public.user_roles where profile_id='${createdOnboarding.data.user.id}') roles`,
+      );
+      if (proof.length !== 1 || Object.values(proof[0]).some((x) => x !== 1))
+        throw Error('HOSTED_IDENTITY_DUPLICATION');
+      await onboardingPage.getByRole('button', { name: 'تسجيل الخروج', exact: true }).click();
+      await expect(onboardingPage).toHaveURL(new RegExp('/ar/login$'));
+      console.log(
+        'PASS hosted onboarding: normal profile action, canonical bootstrap, no duplicates, logout',
+      );
+    } finally {
+      await onboardingContext.close();
     }
-    checkpoint = 'onboarding save';
-    await onboardingPage.locator('#phone').fill('+966500000001');
-    await onboardingPage.locator('#locale').selectOption('en');
-    await onboardingPage.locator('.profile-form button').click();
-    await expect(onboardingPage).toHaveURL(new RegExp('/en/account\\?profile=saved$'));
-    for (const lang of ['en', 'ar']) {
-      await onboardingPage.goto(origin + '/' + lang + '/account?profile=saved');
-      await expect(onboardingPage.locator('main [role=status]')).toBeVisible();
-      await captureFamily(onboardingPage, lang, 'onboarding-saved-authoritative-profile');
-    }
-    const proof = query(
-      ref,
-      `select (select count(*)::int from public.profiles where id='${createdOnboarding.data.user.id}') profiles,(select count(*)::int from public.customers where profile_id='${createdOnboarding.data.user.id}') customers,(select count(*)::int from public.organization_memberships where profile_id='${createdOnboarding.data.user.id}' and member_type='customer' and status='active') memberships,(select count(*)::int from public.user_roles where profile_id='${createdOnboarding.data.user.id}') roles`,
-    );
-    if (proof.length !== 1 || Object.values(proof[0]).some((x) => x !== 1))
-      throw Error('HOSTED_IDENTITY_DUPLICATION');
-    await onboardingPage.getByRole('button', { name: 'تسجيل الخروج', exact: true }).click();
-    await expect(onboardingPage).toHaveURL(new RegExp('/ar/login$'));
-    console.log(
-      'PASS hosted onboarding: normal profile action, canonical bootstrap, no duplicates, logout',
-    );
-  } finally {
-    await onboardingContext.close();
   }
+  const expectedVisuals = sessionOnly ? 0 : 150;
   if (
-    visuals.length !== 150 ||
-    new Set(visuals.map((v) => [v.locale, v.width, v.state].join(':'))).size !== 150
+    visuals.length !== expectedVisuals ||
+    new Set(visuals.map((v) => [v.locale, v.width, v.state].join(':'))).size !== expectedVisuals
   )
     throw Error('HOSTED_MATRIX_INCOMPLETE');
+  if (evidence.length !== selectedRoles.length * 2) throw Error('HOSTED_SESSION_MATRIX_INCOMPLETE');
   const counts = query(
     ref,
     `select m.profile_id,count(distinct m.organization_id)::int memberships,count(distinct ur.role_id)::int roles from public.organization_memberships m join public.user_roles ur on ur.organization_id=m.organization_id and ur.profile_id=m.profile_id where m.organization_id='${org}' group by m.profile_id`,

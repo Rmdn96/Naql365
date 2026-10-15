@@ -1,0 +1,50 @@
+[
+  {
+    "role": "CUSTOMER",
+    "locale": "ar",
+    "result": "PASS",
+    "applicationSha": "04ac38b152a5a847b539d29fb4d9fa9befe4ce82",
+    "cookies": "Secure Lax / host-only",
+    "timestamp": "2026-10-15T10:59:23.201Z"
+  },
+  {
+    "role": "CUSTOMER",
+    "locale": "en",
+    "result": "PASS",
+    "applicationSha": "04ac38b152a5a847b539d29fb4d9fa9befe4ce82",
+    "cookies": "Secure Lax / host-only",
+    "timestamp": "2026-10-15T11:00:19.068Z"
+  },
+  {
+    "role": "SUPER_ADMIN",
+    "locale": "ar",
+    "result": "PASS",
+    "applicationSha": "04ac38b152a5a847b539d29fb4d9fa9befe4ce82",
+    "cookies": "Secure Lax / host-only",
+    "timestamp": "2026-10-15T11:01:27.335Z"
+  },
+  {
+    "role": "SUPER_ADMIN",
+    "locale": "en",
+    "result": "PASS",
+    "applicationSha": "04ac38b152a5a847b539d29fb4d9fa9befe4ce82",
+    "cookies": "Secure Lax / host-only",
+    "timestamp": "2026-10-15T11:02:18.184Z"
+  },
+  {
+    "role": "DRIVER",
+    "locale": "ar",
+    "result": "PASS",
+    "applicationSha": "04ac38b152a5a847b539d29fb4d9fa9befe4ce82",
+    "cookies": "Secure Lax / host-only",
+    "timestamp": "2026-10-15T11:03:19.484Z"
+  },
+  {
+    "role": "DRIVER",
+    "locale": "en",
+    "result": "PASS",
+    "applicationSha": "04ac38b152a5a847b539d29fb4d9fa9befe4ce82",
+    "cookies": "Secure Lax / host-only",
+    "timestamp": "2026-10-15T11:04:07.934Z"
+  }
+]

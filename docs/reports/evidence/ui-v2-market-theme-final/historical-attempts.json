@@ -1,0 +1,71 @@
+{
+  "policy": "Historical failures remain failures; replacement verification does not relabel them.",
+  "attempts": [
+    {
+      "reference": "38705876300",
+      "result": "FAIL",
+      "category": "APPLICATION_PRESENTATION",
+      "unitIntegrationPassed": 308,
+      "e2ePassed": 26,
+      "e2eFailed": 18,
+      "summary": "Light contrast and CSS foreground inheritance defects; corrected in later application commits."
+    },
+    {
+      "reference": "historical restricted runner and Git push checkpoint",
+      "result": "BLOCKED",
+      "category": "INFRASTRUCTURE",
+      "summary": "DNS resolution/access restrictions, Windows worker linkage and occupied local server port prevented specific local attempts. Exact historical causes are not all conclusively established; network-capable execution and exact-head Linux CI supply replacement evidence."
+    },
+    {
+      "reference": "38710476032",
+      "result": "FAIL",
+      "category": "APPLICATION_AND_HARNESS",
+      "summary": "Earlier CSS fixes were incomplete; new Origin/header assertions also used incomplete synchronous Playwright header access."
+    },
+    {
+      "reference": "38711987035",
+      "result": "FAIL",
+      "category": "TEST_HARNESS",
+      "e2ePassed": 48,
+      "e2eFailed": 4,
+      "summary": "Set-Cookie assertions used response.headers(); corrected to allHeaders() without weakening cookie security checks."
+    },
+    {
+      "reference": "supabase/.temp/ui-v2-market-theme-1792056762103",
+      "result": "FAIL",
+      "category": "HOSTED_THEME_TIMING",
+      "completedCombinations": 70,
+      "summary": "Theme attribute/navigation timing assertions and an unsuitable networkidle wait interrupted attempts. These are not final candidate evidence."
+    },
+    {
+      "reference": "supabase/.temp/ui-v2-market-theme-1792056978111",
+      "result": "FAIL",
+      "category": "HOSTED_NAVIGATION_TIMING",
+      "completedCombinations": 45,
+      "summary": "Unauthenticated password route redirects to login; capture/navigation timing interrupted this earlier attempt."
+    },
+    {
+      "reference": "supabase/.temp/ui-v2-auth-1792061168738",
+      "result": "FAIL",
+      "category": "TEST_HARNESS",
+      "completedSessionRows": 0,
+      "partialVisualCaptures": 60,
+      "checkpoint": "CUSTOMER ar logout",
+      "cleanup": "PASS",
+      "summary": "Original error reporting lost detailed navigation context; not classified as an application Auth failure."
+    },
+    {
+      "reference": "supabase/.temp/ui-v2-auth-1792061556533",
+      "result": "FAIL",
+      "category": "TEST_HARNESS",
+      "completedSessionRows": 0,
+      "partialVisualCaptures": 60,
+      "checkpoint": "CUSTOMER ar refresh after logout",
+      "safeAssertion": "page.reload",
+      "pathname": "/ar/account",
+      "navigationDiagnostic": "navigation unavailable",
+      "cleanup": "PASS",
+      "summary": "Reload raced the protected Back redirect. The corrected harness waits for the login destination before reload and retains all denial assertions."
+    }
+  ]
+}

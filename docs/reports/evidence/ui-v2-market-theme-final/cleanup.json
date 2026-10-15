@@ -1,0 +1,58 @@
+{
+  "stagingProject": "zuvyfeflkzlciuaauxba",
+  "runs": [
+    {
+      "run": "ui-v2-auth-1792061168738",
+      "ownedIdentities": 1,
+      "remaining": {
+        "auth_identities": 0,
+        "customers": 0,
+        "drivers": 0,
+        "markets": 0,
+        "memberships": 0,
+        "organizations": 0,
+        "profiles": 0,
+        "roles": 0
+      },
+      "result": "PASS",
+      "businessFixturesCreated": 0,
+      "storageObjectsCreated": 0
+    },
+    {
+      "run": "ui-v2-auth-1792061556533",
+      "ownedIdentities": 1,
+      "remaining": {
+        "auth_identities": 0,
+        "customers": 0,
+        "drivers": 0,
+        "markets": 0,
+        "memberships": 0,
+        "organizations": 0,
+        "profiles": 0,
+        "roles": 0
+      },
+      "result": "PASS",
+      "businessFixturesCreated": 0,
+      "storageObjectsCreated": 0
+    },
+    {
+      "run": "ui-v2-auth-1792061883767",
+      "ownedIdentities": 3,
+      "remaining": {
+        "auth_identities": 0,
+        "customers": 0,
+        "drivers": 0,
+        "markets": 0,
+        "memberships": 0,
+        "organizations": 0,
+        "profiles": 0,
+        "roles": 0
+      },
+      "result": "PASS",
+      "businessFixturesCreated": 0,
+      "storageObjectsCreated": 0
+    }
+  ],
+  "result": "PASS",
+  "verifiedAt": "2026-10-15T11:05:00.000Z"
+}
