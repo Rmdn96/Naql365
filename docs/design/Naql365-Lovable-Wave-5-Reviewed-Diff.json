@@ -1,0 +1,1784 @@
+{
+  "projectId": "45d7c85b-e937-48ee-8d57-251cc16a57b8",
+  "source": "Lovable design lab; not canonical GitHub",
+  "baseRevision": "dd9399162de0f1c5e42a56ef24e09e128bce0067",
+  "revision": "9dac9c56ec0573f1ec11b67a666645da80e7110f",
+  "filesRead": [
+    {
+      "path": "src/lib/naql/driver-concept.ts",
+      "status": "fulfilled",
+      "isError": false,
+      "characters": 1762
+    },
+    {
+      "path": "src/lib/naql/driver-concept.test.ts",
+      "status": "fulfilled",
+      "isError": false,
+      "characters": 1377
+    },
+    {
+      "path": "src/lib/naql/driver-content.ts",
+      "status": "fulfilled",
+      "isError": false,
+      "characters": 6629
+    },
+    {
+      "path": "src/components/naql/driver-preview.tsx",
+      "status": "fulfilled",
+      "isError": false,
+      "characters": 12587
+    },
+    {
+      "path": "src/routes/driver-preview.tsx",
+      "status": "fulfilled",
+      "isError": false,
+      "characters": 825
+    },
+    {
+      "path": "src/routes/index.tsx",
+      "status": "fulfilled",
+      "isError": false,
+      "characters": 9900
+    },
+    {
+      "path": "src/styles.css",
+      "status": "fulfilled",
+      "isError": false,
+      "characters": 55607
+    },
+    {
+      "path": "DESIGN-LAB.md",
+      "status": "fulfilled",
+      "isError": false,
+      "characters": 6513
+    },
+    {
+      "path": "roadmap.md",
+      "status": "fulfilled",
+      "isError": false,
+      "characters": 1533
+    }
+  ],
+  "diffs": [
+    {
+      "action": "edit",
+      "file_path": "DESIGN-LAB.md",
+      "file_type": "md",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 34,
+          "oldCount": 3,
+          "newStart": 34,
+          "newCount": 6,
+          "lines": [
+            {
+              "type": "context",
+              "content": "Compatible UI-only port: compact navy sidebar/mini state, topbar and mobile drawer presentation; theme roles inherited from `.cx` and staff `.sx` layout; `StaffRoute`, icon-and-text `StaffStatus`, `StaffSurface`; bounded semantic table with status filtering, detail panel, timeline, immutable sent-Quote notice, payment-proof/Finance-confirmation distinction, grant-gated empty bank-settings presentation and explicit high-authority confirmation layout. Copy is independent AR/EN in `staff-content.ts`. Adapt these visuals to canonical Next.js actions, effective grants, immutable Quote data, tenant/Market scope and private file access."
+            },
+            {
+              "type": "context",
+              "content": ""
+            },
+            {
+              "type": "context",
+              "content": "Reject during Codex port: `staff-concept.ts` role presets and all `demo*` predicates, role/grant selectors, synthetic LAB queue generation, surface/Quote/payment selectors, preview notices and acknowledgement-only confirmation handlers, in-memory navigation, this TanStack route/runtime and theme-preference wiring. SUPER_ADMIN is not a role-name bypass; its actual effective grants must come from canonical authorization. Confirmation only displays a notice and never changes payment/Quote/execution state. No file upload/download, account edit, driver assignment or backend command exists here. Preserve all 47 migrations and all canonical business rules. No publishing or integration was performed."
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": "## Wave 5 — Driver (`/driver-preview`)"
+            },
+            {
+              "type": "add",
+              "content": "Port presentation only: `.dx` layout on `.cx` theme roles, safety note, trip card, labelled display slots, stop hierarchy with cyan nodes, single next-action panel (pending/unconfirmed/disabled), location status banner, issue form (PNG/JPEG evidence), POD form with white signature substrate + file alternative, read-only redacted history. Reject: review state selector, `driver-concept.ts` state lists as authority, theme/market/locale wiring, this route/runtime. No trips, GPS, ETA, offline queue, command handlers or success simulation exist."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "edit",
+      "file_path": "roadmap.md",
+      "file_type": "md",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 19,
+          "oldCount": 3,
+          "newStart": 19,
+          "newCount": 6,
+          "lines": [
+            {
+              "type": "context",
+              "content": "- [x] Verify illustrative role boundaries, immutable sent quotes and separate bank-settings grant with tests."
+            },
+            {
+              "type": "context",
+              "content": "- [x] Verify states, confirmations, keyboard/mobile drawer and 360/390/768/1280/1440 layouts."
+            },
+            {
+              "type": "context",
+              "content": "- [x] Document compatible visual components and reject demo/runtime wiring for Codex port."
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": "# Wave 5"
+            },
+            {
+              "type": "add",
+              "content": "- [x] Driver preview: assigned trips, trip/stop detail, single next action, issue form, POD, read-only history, location and states; labelled display slots instead of data."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "new",
+      "file_path": "src/components/naql/driver-preview.tsx",
+      "file_type": "tsx",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 0,
+          "oldCount": 0,
+          "newStart": 1,
+          "newCount": 104,
+          "lines": [
+            {
+              "type": "add",
+              "content": "import { useEffect, useRef, useState, type ReactNode } from 'react';"
+            },
+            {
+              "type": "add",
+              "content": "import { Link } from '@tanstack/react-router';"
+            },
+            {
+              "type": "add",
+              "content": "import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, CircleDashed, Clock, Eraser, FileWarning, Hand, Loader2, Lock, MapPin, Navigation, PenLine, RotateCcw, ShieldAlert, Truck, WifiOff } from 'lucide-react';"
+            },
+            {
+              "type": "add",
+              "content": "import { Button } from '@/components/ui/button';"
+            },
+            {
+              "type": "add",
+              "content": "import { Brand } from './brand';"
+            },
+            {
+              "type": "add",
+              "content": "import { driverContent, type DriverCopy } from '@/lib/naql/driver-content';"
+            },
+            {
+              "type": "add",
+              "content": "import { commandStates, driverCommands, driverSurfaces, driverViews, locationStates, podIsComplete, podStates, tripTabs, type CommandState, type DriverCommand, type DriverSurface, type DriverView, type LocationState, type PodState, type TripTab } from '@/lib/naql/driver-concept';"
+            },
+            {
+              "type": "add",
+              "content": "import type { Locale, Market } from '@/lib/naql/content';"
+            },
+            {
+              "type": "add",
+              "content": "import { parseThemeMode, themeModes, type ThemeMode } from '@/lib/naql/customer-concept';"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": "function Slot({ label, t }: { label: string; t: DriverCopy }) {"
+            },
+            {
+              "type": "add",
+              "content": " return <div className=\"dx-slot\"><dt>{label}</dt><dd><span className=\"dx-slot-box\" aria-label={`${label}: ${t.slot}`}>{t.slot}</span></dd></div>;"
+            },
+            {
+              "type": "add",
+              "content": "}"
+            },
+            {
+              "type": "add",
+              "content": "function Tone({ tone, icon: Icon, children }: { tone: 'info' | 'warn' | 'ok' | 'bad' | 'neutral'; icon: typeof CheckCircle2; children: ReactNode }) {"
+            },
+            {
+              "type": "add",
+              "content": " return <span className={`cx-status cx-${tone}`}><Icon size={13} aria-hidden=\"true\"/>{children}</span>;"
+            },
+            {
+              "type": "add",
+              "content": "}"
+            },
+            {
+              "type": "add",
+              "content": "const locTone: Record<LocationState, ['info' | 'warn' | 'ok' | 'bad' | 'neutral', typeof CheckCircle2]> = { waiting: ['warn', Clock], active: ['ok', Navigation], denied: ['bad', ShieldAlert], offline: ['bad', WifiOff], stopped: ['neutral', CircleDashed], otherTab: ['info', Navigation], error: ['bad', AlertTriangle] };"
+            },
+            {
+              "type": "add",
+              "content": "const podTone: Record<PodState, ['info' | 'warn' | 'ok' | 'bad' | 'neutral', typeof CheckCircle2]> = { draft: ['neutral', PenLine], pending: ['warn', Loader2], error: ['bad', AlertTriangle], final: ['ok', CheckCircle2] };"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": "export function DriverPreview() {"
+            },
+            {
+              "type": "add",
+              "content": " const [locale, setLocale] = useState<Locale>('ar');"
+            },
+            {
+              "type": "add",
+              "content": " const [market, setMarket] = useState<Market>('SA');"
+            },
+            {
+              "type": "add",
+              "content": " const [theme, setTheme] = useState<ThemeMode>('system');"
+            },
+            {
+              "type": "add",
+              "content": " const [view, setView] = useState<DriverView>('trips');"
+            },
+            {
+              "type": "add",
+              "content": " const [tab, setTab] = useState<TripTab>('today');"
+            },
+            {
+              "type": "add",
+              "content": " const [surface, setSurface] = useState<DriverSurface>('ready');"
+            },
+            {
+              "type": "add",
+              "content": " const [loc, setLoc] = useState<LocationState>('active');"
+            },
+            {
+              "type": "add",
+              "content": " const [pod, setPod] = useState<PodState>('draft');"
+            },
+            {
+              "type": "add",
+              "content": " const [command, setCommand] = useState<DriverCommand>('arrive');"
+            },
+            {
+              "type": "add",
+              "content": " const [cmdState, setCmdState] = useState<CommandState>('idle');"
+            },
+            {
+              "type": "add",
+              "content": " const [reason, setReason] = useState('');"
+            },
+            {
+              "type": "add",
+              "content": " const [reasonTouched, setReasonTouched] = useState(false);"
+            },
+            {
+              "type": "add",
+              "content": " const heading = useRef<HTMLHeadingElement>(null);"
+            },
+            {
+              "type": "add",
+              "content": " const t = driverContent[locale];"
+            },
+            {
+              "type": "add",
+              "content": " useEffect(() => { setTheme(parseThemeMode(document.documentElement.dataset['naqlTheme'])); }, []);"
+            },
+            {
+              "type": "add",
+              "content": " useEffect(() => { document.documentElement.lang = locale; document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr'; }, [locale]);"
+            },
+            {
+              "type": "add",
+              "content": " function chooseTheme(mode: ThemeMode) { setTheme(mode); document.documentElement.dataset['naqlTheme'] = mode; try { localStorage.setItem('naql365-theme', mode); } catch { /* lab theme preference only */ } }"
+            },
+            {
+              "type": "add",
+              "content": " function go(next: DriverView) { setView(next); if (next === 'history') setTab('completed'); requestAnimationFrame(() => heading.current?.focus()); }"
+            },
+            {
+              "type": "add",
+              "content": " const sel = <T extends string>(id: string, label: string, value: T, opts: readonly T[], names: Record<T, string> | ((v: T) => string), set: (v: T) => void) =>"
+            },
+            {
+              "type": "add",
+              "content": "  <label htmlFor={id}>{label}<select id={id} value={value} onChange={e => set(e.target.value as T)}>{opts.map(o => <option key={o} value={o}>{typeof names === 'function' ? names(o) : names[o]}</option>)}</select></label>;"
+            },
+            {
+              "type": "add",
+              "content": " const [lt, LIcon] = locTone[loc];"
+            },
+            {
+              "type": "add",
+              "content": " const safety = <p className=\"cx-banner cx-warn dx-safety\" role=\"note\"><Hand size={16} aria-hidden=\"true\"/>{t.safety}</p>;"
+            },
+            {
+              "type": "add",
+              "content": " const stopHierarchy = (redact: boolean) => <ol className=\"dx-stops\" aria-label={t.nextStop}>{[t.pickup, t.delivery].map((kind, i) => <li key={kind} data-current={i === 0 && !redact}><span className=\"dx-node\" aria-hidden=\"true\"/><div><strong>{kind}</strong>{i === 0 && !redact && <Tone tone=\"info\" icon={ArrowRight}>{t.nextStop}</Tone>}<dl className=\"dx-grid\">{redact ? <><div className=\"dx-slot\"><dt>{t.address}</dt><dd><Tone tone=\"neutral\" icon={Lock}>{t.redacted}</Tone></dd></div><div className=\"dx-slot\"><dt>{t.contact}</dt><dd><Tone tone=\"neutral\" icon={Lock}>{t.redacted}</Tone></dd></div></> : <><Slot label={t.address} t={t}/><Slot label={t.instructions} t={t}/><Slot label={t.contact} t={t}/></>}</dl></div></li>)}</ol>;"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": " const tripCard = (n: number, readOnly: boolean) => <li key={n} className=\"dx-card\"><header><Truck size={18} aria-hidden=\"true\"/><span className=\"dx-ref\" dir=\"ltr\">{t.ref} · {market}</span>{readOnly && <Tone tone=\"neutral\" icon={Lock}>{t.views.history}</Tone>}</header>"
+            },
+            {
+              "type": "add",
+              "content": "  <dl className=\"dx-grid\"><Slot label={t.status} t={t}/><Slot label={t.schedule} t={t}/><Slot label={t.vehicle} t={t}/><Slot label={t.stops} t={t}/>{!readOnly && <Slot label={t.nextStop} t={t}/>}</dl>"
+            },
+            {
+              "type": "add",
+              "content": "  <p className=\"dx-hint\"><Clock size={13} aria-hidden=\"true\"/>{t.scheduleNote}</p>"
+            },
+            {
+              "type": "add",
+              "content": "  <Button variant={readOnly ? 'quiet' : 'transport'} className=\"dx-touch\" onClick={() => go(readOnly ? 'history' : 'detail')}>{t.open}<ArrowRight className=\"direction-arrow\"/></Button></li>;"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": " const trips = surface === 'loading' ? <section className=\"dx-state\" aria-busy=\"true\"><span role=\"status\">{t.loading}</span>{[0, 1].map(i => <div key={i} className=\"dx-skeleton\"/>)}</section>"
+            },
+            {
+              "type": "add",
+              "content": "  : surface === 'empty' ? <section className=\"dx-state\"><Truck aria-hidden=\"true\"/><p>{t.empty}</p></section>"
+            },
+            {
+              "type": "add",
+              "content": "  : surface === 'error' ? <section className=\"dx-state\" role=\"alert\"><AlertTriangle aria-hidden=\"true\"/><p>{t.error}</p><Button variant=\"quiet\" className=\"dx-touch\" onClick={() => setSurface('ready')}><RotateCcw/>{t.retry}</Button></section>"
+            },
+            {
+              "type": "add",
+              "content": "  : <><ul className=\"dx-cards\">{[1, 2].map(n => tripCard(n, tab === 'completed'))}</ul><nav className=\"dx-pager\" aria-label={t.bounded}><Button variant=\"quiet\" disabled><ArrowLeft className=\"direction-arrow\"/>{t.pagePrev}</Button><span>{t.bounded}</span><Button variant=\"quiet\">{t.pageNext}<ArrowRight className=\"direction-arrow\"/></Button></nav></>;"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": " const actionDisabled = surface === 'disabled' || loc === 'offline';"
+            },
+            {
+              "type": "add",
+              "content": " const action = <section className=\"dx-action\" aria-labelledby=\"dx-action-h\"><h3 id=\"dx-action-h\">{t.nextAction}</h3><p className=\"dx-hint\">{t.actionNote}</p>"
+            },
+            {
+              "type": "add",
+              "content": "  <Button variant=\"transport\" className=\"dx-primary\" disabled={actionDisabled || cmdState === 'pending'} aria-describedby=\"dx-action-status\">{cmdState === 'pending' && <Loader2 className=\"dx-spin\" aria-hidden=\"true\"/>}{t.commands[command]}</Button>"
+            },
+            {
+              "type": "add",
+              "content": "  <div id=\"dx-action-status\" aria-live=\"polite\">{actionDisabled ? <p className=\"cx-banner cx-neutral\"><Lock size={16} aria-hidden=\"true\"/>{loc === 'offline' ? t.needsConnection : t.disabled}</p>"
+            },
+            {
+              "type": "add",
+              "content": "   : cmdState === 'pending' ? <p className=\"cx-banner cx-info\"><Loader2 size={16} aria-hidden=\"true\"/>{t.pending}</p>"
+            },
+            {
+              "type": "add",
+              "content": "   : cmdState === 'unconfirmed' ? <div className=\"cx-banner cx-bad\" role=\"alert\"><strong><AlertTriangle size={14} aria-hidden=\"true\"/> {t.cmdStates.unconfirmed}</strong><span>{t.unconfirmed}</span><div className=\"dx-row\"><Button variant=\"quiet\" className=\"dx-touch\"><RotateCcw/>{t.refresh}</Button><Button variant=\"quiet\" className=\"dx-touch\">{t.retry}</Button></div></div> : null}</div>"
+            },
+            {
+              "type": "add",
+              "content": "  <div className=\"dx-row dx-secondary\"><Button variant=\"quiet\" className=\"dx-touch\" onClick={() => go('issue')}><FileWarning/>{t.views.issue}</Button><Button variant=\"quiet\" className=\"dx-touch\" onClick={() => go('pod')}><PenLine/>{t.views.pod}</Button></div></section>;"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": " const location = <p className={`cx-banner cx-${lt}`} role=\"status\"><LIcon size={16} aria-hidden=\"true\"/><span><strong>{t.loc[loc]}</strong><br/>{t.locNote}</span></p>;"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": " const reasonError = reasonTouched && reason.trim() === '';"
+            },
+            {
+              "type": "add",
+              "content": " const issue = <form className=\"dx-form\" noValidate onSubmit={e => { e.preventDefault(); setReasonTouched(true); }} aria-labelledby=\"dx-h\">"
+            },
+            {
+              "type": "add",
+              "content": "  <label htmlFor=\"dx-stop\">{t.issueStop}<select id=\"dx-stop\"><option>{t.pickup} — {t.slot}</option><option>{t.delivery} — {t.slot}</option></select></label>"
+            },
+            {
+              "type": "add",
+              "content": "  <label htmlFor=\"dx-cat\">{t.issueCategory}<select id=\"dx-cat\"><option>{t.categorySlot}</option></select></label>"
+            },
+            {
+              "type": "add",
+              "content": "  <label htmlFor=\"dx-reason\">{t.issueReason}<textarea id=\"dx-reason\" rows={3} required aria-invalid={reasonError} aria-describedby={reasonError ? 'dx-reason-err' : undefined} value={reason} onChange={e => setReason(e.target.value)} onBlur={() => setReasonTouched(true)}/></label>"
+            },
+            {
+              "type": "add",
+              "content": "  {reasonError && <p id=\"dx-reason-err\" className=\"dx-err\"><AlertTriangle size={13} aria-hidden=\"true\"/>{t.reasonError}</p>}"
+            },
+            {
+              "type": "add",
+              "content": "  <label htmlFor=\"dx-evidence\">{t.issueEvidence}<input id=\"dx-evidence\" type=\"file\" accept=\"image/png,image/jpeg\"/></label>"
+            },
+            {
+              "type": "add",
+              "content": "  <Button type=\"submit\" variant=\"transport\" className=\"dx-primary\">{t.submit}</Button></form>;"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": " const [pt, PIcon] = podTone[pod];"
+            },
+            {
+              "type": "add",
+              "content": " const podForm = <form className=\"dx-form\" noValidate onSubmit={e => e.preventDefault()} aria-labelledby=\"dx-h\">"
+            },
+            {
+              "type": "add",
+              "content": "  <p className={`cx-banner cx-${pt}`} role=\"status\"><PIcon size={16} aria-hidden=\"true\"/>{t.podStates[pod]}</p>"
+            },
+            {
+              "type": "add",
+              "content": "  <label htmlFor=\"dx-recipient\">{t.recipient}<input id=\"dx-recipient\" autoComplete=\"off\" required disabled={podIsComplete(pod)}/></label>"
+            },
+            {
+              "type": "add",
+              "content": "  <label htmlFor=\"dx-notes\">{t.notes}<textarea id=\"dx-notes\" rows={2} disabled={podIsComplete(pod)}/></label>"
+            },
+            {
+              "type": "add",
+              "content": "  <fieldset className=\"dx-sign\"><legend>{t.signature}</legend><div className=\"dx-canvas\" role=\"img\" aria-label={t.signHint}><span>{t.signHint}</span></div><Button type=\"button\" variant=\"toolbar\" disabled={podIsComplete(pod)}><Eraser/>{t.clear}</Button>"
+            },
+            {
+              "type": "add",
+              "content": "   <label htmlFor=\"dx-sigfile\">{t.orUpload}<input id=\"dx-sigfile\" type=\"file\" accept=\"image/png,image/jpeg\" disabled={podIsComplete(pod)}/></label></fieldset>"
+            },
+            {
+              "type": "add",
+              "content": "  <label className=\"dx-check\"><input type=\"checkbox\" disabled={podIsComplete(pod)}/><MapPin size={14} aria-hidden=\"true\"/>{t.eventLoc}</label>"
+            },
+            {
+              "type": "add",
+              "content": "  {pod === 'error' ? <Button type=\"button\" variant=\"quiet\" className=\"dx-primary\"><RotateCcw/>{t.retry}</Button> : <Button type=\"submit\" variant=\"transport\" className=\"dx-primary\" disabled={pod === 'pending' || podIsComplete(pod)}>{pod === 'pending' && <Loader2 className=\"dx-spin\" aria-hidden=\"true\"/>}{t.finalize}</Button>}</form>;"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": " const body = view === 'trips' ? <><div className=\"dx-tabs\" role=\"tablist\" aria-label={t.title}>{tripTabs.map(x => <button key={x} role=\"tab\" aria-selected={tab === x} onClick={() => setTab(x)}>{t.tabs[x]}</button>)}</div>{trips}</>"
+            },
+            {
+              "type": "add",
+              "content": "  : view === 'detail' ? <div className=\"dx-detail\"><div><dl className=\"dx-grid dx-summary\"><Slot label={t.ref} t={t}/><Slot label={t.status} t={t}/><Slot label={t.schedule} t={t}/><Slot label={t.vehicle} t={t}/></dl>{stopHierarchy(false)}</div><aside>{location}{action}</aside></div>"
+            },
+            {
+              "type": "add",
+              "content": "  : view === 'issue' ? issue : view === 'pod' ? podForm"
+            },
+            {
+              "type": "add",
+              "content": "  : <><p className=\"cx-banner cx-neutral\"><Lock size={16} aria-hidden=\"true\"/>{t.historyNote}</p><dl className=\"dx-grid dx-summary\"><Slot label={t.ref} t={t}/><Slot label={t.status} t={t}/><Slot label={t.schedule} t={t}/></dl>{stopHierarchy(true)}</>;"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": " return <div className=\"cx dx\" dir={locale === 'ar' ? 'rtl' : 'ltr'} lang={locale}>"
+            },
+            {
+              "type": "add",
+              "content": "  <header className=\"dx-top\"><Brand locale={locale}/><span className=\"dx-lab\">{t.lab}</span><Button variant=\"link\" size=\"sm\" asChild><Link to=\"/\">{t.back}</Link></Button></header>"
+            },
+            {
+              "type": "add",
+              "content": "  <details className=\"dx-labbar\"><summary>{t.labBar}</summary><div>"
+            },
+            {
+              "type": "add",
+              "content": "   {sel('dx-v', t.view, view, driverViews, t.views, go)}"
+            },
+            {
+              "type": "add",
+              "content": "   {sel('dx-s', t.surface, surface, driverSurfaces, t.surfaces, setSurface)}"
+            },
+            {
+              "type": "add",
+              "content": "   {sel('dx-l', t.location, loc, locationStates, t.loc, setLoc)}"
+            },
+            {
+              "type": "add",
+              "content": "   {sel('dx-p', t.pod, pod, podStates, t.podStates, setPod)}"
+            },
+            {
+              "type": "add",
+              "content": "   {sel('dx-c', t.command, command, driverCommands, t.commands, setCommand)}"
+            },
+            {
+              "type": "add",
+              "content": "   {sel('dx-cs', t.command, cmdState, commandStates, t.cmdStates, setCmdState)}"
+            },
+            {
+              "type": "add",
+              "content": "   {sel('dx-m', t.market, market, ['SA', 'EG'] as const, v => v, setMarket)}"
+            },
+            {
+              "type": "add",
+              "content": "   {sel('dx-th', t.theme, theme, themeModes, v => v, chooseTheme)}"
+            },
+            {
+              "type": "add",
+              "content": "   <Button variant=\"toolbar\" onClick={() => setLocale(locale === 'ar' ? 'en' : 'ar')}>{t.lang}</Button>"
+            },
+            {
+              "type": "add",
+              "content": "  </div></details>"
+            },
+            {
+              "type": "add",
+              "content": "  <section className=\"dx-main\">{safety}<div className=\"dx-head\">{view !== 'trips' && <Button variant=\"toolbar\" onClick={() => go('trips')}><ArrowLeft className=\"direction-arrow\"/>{t.views.trips}</Button>}<h1 id=\"dx-h\" ref={heading} tabIndex={-1}>{view === 'trips' ? t.title : view === 'issue' ? t.issueTitle : view === 'pod' ? t.podTitle : t.views[view]}</h1></div>{body}</section>"
+            },
+            {
+              "type": "add",
+              "content": " </div>;"
+            },
+            {
+              "type": "add",
+              "content": "}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "new",
+      "file_path": "src/lib/naql/driver-concept.test.ts",
+      "file_type": "ts",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 0,
+          "oldCount": 0,
+          "newStart": 1,
+          "newCount": 11,
+          "lines": [
+            {
+              "type": "add",
+              "content": "import { describe, expect, it } from 'vitest';"
+            },
+            {
+              "type": "add",
+              "content": "import { acceptsEvidence, commandShowsSuccess, driverCommands, historyIsReadOnly, locationStates, podIsComplete, tripTabs } from './driver-concept';"
+            },
+            {
+              "type": "add",
+              "content": "describe('Wave 5 driver visual boundaries', () => {"
+            },
+            {
+              "type": "add",
+              "content": " it('keeps the six existing commands unchanged', () => { expect(driverCommands).toEqual(['dispatch', 'arrive', 'start_service', 'complete_stop', 'depart', 'complete_trip']); });"
+            },
+            {
+              "type": "add",
+              "content": " it('shows assigned trips only in today/upcoming/completed', () => { expect(tripTabs).toEqual(['today', 'upcoming', 'completed']); });"
+            },
+            {
+              "type": "add",
+              "content": " it('a pending POD upload is not completed POD', () => { expect(podIsComplete('pending')).toBe(false); expect(podIsComplete('final')).toBe(true); });"
+            },
+            {
+              "type": "add",
+              "content": " it('completed history is read-only', () => { expect(historyIsReadOnly('completed')).toBe(true); expect(historyIsReadOnly('today')).toBe(false); });"
+            },
+            {
+              "type": "add",
+              "content": " it('never shows optimistic command success', () => { expect(commandShowsSuccess('pending')).toBe(false); expect(commandShowsSuccess('idle')).toBe(false); });"
+            },
+            {
+              "type": "add",
+              "content": " it('evidence accepts PNG/JPEG only', () => { expect(acceptsEvidence('image/png')).toBe(true); expect(acceptsEvidence('image/jpeg')).toBe(true); expect(acceptsEvidence('application/pdf')).toBe(false); });"
+            },
+            {
+              "type": "add",
+              "content": " it('has no offline queue location state', () => { expect(locationStates).not.toContain('queued'); expect(locationStates).toContain('otherTab'); });"
+            },
+            {
+              "type": "add",
+              "content": "});"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "new",
+      "file_path": "src/lib/naql/driver-concept.ts",
+      "file_type": "ts",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 0,
+          "oldCount": 0,
+          "newStart": 1,
+          "newCount": 23,
+          "lines": [
+            {
+              "type": "add",
+              "content": "// VISUAL LAB ONLY. Lists the visual states a reviewer can inspect."
+            },
+            {
+              "type": "add",
+              "content": "// Never port these as authority: canonical projections, action predicate and commands decide."
+            },
+            {
+              "type": "add",
+              "content": "export const driverViews = ['trips', 'detail', 'issue', 'pod', 'history'] as const;"
+            },
+            {
+              "type": "add",
+              "content": "export type DriverView = typeof driverViews[number];"
+            },
+            {
+              "type": "add",
+              "content": "export const tripTabs = ['today', 'upcoming', 'completed'] as const;"
+            },
+            {
+              "type": "add",
+              "content": "export type TripTab = typeof tripTabs[number];"
+            },
+            {
+              "type": "add",
+              "content": "export const driverSurfaces = ['ready', 'loading', 'empty', 'error', 'disabled'] as const;"
+            },
+            {
+              "type": "add",
+              "content": "export type DriverSurface = typeof driverSurfaces[number];"
+            },
+            {
+              "type": "add",
+              "content": "/** Existing commands only — names must not be changed or extended. */"
+            },
+            {
+              "type": "add",
+              "content": "export const driverCommands = ['dispatch', 'arrive', 'start_service', 'complete_stop', 'depart', 'complete_trip'] as const;"
+            },
+            {
+              "type": "add",
+              "content": "export type DriverCommand = typeof driverCommands[number];"
+            },
+            {
+              "type": "add",
+              "content": "/** Existing foreground location states; no GPS values, background tracking or offline queue. */"
+            },
+            {
+              "type": "add",
+              "content": "export const locationStates = ['waiting', 'active', 'denied', 'offline', 'stopped', 'otherTab', 'error'] as const;"
+            },
+            {
+              "type": "add",
+              "content": "export type LocationState = typeof locationStates[number];"
+            },
+            {
+              "type": "add",
+              "content": "export const podStates = ['draft', 'pending', 'error', 'final'] as const;"
+            },
+            {
+              "type": "add",
+              "content": "export type PodState = typeof podStates[number];"
+            },
+            {
+              "type": "add",
+              "content": "export const commandStates = ['idle', 'pending', 'unconfirmed'] as const;"
+            },
+            {
+              "type": "add",
+              "content": "export type CommandState = typeof commandStates[number];"
+            },
+            {
+              "type": "add",
+              "content": "export const evidenceTypes = ['image/png', 'image/jpeg'] as const;"
+            },
+            {
+              "type": "add",
+              "content": "export function podIsComplete(state: PodState) { return state === 'final'; }"
+            },
+            {
+              "type": "add",
+              "content": "export function historyIsReadOnly(tab: TripTab) { return tab === 'completed'; }"
+            },
+            {
+              "type": "add",
+              "content": "export function commandShowsSuccess(_state: CommandState): false { return false; }"
+            },
+            {
+              "type": "add",
+              "content": "export function acceptsEvidence(type: string) { return (evidenceTypes as readonly string[]).includes(type); }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "new",
+      "file_path": "src/lib/naql/driver-content.ts",
+      "file_type": "ts",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 0,
+          "oldCount": 0,
+          "newStart": 1,
+          "newCount": 48,
+          "lines": [
+            {
+              "type": "add",
+              "content": "import type { Locale } from './content';"
+            },
+            {
+              "type": "add",
+              "content": "const ar = {"
+            },
+            {
+              "type": "add",
+              "content": " previewLink: 'معاينة السائق · 05', title: 'رحلاتي المُسندة', lab: 'معاينة تصميم فقط — لا أوامر ولا بيانات حقيقية', back: 'العودة للمختبر',"
+            },
+            {
+              "type": "add",
+              "content": " labBar: 'محدد حالات المراجعة (لا يُنقل)', view: 'الشاشة', surface: 'الحالة', location: 'الموقع', pod: 'إثبات التسليم', command: 'الأمر', lang: 'English', theme: 'المظهر', market: 'السوق',"
+            },
+            {
+              "type": "add",
+              "content": " views: { trips: 'الرحلات', detail: 'تفاصيل الرحلة', issue: 'بلاغ مشكلة', pod: 'إثبات التسليم', history: 'سجل مكتمل' },"
+            },
+            {
+              "type": "add",
+              "content": " tabs: { today: 'اليوم', upcoming: 'القادمة', completed: 'المكتملة' },"
+            },
+            {
+              "type": "add",
+              "content": " surfaces: { ready: 'جاهز', loading: 'تحميل', empty: 'فارغ', error: 'خطأ', disabled: 'غير متاح' },"
+            },
+            {
+              "type": "add",
+              "content": " safety: 'تفاعل مع التطبيق فقط عند التوقف الآمن.',"
+            },
+            {
+              "type": "add",
+              "content": " slot: 'خانة عرض — تُملأ من البيانات المصرّح بها', ref: 'المرجع', status: 'الحالة المعتمدة', schedule: 'الموعد المحلي المجدول', scheduleNote: 'الموعد ليس وقت وصول متوقعًا', vehicle: 'معرّف المركبة', stops: 'المحطات المنجزة / الإجمالي', nextStop: 'المحطة التالية غير المنجزة',"
+            },
+            {
+              "type": "add",
+              "content": " pickup: 'استلام', delivery: 'تسليم', address: 'العنوان', instructions: 'التعليمات', contact: 'جهة الاتصال (عند التصريح)', open: 'فتح الرحلة', pagePrev: 'السابق', pageNext: 'التالي', bounded: 'قائمة محدودة بترقيم الصفحات الحالي',"
+            },
+            {
+              "type": "add",
+              "content": " nextAction: 'الإجراء التالي المعتمد', actionNote: 'يُحدَّد إجراء واحد فقط بواسطة النظام الأساسي وتصريح المالية والتنفيذ.',"
+            },
+            {
+              "type": "add",
+              "content": " commands: { dispatch: 'بدء الرحلة', arrive: 'تسجيل الوصول', start_service: 'بدء الخدمة', complete_stop: 'إنهاء المحطة', depart: 'المغادرة', complete_trip: 'إنهاء الرحلة' },"
+            },
+            {
+              "type": "add",
+              "content": " cmdStates: { idle: 'متاح', pending: 'قيد الإرسال', unconfirmed: 'غير مؤكد' },"
+            },
+            {
+              "type": "add",
+              "content": " pending: 'جارٍ الإرسال… لا تعتبر العملية منجزة حتى يؤكدها النظام.', unconfirmed: 'لم يتم تأكيد العملية. تحقق من الاتصال ثم حدّث الصفحة أو أعد المحاولة بأمان.', refresh: 'تحديث', retry: 'إعادة المحاولة', needsConnection: 'التنفيذ يتطلب اتصالًا بالإنترنت.',"
+            },
+            {
+              "type": "add",
+              "content": " loc: { waiting: 'بانتظار إذن الموقع', active: 'مشاركة الموقع نشطة أثناء فتح الصفحة', denied: 'تم رفض إذن الموقع', offline: 'غير متصل — لا تُرسل مواقع', stopped: 'توقفت المشاركة', otherTab: 'المشاركة نشطة في تبويب آخر', error: 'تعذرت مشاركة الموقع' },"
+            },
+            {
+              "type": "add",
+              "content": " locNote: 'مشاركة في المقدمة فقط أثناء نشاط الصفحة؛ لا تتبع في الخلفية.',"
+            },
+            {
+              "type": "add",
+              "content": " issueTitle: 'الإبلاغ عن مشكلة', issueStop: 'المحطة غير المنجزة', issueCategory: 'الفئة', issueReason: 'السبب (مطلوب)', issueEvidence: 'دليل اختياري (PNG أو JPEG)', submit: 'إرسال البلاغ', categorySlot: 'الفئات الحالية من النظام', reasonError: 'السبب مطلوب.',"
+            },
+            {
+              "type": "add",
+              "content": " podTitle: 'إثبات التسليم', recipient: 'اسم المستلم', notes: 'ملاحظات (اختياري)', signature: 'توقيع المستلم', signHint: 'ارسم داخل المساحة البيضاء', clear: 'مسح', orUpload: 'أو ارفع صورة التوقيع', eventLoc: 'إرفاق موقع الحدث (اختياري)', finalize: 'إتمام الإثبات',"
+            },
+            {
+              "type": "add",
+              "content": " podStates: { draft: 'مسودة', pending: 'جارٍ الرفع — ليس إثباتًا مكتملًا', error: 'فشل الرفع — أعد المحاولة', final: 'تم اعتماد الإثبات من النظام' },"
+            },
+            {
+              "type": "add",
+              "content": " historyNote: 'سجل للقراءة فقط؛ تُحجب بيانات الاتصال والعنوان وفق العرض المعتمد.', redacted: 'محجوب',"
+            },
+            {
+              "type": "add",
+              "content": " loading: 'جارٍ تحميل الرحلات…', empty: 'لا توجد رحلات مُسندة في هذا القسم.', error: 'تعذر تحميل الرحلات.', disabled: 'الإجراء غير متاح حاليًا لهذه المحطة.',"
+            },
+            {
+              "type": "add",
+              "content": " required: 'مطلوب',"
+            },
+            {
+              "type": "add",
+              "content": "};"
+            },
+            {
+              "type": "add",
+              "content": "type DriverCopy = typeof ar;"
+            },
+            {
+              "type": "add",
+              "content": "const en: DriverCopy = {"
+            },
+            {
+              "type": "add",
+              "content": " previewLink: 'Driver preview · 05', title: 'My assigned trips', lab: 'Design preview only — no commands or real data', back: 'Back to lab',"
+            },
+            {
+              "type": "add",
+              "content": " labBar: 'Review state selector (do not port)', view: 'Screen', surface: 'State', location: 'Location', pod: 'Proof of delivery', command: 'Command', lang: 'العربية', theme: 'Theme', market: 'Market',"
+            },
+            {
+              "type": "add",
+              "content": " views: { trips: 'Trips', detail: 'Trip detail', issue: 'Report issue', pod: 'Proof of delivery', history: 'Completed history' },"
+            },
+            {
+              "type": "add",
+              "content": " tabs: { today: 'Today', upcoming: 'Upcoming', completed: 'Completed' },"
+            },
+            {
+              "type": "add",
+              "content": " surfaces: { ready: 'Ready', loading: 'Loading', empty: 'Empty', error: 'Error', disabled: 'Disabled' },"
+            },
+            {
+              "type": "add",
+              "content": " safety: 'Interact with the app only when safely stopped.',"
+            },
+            {
+              "type": "add",
+              "content": " slot: 'Display slot — filled from authorized data', ref: 'Reference', status: 'Authoritative status', schedule: 'Scheduled local time', scheduleNote: 'A schedule is not an ETA', vehicle: 'Vehicle identifier', stops: 'Completed / total stops', nextStop: 'Next unfinished stop',"
+            },
+            {
+              "type": "add",
+              "content": " pickup: 'Pickup', delivery: 'Delivery', address: 'Address', instructions: 'Instructions', contact: 'Contact (where authorized)', open: 'Open trip', pagePrev: 'Previous', pageNext: 'Next', bounded: 'Bounded list with existing pagination',"
+            },
+            {
+              "type": "add",
+              "content": " nextAction: 'Authoritative next action', actionNote: 'Exactly one action is selected by the canonical system and Finance/execution clearance.',"
+            },
+            {
+              "type": "add",
+              "content": " commands: { dispatch: 'Start trip', arrive: 'Mark arrived', start_service: 'Start service', complete_stop: 'Complete stop', depart: 'Depart', complete_trip: 'Complete trip' },"
+            },
+            {
+              "type": "add",
+              "content": " cmdStates: { idle: 'Available', pending: 'Sending', unconfirmed: 'Unconfirmed' },"
+            },
+            {
+              "type": "add",
+              "content": " pending: 'Sending… not complete until the system confirms it.', unconfirmed: 'The operation was not confirmed. Check your connection, then refresh or retry safely.', refresh: 'Refresh', retry: 'Retry', needsConnection: 'Execution requires an internet connection.',"
+            },
+            {
+              "type": "add",
+              "content": " loc: { waiting: 'Waiting for location permission', active: 'Sharing location while this page is active', denied: 'Location permission denied', offline: 'Offline — no locations sent', stopped: 'Sharing stopped', otherTab: 'Sharing active in another tab', error: 'Location sharing failed' },"
+            },
+            {
+              "type": "add",
+              "content": " locNote: 'Foreground sharing only while the page is active; no background tracking.',"
+            },
+            {
+              "type": "add",
+              "content": " issueTitle: 'Report an issue', issueStop: 'Unfinished stop', issueCategory: 'Category', issueReason: 'Reason (required)', issueEvidence: 'Optional evidence (PNG or JPEG)', submit: 'Submit report', categorySlot: 'Existing categories from the system', reasonError: 'A reason is required.',"
+            },
+            {
+              "type": "add",
+              "content": " podTitle: 'Proof of delivery', recipient: 'Recipient name', notes: 'Notes (optional)', signature: 'Recipient signature', signHint: 'Draw inside the white area', clear: 'Clear', orUpload: 'Or upload a signature image', eventLoc: 'Attach event location (optional)', finalize: 'Finalize proof',"
+            },
+            {
+              "type": "add",
+              "content": " podStates: { draft: 'Draft', pending: 'Uploading — not a completed POD', error: 'Upload failed — retry', final: 'Proof finalized by the system' },"
+            },
+            {
+              "type": "add",
+              "content": " historyNote: 'Read-only history; contact and address are redacted per the authorized projection.', redacted: 'Redacted',"
+            },
+            {
+              "type": "add",
+              "content": " loading: 'Loading trips…', empty: 'No assigned trips in this section.', error: 'Trips could not be loaded.', disabled: 'This action is not currently available for this stop.',"
+            },
+            {
+              "type": "add",
+              "content": " required: 'Required',"
+            },
+            {
+              "type": "add",
+              "content": "};"
+            },
+            {
+              "type": "add",
+              "content": "export const driverContent: Record<Locale, DriverCopy> = { ar, en };"
+            },
+            {
+              "type": "add",
+              "content": "export type { DriverCopy };"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "edit",
+      "file_path": "src/routeTree.gen.ts",
+      "file_type": "ts",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 12,
+          "oldCount": 6,
+          "newStart": 12,
+          "newCount": 7,
+          "lines": [
+            {
+              "type": "context",
+              "content": "import { Route as IndexRouteImport } from './routes/index'"
+            },
+            {
+              "type": "context",
+              "content": "import { Route as AuthPreviewRouteImport } from './routes/auth-preview'"
+            },
+            {
+              "type": "context",
+              "content": "import { Route as CustomerPreviewRouteImport } from './routes/customer-preview'"
+            },
+            {
+              "type": "add",
+              "content": "import { Route as DriverPreviewRouteImport } from './routes/driver-preview'"
+            },
+            {
+              "type": "context",
+              "content": "import { Route as StaffPreviewRouteImport } from './routes/staff-preview'"
+            },
+            {
+              "type": "context",
+              "content": ""
+            },
+            {
+              "type": "context",
+              "content": "const IndexRoute = IndexRouteImport.update({"
+            }
+          ]
+        },
+        {
+          "oldStart": 29,
+          "oldCount": 6,
+          "newStart": 30,
+          "newCount": 11,
+          "lines": [
+            {
+              "type": "context",
+              "content": "  path: '/customer-preview',"
+            },
+            {
+              "type": "context",
+              "content": "  getParentRoute: () => rootRouteImport,"
+            },
+            {
+              "type": "context",
+              "content": "} as any)"
+            },
+            {
+              "type": "add",
+              "content": "const DriverPreviewRoute = DriverPreviewRouteImport.update({"
+            },
+            {
+              "type": "add",
+              "content": "  id: '/driver-preview',"
+            },
+            {
+              "type": "add",
+              "content": "  path: '/driver-preview',"
+            },
+            {
+              "type": "add",
+              "content": "  getParentRoute: () => rootRouteImport,"
+            },
+            {
+              "type": "add",
+              "content": "} as any)"
+            },
+            {
+              "type": "context",
+              "content": "const StaffPreviewRoute = StaffPreviewRouteImport.update({"
+            },
+            {
+              "type": "context",
+              "content": "  id: '/staff-preview',"
+            },
+            {
+              "type": "context",
+              "content": "  path: '/staff-preview',"
+            }
+          ]
+        },
+        {
+          "oldStart": 39,
+          "oldCount": 12,
+          "newStart": 45,
+          "newCount": 14,
+          "lines": [
+            {
+              "type": "context",
+              "content": "  '/': typeof IndexRoute"
+            },
+            {
+              "type": "context",
+              "content": "  '/auth-preview': typeof AuthPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "  '/customer-preview': typeof CustomerPreviewRoute"
+            },
+            {
+              "type": "add",
+              "content": "  '/driver-preview': typeof DriverPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "  '/staff-preview': typeof StaffPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "}"
+            },
+            {
+              "type": "context",
+              "content": "export interface FileRoutesByTo {"
+            },
+            {
+              "type": "context",
+              "content": "  '/': typeof IndexRoute"
+            },
+            {
+              "type": "context",
+              "content": "  '/auth-preview': typeof AuthPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "  '/customer-preview': typeof CustomerPreviewRoute"
+            },
+            {
+              "type": "add",
+              "content": "  '/driver-preview': typeof DriverPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "  '/staff-preview': typeof StaffPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "}"
+            },
+            {
+              "type": "context",
+              "content": "export interface FileRoutesById {"
+            }
+          ]
+        },
+        {
+          "oldStart": 52,
+          "oldCount": 21,
+          "newStart": 60,
+          "newCount": 38,
+          "lines": [
+            {
+              "type": "context",
+              "content": "  '/': typeof IndexRoute"
+            },
+            {
+              "type": "context",
+              "content": "  '/auth-preview': typeof AuthPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "  '/customer-preview': typeof CustomerPreviewRoute"
+            },
+            {
+              "type": "add",
+              "content": "  '/driver-preview': typeof DriverPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "  '/staff-preview': typeof StaffPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "}"
+            },
+            {
+              "type": "context",
+              "content": "export interface FileRouteTypes {"
+            },
+            {
+              "type": "context",
+              "content": "  fileRoutesByFullPath: FileRoutesByFullPath"
+            },
+            {
+              "type": "remove",
+              "content": "  fullPaths: '/' | '/auth-preview' | '/customer-preview' | '/staff-preview'"
+            },
+            {
+              "type": "add",
+              "content": "  fullPaths:"
+            },
+            {
+              "type": "add",
+              "content": "    | '/'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/auth-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/customer-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/driver-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/staff-preview'"
+            },
+            {
+              "type": "context",
+              "content": "  fileRoutesByTo: FileRoutesByTo"
+            },
+            {
+              "type": "remove",
+              "content": "  to: '/' | '/auth-preview' | '/customer-preview' | '/staff-preview'"
+            },
+            {
+              "type": "add",
+              "content": "  to:"
+            },
+            {
+              "type": "add",
+              "content": "    | '/'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/auth-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/customer-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/driver-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/staff-preview'"
+            },
+            {
+              "type": "context",
+              "content": "  id:"
+            },
+            {
+              "type": "remove",
+              "content": "    '__root__' | '/' | '/auth-preview' | '/customer-preview' | '/staff-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '__root__'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/auth-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/customer-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/driver-preview'"
+            },
+            {
+              "type": "add",
+              "content": "    | '/staff-preview'"
+            },
+            {
+              "type": "context",
+              "content": "  fileRoutesById: FileRoutesById"
+            },
+            {
+              "type": "context",
+              "content": "}"
+            },
+            {
+              "type": "context",
+              "content": "export interface RootRouteChildren {"
+            },
+            {
+              "type": "context",
+              "content": "  IndexRoute: typeof IndexRoute"
+            },
+            {
+              "type": "context",
+              "content": "  AuthPreviewRoute: typeof AuthPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "  CustomerPreviewRoute: typeof CustomerPreviewRoute"
+            },
+            {
+              "type": "add",
+              "content": "  DriverPreviewRoute: typeof DriverPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "  StaffPreviewRoute: typeof StaffPreviewRoute"
+            },
+            {
+              "type": "context",
+              "content": "}"
+            },
+            {
+              "type": "context",
+              "content": ""
+            }
+          ]
+        },
+        {
+          "oldStart": 93,
+          "oldCount": 6,
+          "newStart": 118,
+          "newCount": 13,
+          "lines": [
+            {
+              "type": "context",
+              "content": "      preLoaderRoute: typeof CustomerPreviewRouteImport"
+            },
+            {
+              "type": "context",
+              "content": "      parentRoute: typeof rootRouteImport"
+            },
+            {
+              "type": "context",
+              "content": "    }"
+            },
+            {
+              "type": "add",
+              "content": "    '/driver-preview': {"
+            },
+            {
+              "type": "add",
+              "content": "      id: '/driver-preview'"
+            },
+            {
+              "type": "add",
+              "content": "      path: '/driver-preview'"
+            },
+            {
+              "type": "add",
+              "content": "      fullPath: '/driver-preview'"
+            },
+            {
+              "type": "add",
+              "content": "      preLoaderRoute: typeof DriverPreviewRouteImport"
+            },
+            {
+              "type": "add",
+              "content": "      parentRoute: typeof rootRouteImport"
+            },
+            {
+              "type": "add",
+              "content": "    }"
+            },
+            {
+              "type": "context",
+              "content": "    '/staff-preview': {"
+            },
+            {
+              "type": "context",
+              "content": "      id: '/staff-preview'"
+            },
+            {
+              "type": "context",
+              "content": "      path: '/staff-preview'"
+            }
+          ]
+        },
+        {
+          "oldStart": 107,
+          "oldCount": 6,
+          "newStart": 139,
+          "newCount": 7,
+          "lines": [
+            {
+              "type": "context",
+              "content": "  IndexRoute: IndexRoute,"
+            },
+            {
+              "type": "context",
+              "content": "  AuthPreviewRoute: AuthPreviewRoute,"
+            },
+            {
+              "type": "context",
+              "content": "  CustomerPreviewRoute: CustomerPreviewRoute,"
+            },
+            {
+              "type": "add",
+              "content": "  DriverPreviewRoute: DriverPreviewRoute,"
+            },
+            {
+              "type": "context",
+              "content": "  StaffPreviewRoute: StaffPreviewRoute,"
+            },
+            {
+              "type": "context",
+              "content": "}"
+            },
+            {
+              "type": "context",
+              "content": "export const routeTree = rootRouteImport"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "new",
+      "file_path": "src/routes/driver-preview.tsx",
+      "file_type": "tsx",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 0,
+          "oldCount": 0,
+          "newStart": 1,
+          "newCount": 12,
+          "lines": [
+            {
+              "type": "add",
+              "content": "import { createFileRoute } from '@tanstack/react-router';"
+            },
+            {
+              "type": "add",
+              "content": "import { DriverPreview } from '@/components/naql/driver-preview';"
+            },
+            {
+              "type": "add",
+              "content": "export const Route = createFileRoute('/driver-preview')({"
+            },
+            {
+              "type": "add",
+              "content": " head: () => ({ meta: ["
+            },
+            {
+              "type": "add",
+              "content": "  { title: 'Naql365 — Driver Experience Design Preview' },"
+            },
+            {
+              "type": "add",
+              "content": "  { name: 'description', content: 'معاينة الموجة الخامسة لنقل 365 — رحلات السائق المُسندة والمحطات وإثبات التسليم، تصميم توضيحي فقط.' },"
+            },
+            {
+              "type": "add",
+              "content": "  { property: 'og:title', content: 'Naql365 — Wave 5 Driver Design Lab' },"
+            },
+            {
+              "type": "add",
+              "content": "  { property: 'og:description', content: 'Arabic and English driver presentation concepts with labelled display slots; no commands, tracking or data.' },"
+            },
+            {
+              "type": "add",
+              "content": "  { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary_large_image' },"
+            },
+            {
+              "type": "add",
+              "content": "  { name: 'robots', content: 'noindex, nofollow' },"
+            },
+            {
+              "type": "add",
+              "content": " ] }), component: DriverPreview,"
+            },
+            {
+              "type": "add",
+              "content": "});"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "edit",
+      "file_path": "src/routes/index.tsx",
+      "file_type": "tsx",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 1,
+          "oldCount": 5,
+          "newStart": 1,
+          "newCount": 6,
+          "lines": [
+            {
+              "type": "context",
+              "content": "import { customerContent } from '@/lib/naql/customer-content';"
+            },
+            {
+              "type": "context",
+              "content": "import { staffContent } from '@/lib/naql/staff-content';"
+            },
+            {
+              "type": "add",
+              "content": "import { driverContent } from '@/lib/naql/driver-content';"
+            },
+            {
+              "type": "context",
+              "content": "import { createFileRoute, Link } from '@tanstack/react-router';"
+            },
+            {
+              "type": "context",
+              "content": "import { useEffect, useRef, useState } from 'react';"
+            },
+            {
+              "type": "context",
+              "content": "import { ArrowRight, ArrowUpRight, ChevronDown, Globe2, Menu, ShieldCheck, FileCheck2, Workflow, Package, Building2, Truck, Info, Check, MapPin, Headphones, ReceiptText, LockKeyhole } from 'lucide-react';"
+            }
+          ]
+        },
+        {
+          "oldStart": 27,
+          "oldCount": 7,
+          "newStart": 28,
+          "newCount": 7,
+          "lines": [
+            {
+              "type": "context",
+              "content": " function closeAction(){setAction(null);requestAnimationFrame(()=>lastAction.current?.focus());}"
+            },
+            {
+              "type": "context",
+              "content": " const requestButton=<Button variant=\"transport\" size=\"lg\" onClick={()=>openAction('request')}>{t.request}<ArrowRight className=\"direction-arrow\"/></Button>;"
+            },
+            {
+              "type": "context",
+              "content": " return <div lang={locale} dir={locale==='ar'?'rtl':'ltr'} id=\"top\">"
+            },
+            {
+              "type": "remove",
+              "content": "  <div className=\"lab-banner\"><span>{t.lab}</span><span> / </span><span>{t.wave}</span><Button variant=\"link\" size=\"sm\" className=\"text-xs\" asChild><Link to=\"/auth-preview\">{authContent[locale].previewLink}<ArrowUpRight size={12}/></Link></Button><Button variant=\"link\" size=\"sm\" className=\"text-xs\" asChild><Link to=\"/customer-preview\">{customerContent[locale].previewLink}<ArrowUpRight size={12}/></Link></Button><Button variant=\"link\" size=\"sm\" className=\"text-xs\" asChild><Link to=\"/staff-preview\">{staffContent[locale].previewLink}<ArrowUpRight size={12}/></Link></Button></div>"
+            },
+            {
+              "type": "add",
+              "content": "  <div className=\"lab-banner\"><span>{t.lab}</span><span> / </span><span>{t.wave}</span><Button variant=\"link\" size=\"sm\" className=\"text-xs\" asChild><Link to=\"/auth-preview\">{authContent[locale].previewLink}<ArrowUpRight size={12}/></Link></Button><Button variant=\"link\" size=\"sm\" className=\"text-xs\" asChild><Link to=\"/customer-preview\">{customerContent[locale].previewLink}<ArrowUpRight size={12}/></Link></Button><Button variant=\"link\" size=\"sm\" className=\"text-xs\" asChild><Link to=\"/staff-preview\">{staffContent[locale].previewLink}<ArrowUpRight size={12}/></Link></Button><Button variant=\"link\" size=\"sm\" className=\"text-xs\" asChild><Link to=\"/driver-preview\">{driverContent[locale].previewLink}<ArrowUpRight size={12}/></Link></Button></div>"
+            },
+            {
+              "type": "context",
+              "content": " <div className=\"container-shell\"><header className=\"site-header\"><Brand locale={locale}/><nav className=\"desktop-nav\" aria-label={locale==='ar'?'التنقل الرئيسي':'Main navigation'}>{t.nav.map((label,i)=><a key={sectionIds[i]} href={`#${sectionIds[i]}`}>{label}</a>)}</nav><div className=\"header-controls\"><label className=\"market-select\"><Globe2 size={15}/><span className=\"sr-only\">{t.market}</span><select value={market} onChange={e=>setMarket(e.target.value==='EG'?'EG':'SA')} aria-label={t.market}><option value=\"SA\">SA</option><option value=\"EG\">EG</option></select></label><span className=\"control-divider\"/><Button variant=\"toolbar\" aria-label={t.locale} onClick={()=>setLocale(locale==='ar'?'en':'ar')}>{locale==='ar'?'EN':'عربي'}</Button><Button className=\"header-request\" variant=\"transport\" onClick={()=>openAction('request')}>{t.request}<ArrowUpRight className=\"direction-arrow\"/></Button><Sheet open={menuOpen} onOpenChange={setMenuOpen}><SheetTrigger asChild><Button variant=\"toolbar\" size=\"icon\" className=\"mobile-trigger\" aria-label={t.menu}><Menu/></Button></SheetTrigger><SheetContent closeLabel={t.close} side={locale==='ar'?'right':'left'} lang={locale} dir={locale==='ar'?'rtl':'ltr'}><SheetTitle><Brand locale={locale}/></SheetTitle><SheetDescription className=\"mt-5\">{t.lab} · {t.wave}</SheetDescription><nav className=\"drawer-links\" aria-label={locale==='ar'?'قائمة الهاتف':'Mobile navigation'}>{t.nav.map((label,i)=><a key={label} href={`#${sectionIds[i]}`} onClick={()=>setMenuOpen(false)}>{label}</a>)}</nav><Button variant=\"transport\" className=\"mt-8 w-full\" onClick={()=>{setMenuOpen(false);openAction('request');}}>{t.request}<ArrowRight className=\"direction-arrow\"/></Button></SheetContent></Sheet></div></header>"
+            },
+            {
+              "type": "context",
+              "content": " <section className=\"hero\" aria-labelledby=\"hero-title\"><div className=\"hero-layout\"><div className=\"hero-copy\"><div className=\"eyebrow\"><span className=\"eyebrow-dot\"/>{t.eyebrow}</div><h1 id=\"hero-title\">{t.headline}<span>{t.headlineAccent}</span></h1><p>{t.intro}</p><div className=\"hero-actions\">{requestButton}<Button variant=\"quiet\" size=\"lg\" onClick={()=>openAction('track')}>{t.track}<ArrowUpRight/></Button><Button variant=\"toolbar\" onClick={()=>openAction('login')}>{t.login}</Button></div><div className=\"hero-note\"><ShieldCheck size={14}/>{t.heroNote}</div></div><RouteScene locale={locale}/></div><div className=\"hero-assurances\">{t.assurances.map(([title,desc],i)=>{const Icon=assuranceIcons[i];return <div className=\"assurance\" key={title}>{Icon&&<Icon/>}<div><strong>{title}</strong><p>{desc}</p></div></div>})}</div></section>"
+            },
+            {
+              "type": "context",
+              "content": " <section className=\"section\" id=\"services\" aria-labelledby=\"services-title\"><div className=\"section-top\"><div><div className=\"eyebrow\">{t.servicesEyebrow}</div><h2 id=\"services-title\">{t.servicesTitle}</h2></div><p className=\"section-intro\">{t.servicesIntro}</p></div><div className=\"service-grid\">{t.services.map(([title,desc],i)=>{const Icon=serviceIcons[i];return <article className=\"service-item\" key={title}><span className=\"service-index\">0{i+1}</span><div className=\"service-icon\">{Icon&&<Icon size={24}/>}</div><h3>{title}</h3><p>{desc}</p><Button variant=\"toolbar\" className=\"-ms-4\" onClick={()=>openAction('request')}>{t.explore}<ArrowUpRight className=\"direction-arrow\"/></Button></article>})}</div><p className=\"example-note\"><Info size={13}/>{t.examples}</p></section></div>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "action": "edit",
+      "file_path": "src/styles.css",
+      "file_type": "css",
+      "is_image": false,
+      "hunks": [
+        {
+          "oldStart": 396,
+          "oldCount": 3,
+          "newStart": 396,
+          "newCount": 61,
+          "lines": [
+            {
+              "type": "context",
+              "content": "@media(max-width:600px) { .sx-lab { padding-inline:8px; gap:6px; font-size:8px; }.sx-lab-end { display:none; }.sx-topbar { flex-wrap:wrap; gap:6px; padding:8px 12px; }.sx-breadcrumb { flex:1; }.sx-top-controls { width:100%; justify-content:end; margin:0; }.sx-top-controls select { margin-inline-end:auto; }.sx-demo-controls { padding:12px; gap:12px; }.sx-demo-controls > label:not(.sx-grant) { flex:1; min-width:0; }.sx-demo-controls select { width:100%; min-width:0; }.sx-demo-controls p { font-size:9px; }.sx-main { padding:20px 12px; gap:16px; }.sx-page-head h1 { font-size:21px; }.sx-next { flex-wrap:wrap; gap:12px; padding:16px 12px; }.sx-next > button { width:100%; margin:0; }.sx-section-head { align-items:start; gap:8px; }.sx-section-head h2 { font-size:14px; }.sx-section-head > span { max-width:120px; line-height:1.8; }.sx-table { min-width:520px; }.sx-detail { padding:16px; }.sx-confirm { padding:24px 18px; }.sx-confirm-actions { flex-wrap:wrap; }.sx-confirm-actions button { flex:1; }.sx-note,.sx-lifecycle { font-size:10px; }.sx-grant { width:100%; } }"
+            },
+            {
+              "type": "context",
+              "content": "@media(prefers-reduced-motion:reduce) { .sx-skeleton { animation:none; } }"
+            },
+            {
+              "type": "context",
+              "content": "@media(max-width:600px) { .sx-demo-controls p { flex:1 1 100%; max-width:none; }.sx-demo-controls > label:not(.sx-grant) { flex:1 1 130px; } }"
+            },
+            {
+              "type": "add",
+              "content": ""
+            },
+            {
+              "type": "add",
+              "content": "/* Wave 5 — Driver (.dx reuses .cx theme roles) */"
+            },
+            {
+              "type": "add",
+              "content": ".dx { font-size:14px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-top { display:flex; align-items:center; gap:12px; flex-wrap:wrap; padding:10px 16px; border-bottom:1px solid var(--border); background:var(--card); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-lab { font-size:12px; color:var(--muted-foreground); margin-inline-start:auto; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-labbar { margin:8px 16px 0; border:1px dashed var(--border); border-radius:6px; padding:6px 10px; font-size:12px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-labbar summary { cursor:pointer; color:var(--muted-foreground); min-height:32px; display:flex; align-items:center; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-labbar > div { display:flex; flex-wrap:wrap; gap:8px; padding-top:8px; align-items:end; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-labbar label { display:grid; gap:3px; color:var(--muted-foreground); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx select, .dx input:not([type=checkbox]), .dx textarea { min-height:44px; padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:var(--background); color:var(--foreground); font:inherit; max-width:100%; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx input[type=file] { min-height:auto; padding:8px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-main { max-width:1120px; margin:0 auto; padding:14px 16px 40px; display:grid; gap:14px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-head h1 { font-size:22px; font-weight:650; margin:0; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-tabs { display:flex; gap:4px; border-bottom:1px solid var(--border); overflow-x:auto; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-tabs button { min-height:44px; padding:0 14px; border-bottom:2px solid transparent; color:var(--muted-foreground); font-weight:500; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-tabs button[aria-selected=true] { color:var(--foreground); border-color:var(--primary); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-cards { display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr)); list-style:none; margin:0; padding:0; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; display:grid; gap:10px; box-shadow:var(--cx-shadow); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-card header { display:flex; align-items:center; gap:8px; flex-wrap:wrap; color:var(--cyan); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-ref { font-weight:600; color:var(--foreground); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-grid { display:grid; gap:8px 12px; grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr)); margin:0; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-slot dt { font-size:11px; color:var(--muted-foreground); margin-bottom:2px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-slot dd { margin:0; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-slot-box { display:block; padding:5px 8px; border:1px dashed var(--border); border-radius:4px; font-size:11px; color:var(--muted-foreground); background:var(--muted); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-hint { display:flex; gap:6px; align-items:center; margin:0; font-size:12px; color:var(--muted-foreground); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-touch { min-height:48px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-primary { min-height:52px; width:100%; font-size:15px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-pager { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12px; color:var(--muted-foreground); flex-wrap:wrap; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-detail { display:grid; gap:14px; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); align-items:start; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-detail aside { display:grid; gap:12px; position:sticky; top:12px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-summary { padding:12px; background:var(--card); border:1px solid var(--border); border-radius:8px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-stops { list-style:none; margin:14px 0 0; padding:0; display:grid; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-stops li { display:grid; grid-template-columns:20px 1fr; gap:10px; padding-bottom:16px; position:relative; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-stops li:not(:last-child)::before { content:\"\"; position:absolute; inset-inline-start:9px; top:20px; bottom:0; border-inline-start:2px dashed var(--border); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-stops li > div { display:grid; gap:8px; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:12px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-stops li[data-current=true] > div { border-color:color-mix(in oklch,var(--primary) 60%,transparent); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-node { width:20px; height:20px; border-radius:50%; border:3px solid var(--cyan); background:var(--background); margin-top:12px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-stops li[data-current=true] .dx-node { background:var(--cyan); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-action { display:grid; gap:10px; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-action h3 { margin:0; font-size:15px; font-weight:650; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-row { display:flex; gap:8px; flex-wrap:wrap; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-secondary > * { flex:1 1 140px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-form { display:grid; gap:12px; max-width:560px; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:16px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-form label { display:grid; gap:5px; font-weight:500; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-err { display:flex; gap:6px; align-items:center; color:var(--st-bad); margin:-6px 0 0; font-size:12px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-sign { border:1px solid var(--border); border-radius:8px; padding:10px; display:grid; gap:8px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-sign legend { padding:0 4px; font-weight:500; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-canvas { height:150px; border-radius:6px; background:oklch(1 0 0); border:1px solid var(--border); display:grid; place-items:center; color:oklch(0.5 0.02 257); font-size:12px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-check { display:flex !important; grid-auto-flow:column; align-items:center; gap:8px; min-height:44px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-check input { width:20px; height:20px; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-state { display:grid; justify-items:center; gap:10px; padding:32px 16px; text-align:center; background:var(--card); border:1px solid var(--border); border-radius:8px; color:var(--muted-foreground); }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-skeleton { width:100%; height:110px; border-radius:8px; background:var(--muted); animation:dx-pulse 1.4s ease-in-out infinite; }"
+            },
+            {
+              "type": "add",
+              "content": ".dx-spin { animation:dx-rot 1s linear infinite; }"
+            },
+            {
+              "type": "add",
+              "content": "@keyframes dx-pulse { 50% { opacity:.5; } } @keyframes dx-rot { to { transform:rotate(360deg); } }"
+            },
+            {
+              "type": "add",
+              "content": "@media (prefers-reduced-motion: reduce) { .dx-skeleton, .dx-spin { animation:none; } }"
+            },
+            {
+              "type": "add",
+              "content": "@media (max-width: 900px) { .dx-detail { grid-template-columns:1fr; } .dx-detail aside { position:static; order:-1; } }"
+            },
+            {
+              "type": "add",
+              "content": "@media (max-width: 600px) { .dx-lab { margin-inline-start:0; width:100%; } .dx-main { padding:12px; } .dx-head h1 { font-size:19px; } }"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
