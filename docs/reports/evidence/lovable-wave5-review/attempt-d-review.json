@@ -1,0 +1,13 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "result": "FAILED_HARNESS_FOCUS_MODALITY",
+  "classification": "TEST_HARNESS_DEFECT",
+  "cause": "Pointer-driven preparation followed by programmatic focus does not establish keyboard focus-visible modality.",
+  "reproducedWithoutHostedFixtures": true,
+  "fix": "Real Tab and Shift+Tab before the unchanged visible-focus assertion.",
+  "pureBrowserPreflightPass": 1,
+  "retainedCaptures": 44,
+  "applicationSourceChanged": false,
+  "cleanup": "PASS",
+  "timestamp": "2026-10-17T07:49:04.025Z"
+}

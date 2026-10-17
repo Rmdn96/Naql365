@@ -1,0 +1,9 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "result": "FAILED_HARNESS_ASSERTION_THEN_STOPPED",
+  "classification": "TEST_HARNESS_DEFECT",
+  "cause": "Fast SSR response omitted optional Loading fallback; capture harness required its presence.",
+  "retainedCaptures": 20,
+  "fix": "Deterministic test-only rendering of exact existing root Skeleton. No application change.",
+  "timestamp": "2026-10-17T07:31:16.391Z"
+}

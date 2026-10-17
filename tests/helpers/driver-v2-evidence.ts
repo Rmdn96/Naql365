@@ -7,6 +7,8 @@ import { requiredDriverMatrix, type DriverVisualState } from './driver-v2-matrix
 import { driverDictionary } from '../../src/i18n/driver';
 import { driverLoadingMarkup } from './driver-v2-loading.mjs';
 import { dictionary } from '../../src/i18n/dictionaries';
+import { trackingDictionary } from '../../src/i18n/tracking';
+const foregroundSamples = new WeakMap<Page, number>();
 
 // Test-only capture. No application import and no credentials, session storage or network bodies recorded.
 export async function driverVisual(page: Page, state: DriverVisualState, market: 'SA' | 'EG') {
@@ -61,7 +63,28 @@ export async function driverVisual(page: Page, state: DriverVisualState, market:
       });
       await page.setViewportSize({ width: row.width, height: 900 });
       const path = original.pathname.replace(/^\/(ar|en)/, '/' + row.locale) + original.search;
-      await page.goto(path);
+      const foreground = state === 'foreground-active' || state === 'foreground-offline';
+      if (foreground) {
+        const sample = (foregroundSamples.get(page) ?? 0) + 1;
+        foregroundSamples.set(page, sample);
+        await page.context().setGeolocation({
+          latitude: (market === 'SA' ? 24.7136 : 30.0444) + sample * 0.001,
+          longitude: market === 'SA' ? 46.6753 : 31.2357,
+          accuracy: 5,
+        });
+      }
+      if (!foreground || new URL(page.url()).pathname + new URL(page.url()).search !== path)
+        await page.goto(path);
+      if (foreground) {
+        // Resize/theme changes do not need a navigation, which resets the publisher's
+        // display while its existing rate policy legitimately defers a stationary fix.
+        await page.setViewportSize({ width: 1440, height: 900 });
+        await page
+          .getByLabel(row.locale === 'ar' ? 'المظهر' : 'Theme', { exact: true })
+          .filter({ visible: true })
+          .selectOption(row.theme);
+        await page.setViewportSize({ width: row.width, height: 900 });
+      }
       if (state === 'loading') {
         await expect(page.locator('.driver-shell')).toBeVisible();
         await expect(page.locator('#public-market')).toBeEnabled();
@@ -79,6 +102,33 @@ export async function driverVisual(page: Page, state: DriverVisualState, market:
         row.locale === 'ar' ? 'rtl' : 'ltr',
       );
       await expect(page.locator('html')).toHaveAttribute('data-theme', row.theme);
+      if (state === 'pod-reserved-pending')
+        await expect(
+          page.getByText(driverDictionary(row.locale).podPending, { exact: true }),
+        ).toBeVisible();
+      if (state === 'foreground-active' || state === 'foreground-offline') {
+        const cadence = await page.evaluate(async () => {
+          const trip = location.pathname.split('/').at(-1);
+          const response = await fetch('/api/tracking?mode=driver&tripId=' + trip);
+          const body = await response.json();
+          return { status: response.status, movingSeconds: body.policy?.movingSeconds };
+        });
+        expect(cadence.status).toBe(200);
+        expect(
+          Number.isInteger(cadence.movingSeconds) &&
+            cadence.movingSeconds >= 10 &&
+            cadence.movingSeconds <= 120,
+        ).toBe(true);
+        await expect(
+          page.getByText(trackingDictionary(row.locale).ACTIVE, { exact: true }),
+        ).toBeVisible({ timeout: cadence.movingSeconds * 1000 + 20000 });
+        if (state === 'foreground-offline') {
+          await page.context().setOffline(true);
+          await expect(
+            page.getByText(trackingDictionary(row.locale).OFFLINE, { exact: true }),
+          ).toBeVisible();
+        }
+      }
       if (state.startsWith('issue-') && state !== 'issue-open') {
         await page.locator('.driver-issue-form > summary').click();
         await expect(page.locator('#issue-reason')).toBeEnabled();
@@ -219,6 +269,13 @@ export async function driverVisual(page: Page, state: DriverVisualState, market:
         expect(result.violations).toEqual([]);
       }
       const filename = row.id + '.png';
+      const skipLink = page.locator('.skip-link');
+      if (await skipLink.count())
+        expect(
+          await skipLink.evaluate(
+            (e) => e.matches(':focus') || e.getBoundingClientRect().bottom <= 0,
+          ),
+        ).toBe(true);
       if (state === 'issue-validation' || state === 'pod-validation') {
         const invalid = page.locator(
           state === 'issue-validation' ? '#issue-reason' : '#pod-recipient',
@@ -229,9 +286,13 @@ export async function driverVisual(page: Page, state: DriverVisualState, market:
         );
         await expect(invalid).toBeFocused();
       }
-      await page
-        .locator('main')
-        .screenshot({ path: join(directory, filename), animations: 'disabled' });
+      await page.locator('main').screenshot({
+        path: join(directory, filename),
+        animations: 'disabled',
+        // A full-element capture can include fixed content outside the viewport.
+        // Exclude only the unfocused offscreen utility; never hide Driver controls.
+        style: '.skip-link:not(:focus) { visibility: hidden !important; }',
+      });
       index.rows.push({
         ...row,
         applicationSha,
@@ -248,10 +309,13 @@ export async function driverVisual(page: Page, state: DriverVisualState, market:
           'offline-unconfirmed',
           'pod-upload-pending',
           'loading',
+          'foreground-offline',
         ].includes(state)
           ? 'controlled presentation using real component/response; no successful command simulated'
           : 'real run-owned hosted state',
         fixture: market + '-forward-only-driver-journey',
+        runReference: process.env.STAGING_WAVE5_RUN_DIR?.split('/').at(-1) ?? 'owned-driver-run',
+        captureNormalization: 'Screenshot-only exclusion of the off-viewport unfocused skip link',
       });
       save();
       if (releasePending) {
@@ -259,7 +323,8 @@ export async function driverVisual(page: Page, state: DriverVisualState, market:
         await pendingHandled;
         await page.unroute(pendingEndpoint!);
       }
-      if (state === 'offline-unconfirmed') await page.context().setOffline(false);
+      if (state === 'offline-unconfirmed' || state === 'foreground-offline')
+        await page.context().setOffline(false);
     }
   } catch (error) {
     index.failures.push({

@@ -117,6 +117,7 @@ export function registerDriverJourneys(
     started?: (args: DriverJourneyHook) => Promise<void>;
     reassigned?: (args: DriverJourneyHook) => Promise<void>;
     completed?: (args: DriverJourneyHook) => Promise<void>;
+    beforePod?: (args: DriverJourneyHook, image: Buffer) => Promise<void>;
   } = {},
 ) {
   for (const country of ['SA', 'EG'] as const)
@@ -531,6 +532,7 @@ export function registerDriverJourneys(
         await page
           .locator('#pod-file')
           .setInputFiles({ name: 'signature.png', mimeType: 'image/png', buffer: png });
+      await hooks.beforePod?.(hookArgs, png);
       await page.getByRole('button', { name: dt.submitPod, exact: true }).click();
       await expect
         .poll(

@@ -1,8 +1,100 @@
 # Naql365 Lovable UI V2 — Wave 5 Driver Experience
 
+## Current closeout — 17 October 2026
+
+Current decision: **LOVABLE UI MIGRATION — WAVE 5 PARTIAL — REMEDIATION REQUIRED** — local, hosted and visual gates are complete; the new delivery commit still requires its own exact-head Foundation CI. Application CI is not substituted for delivery CI.
+
+- Canonical branch: `feature/lovable-ui-experience-v2`; accepted Wave 4 baseline `2be540dd7527830bac655104f9871aae54ec16d9`. The preserved documentation commit `c5c3bd2a3711c9074ea230277c4ffb254a39f48e` remains in history.
+- **Application SHA:** `67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a`. Later commits change test/evidence/documentation only. See [application provenance](evidence/lovable-wave5-review/application-provenance.json).
+- **Official protected Preview:** https://naql365-staging-ui-v2-naql365.vercel.app — READY, deployment `dpl_65MSuwGmpjSR4WQFAk4jHJ2xJ89i`, exact deployed Git SHA equals the application SHA. Anonymous access 302, authorized project access 200; protection was retained.
+- Completed Lovable revision `9dac9c56ec0573f1ec11b67a666645da80e7110f`, reviewed against `dd9399162de0f1c5e42a56ef24e09e128bce0067`. This is a design-lab revision, not a canonical GitHub commit. No new generation request or project was created.
+
+### Design integration and source scope
+
+Accepted the compact themed Driver navigation, assigned-work cards, actual next unfinished Stop hierarchy, grouped route/issue/POD sections, reachable touch actions and bilingual safe-stop note. Preserved the white signature substrate. Rejected TanStack routing, demo trips/state selectors, mock eligibility/permissions, fake completion, independent theme storage, fabricated GPS/ETA, offline synchronization and new dependencies. The full file-by-file review and earlier baseline inspection remain below.
+
+Exactly seven application files changed from accepted Wave 4: `src/components/driver/views.tsx`, `src/components/driver/execution.tsx`, `src/app/[locale]/(driver)/driver/page.tsx`, `src/app/[locale]/(driver)/driver/trips/[id]/page.tsx`, `src/i18n/driver.ts`, `src/styles/driver-v2.css` and the locale layout stylesheet import. Execution handler bodies, server commands, authority, retry/idempotency, real issue/POD flows, foreground tracking source, tenant/Market isolation and Finance clearance are unchanged. The one proven visual correction after initial integration was LTR isolation of the completed/total Stop count in Arabic; its rendered regression remains included.
+
+### Verification results
+
+| Gate                                          | Current result                                                                                                                                                                                                                                                 |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Full local unit/integration                   | **332/332**, 67 files: accepted 323 + six Driver presentation + two matrix-definition + one exact loading-renderer check                                                                                                                                       |
+| Full local E2E                                | **60/60**, isolated output directory                                                                                                                                                                                                                           |
+| Final harness focused checks                  | Three matrix/renderer unit checks; lint, strict TypeScript and formatting PASS                                                                                                                                                                                 |
+| SQL/RLS/official generated types              | Application CI **39013193885 PASS**; local Docker unavailable, so no local Docker result claimed                                                                                                                                                               |
+| Independent-connection concurrency            | Same successful database CI ran Operations, Driver, tracking, payment, manual pricing and Guest suites; final delivery CI must repeat repository-required jobs                                                                                                 |
+| Real hosted Driver execution                  | **SA + EG, 2/2 PASS**: four Stops/two Trips per country, assignment/reassignment isolation, issues/private photo, actual POD reserve/upload/finalization, aggregate completion, private assets and signed-link expiry                                          |
+| Foreground location regression                | Actual browser publication and authorized Customer Realtime receipt; unrelated Customer receives none; reassigned Driver denied; terminal coordinates redacted. No background/ETA claim; unchanged Phase 5 heartbeat suite is not relabelled as newly executed |
+| Driver session                                | **1/1 PASS covering AR and EN**: password login, desktop/drawer destinations, public/Market navigation, direct login recognition, refresh, Secure/Lax/root cookies, expiry, membership suspension, role loss, logout and protected denial                      |
+| Customer/Guest/Staff shared hosted regression | **10/10 PASS**, including SA/EG Guest delivery, Quote rejection without Order, registered manual Quote/CASH, public accessibility, capability isolation and AR/EN SUPER_ADMIN logout/history denial                                                            |
+| Prior role-session acceptance                 | Accepted **6/6 retained**; no Auth/RBAC source change. New Driver/session and SUPER_ADMIN checks supplement it                                                                                                                                                 |
+| Detailed visual matrix                        | **288/288 PASS; 0 missing; 0 N/A; 0 unresolved failed combinations**                                                                                                                                                                                           |
+| Evidence integrity                            | Every indexed PNG SHA-256 validated; capture-artifact audit **288 checked / 0 flagged**; representative AR dark mobile, EN light mobile, AR desktop and EG completed-history inspection PASS                                                                   |
+| Security                                      | Tracked/history credential-pattern scans PASS (heuristic coverage); runtime dependency audit 0. Existing five high development-only ESLint-chain findings unchanged, with no dependency change                                                                 |
+| Migrations                                    | **47 unchanged**, subtree `20ae191f7838e46c61a1ff3d92dd058483aad6ff`; no migration 48                                                                                                                                                                          |
+
+### Visual matrix and evidence meaning
+
+[Index and hashes](evidence/lovable-wave5-driver-final/index.json), [completeness assertion](evidence/lovable-wave5-driver-final/completeness.json), [manual inspection](evidence/lovable-wave5-review/manual-visual-review.json). Twenty-two state families cover both Markets, AR/RTL and EN/LTR at 360/1440. Today, READY, POD form and completed detail additionally cover 390/768/1280 and Dark/System, including both system preferences. This is a documented risk-based matrix, not a claim that every full Cartesian product or assistive technology was tested. Overflow, contained controls, direction/theme, keyboard focus/primary-action reachability and safe text checks run per applicable capture; axe smoke runs at 360/1440 and is not WCAG certification.
+
+Real backend-owned states are separated in the index from controlled loading, 503 response, busy/upload-held and offline presentation. Loading uses the exact existing Skeleton in the test DOM; failed-response controls never simulate a successful command or ship as an application bypass. Actual pending POD reservation is separately verified through the trusted RPC before normal UI upload/finalization. All records and images are synthetic/run-owned. No password, session value, capability, private proof URL or real payment destination is captured.
+
+Valid screenshots are hash-checked and skipped on resume. The initial 21 captures on superseded application 13eda079 are retained separately and excluded. Sixty-four repaired-source captures with a proven off-viewport skip-link compositor artifact were explicitly archived with their old index/hashes, then replaced; valid prior captures were preserved. Historical failed attempts remain below and in the index; they are not relabelled PASS.
+
+### Cleanup and access disposal
+
+[Driver cleanup](evidence/lovable-wave5-review/attempt-h-cleanup.json), [38-entity independent readback](evidence/lovable-wave5-review/attempt-h-entity-cleanup.json), [session cleanup](evidence/lovable-wave5-review/session-i-cleanup.json), [shared regression](evidence/lovable-wave5-review/hosted-shared-regression.json) and [43-entity independent readback](evidence/lovable-wave5-review/shared-business-entity-cleanup.json) all PASS. The session observer also proved its two owned entities absent. Disposable Auth identities, memberships/roles, Customers, Requests, Quotes, Orders, Jobs/Trips/resources, payments/proofs, files and isolated organizations were removed by exact ownership ledger. Existing owner accounts/catalogues/configuration were preserved and guest-policy configuration restored.
+
+All 16 final shared-run deleted credentials were retried against normal Auth and returned **HTTP 400 / invalid_credentials, no session**. The temporary project OIDC environment file was deleted and absence verified; the owner's existing normal CLI authentication was preserved. Storage returned to its original **one object**, with the same name/path digest (values withheld). Anonymous Preview access still requires protection. See [credential disposal](evidence/lovable-wave5-review/credential-disposal.json) and [Storage preservation](evidence/lovable-wave5-review/final-storage-preservation.json).
+
+### Delivery CI and known limits
+
+Application Foundation CI [39013193885](https://github.com/Rmdn96/Naql365/actions/runs/39013193885) passed both jobs. The new test/evidence delivery must have its own exact-head Foundation CI; its final SHA/run is recorded in the owner handoff after completion. Historical application CI is not claimed for a new delivery commit. Local Docker unavailability, retained development dependency-risk scope, risk-based visual coverage and controlled-state simulation remain explicit limits.
+
+No merge, main/Production/DNS/Hostinger change, new backend/Auth/permission/query authority, Commerce, migration 48 or Phase 8 work occurred.
+
+## Historical checkpoints — preserve original decisions and failures
+
 Current decision: **LOVABLE UI MIGRATION — WAVE 5 PARTIAL — REMEDIATION REQUIRED**.
 
-The owner-completed Lovable concept has now been read and its complete returned diff reviewed. Canonical implementation and acceptance are blocked by GitHub DNS connectivity. No application implementation, hosted acceptance or new CI PASS is claimed.
+The owner-completed Lovable concept was reviewed and its compatible Driver presentation has now been integrated. The former GitHub DNS blocker is resolved. Current application SHA: `67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a`. Acceptance is in progress; this report does not yet claim complete Wave 5 hosted/visual acceptance.
+
+### Visual correction and harness interruptions
+
+Manual inspection of the first AR mobile capture reproduced a presentation defect: the completed/total Stop numbers appeared reversed in RTL. The smallest fix wraps the pair in `bdi dir="ltr"`; a rendered component regression asserts that pair remains isolated. No count, projection or lifecycle rule changed. Application commit `67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a` supersedes `13eda079…`. Its protected Preview deployment is `dpl_65MSuwGmpjSR4WQFAk4jHJ2xJ89i`, READY at the same canonical alias, with exact Git source readback. Foundation CI `39013193885` passed both required jobs on this repaired application.
+
+Attempt A was stopped by terminating only its Playwright child tree; the parent runner completed scoped deletion and independent readback. Its 21 structurally captured images are retained under `evidence/lovable-wave5-driver-attempt-a` with a separate NOT ACCEPTED AS FINAL visual review. They do not count toward repaired-source acceptance. All 13 disposable identities/profile/membership/role/Customer/file records and the isolated organization were independently zero after cleanup.
+
+The repaired full local unit/integration suite passed **331 tests / 66 files**: the existing 323, six Driver component checks and two evidence-matrix definition checks. The first repaired E2E run had 59 PASS plus one infrastructure teardown failure (`ENOENT` for a trace archive), caused by local and hosted Playwright sharing the default output directory. No assertion was weakened. Re-running the complete unchanged E2E suite with an isolated output directory passed **60/60**. Future Wave 5 hosted children also receive a run-specific output directory and max-failures=1.
+
+Attempt B preserved 20 hash-indexed captures on the repaired source, then failed a harness assertion that an SSR response must contain the root skeleton. Some fast responses legitimately omit that fallback. This is a TEST_HARNESS_DEFECT, not a proven application rendering failure. The existing root Loading boundary's exact Skeleton is now rendered deterministically inside the hosted test DOM only; this is explicitly controlled presentation evidence, not a simulated business transition or shipped bypass. Parent cleanup and independent Auth/business/configuration readback passed again; Storage returned to the exact prior count and name/path digest (values withheld). The failed/interrupted attempt remains historical.
+
+The expanded risk definition contains **264 combinations / 19 state families**. It includes real assigned Today/Upcoming/Completed, next-action/detail, reassigned, issue/open/validation, POD/final/history/empty states and controlled loading, failed command, offline-unconfirmed, busy/disabled and pending upload presentations. Every state spans both locales and Markets at 360/1440; four representative high-risk families additionally span all five widths and Light/Dark/System with both OS preferences. Resume validates existing hashes and skips valid captures. Remaining combinations and full real journeys are still pending until the final completeness and cleanup assertions pass.
+
+## Resumed integration — 17 October 2026
+
+DNS resolution and HTTPS to GitHub passed. Remote branch was still exactly `2be540dd7527830bac655104f9871aae54ec16d9`; local documentation commit `c5c3bd2a3711c9074ea230277c4ffb254a39f48e` was preserved. Authenticated Git dry-run push succeeded and the connected GitHub identity is Rmdn96. The application commit was pushed normally without force or changes to protected branches.
+
+Adapted the reviewed card/fact hierarchy, next Stop summary, ordered Stop emphasis, textual safety note, compact navigation, large touch actions, semantic theme surfaces and grouped issue/POD forms. Canonical application changes are limited to:
+
+- `src/components/driver/views.tsx`: presentation of navigation, authorized Trip cards and safe-stop guidance.
+- `src/app/[locale]/(driver)/driver/page.tsx`: assigned work hierarchy, responsive card grid and empty presentation.
+- `src/app/[locale]/(driver)/driver/trips/[id]/page.tsx`: grouped reference/status and actual next unfinished Stop emphasis.
+- `src/components/driver/execution.tsx`: CSS classes and aria-busy only; handler bodies, guards, revision/mutation IDs, retry intent and upload/finalization unchanged.
+- `src/i18n/driver.ts`: two AR/EN presentation labels.
+- `src/styles/driver-v2.css`: Driver-scoped semantic theme retrofit; intentional white signature substrate retained.
+- `src/app/[locale]/layout.tsx`: stylesheet import only.
+
+No Lovable router, theme store, lab selector, placeholder data, demo eligibility or simulated successful command was imported. No dependency was added. Foreground tracking source, Auth, server actions, backend loaders/domain commands, Finance clearance, migrations and generated DB types are unchanged from accepted baseline.
+
+Local verification: 323 existing unit/integration tests and six new rendered component checks passed; the latter verify next-unfinished-Stop selection, redacted history and AR/EN safety semantics. Lint, strict TypeScript, formatting and production build passed. The initial E2E command stopped before any test at `ENV_BUILD_RUNTIME_MISMATCH` because the local artifact had been built without the test server's APP_URL. Rebuilding with `APP_URL=http://127.0.0.1:3000` resolved that runner configuration mismatch without changing or weakening the guard; the complete local E2E suite then passed **60/60**. Preserve that initial interruption as historical evidence.
+
+Application exact-head Foundation CI `39012417494` passed both required jobs: Supabase migrations and RLS; Lint, types, tests and production build. The database job includes reconstruction, official type generation/comparison, SQL/RLS, six independent concurrency suites and restricted staff regression. Local Docker was unavailable; CI database results are explicitly separate from local execution and no local Docker PASS is claimed.
+
+The protected canonical Preview is READY at `https://naql365-staging-ui-v2-naql365.vercel.app`, deployment `dpl_5yJx21iF1CXZGkYQUUJT9bBbL994`, Git source `13eda079c82d10e410623c5d573eb7a341728a6b`. Anonymous access returned 302; authorized short-lived project OIDC access returned 200. See `evidence/lovable-wave5-review/preview-preflight.json`. The Vercel connector returned 403; its documented same-project CLI fallback succeeded. No project protection/configuration was weakened.
+
+Staging CLI readback independently confirmed healthy project `zuvyfeflkzlciuaauxba` and 47 applied migrations. Hosted fixtures use the existing scoped Driver suite and a copied run-owned ledger for independent cleanup. The current first visual definition has 232 risk-based combinations across 15 state families, both locales/Markets, all five widths and Light/Dark/System (both OS preferences); screenshots are indexed with application SHA, safe route/state reference, timestamp and SHA-256. Controlled failed-response captures are explicitly distinguished from real hosted business state. Remaining loading/busy/connection presentation coverage must also be reconciled before final PASS.
 
 ## Baseline verified locally
 
@@ -88,13 +180,13 @@ All nine owner-specified files were read directly at the exact revision without 
 
 Specific authority hazards identified before porting: the lab disables execution when its selected location state is offline, makes POD/issue links unconditional, and decides history redaction from a tab. None of those predicates may replace canonical command eligibility, assignment/clearance checks, POD visibility or completed-trip projections. Keep the existing real canvas, file upload/reservation/finalization, revision-bound retry intent and foreground tracking component. The lab contains no backend command implementation and demonstrates no successful authoritative transition.
 
-## Current infrastructure stop and retained state
+## Historical infrastructure stop and retained state
 
 At continuation preflight, `git ls-remote origin refs/heads/feature/lovable-ui-experience-v2` again failed with `Could not resolve host: github.com`. This proves the runner cannot resolve GitHub at that point; it does not establish the upstream resolver/network-policy root cause. No DNS, hosting, proxy or security setting was changed. Under the owner's explicit network-block stop rule, canonical UI integration and hosted fixture execution were not started.
 
 Resume requirement: a network-capable authorized runner for normal GitHub synchronization and protected Vercel/Supabase acceptance. No credentials should be pasted into chat. Reuse this completed Lovable revision; do not generate another concept. Confirm remote HEAD before making implementation commits and do not substitute accepted Wave 4 evidence for new Driver gates.
 
-## Pending gates and current delivery
+## Historical pre-integration pending gates
 
 Lovable exact-revision source/diff review is **COMPLETE**. Application implementation, full local regression, hosted Driver journeys/matrix/cleanup and exact-head CI are **NOT RUN for Wave 5**. No prior Wave 4 PASS is substituted. Documentation and reviewed lab diff do not change application bytes, harness behavior or migrations. Application SHA remains `8e340a537a8f469324e13e5f050077881489d0de`; no new Wave 5 application SHA or deployment is claimed. Official acceptance target remains `https://naql365-staging-ui-v2-naql365.vercel.app`; its current identity/protection were not freshly verified in this blocked continuation. No fixtures or temporary credentials were created, so there is no new fixture cleanup or credential revocation result to claim.
 
@@ -103,3 +195,7 @@ Local documentation verification: Prettier passed for the brief, diff artifact a
 Only the local design brief, reviewed lab diff and report are prepared for a documentation commit. GitHub synchronization and exact-head CI remain blocked/unverified; there is no Wave 5 test total or hosted PASS to report.
 
 No merge, main/Production/Hostinger/DNS/Commerce/migration 48/Phase 8 work was performed.
+
+### Interrupted run G — preserved infrastructure checkpoint
+
+The runner process ended without a final suite result. The append-only index retained 214/288 valid captures. This attempt is **INTERRUPTED**, not a hosted business PASS. Its stale lock PID was proved absent before recovery. Recovery reused the existing runner’s exact scoped cleanup transaction with only the copied run-owned identity/organization ledger; it did not delete by email pattern or touch owner accounts. Independent readback proved all 13 Auth identities, their profiles/memberships/roles and isolated organization absent, and all 19 observed business entities absent. See `evidence/lovable-wave5-review/attempt-g-interruption.json`. Run H resumes missing captures without overwriting valid evidence.

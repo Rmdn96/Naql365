@@ -1,0 +1,20 @@
+{
+  "acceptedBaseline": "2be540dd7527830bac655104f9871aae54ec16d9",
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "applicationTree": "6b1f128ddce092a8cd13e24af15bef7de993d8a6",
+  "laterRuntimeChanges": [],
+  "migrationCount": 47,
+  "migrationTree": "20ae191f7838e46c61a1ff3d92dd058483aad6ff",
+  "filesChanged": [
+    "src/app/[locale]/(driver)/driver/page.tsx",
+    "src/app/[locale]/(driver)/driver/trips/[id]/page.tsx",
+    "src/app/[locale]/layout.tsx",
+    "src/components/driver/execution.tsx",
+    "src/components/driver/views.tsx",
+    "src/i18n/driver.ts",
+    "src/styles/driver-v2.css"
+  ],
+  "lovableRevision": "9dac9c56ec0573f1ec11b67a666645da80e7110f",
+  "lovableIsCanonicalGitCommit": false,
+  "reviewedLovableDiffSha256": "45ee43ddb74d8a02bd45a52c2e216c3c1d9e166a5ebbde7727e6a68547a9e951"
+}

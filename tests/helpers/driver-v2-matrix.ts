@@ -18,6 +18,9 @@ export const driverVisualStates = [
   'command-busy-disabled',
   'offline-unconfirmed',
   'pod-upload-pending',
+  'pod-reserved-pending',
+  'foreground-active',
+  'foreground-offline',
 ] as const;
 export type DriverVisualState = (typeof driverVisualStates)[number];
 export const driverCoreStates = new Set<DriverVisualState>([

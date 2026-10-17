@@ -1,0 +1,25 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "result": "FAILED",
+  "authoritativeExecutionJourneys": {
+    "pass": 2,
+    "total": 2,
+    "records": [
+      "passed: hosted-wave5 > driver.spec.ts > hosted SA authenticated Driver execution, reassignment, issues, private POD and tracking; durationMs=682402\r",
+      "passed: hosted-wave5 > driver.spec.ts > hosted EG authenticated Driver execution, reassignment, issues, private POD and tracking; durationMs=931054\r"
+    ]
+  },
+  "session": {
+    "result": "FAIL",
+    "safeLocation": "tests/phase4/session.spec.ts:55",
+    "classification": "TEST_HARNESS_SELECTOR",
+    "reason": "Strict locator targeted both intentional desktop and closed-drawer identity links; corrected assertion requires both links and their Driver destination"
+  },
+  "visualMatrix": {
+    "total": 288,
+    "pass": 288,
+    "missing": 0
+  },
+  "independentCleanup": "PASS, 38 observed entities absent",
+  "historicalAttemptRetained": true
+}

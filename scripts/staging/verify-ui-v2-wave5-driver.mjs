@@ -47,7 +47,8 @@ const track = () => {
 const timer = setInterval(track, 1000);
 try {
   // Existing real Driver suite, including session revocation; no replacement commands.
-  if (process.argv.slice(2).length) throw Error('WAVE5_NO_EXTRA_ARGS');
+  if (process.argv.slice(2).some((argument) => argument !== '--session-only'))
+    throw Error('WAVE5_NO_EXTRA_ARGS');
   const phase = Number(process.env.WAVE5_DRIVER_ACCEPTANCE_PHASE ?? 4);
   if (![4, 5].includes(phase)) throw Error('WAVE5_DRIVER_PHASE_DENIED');
   await verifyDriverAcceptance(phase);

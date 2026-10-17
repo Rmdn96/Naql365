@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "observedEntities": 17,
+  "remaining": {
+    "customers": 0,
+    "requests": 0,
+    "quotes": 0,
+    "quote_versions": 0,
+    "orders": 0,
+    "jobs": 0,
+    "trips": 0,
+    "drivers": 0,
+    "vehicles": 0,
+    "payments": 0
+  },
+  "verifiedAt": "2026-10-17T08:31:09.130Z"
+}

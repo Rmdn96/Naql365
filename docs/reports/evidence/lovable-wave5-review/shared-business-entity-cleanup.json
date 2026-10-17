@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "observedEntities": 43,
+  "remaining": {
+    "customers": 0,
+    "requests": 0,
+    "bank_accounts": 0,
+    "quotes": 0,
+    "quote_versions": 0,
+    "orders": 0,
+    "payments": 0,
+    "jobs": 0,
+    "trips": 0,
+    "drivers": 0,
+    "vehicles": 0,
+    "trip_pods": 0,
+    "file_objects": 0
+  },
+  "verifiedAt": "2026-10-17T09:44:32.616Z"
+}

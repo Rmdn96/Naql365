@@ -1,0 +1,25 @@
+{
+  "result": "PASS",
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "tests": 1,
+  "locales": ["ar", "en"],
+  "records": [
+    "passed: hosted-wave5 > session.spec.ts > hosted Driver session expiry, route revocation and keyboard login in both locales; durationMs=69815\r"
+  ],
+  "checks": [
+    "normal password login",
+    "both desktop and mobile-drawer identity links resolved to Driver",
+    "public navigation",
+    "SA/EG switching",
+    "direct localized /login recognition",
+    "refresh",
+    "Secure SameSite=Lax Path=/ cookies, values withheld",
+    "expired session redirect",
+    "suspension denial",
+    "canonical role-loss denial",
+    "explicit logout and protected route denial"
+  ],
+  "sourceChange": "harness selector only; no application source change",
+  "cleanup": "PASS",
+  "ownedEntitiesIndependentlyRemoved": 2
+}

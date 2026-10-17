@@ -68,7 +68,11 @@ export async function verifyDriverAcceptance(phase) {
                     : args.includes('--visual-matrix')
                       ? ['tests/phase7/visual-matrix.spec.ts']
                       : args.includes('--session-only')
-                        ? [`tests/phase${phase}/session.spec.ts`]
+                        ? [
+                            process.env.WAVE5_FOCUSED_DRIVER === 'true'
+                              ? 'tests/wave5/session.spec.ts'
+                              : `tests/phase${phase}/session.spec.ts`,
+                          ]
                         : args.includes('--payment-diagnostic')
                           ? ['--grep', 'SA CASH']
                           : [];
@@ -82,7 +86,8 @@ export async function verifyDriverAcceptance(phase) {
   let previousGuestPolicy;
   const users = [];
   const otherOrg = randomUUID();
-  let ref, admin, org;
+  let ref, admin, org, publicAuth;
+  const identities = {};
   let stage = 'staging-allowlist';
   try {
     ref = stagingProject();
@@ -118,7 +123,10 @@ export async function verifyDriverAcceptance(phase) {
       ref,
       `insert into public.organizations(id,name) values('${otherOrg}','Driver isolation fixture');select private.provision_initial_market_catalogue('${otherOrg}');update public.markets set active=true where organization_id='${otherOrg}'`,
     );
-    const identities = {};
+    if (process.env.WAVE5_VERIFY_DISPOSAL === 'true')
+      publicAuth = createClient(url, publicKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
     for (const label of [
       'customer',
       'sales',
@@ -212,7 +220,9 @@ export async function verifyDriverAcceptance(phase) {
           'test',
           ...selectedTests,
           '--config',
-          `playwright.phase${phase}.config.ts`,
+          process.env.WAVE5_FOCUSED_DRIVER === 'true'
+            ? 'playwright.wave5.config.ts'
+            : `playwright.phase${phase}.config.ts`,
           ...(process.env.STAGING_WAVE5_RUN_DIR
             ? [
                 '--output',
@@ -324,6 +334,21 @@ export async function verifyDriverAcceptance(phase) {
         for (const id of users) {
           if ((await admin.auth.admin.deleteUser(id)).error)
             throw new Error('Fixture identity cleanup failed');
+        }
+        if (publicAuth) {
+          for (const identity of Object.values(identities)) {
+            const response = await publicAuth.auth.signInWithPassword({
+              email: identity.email,
+              password: identity.password,
+            });
+            if (
+              response.error?.code !== 'invalid_credentials' ||
+              response.error.status !== 400 ||
+              response.data.session
+            )
+              throw Error('DELETED_FIXTURE_CREDENTIAL_REUSE_NOT_DENIED');
+          }
+          console.log('Deleted synthetic identity credential reuse denied');
         }
         query(
           ref,

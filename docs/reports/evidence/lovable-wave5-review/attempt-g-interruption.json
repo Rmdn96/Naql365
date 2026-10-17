@@ -1,0 +1,20 @@
+{
+  "result": "INTERRUPTED",
+  "classification": "acceptance runner process ended without final test result; not application PASS",
+  "preservedCaptures": 214,
+  "cleanup": {
+    "result": "PASS",
+    "ownedAuthIdentities": 13,
+    "remaining": {
+      "auth": 0,
+      "isolated_organization": 0,
+      "memberships": 0,
+      "profiles": 0,
+      "roles": 0
+    },
+    "independentObservedEntityCount": 19,
+    "independentEntityCleanup": "PASS"
+  },
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "verifiedAt": "2026-10-17T09:00:39.727Z"
+}

@@ -1,0 +1,73 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "unitIntegration": {
+    "pass": 332,
+    "files": 67,
+    "categories": {
+      "acceptedBaseline": 323,
+      "driverPresentation": 6,
+      "matrixDefinition": 2,
+      "exactLoadingRenderer": 1
+    }
+  },
+  "e2e": {
+    "pass": 60,
+    "total": 60
+  },
+  "hostedDriver": {
+    "authoritativeCountryJourneys": {
+      "pass": 2,
+      "total": 2,
+      "source": "attempt-h-results.json"
+    },
+    "sessionExpiryRevocationKeyboard": {
+      "pass": 1,
+      "total": 1,
+      "locales": ["ar", "en"],
+      "durationMs": 69815,
+      "source": "session-i-cleanup.json"
+    },
+    "previousRoleSessions": "6/6 retained; Auth/RBAC source unchanged"
+  },
+  "visual": {
+    "pass": 288,
+    "total": 288,
+    "missing": 0,
+    "index": "../lovable-wave5-driver-final/index.json",
+    "riskBased": true,
+    "automatedAccessibility": "axe smoke; not WCAG certification"
+  },
+  "security": {
+    "runtimeDependencies": {
+      "vulnerabilities": 0
+    },
+    "developmentDependencies": {
+      "high": 5,
+      "packages": [
+        "@next/eslint-plugin-next",
+        "braces",
+        "eslint-config-next",
+        "fast-glob",
+        "micromatch"
+      ],
+      "scope": "unchanged existing accepted development-only dependency chain; no dependency changes"
+    },
+    "migrations": 47,
+    "migrationSubtree": "20ae191f7838e46c61a1ff3d92dd058483aad6ff"
+  },
+  "pending": ["exact-head delivery CI"],
+  "historicalFailuresPreserved": true,
+  "sharedHostedRegression": {
+    "pass": 10,
+    "total": 10
+  },
+  "cleanup": {
+    "result": "PASS",
+    "driverObservedEntities": 38,
+    "sessionObservedEntities": 2,
+    "sharedObservedEntities": 43,
+    "storageBaselinePreserved": true,
+    "temporaryOidcFileDisposed": true,
+    "deletedCredentialReuseDenied": 16
+  }
+}

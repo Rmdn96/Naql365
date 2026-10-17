@@ -1,0 +1,7 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "checked": 288,
+  "flagged": [],
+  "result": "PASS",
+  "algorithm": "Off-viewport utility navy rectangle, at least 60px wide for 10 rows; diagnostic, not WCAG certification"
+}
