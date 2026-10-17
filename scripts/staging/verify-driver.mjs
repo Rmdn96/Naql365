@@ -213,6 +213,13 @@ export async function verifyDriverAcceptance(phase) {
           ...selectedTests,
           '--config',
           `playwright.phase${phase}.config.ts`,
+          ...(process.env.STAGING_WAVE5_RUN_DIR
+            ? [
+                '--output',
+                process.env.STAGING_WAVE5_RUN_DIR + '/playwright-output',
+                '--max-failures=1',
+              ]
+            : []),
         ],
         {
           env: {
