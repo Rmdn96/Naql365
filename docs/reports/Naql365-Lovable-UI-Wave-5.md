@@ -2,7 +2,7 @@
 
 ## Current closeout — 17 October 2026
 
-Current decision: **LOVABLE UI MIGRATION — WAVE 5 PARTIAL — REMEDIATION REQUIRED** — local, hosted and visual gates are complete; the new delivery commit still requires its own exact-head Foundation CI. Application CI is not substituted for delivery CI.
+Current decision: **LOVABLE UI MIGRATION — WAVE 5 READY FOR OWNER REVIEW**. Local, hosted, visual, cleanup and test/evidence exact-head CI gates passed. Earlier PARTIAL/failed decisions below are historical.
 
 - Canonical branch: `feature/lovable-ui-experience-v2`; accepted Wave 4 baseline `2be540dd7527830bac655104f9871aae54ec16d9`. The preserved documentation commit `c5c3bd2a3711c9074ea230277c4ffb254a39f48e` remains in history.
 - **Application SHA:** `67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a`. Later commits change test/evidence/documentation only. See [application provenance](evidence/lovable-wave5-review/application-provenance.json).
@@ -23,7 +23,7 @@ Exactly seven application files changed from accepted Wave 4: `src/components/dr
 | Full local E2E                                | **60/60**, isolated output directory                                                                                                                                                                                                                           |
 | Final harness focused checks                  | Three matrix/renderer unit checks; lint, strict TypeScript and formatting PASS                                                                                                                                                                                 |
 | SQL/RLS/official generated types              | Application CI **39013193885 PASS**; local Docker unavailable, so no local Docker result claimed                                                                                                                                                               |
-| Independent-connection concurrency            | Same successful database CI ran Operations, Driver, tracking, payment, manual pricing and Guest suites; final delivery CI must repeat repository-required jobs                                                                                                 |
+| Independent-connection concurrency            | Same successful database CI ran Operations, Driver, tracking, payment, manual pricing and Guest suites; test/evidence CI 39022473555 repeated and passed all repository-required jobs                                                                          |
 | Real hosted Driver execution                  | **SA + EG, 2/2 PASS**: four Stops/two Trips per country, assignment/reassignment isolation, issues/private photo, actual POD reserve/upload/finalization, aggregate completion, private assets and signed-link expiry                                          |
 | Foreground location regression                | Actual browser publication and authorized Customer Realtime receipt; unrelated Customer receives none; reassigned Driver denied; terminal coordinates redacted. No background/ETA claim; unchanged Phase 5 heartbeat suite is not relabelled as newly executed |
 | Driver session                                | **1/1 PASS covering AR and EN**: password login, desktop/drawer destinations, public/Market navigation, direct login recognition, refresh, Secure/Lax/root cookies, expiry, membership suspension, role loss, logout and protected denial                      |
@@ -50,7 +50,7 @@ All 16 final shared-run deleted credentials were retried against normal Auth and
 
 ### Delivery CI and known limits
 
-Application Foundation CI [39013193885](https://github.com/Rmdn96/Naql365/actions/runs/39013193885) passed both jobs. The new test/evidence delivery must have its own exact-head Foundation CI; its final SHA/run is recorded in the owner handoff after completion. Historical application CI is not claimed for a new delivery commit. Local Docker unavailability, retained development dependency-risk scope, risk-based visual coverage and controlled-state simulation remain explicit limits.
+Test/evidence delivery **b1f8cf82f694a5740f48fb1786c47618b625b1a6** passed its own Foundation CI [39022473555](https://github.com/Rmdn96/Naql365/actions/runs/39022473555), both required jobs. See [exact test/evidence CI](evidence/lovable-wave5-review/test-evidence-ci.json). This documentation-only closeout is a descendant and changes no application or harness behavior; its own final delivery SHA and exact-head CI are recorded in the final owner handoff after verification. Neither evidence commit is the deployed application SHA. Application CI 39013193885 remains historical source evidence, not a substitute for delivery CI. Local Docker unavailability, retained development dependency-risk scope, risk-based visual coverage and controlled-state simulation remain explicit limits.
 
 No merge, main/Production/DNS/Hostinger change, new backend/Auth/permission/query authority, Commerce, migration 48 or Phase 8 work occurred.
 
@@ -199,3 +199,15 @@ No merge, main/Production/Hostinger/DNS/Commerce/migration 48/Phase 8 work was p
 ### Interrupted run G — preserved infrastructure checkpoint
 
 The runner process ended without a final suite result. The append-only index retained 214/288 valid captures. This attempt is **INTERRUPTED**, not a hosted business PASS. Its stale lock PID was proved absent before recovery. Recovery reused the existing runner’s exact scoped cleanup transaction with only the copied run-owned identity/organization ledger; it did not delete by email pattern or touch owner accounts. Independent readback proved all 13 Auth identities, their profiles/memberships/roles and isolated organization absent, and all 19 observed business entities absent. See `evidence/lovable-wave5-review/attempt-g-interruption.json`. Run H resumes missing captures without overwriting valid evidence.
+
+### Historical harness attempts C–F and session closeout H/I
+
+C failed in the loading renderer: Playwright's TSX transform produced __pw_type descriptors rejected by React Server Renderer. A test-only trusted-module adapter was reproduced without fixtures and covered by its own unit/browser check. D failed because pointer-driven preparation plus programmatic focus did not establish keyboard focus-visible modality; the harness now uses actual Tab/Shift+Tab before the unchanged focus assertion. Neither changed application source.
+
+E passed the Saudi journey (708,632ms), then the Egyptian test exceeded its original 900-second aggregate budget (900,448ms) while execution/capture work was still incomplete. Its suite remains FAILED, not PASS. The focused Wave 5 runner budgets 1,200 seconds per journey while keeping command/expect timeouts bounded. Capture inspection subsequently identified 64 off-viewport utility artifacts; their files and original hashes were archived explicitly.
+
+F failed a foreground ACTIVE presentation wait (302,733ms) after actual publication/Realtime had succeeded. Navigation reset the status while the unchanged location cadence deferred a stationary sample. Harness preparation now provides a distinct synthetic moving sample and avoids unnecessary same-route navigation; it respects the existing policy rather than changing application timing or authority. The later H journeys passed both countries and completed the 288-case matrix.
+
+H's full suite remains FAILED because its final legacy session selector matched the two intentional desktop/drawer identity links. Both execution journeys passed. The test-only repair checks both links and destinations instead of using a single-element strict locator. The isolated I session rerun passed AR/EN in 69,815ms, with independent cleanup. H's failed result is preserved in attempt-h-results.json; it was not relabelled.
+
+During the shared-business observer, one read-only CLI query failed with suppressed output. An identical bounded diagnostic then succeeded and observation resumed. The underlying transient cause is undetermined. The business suite passed 10/10; the independent observer ultimately verified 43 owned entities absent. This observer interruption is preserved separately from application/business results.

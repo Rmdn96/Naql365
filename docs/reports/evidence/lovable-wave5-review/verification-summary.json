@@ -55,7 +55,7 @@
     "migrations": 47,
     "migrationSubtree": "20ae191f7838e46c61a1ff3d92dd058483aad6ff"
   },
-  "pending": ["exact-head delivery CI"],
+  "pending": [],
   "historicalFailuresPreserved": true,
   "sharedHostedRegression": {
     "pass": 10,
@@ -69,5 +69,12 @@
     "storageBaselinePreserved": true,
     "temporaryOidcFileDisposed": true,
     "deletedCredentialReuseDenied": 16
-  }
+  },
+  "testEvidenceDelivery": {
+    "sha": "b1f8cf82f694a5740f48fb1786c47618b625b1a6",
+    "ci": 39022473555,
+    "result": "PASS",
+    "requiredJobs": 2
+  },
+  "finalDocumentationDelivery": "Documentation-only descendant; its own SHA and CI are recorded in the final verified handoff"
 }
