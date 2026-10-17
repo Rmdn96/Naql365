@@ -1,0 +1,330 @@
+/* Wave 5: adapted visual concepts only. Existing Driver authority and commands own state. */
+html[data-theme] .driver-shell {
+  --navy: var(--theme-text-primary);
+  --white: var(--theme-surface);
+  --background: var(--theme-background);
+  --muted: var(--theme-text-secondary);
+  --border: var(--theme-border);
+  --link: var(--theme-brand-hover);
+  --error: var(--theme-destructive);
+  --success: var(--theme-success);
+  max-width: 1120px;
+  color: var(--theme-text-primary);
+  display: grid;
+  gap: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.driver-shell :is(section, article, form, fieldset, .field) {
+  min-width: 0;
+}
+.driver-shell :is(p, h1, h2, h3, dd, a, summary) {
+  overflow-wrap: anywhere;
+}
+.driver-shell :is(h1, h2, h3, p) {
+  margin-block: 0;
+}
+.driver-shell h1 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+.driver-shell h2 {
+  font-size: 1.125rem;
+}
+.driver-shell h3 {
+  font-size: 1rem;
+}
+.driver-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid var(--theme-border);
+  padding-block-end: 16px;
+}
+.driver-shell .driver-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+.driver-shell .driver-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: var(--theme-text-secondary);
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+.driver-shell .driver-nav a[aria-current='page'] {
+  color: var(--theme-text-primary);
+  background: var(--theme-surface);
+  border-color: var(--theme-border);
+  box-shadow: inset 0 -3px var(--theme-brand);
+  font-weight: 600;
+}
+.driver-page-heading {
+  display: grid;
+  gap: 8px;
+}
+.driver-page-heading > p {
+  color: var(--theme-text-secondary);
+  line-height: 1.9;
+}
+.driver-shell .driver-safety {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--theme-warning);
+  border-radius: 6px;
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  font-size: 0.875rem;
+}
+.driver-safety > span {
+  display: inline-grid;
+  place-items: center;
+  border: 2px solid var(--theme-warning);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.driver-trip-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  align-items: start;
+}
+.driver-shell .driver-trip-card {
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+  border-radius: 8px;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  box-shadow: var(--theme-shadow);
+}
+.driver-trip-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.driver-trip-heading a {
+  color: var(--theme-text-primary);
+}
+.driver-facts {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.driver-facts dt {
+  color: var(--theme-text-secondary);
+  font-size: 0.8125rem;
+  margin-block-end: 4px;
+}
+.driver-facts dd {
+  margin: 0;
+  line-height: 1.8;
+}
+.driver-next-stop {
+  display: grid;
+  gap: 6px;
+  border-inline-start: 3px solid var(--theme-accent);
+  padding: 12px;
+  background: var(--theme-surface-muted);
+  border-radius: 4px;
+}
+.driver-next-stop > span {
+  color: var(--theme-text-secondary);
+  font-size: 0.8125rem;
+}
+.driver-shell .driver-focus {
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  border-inline-start: 4px solid var(--theme-brand);
+  border-radius: 8px;
+  padding: 20px;
+  display: grid;
+  gap: 12px;
+  box-shadow: none;
+}
+.driver-shell .eyebrow {
+  color: var(--theme-text-secondary);
+}
+.driver-shell .button {
+  min-height: 48px;
+  border-radius: 6px;
+  white-space: normal;
+  max-width: 100%;
+  text-align: center;
+}
+.driver-shell .button--primary {
+  background: var(--theme-brand-hover);
+  color: var(--theme-on-brand);
+  border-color: var(--theme-brand-hover);
+}
+.driver-shell .button--secondary {
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border);
+}
+.driver-command > .button--primary,
+.driver-form > .button--primary {
+  min-height: 52px;
+  width: 100%;
+  font-weight: 600;
+}
+.driver-shell .badge {
+  background: var(--theme-surface-muted);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  max-width: 100%;
+  white-space: normal;
+  line-height: 1.8;
+}
+.driver-shell .driver-stops {
+  display: grid;
+  gap: 0;
+  padding-inline-start: 24px;
+  margin: 0;
+  list-style: decimal;
+}
+.driver-shell .driver-stops > li {
+  position: relative;
+  margin-block-end: 16px;
+  padding: 16px;
+  display: list-item;
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+}
+.driver-stops > li::marker {
+  color: var(--theme-text-secondary);
+  font-weight: 600;
+}
+.driver-shell .driver-stops > li[data-current='true'] {
+  border-inline-start: 3px solid var(--theme-brand);
+}
+.driver-stops > li > :not(:first-child) {
+  margin-block-start: 10px;
+}
+.driver-shell :is(.driver-issues, .driver-issue-form, .driver-pod, .driver-empty, section.card) {
+  padding: 20px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-surface);
+  border-radius: 8px;
+}
+.driver-issues {
+  display: grid;
+  gap: 12px;
+}
+.driver-issues article {
+  padding-block: 12px;
+  border-block-start: 1px solid var(--theme-border);
+  display: grid;
+  gap: 8px;
+}
+.driver-issue-form summary {
+  min-height: 48px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.driver-issue-form[open] summary,
+.driver-pod > h2 {
+  margin-block-end: 16px;
+}
+.driver-form {
+  max-width: 680px;
+}
+.driver-shell fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.driver-shell :is(input:not([type='checkbox']), select, textarea) {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-surface-muted);
+  color: var(--theme-text-primary);
+  font: inherit;
+}
+.driver-shell input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--theme-brand-hover);
+  margin-inline-end: 8px;
+  vertical-align: middle;
+}
+.driver-shell input[type='file'] {
+  font-size: 0.8125rem;
+}
+.driver-shell :is(small, time) {
+  color: var(--theme-text-secondary);
+  line-height: 1.8;
+}
+.driver-shell .alert {
+  color: var(--theme-text-primary);
+  background: var(--theme-surface-muted);
+  border-color: var(--theme-brand);
+  border-radius: 6px;
+  overflow-wrap: anywhere;
+}
+.driver-shell .alert--error {
+  border-color: var(--theme-destructive);
+}
+.driver-shell .alert--success {
+  border-color: var(--theme-success);
+}
+.driver-shell .driver-signature {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 3;
+  background: #fff;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+}
+.driver-shell :focus-visible {
+  outline: 3px solid var(--theme-focus);
+  outline-offset: 3px;
+}
+.driver-empty {
+  color: var(--theme-text-secondary);
+  text-align: center;
+}
+@media (max-width: 600px) {
+  html[data-theme] .driver-shell {
+    gap: 16px;
+    padding-inline: 12px;
+  }
+  .driver-shell .driver-nav a {
+    padding-inline: 10px;
+    font-size: 0.875rem;
+  }
+  .driver-toolbar {
+    align-items: start;
+    gap: 8px;
+  }
+  .driver-toolbar form {
+    margin-inline-start: auto;
+  }
+  .driver-shell
+    :is(.driver-trip-card, .driver-focus, .driver-issues, .driver-issue-form, .driver-pod) {
+    padding: 16px;
+  }
+  .driver-shell .driver-stops {
+    padding-inline-start: 22px;
+  }
+}

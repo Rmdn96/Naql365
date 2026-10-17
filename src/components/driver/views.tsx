@@ -17,7 +17,7 @@ export function DriverNavigation({
 }) {
   const t = driverDictionary(locale);
   return (
-    <>
+    <div className="driver-toolbar">
       <nav className="driver-nav" aria-label={t.title}>
         {driverViews.map((v) => (
           <Link
@@ -38,7 +38,7 @@ export function DriverNavigation({
       <form action={driverLogout.bind(null, locale)}>
         <Button variant="secondary">{dictionary(locale).logout}</Button>
       </form>
-    </>
+    </div>
   );
 }
 export function driverTime(value: string | null, trip: DriverTrip, locale: Locale) {
@@ -55,33 +55,57 @@ export function DriverTripCard({ trip, locale }: { trip: DriverTrip; locale: Loc
     ot = operationsDictionary(locale),
     next = trip.stops.find((s) => s.status !== 'COMPLETED');
   return (
-    <Card>
-      <h2>
-        <Link href={`/${locale}/driver/trips/${trip.id}`}>{trip.reference}</Link>
-      </h2>
-      <Badge>{operationalStatus(trip.status, locale)}</Badge>
-      <p>
-        {t.market}: {locale === 'ar' ? trip.market.nameAr : trip.market.nameEn}
-      </p>
-      <p>
-        {t.schedule}: {driverTime(trip.plannedStart, trip, locale)}
-      </p>
-      <p>
-        {t.vehicle}: <bdi>{trip.vehicle.identifier}</bdi>
-      </p>
-      <p>
-        {t.progress}: {trip.stops.filter((s) => s.status === 'COMPLETED').length} /{' '}
-        {trip.stops.length}
-      </p>
+    <Card className="driver-trip-card">
+      <header className="driver-trip-heading">
+        <h2>
+          <Link href={`/${locale}/driver/trips/${trip.id}`}>
+            <bdi>{trip.reference}</bdi>
+          </Link>
+        </h2>
+        <Badge>{operationalStatus(trip.status, locale)}</Badge>
+      </header>
+      <dl className="driver-facts">
+        <div>
+          <dt>{t.market}</dt>
+          <dd>{locale === 'ar' ? trip.market.nameAr : trip.market.nameEn}</dd>
+        </div>
+        <div>
+          <dt>{t.schedule}</dt>
+          <dd>{driverTime(trip.plannedStart, trip, locale)}</dd>
+        </div>
+        <div>
+          <dt>{t.vehicle}</dt>
+          <dd>
+            <bdi>{trip.vehicle.identifier}</bdi>
+          </dd>
+        </div>
+        <div>
+          <dt>{t.progress}</dt>
+          <dd>
+            {trip.stops.filter((s) => s.status === 'COMPLETED').length} / {trip.stops.length}
+          </dd>
+        </div>
+      </dl>
       {next && (
-        <p>
-          {next.kind === 'PICKUP' ? ot.pickup : ot.delivery}: {next.address}
-        </p>
+        <div className="driver-next-stop">
+          <span>{t.nextStop}</span>
+          <strong>{next.kind === 'PICKUP' ? ot.pickup : ot.delivery}</strong>
+          {next.address && <p>{next.address}</p>}
+        </div>
       )}
       {trip.attention && <p role="status">{t.attention}</p>}
       <Link className="button button--secondary" href={`/${locale}/driver/trips/${trip.id}`}>
         {t.open}
       </Link>
     </Card>
+  );
+}
+
+export function DriverSafety({ locale }: { locale: Locale }) {
+  return (
+    <p className="driver-safety" role="note">
+      <span aria-hidden="true">!</span>
+      {driverDictionary(locale).safety}
+    </p>
   );
 }

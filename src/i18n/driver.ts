@@ -1,6 +1,8 @@
 import type { Locale } from './config';
 const ar = {
   title: 'بوابة السائق',
+  safety: 'تفاعل مع التطبيق فقط عند التوقف الآمن.',
+  nextStop: 'المحطة التالية',
   startTrip: 'بدء الرحلة',
   login: 'دخول السائق الداخلي',
   loginHelp:
@@ -66,6 +68,8 @@ const ar = {
 };
 const en: typeof ar = {
   title: 'Driver Portal',
+  safety: 'Interact with the app only when safely stopped.',
+  nextStop: 'Next stop',
   startTrip: 'Start Trip',
   login: 'Internal Driver sign in',
   loginHelp:

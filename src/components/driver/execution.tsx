@@ -153,7 +153,7 @@ export function DriverExecution({
   if (trip.attention) return <Alert>{t.attention}</Alert>;
   if (!action) return null;
   return (
-    <section className="stack">
+    <section className="stack driver-command" aria-busy={feedback.busy}>
       {action === 'arrive' && location.field}
       <Button
         disabled={!feedback.ready || feedback.busy || (action === 'dispatch' && !executionAllowed)}
@@ -193,10 +193,11 @@ export function DriverIssueForm({ trip, locale }: { trip: DriverTrip; locale: Lo
     issueId?: string;
   } | null>(null);
   return (
-    <details>
+    <details className="driver-issue-form">
       <summary>{t.issue}</summary>
       <form
-        className="stack"
+        className="stack driver-form"
+        aria-busy={feedback.busy}
         onSubmit={(e) => {
           e.preventDefault();
           const form = new FormData(e.currentTarget);
@@ -305,11 +306,12 @@ export function DriverPodForm({ trip, locale }: { trip: DriverTrip; locale: Loca
     ink.current = true;
   }
   return (
-    <section>
+    <section className="driver-pod">
       <h2>{t.pod}</h2>
       {trip.pod && <Alert>{t.podPending}</Alert>}
       <form
-        className="stack"
+        className="stack driver-form"
+        aria-busy={feedback.busy}
         onSubmit={(event) => {
           event.preventDefault();
           const form = new FormData(event.currentTarget);

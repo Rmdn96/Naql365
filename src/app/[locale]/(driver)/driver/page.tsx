@@ -3,7 +3,7 @@ import { isLocale } from '@/i18n/config';
 import Link from 'next/link';
 import { getDriverTrips } from '@/infrastructure/driver/service';
 import { DriverAccessError } from '@/components/driver/access';
-import { DriverTripCard, DriverNavigation } from '@/components/driver/views';
+import { DriverTripCard, DriverNavigation, DriverSafety } from '@/components/driver/views';
 import { driverDictionary } from '@/i18n/driver';
 import { driverViews } from '@/domain/driver/model';
 export const dynamic = 'force-dynamic';
@@ -31,10 +31,18 @@ export default async function Page({
   return (
     <div className="container page driver-shell">
       <DriverNavigation locale={locale} view={view} />
-      <h1>{t[view]}</h1>
-      <p>{t.online}</p>
-      {trips.length === 0 && <p role="status">{t.empty}</p>}
-      <div className="stack">
+      <DriverSafety locale={locale} />
+      <header className="driver-page-heading">
+        <p className="eyebrow">{t.title}</p>
+        <h1>{t[view]}</h1>
+        <p>{t.online}</p>
+      </header>
+      {trips.length === 0 && (
+        <div className="driver-empty" role="status">
+          <p>{t.empty}</p>
+        </div>
+      )}
+      <div className="driver-trip-grid">
         {trips.map((trip) => (
           <DriverTripCard key={trip.id} trip={trip} locale={locale} />
         ))}
