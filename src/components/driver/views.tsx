@@ -82,7 +82,9 @@ export function DriverTripCard({ trip, locale }: { trip: DriverTrip; locale: Loc
         <div>
           <dt>{t.progress}</dt>
           <dd>
-            {trip.stops.filter((s) => s.status === 'COMPLETED').length} / {trip.stops.length}
+            <bdi dir="ltr">
+              {trip.stops.filter((s) => s.status === 'COMPLETED').length} / {trip.stops.length}
+            </bdi>
           </dd>
         </div>
       </dl>

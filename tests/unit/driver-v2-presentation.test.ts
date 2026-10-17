@@ -57,6 +57,7 @@ for (const locale of ['ar', 'en'] as const) {
     expect(html).toContain(driverDictionary(locale).unscheduled);
     expect(html).toContain(`href="/${locale}/driver/trips/${trip.id}"`);
     expect(html).toContain('<dl');
+    expect(html).toContain('<bdi dir="ltr">1 / 2</bdi>');
     expect(html).not.toMatch(/ETA|localStorage|latitude|longitude/);
   });
   it(`${locale} does not reconstruct redacted facts for completed history`, () => {
