@@ -1,0 +1,224 @@
+{
+  "preparedDate": "2026-10-18",
+  "acceptedWave6c": "0f5614199ab018fbd69fdde2773e7d514945186a",
+  "acceptedApplication": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "verificationMode": "Static committed-source assertions only; no SQL/live database read/reconstruction",
+  "migrationCount": 47,
+  "migrationTree": "20ae191f7838e46c61a1ff3d92dd058483aad6ff",
+  "staticClaims": {
+    "marketOrgIdUnique": true,
+    "marketOrgIdCurrencyUnique": true,
+    "marketCountryPerOrgUnique": true,
+    "membershipOrgProfilePK": true,
+    "customerOrgIdUnique": true,
+    "guestCustomerIdentityKind": true,
+    "rolePermissionsHasNoOrgColumn": true
+  },
+  "existingUiPortMapBlob": "a5b55a9c0322a568056a5e84ef3dfd134813f1fe",
+  "existingUiPortMapUnchanged": true,
+  "lovable": {
+    "acceptedRevision": "64f7e4dc9a355863ce3258f24e36851970dad8b9",
+    "requiredFiles": 9,
+    "filesRead": 0,
+    "status": "BLOCKED_SOURCE_ACCESS"
+  },
+  "proposal": {
+    "previousTables": 11,
+    "recommendedTables": 10,
+    "deferredTable": "store_files",
+    "permissionDefinitions": 7,
+    "automaticRoleGrants": 0,
+    "publicRpcFunctions": 7,
+    "catalogTestCases": 42
+  },
+  "migrations": [
+    {
+      "name": "20260909000100_identity_and_domain.sql",
+      "gitBlob": "e63689e8002311cedab2806fda911f2d29084344"
+    },
+    {
+      "name": "20260909000200_private_storage.sql",
+      "gitBlob": "4af1fa11fcb2db42d43625b05410f26618dbf03b"
+    },
+    {
+      "name": "20260909000300_role_integrity_indexes.sql",
+      "gitBlob": "e16bc0c7aeee25d4a4acdd653b4e11091e38e73b"
+    },
+    {
+      "name": "20260910000100_customer_request_intake.sql",
+      "gitBlob": "b91bbcf085ada0b4ac3ec3589b9bdd82ca226905"
+    },
+    {
+      "name": "20260910000200_storage_upload_completion_guard.sql",
+      "gitBlob": "9c186674b58f2319b767805a453aa7cade05561e"
+    },
+    {
+      "name": "20260910000300_request_revision_conflict.sql",
+      "gitBlob": "9fc23cd00ef41c1e554b09018ba2cc3d9069e112"
+    },
+    {
+      "name": "20260910000400_pricing_quote_schema.sql",
+      "gitBlob": "d63bb390a8a73211f509efb9a31f231e88a944b8"
+    },
+    {
+      "name": "20260910000500_pricing_quote_commands.sql",
+      "gitBlob": "2f9287382fe8e16e920c32be2509ab8dd401e20c"
+    },
+    {
+      "name": "20260910000600_pricing_quote_rls.sql",
+      "gitBlob": "9d22c84967e3020d8cfa81d9e369e72a15d7a14a"
+    },
+    {
+      "name": "20260910000700_persist_quote_expiry.sql",
+      "gitBlob": "65d23b86f0bc9431086cfbba61915e67e36128c9"
+    },
+    {
+      "name": "20260912000100_operations_schema.sql",
+      "gitBlob": "4869ddc301a60327c0484afc3529a4bb8d16305f"
+    },
+    {
+      "name": "20260912000200_operations_commands.sql",
+      "gitBlob": "a8681c1a073b84ca561cdc4f04a25ce10dd4e06b"
+    },
+    {
+      "name": "20260912000300_pod_and_tracking.sql",
+      "gitBlob": "96db736e2e9207aba1b4bf4ca193d09bf1e02bd0"
+    },
+    {
+      "name": "20260913000100_market_foundation.sql",
+      "gitBlob": "21aa96e6642b5aab99d6a8923b2c87fbbc6ea6f2"
+    },
+    {
+      "name": "20260913000200_market_commands.sql",
+      "gitBlob": "8c3ea90d95457c2b1ca5053033316caccbb3b82c"
+    },
+    {
+      "name": "20260913000300_market_snapshot_guards.sql",
+      "gitBlob": "b2b972ce6e1b983e1ef41df86cd72526118c4259"
+    },
+    {
+      "name": "20260913000400_market_relationship_metadata.sql",
+      "gitBlob": "70f48d776ca13e62dd52161ede8ea262e4ff55b3"
+    },
+    {
+      "name": "20260913000500_market_tracking_projection.sql",
+      "gitBlob": "e35dec3f019886411f1208617f42696959c8590f"
+    },
+    {
+      "name": "20260913000600_initial_market_geography.sql",
+      "gitBlob": "58f67b0e91cf323af6230443edc101c0356a6bdd"
+    },
+    {
+      "name": "20260914000100_internal_driver_authority.sql",
+      "gitBlob": "18e4f09619e1fed3f04a5ff354a216653725dd3d"
+    },
+    {
+      "name": "20260914000200_shared_driver_execution.sql",
+      "gitBlob": "d594355c89ddd7b8e0e6da9a39119f216a5b64fb"
+    },
+    {
+      "name": "20260914000300_driver_projections_and_issues.sql",
+      "gitBlob": "c5beba6ce42db7c11e183f3a754b536568799eb5"
+    },
+    {
+      "name": "20260914000400_driver_private_evidence.sql",
+      "gitBlob": "2a85f6ed8ef58ff4a19a1eb16943f0d7e7757114"
+    },
+    {
+      "name": "20260914000500_bounded_driver_projection.sql",
+      "gitBlob": "5ef952646670f2e4a48a2eb5fa6ce902a01f06b5"
+    },
+    {
+      "name": "20260915000100_completed_driver_assignment.sql",
+      "gitBlob": "c1c92dae50d3acb022a95c3f6eec6c392c6f255e"
+    },
+    {
+      "name": "20260919000100_live_tracking_authority.sql",
+      "gitBlob": "026091df0e893eafa096bbb37abeba7a439a2e15"
+    },
+    {
+      "name": "20260919000200_tracking_projection_notifications.sql",
+      "gitBlob": "247485e8e270e0de7a99530be3cdcd97815cb0d0"
+    },
+    {
+      "name": "20260921000100_payment_finance_schema.sql",
+      "gitBlob": "46673d499e0fbf002c42916d7dd2e17b7b48157c"
+    },
+    {
+      "name": "20260921000200_payment_commands.sql",
+      "gitBlob": "9db5c304b9b47e8e842c9d64a444130d5ada31ee"
+    },
+    {
+      "name": "20260921000300_payment_storage_projections.sql",
+      "gitBlob": "57562f18b987792bed69637f326e1325d2175237"
+    },
+    {
+      "name": "20260921000400_bank_configuration_notifications.sql",
+      "gitBlob": "79cc553a9abd866fbbd032a45ee7c12977001614"
+    },
+    {
+      "name": "20260926000100_guest_capability.sql",
+      "gitBlob": "0c743868f1b7769285a436d70bec4e997f6ea301"
+    },
+    {
+      "name": "20260926000200_guest_request_authority.sql",
+      "gitBlob": "7d9710d14e3aa5eeb632546686c1728b0c6f3101"
+    },
+    {
+      "name": "20260926000300_guest_request_projection.sql",
+      "gitBlob": "29eb450e4bd110016ca6fade8544c5275929f6e6"
+    },
+    {
+      "name": "20260926000400_guest_request_files.sql",
+      "gitBlob": "4628ddd1afd7695773c9e231d9f7ba8f00ba5259"
+    },
+    {
+      "name": "20260926000500_guest_quotes.sql",
+      "gitBlob": "f1d12e32d1fa893e8d1cd835fc698ed9e9555856"
+    },
+    {
+      "name": "20260926000600_guest_payment_authority.sql",
+      "gitBlob": "f439d64dc52a1f91be6026b37057980fd15115cd"
+    },
+    {
+      "name": "20260926000700_guest_payment_storage.sql",
+      "gitBlob": "b096172e1a222a4254b0e37daa17d3644c8f8f78"
+    },
+    {
+      "name": "20260927000100_guest_link_management.sql",
+      "gitBlob": "6b6d16d518acd724537fa54fd00333a0f5918465"
+    },
+    {
+      "name": "20260927000200_guest_creation_replay.sql",
+      "gitBlob": "04ee78e1f54a3e6ac132cc74fd65be9d8872c63f"
+    },
+    {
+      "name": "20260927000300_guest_exchange_budget.sql",
+      "gitBlob": "05fdd50125cf6047e097df64dffa1efb0d0f35df"
+    },
+    {
+      "name": "20260927000400_transfer_destinations.sql",
+      "gitBlob": "7326780474ef616a0651a27beb3b5b3d768e6a50"
+    },
+    {
+      "name": "20260927000500_public_route_catalogue.sql",
+      "gitBlob": "74da18f060fcdb630c05fd22ccc587dfdb89dfc2"
+    },
+    {
+      "name": "20260928000100_mvp_funnel_counts.sql",
+      "gitBlob": "450f1ac74f596de70bb83ba1495ec19c3f714d21"
+    },
+    {
+      "name": "20261006000100_deployment_attestation.sql",
+      "gitBlob": "0332fd7edb836fa462f70338e52a5990f8149b8a"
+    },
+    {
+      "name": "20261007000100_manual_pricing_directional_coverage.sql",
+      "gitBlob": "a2c62fea3610f0b9c6bcb89da6faace09655ffe6"
+    },
+    {
+      "name": "20261012000100_support_request_queue.sql",
+      "gitBlob": "90b26d70a38494cbec11a26483e135c7888dbf55"
+    }
+  ]
+}
