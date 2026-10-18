@@ -1,8 +1,10 @@
 # Governance decision register — pending explicit owner acceptance
 
-The local recovery strategy and conditional encrypted Staging export were approved.
-That approval does not approve the decisions below, role grants, Store activation
-or Migration 48 application. No binding legal retention period is invented.
+The local recovery strategy remains approved. Prior conditional encrypted Staging
+export approval is historical; the latest instruction requires new explicit
+approval before any live customer-data export. None of these instructions approves
+the decisions below, role grants, Store activation or Migration 48 application.
+No binding legal retention period is invented.
 
 | ID  | Decision proposed for owner acceptance                                                                                       | Current enforcement / evidence                                                                                       | Required decision                                                                                                                                           |
 | --- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |

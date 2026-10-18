@@ -1,0 +1,236 @@
+{
+  "at": "2026-10-18T15:42:17.460Z",
+  "project": {
+    "id": "zuvyfeflkzlciuaauxba",
+    "name": "naql365-staging",
+    "organization_id": "hjfxhwznfgjgywsdsqzn",
+    "region": "eu-central-1",
+    "status": "ACTIVE_HEALTHY"
+  },
+  "migrationCount": 47,
+  "migrations": [
+    {
+      "name": "identity_and_domain",
+      "version": "20260909000100"
+    },
+    {
+      "name": "private_storage",
+      "version": "20260909000200"
+    },
+    {
+      "name": "role_integrity_indexes",
+      "version": "20260909000300"
+    },
+    {
+      "name": "customer_request_intake",
+      "version": "20260910000100"
+    },
+    {
+      "name": "storage_upload_completion_guard",
+      "version": "20260910000200"
+    },
+    {
+      "name": "request_revision_conflict",
+      "version": "20260910000300"
+    },
+    {
+      "name": "pricing_quote_schema",
+      "version": "20260910000400"
+    },
+    {
+      "name": "pricing_quote_commands",
+      "version": "20260910000500"
+    },
+    {
+      "name": "pricing_quote_rls",
+      "version": "20260910000600"
+    },
+    {
+      "name": "persist_quote_expiry",
+      "version": "20260910000700"
+    },
+    {
+      "name": "operations_schema",
+      "version": "20260912000100"
+    },
+    {
+      "name": "operations_commands",
+      "version": "20260912000200"
+    },
+    {
+      "name": "pod_and_tracking",
+      "version": "20260912000300"
+    },
+    {
+      "name": "market_foundation",
+      "version": "20260913000100"
+    },
+    {
+      "name": "market_commands",
+      "version": "20260913000200"
+    },
+    {
+      "name": "market_snapshot_guards",
+      "version": "20260913000300"
+    },
+    {
+      "name": "market_relationship_metadata",
+      "version": "20260913000400"
+    },
+    {
+      "name": "market_tracking_projection",
+      "version": "20260913000500"
+    },
+    {
+      "name": "initial_market_geography",
+      "version": "20260913000600"
+    },
+    {
+      "name": "internal_driver_authority",
+      "version": "20260914000100"
+    },
+    {
+      "name": "shared_driver_execution",
+      "version": "20260914000200"
+    },
+    {
+      "name": "driver_projections_and_issues",
+      "version": "20260914000300"
+    },
+    {
+      "name": "driver_private_evidence",
+      "version": "20260914000400"
+    },
+    {
+      "name": "bounded_driver_projection",
+      "version": "20260914000500"
+    },
+    {
+      "name": "completed_driver_assignment",
+      "version": "20260915000100"
+    },
+    {
+      "name": "live_tracking_authority",
+      "version": "20260919000100"
+    },
+    {
+      "name": "tracking_projection_notifications",
+      "version": "20260919000200"
+    },
+    {
+      "name": "payment_finance_schema",
+      "version": "20260921000100"
+    },
+    {
+      "name": "payment_commands",
+      "version": "20260921000200"
+    },
+    {
+      "name": "payment_storage_projections",
+      "version": "20260921000300"
+    },
+    {
+      "name": "bank_configuration_notifications",
+      "version": "20260921000400"
+    },
+    {
+      "name": "guest_capability",
+      "version": "20260926000100"
+    },
+    {
+      "name": "guest_request_authority",
+      "version": "20260926000200"
+    },
+    {
+      "name": "guest_request_projection",
+      "version": "20260926000300"
+    },
+    {
+      "name": "guest_request_files",
+      "version": "20260926000400"
+    },
+    {
+      "name": "guest_quotes",
+      "version": "20260926000500"
+    },
+    {
+      "name": "guest_payment_authority",
+      "version": "20260926000600"
+    },
+    {
+      "name": "guest_payment_storage",
+      "version": "20260926000700"
+    },
+    {
+      "name": "guest_link_management",
+      "version": "20260927000100"
+    },
+    {
+      "name": "guest_creation_replay",
+      "version": "20260927000200"
+    },
+    {
+      "name": "guest_exchange_budget",
+      "version": "20260927000300"
+    },
+    {
+      "name": "transfer_destinations",
+      "version": "20260927000400"
+    },
+    {
+      "name": "public_route_catalogue",
+      "version": "20260927000500"
+    },
+    {
+      "name": "mvp_funnel_counts",
+      "version": "20260928000100"
+    },
+    {
+      "name": "deployment_attestation",
+      "version": "20261006000100"
+    },
+    {
+      "name": "manual_pricing_directional_coverage",
+      "version": "20261007000100"
+    },
+    {
+      "name": "support_request_queue",
+      "version": "20261012000100"
+    }
+  ],
+  "storeRelations": 0,
+  "storeFunctions": 0,
+  "storePermissions": [],
+  "backups": {
+    "backups": null,
+    "physical_backup_data": {},
+    "pitr_enabled": false,
+    "region": "eu-central-1",
+    "walg_enabled": true
+  },
+  "drift": {
+    "objects": {
+      "expected": 77,
+      "live": 77,
+      "missing": [],
+      "extra": [],
+      "changed": []
+    },
+    "functions": {
+      "expected": 138,
+      "live": 138,
+      "missing": [],
+      "extra": [],
+      "changed": []
+    },
+    "policies": {
+      "expected": 92,
+      "live": 92,
+      "missing": [],
+      "extra": [],
+      "changed": []
+    }
+  },
+  "currentLiveExportAuthorization": "NOT_AUTHORIZED",
+  "inspection": "Read-only metadata only; no customer data export"
+}

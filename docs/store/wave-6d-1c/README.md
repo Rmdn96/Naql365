@@ -3,8 +3,9 @@
 **STORE WAVE 6D-1C — READY FOR OWNER REVIEW**
 
 **Migration application recommendation: NO-GO.** The local synthetic recovery
-drill passed. The owner subsequently approved the bounded encrypted Staging export,
-but no live data export has occurred: verified TLS connectivity remains blocked.
+drill passed. The latest owner instruction does not authorize exporting actual
+Staging customer data. No live data export has occurred; the earlier verified TLS
+connectivity blocker also remains unresolved.
 Migration 48 requires a new, separate apply authorization even after recovery passes.
 
 ## Baseline and scope
@@ -78,13 +79,16 @@ increase or assertion removal was used. Final data and security comparisons pass
 See the [recovery runbook](RECOVERY-RUNBOOK.md) and
 [governance decision register](GOVERNANCE-DECISIONS.md).
 
-The owner approved encrypted export only after the synthetic prerequisites passed.
-Those prerequisites now pass. A further owner action is required to supply the
-public CA certificate downloaded from the exact Staging project's Database Settings.
-Then retry the bounded read-only session-pooler connection with `verify-full`.
+The prior conditional export approval is preserved as historical evidence in the
+original evidence index. The latest instruction supersedes it for current work:
+obtain a new explicit bounded export approval before initiating any live export.
+The synthetic prerequisites already pass and were not rerun for this documentation
+refresh. A further owner action is required to supply the public CA certificate
+downloaded from the exact Staging project's Database Settings before any future
+verified session-pooler access. Retain `verify-full`.
 Do not downgrade TLS, reset credentials, create a login role or alter enforcement.
 
-After connectivity succeeds, verify size/capacity, take a consistent application
+Only after renewed export approval and verified connectivity, verify size/capacity, take a consistent application
 backup, restore it locally under the approved scope and measure the actual result.
 Do not claim that these pending actions have happened. Key custody, Storage coverage
 and governance still need explicit decisions. The source migration stays inert.

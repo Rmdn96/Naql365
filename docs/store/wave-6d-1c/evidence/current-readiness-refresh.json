@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-18T15:42:49.673Z",
+  "currentExportAuthorization": "NOT_AUTHORIZED_BY_LATEST_INSTRUCTION",
+  "historicalSyntheticStatus": "PASS",
+  "syntheticRerun": false,
+  "encryptedSyntheticArchiveHashValid": true,
+  "protectedKeyPresent": true,
+  "ownedContainersAndVolumesStillAbsent": true,
+  "liveExportStarted": false,
+  "migrationApplied": false
+}

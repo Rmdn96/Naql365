@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-18T15:43:19.577Z",
+  "acceptedImplementation": "96eb4e9047025b4cb9065e00435e6ac167063b24",
+  "priorRecoveryDelivery": "fe6ce53367b67643dc277bd3ce13bce57a8c2830",
+  "currentLiveExportAuthorization": "NOT_AUTHORIZED",
+  "files": [
+    {
+      "name": "README.md",
+      "sha256": "776a68f2df4ef5f4ed75c9c0e73fd6f47386e61e6443cff25350c37ecc32a73c"
+    },
+    {
+      "name": "RECOVERY-RUNBOOK.md",
+      "sha256": "018e815cec8a16db4a2c7c538365114199ff8d8c78b6c487f1a455f851d1797f"
+    },
+    {
+      "name": "GOVERNANCE-DECISIONS.md",
+      "sha256": "f2ab5f579e6c06212dd866c28c97cd17020fe9f3275091c73c677e464b1b1f16"
+    },
+    {
+      "name": "evidence/current-readiness-refresh.json",
+      "sha256": "0861673d1f961d748a5f93c44c5fbf49c88181c4791a27fa036ad29a8726e0d4"
+    },
+    {
+      "name": "evidence/current-staging-preflight.json",
+      "sha256": "2c934b0b2bbded8a1bfe7222802fe3662b7fdb4eb0d8f58ef7975f62c4e6722e"
+    }
+  ]
+}

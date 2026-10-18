@@ -1,7 +1,8 @@
 # Local recovery runbook — approval-gated Staging backup
 
-Status: synthetic tooling validated; live export approved but blocked before data
-transfer. No cloud restore is authorized. Migration 48 apply is a separate decision.
+Status: synthetic tooling validated; live customer-data export is not authorized
+under the latest instruction. Earlier conditional approval is historical only.
+No cloud restore is authorized. Migration 48 apply is a separate decision.
 
 ## Identity, isolation and responsibility
 
@@ -22,8 +23,9 @@ If the required person or resource is unavailable, stop before export.
    and SHA-256; verify that no migration execution is part of the recovery command.
 2. Read official project metadata, migration ledger, application schema/ACL inventory
    and Storage metadata scope. Require the approved project and 47-version baseline.
-3. Require the owner's bounded customer-data export approval. It is now recorded,
-   conditional on the successful synthetic drill and secure local storage.
+3. Require a new explicit bounded customer-data export approval. The latest owner
+   instruction supersedes the prior conditional approval; synthetic success and
+   secure local storage do not themselves authorize live export.
 4. Obtain the project's public CA through the official Dashboard. Use the official
    linked session pooler when direct IPv6 connectivity is unavailable. Verify the
    exact project-scoped database user and session port in memory without printing
