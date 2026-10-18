@@ -1,0 +1,47 @@
+{
+  "at": "2026-10-18T14:44:44.500Z",
+  "acceptedSource": "96eb4e9047025b4cb9065e00435e6ac167063b24",
+  "ownerLiveExportApproval": "Explicitly received after initial request; conditional synthetic prerequisites passed; no export has started",
+  "files": [
+    {
+      "name": "cli-backup-capability.json",
+      "sha256": "2346a04ad1b45de543d9be457277cf43046e791b359f84b93d6dc1e7300e8c80"
+    },
+    {
+      "name": "independent-cleanup.json",
+      "sha256": "7c74649dcdb5aec5ff1e03c4112f3a50892ab453d588791e12c6b35a75e3068e"
+    },
+    {
+      "name": "independent-local-resource-inventory.json",
+      "sha256": "23c5bf074d5fd9eb96a924fe12543f80183a9a34dc103a93aece1ab39355dd0e"
+    },
+    {
+      "name": "live-connection-preflight.json",
+      "sha256": "97b1d5e5719d6542d3aa9f8980f855cde389f4f2bd0ebe7ec1317162bee95b94"
+    },
+    {
+      "name": "live-pooler-preflight.json",
+      "sha256": "1828730dd59ee582a2160ebcf72db9cc049826c21b2454198fe2d32f07bbc173"
+    },
+    {
+      "name": "migration-integrity.json",
+      "sha256": "bc6dbe83abb0fc99b6030d2c7b7e673c91fd7aa58704ee73164a54b806d741c3"
+    },
+    {
+      "name": "staging-readonly-summary.json",
+      "sha256": "a68d3a651611c42740ce77353d77361d480573276d805bd296759dec27f19030"
+    },
+    {
+      "name": "synthetic-recovery-attempt1.json",
+      "sha256": "265e08e9f58da6f3d508012a8b81e745faa4c889da27716f62fdc142d534ebab"
+    },
+    {
+      "name": "synthetic-recovery-attempt2.json",
+      "sha256": "044a8efb0d771a4ae6a0c820d3733c4c730afd348830b97dc77a6310cedbab72"
+    },
+    {
+      "name": "synthetic-recovery.json",
+      "sha256": "221d633033a66094c62b13a8b60e7dad4a2d3f0ae19c258709e7227f15b0022f"
+    }
+  ]
+}

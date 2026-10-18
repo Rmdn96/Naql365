@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-18T14:36:27.894Z",
+  "dryRunOnly": true,
+  "exportExecuted": false,
+  "exitCode": 0,
+  "connectionVariableNames": ["PGHOST", "PGPORT", "PGUSER", "PGPASSWORD", "PGDATABASE"],
+  "usesSchemaOnly": true,
+  "loginRoleInitializationObserved": false,
+  "errorClass": null
+}

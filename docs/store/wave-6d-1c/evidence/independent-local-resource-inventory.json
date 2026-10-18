@@ -1,0 +1,16 @@
+[
+  {
+    "name": "naql365-recovery-restore-ef4f0049f6",
+    "label": "ef4f0049f6",
+    "network": "none",
+    "ports": {},
+    "volumes": ["cd45b1cdf263c70763a5fbbe24604d7f8d6edbd3e9b3a1fec6701103e569fee2"]
+  },
+  {
+    "name": "naql365-recovery-source-ef4f0049f6",
+    "label": "ef4f0049f6",
+    "network": "none",
+    "ports": {},
+    "volumes": ["880f3620bc712f262bb8c4473f1369dd839f42bdca316542c98f0873db32364d"]
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-18T14:44:18.404Z",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "naql365-recovery-restore-ef4f0049f6",
+      "containerAbsent": true,
+      "volumes": [
+        {
+          "name": "cd45b1cdf263c70763a5fbbe24604d7f8d6edbd3e9b3a1fec6701103e569fee2",
+          "absent": true
+        }
+      ]
+    },
+    {
+      "name": "naql365-recovery-source-ef4f0049f6",
+      "containerAbsent": true,
+      "volumes": [
+        {
+          "name": "880f3620bc712f262bb8c4473f1369dd839f42bdca316542c98f0873db32364d",
+          "absent": true
+        }
+      ]
+    }
+  ]
+}

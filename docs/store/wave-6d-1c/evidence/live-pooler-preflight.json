@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-18T14:40:19.737Z",
+  "projectRef": "zuvyfeflkzlciuaauxba",
+  "exportExecuted": false,
+  "tls": "verify-full",
+  "connectionStatus": "BLOCKED",
+  "errorClass": "TLS_CERTIFICATE_VALIDATION_FAILED"
+}
