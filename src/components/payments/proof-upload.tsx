@@ -26,6 +26,7 @@ export function ProofUpload({
   const [file, setFile] = useState<File | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(false);
+  const [customerReference, setCustomerReference] = useState('');
   const pending = data.attempts.find((a) => ['RESERVED', 'REMOVING'].includes(a.state));
   async function upload() {
     if (locked.current || !file) return;
@@ -41,6 +42,7 @@ export function ProofUpload({
     form.set('file', file);
     form.set('orderId', data.orderId);
     form.set('revision', String(data.revision));
+    if (customerReference.trim()) form.set('customerReference', customerReference.trim());
     for (const [key, value] of Object.entries(ids.current)) form.set(key, value);
     try {
       const result = await fetch(api, { method: 'POST', body: form });
@@ -97,6 +99,18 @@ export function ProofUpload({
             void upload();
           }}
         >
+          <Input
+            id="customer-transfer-reference"
+            label={t.customerReference}
+            maxLength={120}
+            value={customerReference}
+            disabled={busy || !hydrated}
+            onChange={(e) => {
+              setCustomerReference(e.target.value);
+              ids.current = null;
+            }}
+          />
+          <p className="muted">{t.customerReferenceHelp}</p>
           <Input
             id="transfer-proof-file"
             type="file"

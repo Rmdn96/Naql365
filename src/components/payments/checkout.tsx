@@ -4,7 +4,11 @@ import { useHydrated } from '@/components/ui/use-hydrated';
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { z } from 'zod';
-import type { PaymentDetails, paymentCommand } from '@/domain/payments/model';
+import {
+  verifiedReceiptReference,
+  type PaymentDetails,
+  type paymentCommand,
+} from '@/domain/payments/model';
 import type { Locale } from '@/i18n/config';
 import { paymentDictionary } from '@/i18n/payments';
 import { Alert, Badge, Button, Card, Input } from '@/components/ui/primitives';
@@ -156,7 +160,12 @@ export function Checkout({
                   })
                 }
               >
-                <span aria-hidden="true">▤</span> {t.transfer}
+                <span aria-hidden="true">▤</span>{' '}
+                {destination.type === 'VODAFONE_CASH'
+                  ? t.vodafone
+                  : destination.type === 'INSTAPAY'
+                    ? t.instapay
+                    : t.transfer}
                 {data.destinations.length > 1
                   ? ` · ${locale === 'ar' ? destination.nameAr : destination.nameEn}`
                   : ''}
@@ -246,6 +255,16 @@ export function Checkout({
                     {t.proof}
                   </Button>
                 )}
+                {a.customerReference && (
+                  <p>
+                    {t.customerReference}: <bdi>{a.customerReference}</bdi>
+                  </p>
+                )}
+                {finance && a.reference && (
+                  <p>
+                    {t.verifiedReference}: <bdi>{a.reference}</bdi>
+                  </p>
+                )}
                 {finance && a.financeNote && <p>{a.financeNote}</p>}
               </li>
             ))}
@@ -259,7 +278,7 @@ export function Checkout({
           <Input
             disabled={!hydrated}
             id="payment-reference"
-            label={t.reference}
+            label={submitted ? t.verifiedReference : t.reference}
             value={reference}
             maxLength={120}
             onChange={(e) => setReference(e.target.value)}
@@ -273,7 +292,11 @@ export function Checkout({
             onChange={(e) => setNote(e.target.value)}
           />
           <Button
-            disabled={!hydrated || busy}
+            disabled={
+              !hydrated ||
+              busy ||
+              Boolean(submitted && !verifiedReceiptReference.safeParse(reference).success)
+            }
             onClick={() =>
               void act(
                 submitted

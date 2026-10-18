@@ -4,7 +4,7 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import FinancePage from '../../src/app/[locale]/(portal)/portal/finance/page';
 import Dashboard from '../../src/app/[locale]/(portal)/portal/page';
 
-const m = vi.hoisted(() => ({ access: vi.fn(), queue: vi.fn(), country: 'SA' }));
+const m = vi.hoisted(() => ({ access: vi.fn(), scoped: vi.fn(), queue: vi.fn(), country: 'SA' }));
 vi.mock('@/infrastructure/identity/staff-context', () => ({
   staffAccess: m.access,
   staffModules: async () => ({ context: { status: 'authorized' }, finance: true }),
@@ -12,6 +12,7 @@ vi.mock('@/infrastructure/identity/staff-context', () => ({
 vi.mock('@/infrastructure/markets/public', () => ({
   selectedPublicCountry: async () => m.country,
 }));
+vi.mock('@/infrastructure/payments/staff-views', () => ({ staffFinanceQueue: m.scoped }));
 vi.mock('@/infrastructure/payments/service', () => ({ getFinanceQueue: m.queue }));
 vi.mock('next/navigation', () => ({
   redirect: (url: string) => {
@@ -24,6 +25,7 @@ vi.mock('next/navigation', () => ({
 beforeEach(() => {
   vi.clearAllMocks();
   m.access.mockResolvedValue({ status: 'authorized' });
+  m.scoped.mockResolvedValue({ items: [], nextCursor: null });
   m.queue.mockImplementation(() => {
     throw Error('Unscoped Finance must not run');
   });
@@ -34,9 +36,12 @@ it.each(['ar', 'en'])(
     for (const country of ['SA', 'EG']) {
       m.country = country;
       for (const page of [FinancePage, Dashboard]) {
-        const view = await page({ params: Promise.resolve({ locale }) });
+        const view = await page({
+          params: Promise.resolve({ locale }),
+          searchParams: Promise.resolve({}),
+        });
         const html = renderToStaticMarkup(createElement('div', null, view));
-        expect(html).toContain(locale === 'ar' ? 'غير متاحة مؤقتًا' : 'temporarily unavailable');
+        expect(html).toContain('/' + locale + '/portal/finance');
         expect(html).not.toContain('finance-queue');
       }
     }
@@ -45,8 +50,8 @@ it.each(['ar', 'en'])(
 );
 it('preserves denied staff routing before the containment presentation', async () => {
   m.access.mockResolvedValue({ status: 'forbidden' });
-  await expect(FinancePage({ params: Promise.resolve({ locale: 'en' }) })).rejects.toThrow(
-    'REDIRECT:/en/portal',
-  );
+  await expect(
+    FinancePage({ params: Promise.resolve({ locale: 'en' }), searchParams: Promise.resolve({}) }),
+  ).rejects.toThrow('REDIRECT:/en/portal');
   expect(m.queue).not.toHaveBeenCalled();
 });

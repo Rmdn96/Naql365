@@ -1,5 +1,9 @@
 import type { Locale } from './config';
 const en = {
+  customerReference: 'Your transaction reference (optional)',
+  customerReferenceHelp:
+    'This helps Finance locate your transfer. It does not confirm receipt of funds.',
+  verifiedReference: 'Verified provider receipt identity (required for confirmation)',
   destinationType: 'Transfer destination',
   bankDestination: 'Bank account',
   vodafone: 'Vodafone Cash',
@@ -84,6 +88,9 @@ const en = {
   },
 };
 const ar: typeof en = {
+  customerReference: 'مرجع معاملتك (اختياري)',
+  customerReferenceHelp: 'يساعد المالية في العثور على التحويل ولا يؤكد استلام الأموال.',
+  verifiedReference: 'معرّف إيصال مقدم الخدمة المتحقق منه (مطلوب للتأكيد)',
   destinationType: 'وجهة التحويل',
   bankDestination: 'حساب بنكي',
   vodafone: 'فودافون كاش',

@@ -17,7 +17,13 @@ const env = {
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: local.PUBLISHABLE_KEY,
   STAGING_AUTH_SMOKE_ENABLED: 'false',
 };
-for (const key of ['VERCEL_ENV', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SECRET_KEY'])
+for (const key of [
+  'VERCEL_ENV',
+  'SUPABASE_SERVICE_ROLE_KEY',
+  'SUPABASE_SECRET_KEY',
+  'SUPABASE_ACCESS_TOKEN',
+  'SUPABASE_DB_PASSWORD',
+])
   delete env[key];
 const admin = createClient(local.API_URL, local.SERVICE_ROLE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
@@ -58,6 +64,7 @@ const roles = [
 let server, browser;
 let checkpoint = 'build';
 const evidence = [];
+const financeFixtures = [];
 try {
   // Build before creating any fixture. Child output is withheld, never raw provider logs.
   execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
@@ -85,6 +92,37 @@ try {
     `insert into public.organizations(id,name) values('${org}','Synthetic staff workspace'); insert into public.markets(organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values('${org}','SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966'),('${org}','EG','مصر','Egypt',true,'EGP','Africa/Cairo','+20');`,
   );
   save();
+  const customerUser = await admin.auth.admin.createUser({
+    email: 'finance-customer-' + randomUUID() + '@example.invalid',
+    password: randomBytes(24).toString('base64url'),
+    email_confirm: true,
+  });
+  if (customerUser.error || !customerUser.data.user) throw Error('LOCAL_CUSTOMER_FIXTURE_FAILED');
+  users.push(customerUser.data.user.id);
+  save();
+  const customerId = randomUUID();
+  sql(
+    `insert into public.organization_memberships(organization_id,profile_id,member_type) values('${org}','${customerUser.data.user.id}','customer');insert into public.customers(id,organization_id,profile_id) values('${customerId}','${org}','${customerUser.data.user.id}');`,
+  );
+  for (const country of ['SA', 'EG']) {
+    const request = randomUUID(),
+      quote = randomUUID(),
+      version = randomUUID(),
+      order = randomUUID();
+    const market = sql(
+        `select id from public.markets where organization_id='${org}' and country_code='${country}'`,
+      ),
+      currency = country === 'SA' ? 'SAR' : 'EGP';
+    const reference = 'O-N365-202610-' + (country === 'SA' ? '980001' : '980002');
+    sql(`begin;
+    insert into public.requests(id,organization_id,customer_id,market_id,contact_name) values('${request}','${org}','${customerId}','${market}','SYNTHETIC FINANCE ${country}');
+    insert into public.quotes(id,organization_id,request_id) values('${quote}','${org}','${request}');
+    insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,distance_km,distance_source,distance_verified_at,currency) values('${version}','${org}','${quote}',1,'ACCEPTED',now(),now()+interval '2 days',10,'MANUAL_VERIFIED',now(),'${currency}');
+    insert into public.orders(id,organization_id,quote_id,accepted_quote_version_id,idempotency_key,reference,request_id,customer_id,distance_km,distance_source,accepted_at,currency) values('${order}','${org}','${quote}','${version}','${order}','${reference}','${request}','${customerId}',10,'MANUAL_VERIFIED',now(),'${currency}');
+    insert into public.payments(organization_id,order_id,market_id,customer_id,currency,amount_minor,method,status,revision) values('${org}','${order}','${market}','${customerId}','${currency}',0,'CASH','CASH_DUE',1);
+    commit;`);
+    financeFixtures.push({ country, order, reference });
+  }
   browser = await chromium.launch();
   for (const [role, allowed] of roles) {
     const password = randomBytes(24).toString('base64url'),
@@ -117,11 +155,21 @@ try {
         const nav = page.locator('.staff-sidebar nav');
         for (const country of ['EG', 'SA']) {
           checkpoint = role + ' ' + locale + ' Market navigation ' + country;
+          // Wait for the real controlled input handler, not just server-rendered HTML.
+          await page.waitForFunction(() => {
+            const node = document.querySelector('#staff-market');
+            if (!node) return false;
+            const props = Object.keys(node).find((k) => k.startsWith('__reactProps'));
+            return props && typeof Reflect.get(node, props)?.onChange === 'function';
+          });
           const changed = page.waitForResponse(
             (r) => r.url().endsWith('/api/public/market') && r.request().method() === 'POST',
           );
           await page.locator('#staff-market').selectOption(country);
-          expect((await changed).status()).toBe(200);
+          const marketResponse = await changed.catch(() => {
+            throw Error('LOCAL_MARKET_REQUEST_TIMEOUT');
+          });
+          if (marketResponse.status() !== 200) throw Error('LOCAL_MARKET_HTTP_FAILURE');
           await expect(page.locator('#staff-market')).toHaveValue(country);
           await expect(page.locator('.staff-organization-context')).toContainText(
             country === 'SA'
@@ -198,11 +246,48 @@ try {
           await expect(page.locator('.staff-workspace-content h1')).toBeVisible();
           if (workspaceModule === 'finance') {
             await expect(page.locator('.staff-workspace-content')).toContainText(
-              locale === 'ar'
-                ? 'قائمة المالية غير متاحة مؤقتًا'
-                : 'Finance queue temporarily unavailable',
+              locale === 'ar' ? 'العناصر المعروضة' : 'Displayed items',
             );
-            await expect(page.locator('.finance-queue')).toHaveCount(0);
+            await expect(page.locator('.staff-workspace-content')).toContainText(
+              'SYNTHETIC FINANCE SA',
+            );
+            await expect(page.locator('.staff-workspace-content')).not.toContainText(
+              'SYNTHETIC FINANCE EG',
+            );
+            await page.locator('#finance-status').selectOption('PAID');
+            await page
+              .getByRole('button', { name: locale === 'ar' ? 'تطبيق' : 'Apply', exact: true })
+              .click();
+            await expect(page.locator('.staff-workspace-content')).toContainText(
+              locale === 'ar' ? 'لا توجد دفعات' : 'No payments match',
+            );
+            await page.locator('#finance-status').selectOption('CASH_DUE');
+            await page
+              .getByRole('button', { name: locale === 'ar' ? 'تطبيق' : 'Apply', exact: true })
+              .click();
+            const changed = page.waitForResponse(
+              (r) => r.url().endsWith('/api/public/market') && r.request().method() === 'POST',
+            );
+            await page.locator('#staff-market').selectOption('EG');
+            expect((await changed).status()).toBe(200);
+            await expect(page.locator('.staff-workspace-content')).toContainText(
+              'SYNTHETIC FINANCE EG',
+            );
+            await expect(page.locator('.staff-workspace-content')).not.toContainText(
+              'SYNTHETIC FINANCE SA',
+            );
+            await expect(page.locator('#finance-status')).toHaveValue('CASH_DUE');
+            await page.reload();
+            await expect(page.locator('.staff-workspace-content')).toContainText(
+              'SYNTHETIC FINANCE EG',
+            );
+            const eg = financeFixtures.find((f) => f.country === 'EG'),
+              sa = financeFixtures.find((f) => f.country === 'SA');
+            await page.goto(origin + '/' + locale + '/portal/finance/' + sa.order);
+            await expect(page.locator('#payment-reference')).toHaveCount(0);
+            await page.goto(origin + '/' + locale + '/portal/finance/' + eg.order);
+            await expect(page.locator('#payment-reference')).toBeVisible();
+            await page.goto(origin + '/' + locale + '/portal/finance');
           }
         }
         for (const denied of ['quotes', 'operations', 'finance', 'finance/banks', 'support'].filter(
@@ -211,7 +296,7 @@ try {
           checkpoint = role + ' ' + locale + ' denied route ' + denied;
           await page.goto(origin + '/' + locale + '/portal/' + denied);
           if (denied === 'support') {
-            await expect(page.getByRole('alert')).toBeVisible();
+            await expect(page.locator('.staff-dashboard-panel[role="alert"]')).toBeVisible();
             await expect(page.locator('.staff-support-card')).toHaveCount(0);
           } else if (denied === 'finance/banks') {
             await expect(
@@ -231,6 +316,24 @@ try {
         console.log(
           `PASS local ${role} ${locale}: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout`,
         );
+      } catch (error) {
+        console.error(
+          'SAFE_BROWSER_DIAGNOSTIC',
+          JSON.stringify({
+            checkpoint,
+            path: new URL(page.url()).pathname,
+            workspaceErrors: await page.locator('.staff-dashboard-panel[role="alert"]').count(),
+            alerts: await page.getByRole('alert').count(),
+            supportCards: await page.locator('.staff-support-card').count(),
+            category:
+              error instanceof Error && /strict mode violation/.test(error.message)
+                ? 'MULTIPLE_MATCHES'
+                : error instanceof Error && /Timeout|timed out/.test(error.message)
+                  ? 'TIMEOUT'
+                  : 'ASSERTION',
+          }),
+        );
+        throw error;
       } finally {
         await context.close();
       }
@@ -251,9 +354,9 @@ try {
   process.exitCode = 1;
 } finally {
   await browser?.close();
-  // Only this run's exact tenant and identity ledger. No business/Storage fixtures are created.
+  // Only the run-owned tenant, identities and synthetic Finance fixtures. No Storage data.
   sql(
-    `begin; delete from public.user_roles where organization_id='${org}'; delete from public.organization_memberships where organization_id='${org}'; delete from public.markets where organization_id='${org}'; delete from public.audit_logs where organization_id='${org}'; delete from public.organizations where id='${org}'; commit;`,
+    `begin;set local app.fixture_cleanup='on';delete from public.payments where organization_id='${org}';delete from public.orders where organization_id='${org}';delete from public.quote_versions where organization_id='${org}';delete from public.quotes where organization_id='${org}';delete from public.requests where organization_id='${org}';delete from public.customers where organization_id='${org}'; delete from public.user_roles where organization_id='${org}'; delete from public.organization_memberships where organization_id='${org}'; delete from public.markets where organization_id='${org}'; delete from public.audit_logs where organization_id='${org}'; delete from public.organizations where id='${org}'; commit;`,
   );
   for (const id of users) {
     const r = await admin.auth.admin.deleteUser(id);

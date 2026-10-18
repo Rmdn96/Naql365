@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { AppError } from '@/domain/shared/errors';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { normalizeSignature } from '@/infrastructure/operations/signature';
-import { paymentResult } from '@/domain/payments/model';
+import { customerTransferReference, paymentResult } from '@/domain/payments/model';
 import { paymentFailure } from './service';
 import { guestSessionClient } from '@/infrastructure/guest/session';
 
@@ -21,6 +21,7 @@ const uploadInput = z.strictObject({
   reserveId: z.uuid(),
   submitId: z.uuid(),
   revision: z.coerce.number().int().nonnegative(),
+  customerReference: customerTransferReference.optional(),
 });
 export async function uploadTransferProof(form: FormData, guest = false) {
   const p = uploadInput.parse(
@@ -64,7 +65,10 @@ export async function uploadTransferProof(form: FormData, guest = false) {
     p_action: 'submit',
     p_mutation: p.submitId,
     p_revision: reservation.revision,
-    p_payload: { attemptId: reservation.attemptId },
+    p_payload: {
+      attemptId: reservation.attemptId,
+      ...(p.customerReference ? { customerReference: p.customerReference } : {}),
+    },
   });
   if (submitted.error) paymentFailure(submitted.error.code);
   return paymentResult.parse(submitted.data);

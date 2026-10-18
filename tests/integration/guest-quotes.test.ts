@@ -386,6 +386,7 @@ test('guest transfer proof stays private and only Finance can reject or confirm 
     }),
   ).rejects.toThrow();
   await command('confirm_transfer', 6, {
+    reference: 'SYNTHETIC-GUEST-RECEIPT-001',
     attemptId: reserve.attemptId,
     amountMinor: total,
     currency: 'SAR',

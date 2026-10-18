@@ -10,6 +10,17 @@ export const paymentStates = [
 ] as const;
 const money = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 export const transferDestinationType = z.enum(['BANK', 'VODAFONE_CASH', 'INSTAPAY']);
+export const customerTransferReference = z
+  .string()
+  .trim()
+  .min(1)
+  .max(120)
+  .refine((s) => !/\p{Cc}/u.test(s), 'Invalid reference');
+export const verifiedReceiptReference = z
+  .string()
+  .trim()
+  .regex(/^[A-Za-z0-9][A-Za-z0-9 ./_-]{5,119}$/)
+  .refine((s) => s.replace(/[^A-Za-z0-9]/g, '').length >= 6, 'Invalid receipt identity');
 export const bankInstructions = z.object({
   destinationType: transferDestinationType.default('BANK'),
   id: z.uuid(),
@@ -66,6 +77,7 @@ export const paymentDetails = z.object({
         reviewedAt: z.string().nullable(),
         rejectionReason: z.string().nullable(),
         bank: bankInstructions,
+        customerReference: customerTransferReference.nullable().optional(),
         reviewer: z.uuid().nullable().optional(),
         financeNote: z.string().nullable().optional(),
         reference: z.string().nullable().optional(),
@@ -105,7 +117,11 @@ export const paymentCommand = z.discriminatedUnion('action', [
   z.strictObject({
     ...base,
     action: z.literal('confirm_transfer'),
-    payload: z.strictObject({ ...confirmation, attemptId: z.uuid() }),
+    payload: z.strictObject({
+      ...confirmation,
+      reference: verifiedReceiptReference,
+      attemptId: z.uuid(),
+    }),
   }),
   z.strictObject({
     ...base,

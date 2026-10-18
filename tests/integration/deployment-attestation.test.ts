@@ -2,7 +2,7 @@ import { expect, it } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { foundationDatabase } from '../helpers/database.mjs';
 it('reconstructs current migrations and enforces attestation security', async () => {
-  expect(readdirSync('supabase/migrations').filter((f) => f.endsWith('.sql'))).toHaveLength(48);
+  expect(readdirSync('supabase/migrations').filter((f) => f.endsWith('.sql'))).toHaveLength(49);
   const db = await foundationDatabase();
   try {
     await db.exec(

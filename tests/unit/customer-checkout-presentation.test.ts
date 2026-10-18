@@ -47,3 +47,35 @@ for (const locale of ['ar', 'en'] as const)
     expect(html).not.toContain(t.states.PAID);
     expect(html).not.toContain('IBAN');
   });
+
+for (const locale of ['ar', 'en'] as const)
+  test(
+    locale + ' identifies Egypt transfer channels independently without configuring destinations',
+    () => {
+      const t = paymentDictionary(locale);
+      const html = renderToStaticMarkup(
+        createElement(Checkout, {
+          locale,
+          data: {
+            ...data,
+            country: 'EG',
+            currency: 'EGP',
+            destinations: [
+              { id, type: 'VODAFONE_CASH', nameAr: 'اختبار فقط', nameEn: 'TEST ONLY' },
+              {
+                id: '13000000-0000-4000-8000-000000000002',
+                type: 'INSTAPAY',
+                nameAr: 'اختبار آخر',
+                nameEn: 'OTHER TEST ONLY',
+              },
+            ],
+          },
+        }),
+      );
+      expect(html).toContain(t.vodafone);
+      expect(html).toContain(t.instapay);
+      expect(html).toContain(t.cash);
+      expect(html).not.toContain('TEST-DESTINATION');
+      expect(html).not.toContain(t.states.PAID);
+    },
+  );

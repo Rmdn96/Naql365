@@ -52,17 +52,20 @@ export async function getFinanceQueue(input: unknown) {
     .strictObject({
       organizationId: z.uuid(),
       status: z.enum(paymentStates).optional(),
-      offset: z.number().int().min(0).max(10000).default(0),
+      offset: z.literal(0).default(0),
     })
     .parse(input);
+  const { staffMarket } = await import('@/infrastructure/identity/staff-market');
+  const { organizationId, market } = await staffMarket('finance.read');
+  if (q.organizationId !== organizationId) throw new AppError('forbidden', 'Payment unavailable');
   const c = await client();
-  const result = await c.rpc('finance_queue', {
-    p_org: q.organizationId,
-    p_offset: q.offset,
+  const result = await c.rpc('finance_market_queue', {
+    p_org: organizationId,
+    p_market: market.id,
     ...(q.status ? { p_status: q.status } : {}),
   });
   if (result.error) paymentFailure(result.error.code);
-  return financeRow.array().max(30).parse(result.data);
+  return z.object({ items: financeRow.array().max(30) }).parse(result.data).items;
 }
 export async function getPaymentClearance(tripId: string) {
   const c = await client();

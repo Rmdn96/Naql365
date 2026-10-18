@@ -88,3 +88,15 @@ it('recovers an upload response loss through authoritative finalization without 
   });
   expect(mocks.upload.mock.calls[0]![2]).toEqual({ contentType: 'application/pdf', upsert: false });
 });
+
+it('sends the customer reference only on submit, never as Finance receipt evidence', async () => {
+  const body = form(Buffer.from('%PDF-1.4\n%%EOF\n'), 'application/pdf');
+  body.set('customerReference', ' CUSTOMER-ONLY-0001 ');
+  await uploadTransferProof(body);
+  expect(mocks.rpc.mock.calls[0]![1].p_payload).not.toHaveProperty('customerReference');
+  expect(mocks.rpc.mock.calls[1]![1].p_payload).toEqual({
+    attemptId: id,
+    customerReference: 'CUSTOMER-ONLY-0001',
+  });
+  expect(mocks.rpc.mock.calls[1]![1].p_payload).not.toHaveProperty('reference');
+});

@@ -52,11 +52,12 @@ function sql(statement, actor) {
     );
   });
 }
-const command = (action, revision, payload, actor = customer, mutation = randomUUID()) =>
+const commandFor = (target, action, revision, payload, actor = customer, mutation = randomUUID()) =>
   sql(
-    `select public.payment_command('${order}','${action}','${mutation}',${revision},${json(payload)})`,
+    `select public.payment_command('${target}','${action}','${mutation}',${revision},${json(payload)})`,
     actor,
   ).then(JSON.parse);
+const command = (...args) => commandFor(order, ...args);
 const op = (action, id, payload = {}) =>
   sql(`select public.phase3_command('${action}','${id}',${json(payload)})`, staff).then(JSON.parse);
 async function race(calls, label, min, max = min) {
@@ -117,7 +118,8 @@ async function readyTrip() {
   await op('ready', trip);
   return trip;
 }
-async function transfer() {
+async function transfer(target = order) {
+  const command = (...args) => commandFor(target, ...args);
   await command('choose', 1, { method: 'BANK_TRANSFER' });
   const r = await command('reserve', 2, {
     fileId: randomUUID(),
@@ -140,7 +142,7 @@ async function transfer() {
   );
   assert(
     (await sql(
-      `select count(*) from public.payment_transactions where event_code='PROOF_SUBMITTED' and organization_id='${org}'`,
+      `select count(*) from public.payment_transactions where event_code='PROOF_SUBMITTED' and organization_id='${org}' and payment_id=(select id from public.payments where order_id='${target}')`,
     )) === '1',
     'one proof event',
   );
@@ -158,7 +160,7 @@ async function cleanup() {
     assert(!removed.error, 'proof cleanup');
   }
   await sql(
-    `set local app.fixture_cleanup='on';delete from public.notifications where organization_id='${org}';delete from public.invoices where organization_id='${org}';delete from public.payment_transactions where organization_id='${org}';delete from public.bank_transfer_attempts where organization_id='${org}';delete from public.file_objects where organization_id='${org}';delete from public.payments where organization_id='${org}';delete from private.payment_mutations where organization_id='${org}';delete from public.bank_accounts where organization_id='${org}';delete from public.trip_events where organization_id='${org}';delete from public.trip_stop_dependencies where organization_id='${org}';delete from public.trip_stops where organization_id='${org}';delete from public.assignments where organization_id='${org}';delete from public.trips where organization_id='${org}';delete from public.jobs where organization_id='${org}';delete from private.operational_mutations where organization_id='${org}';delete from public.orders where organization_id='${org}';delete from public.quote_versions where organization_id='${org}';delete from public.quotes where organization_id='${org}';delete from public.requests where organization_id='${org}';delete from public.customers where organization_id='${org}';delete from public.drivers where organization_id='${org}';delete from public.vehicles where organization_id='${org}';delete from public.user_roles where profile_id::text like '13000000%';delete from public.organization_memberships where profile_id::text like '13000000%';delete from auth.users where id::text like '13000000%';delete from public.market_cities where organization_id::text like '23000000%';delete from public.market_regions where organization_id::text like '23000000%';delete from public.markets where organization_id::text like '23000000%';delete from public.audit_logs where organization_id::text like '23000000%';delete from public.organizations where id::text like '23000000%';drop function public.phase3_command(text,uuid,jsonb);drop function public.phase3_assert(boolean,text)`,
+    `set local app.fixture_cleanup='on';alter table private.manual_collection_receipts disable trigger immutable_collection_receipt;delete from private.manual_collection_receipts where organization_id='${org}';alter table private.manual_collection_receipts enable trigger immutable_collection_receipt;delete from public.notifications where organization_id='${org}';delete from public.invoices where organization_id='${org}';delete from public.payment_transactions where organization_id='${org}';delete from public.bank_transfer_attempts where organization_id='${org}';delete from public.file_objects where organization_id='${org}';delete from public.payments where organization_id='${org}';delete from private.payment_mutations where organization_id='${org}';delete from public.bank_accounts where organization_id='${org}';delete from public.trip_events where organization_id='${org}';delete from public.trip_stop_dependencies where organization_id='${org}';delete from public.trip_stops where organization_id='${org}';delete from public.assignments where organization_id='${org}';delete from public.trips where organization_id='${org}';delete from public.jobs where organization_id='${org}';delete from private.operational_mutations where organization_id='${org}';delete from public.orders where organization_id='${org}';delete from public.quote_versions where organization_id='${org}';delete from public.quotes where organization_id='${org}';delete from public.requests where organization_id='${org}';delete from public.customers where organization_id='${org}';delete from public.drivers where organization_id='${org}';delete from public.vehicles where organization_id='${org}';delete from public.user_roles where profile_id::text like '13000000%';delete from public.organization_memberships where profile_id::text like '13000000%';delete from auth.users where id::text like '13000000%';delete from public.market_cities where organization_id::text like '23000000%';delete from public.market_regions where organization_id::text like '23000000%';delete from public.markets where organization_id::text like '23000000%';delete from public.audit_logs where organization_id::text like '23000000%';delete from public.organizations where id::text like '23000000%';drop function public.phase3_command(text,uuid,jsonb);drop function public.phase3_assert(boolean,text)`,
   );
   setup = false;
 }
@@ -167,8 +169,20 @@ try {
   const mutation = randomUUID();
   await race(
     [
-      command('confirm_cash', 1, { amountMinor: 0, currency: 'SAR' }, finance, mutation),
-      command('confirm_cash', 1, { amountMinor: 0, currency: 'SAR' }, finance, mutation),
+      command(
+        'confirm_cash',
+        1,
+        { amountMinor: 0, currency: 'SAR', reference: 'LOCAL-RECEIPT-0001' },
+        finance,
+        mutation,
+      ),
+      command(
+        'confirm_cash',
+        1,
+        { amountMinor: 0, currency: 'SAR', reference: 'LOCAL-RECEIPT-0001' },
+        finance,
+        mutation,
+      ),
     ],
     'cash confirmation duplicate replay',
     2,
@@ -185,7 +199,7 @@ try {
       command(
         'confirm_transfer',
         4,
-        { attemptId: attempt, amountMinor: 0, currency: 'SAR' },
+        { attemptId: attempt, amountMinor: 0, currency: 'SAR', reference: 'LOCAL-RECEIPT-0001' },
         finance,
       ),
       command('reject_transfer', 4, { attemptId: attempt, reason: 'TEST ONLY rejection' }, finance),
@@ -208,7 +222,7 @@ try {
       command(
         'confirm_transfer',
         4,
-        { attemptId: proof, amountMinor: 0, currency: 'SAR' },
+        { attemptId: proof, amountMinor: 0, currency: 'SAR', reference: 'LOCAL-RECEIPT-0001' },
         finance,
       ),
       op('dispatch', trip),
@@ -228,6 +242,48 @@ try {
       `select count(*) from public.trip_events where trip_id='${trip}' and event_type='DISPATCH'`,
     )) === '1',
     'one authorized start',
+  );
+  await cleanup();
+  await prepare();
+  const secondOrder = '83000000-0000-4000-8000-000000000002';
+  await sql(`insert into public.requests(id,organization_id,customer_id,market_id) select '53000000-0000-4000-8000-000000000002',organization_id,customer_id,market_id from public.orders where id='${order}';
+ insert into public.quotes(id,organization_id,request_id) values('63000000-0000-4000-8000-000000000002','${org}','53000000-0000-4000-8000-000000000002');
+ insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,distance_km,distance_source,distance_verified_at,currency) values('73000000-0000-4000-8000-000000000002','${org}','63000000-0000-4000-8000-000000000002',1,'ACCEPTED',now(),now()+interval '2 days',10,'MANUAL_VERIFIED',now(),'SAR');
+ insert into public.orders(id,organization_id,quote_id,accepted_quote_version_id,idempotency_key,reference,request_id,customer_id,distance_km,distance_source,accepted_at,currency)
+ select '${secondOrder}',organization_id,'63000000-0000-4000-8000-000000000002','73000000-0000-4000-8000-000000000002','receipt-race-2','O-N365-202609-930002','53000000-0000-4000-8000-000000000002',customer_id,10,'MANUAL_VERIFIED',now(),'SAR' from public.orders where id='${order}';`);
+  await commandFor(secondOrder, 'choose', 0, { method: 'CASH' });
+  const firstProof = await transfer(),
+    secondProof = await transfer(secondOrder);
+  await race(
+    [
+      command(
+        'confirm_transfer',
+        4,
+        { attemptId: firstProof, amountMinor: 0, currency: 'SAR', reference: 'UNIQUE-RACE-001' },
+        finance,
+      ),
+      commandFor(
+        secondOrder,
+        'confirm_transfer',
+        4,
+        { attemptId: secondProof, amountMinor: 0, currency: 'SAR', reference: 'unique race 001' },
+        finance,
+      ),
+    ],
+    'same external receipt cannot confirm two different payments',
+    1,
+  );
+  assert(
+    (await sql(
+      `select count(*) from private.manual_collection_receipts where organization_id='${org}'`,
+    )) === '1',
+    'one shared durable receipt claim',
+  );
+  assert(
+    (await sql(
+      `select count(*) from public.payments where organization_id='${org}' and status='PAID'`,
+    )) === '1',
+    'losing confirmation rolled back',
   );
   await cleanup();
   await prepare();

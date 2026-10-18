@@ -1,5 +1,10 @@
 import { expect, it } from 'vitest';
-import { paymentCommand, bankConfiguration } from '@/domain/payments/model';
+import {
+  paymentCommand,
+  bankConfiguration,
+  customerTransferReference,
+  verifiedReceiptReference,
+} from '@/domain/payments/model';
 const id = '13000000-0000-4000-8000-000000000001';
 it('rejects forged scope, totals and status fields in checkout', () => {
   const command = {
@@ -96,4 +101,23 @@ it('bank configuration derives currency and requires a usable account identifier
     bankConfiguration.safeParse({ ...command, details: { ...command.details, accountNumber: '' } })
       .success,
   ).toBe(false);
+});
+
+it('separates bounded customer claims from required Finance provider identities', () => {
+  expect(customerTransferReference.safeParse('Customer local note').success).toBe(true);
+  for (const value of ['', 'x'.repeat(121), 'line\nbreak'])
+    expect(customerTransferReference.safeParse(value).success).toBe(false);
+  for (const reference of ['', '  ', '123', '----12', 'x'.repeat(121)]) {
+    expect(verifiedReceiptReference.safeParse(reference).success).toBe(false);
+    expect(
+      paymentCommand.safeParse({
+        orderId: id,
+        mutationId: id,
+        revision: 3,
+        action: 'confirm_transfer',
+        payload: { attemptId: id, amountMinor: 100, currency: 'EGP', reference },
+      }).success,
+    ).toBe(false);
+  }
+  expect(verifiedReceiptReference.safeParse('PROVIDER-TEST-0001').success).toBe(true);
 });

@@ -293,6 +293,7 @@ export type Database = {
           bank_reference: string | null
           bank_snapshot: Json
           created_at: string
+          customer_reference: string | null
           file_id: string
           finance_note: string | null
           guest_customer_id: string | null
@@ -314,6 +315,7 @@ export type Database = {
           bank_reference?: string | null
           bank_snapshot: Json
           created_at?: string
+          customer_reference?: string | null
           file_id: string
           finance_note?: string | null
           guest_customer_id?: string | null
@@ -335,6 +337,7 @@ export type Database = {
           bank_reference?: string | null
           bank_snapshot?: Json
           created_at?: string
+          customer_reference?: string | null
           file_id?: string
           finance_note?: string | null
           guest_customer_id?: string | null
@@ -3874,6 +3877,17 @@ export type Database = {
       driver_trip: { Args: { p_trip: string }; Returns: Json }
       driver_trips: {
         Args: { p_offset?: number; p_view?: string }
+        Returns: Json
+      }
+      finance_market_queue: {
+        Args: {
+          p_before_created?: string
+          p_before_id?: string
+          p_limit?: number
+          p_market: string
+          p_org: string
+          p_status?: string
+        }
         Returns: Json
       }
       finance_queue: {

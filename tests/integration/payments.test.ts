@@ -150,6 +150,7 @@ it('transfer attempts remain private, rejection allows reupload, proof never mea
     (
       await command('confirm_transfer', 6, {
         attemptId: next.attemptId,
+        reference: 'SYNTHETIC-RECEIPT-001',
         amountMinor: 0,
         currency: 'SAR',
       })
