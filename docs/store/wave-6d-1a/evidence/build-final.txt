@@ -1,0 +1,103 @@
+
+> naql365@0.1.0 build
+> node scripts/guarded-next.mjs build
+
+▲ Next.js 16.3.8 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 335ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 6.6s
+  Running TypeScript ...
+  Finished TypeScript in 6.2s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/69) ...
+  Generating static pages using 7 workers (17/69)
+  Generating static pages using 7 workers (34/69)
+  Generating static pages using 7 workers (51/69)
+✓ Generating static pages using 7 workers (69/69) in 1184ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /_not-found
+├ ƒ /[locale]
+├ ƒ /[locale]/account
+├ ƒ /[locale]/account/orders/[id]
+├ ƒ /[locale]/account/orders/[id]/payment
+├ ƒ /[locale]/account/quotes
+├ ƒ /[locale]/account/quotes/[id]
+├ ƒ /[locale]/account/requests
+├ ƒ /[locale]/account/requests/[id]
+├ ƒ /[locale]/auth-complete
+├ ƒ /[locale]/design-system
+├ ƒ /[locale]/driver
+├ ƒ /[locale]/driver/login
+├ ƒ /[locale]/driver/trips/[id]
+├ ƒ /[locale]/guest
+├ ƒ /[locale]/guest/orders/[id]
+├ ƒ /[locale]/guest/orders/[id]/payment
+├ ƒ /[locale]/guest/quotes/[id]
+├ ƒ /[locale]/guest/requests/[id]
+├ ƒ /[locale]/legal/[kind]
+├ ƒ /[locale]/login
+├ ƒ /[locale]/password
+├ ƒ /[locale]/portal
+├ ƒ /[locale]/portal/finance
+├ ƒ /[locale]/portal/finance/[id]
+├ ƒ /[locale]/portal/finance/banks
+├ ƒ /[locale]/portal/operations
+├ ƒ /[locale]/portal/operations/jobs/[id]
+├ ƒ /[locale]/portal/operations/trips/[id]
+├ ƒ /[locale]/portal/quotes
+├ ƒ /[locale]/portal/quotes/[id]
+├ ƒ /[locale]/portal/support
+├ ƒ /[locale]/recover
+├ ƒ /[locale]/register
+├ ƒ /[locale]/request
+├ ƒ /[locale]/request/[id]
+├ ƒ /api/customer/files/[id]
+├ ƒ /api/customer/quotes/[id]/respond
+├ ƒ /api/customer/requests
+├ ƒ /api/customer/requests/[id]
+├ ƒ /api/customer/requests/[id]/files
+├ ƒ /api/driver
+├ ƒ /api/driver/evidence
+├ ƒ /api/driver/issues
+├ ƒ /api/guest/exchange
+├ ƒ /api/guest/files/[id]
+├ ƒ /api/guest/payments
+├ ƒ /api/guest/payments/proof
+├ ƒ /api/guest/payments/proof/[id]
+├ ƒ /api/guest/quotes/[id]/respond
+├ ƒ /api/guest/requests/[id]
+├ ƒ /api/guest/requests/[id]/files
+├ ƒ /api/guest/session
+├ ƒ /api/guest/start
+├ ƒ /api/notifications
+├ ƒ /api/operations
+├ ƒ /api/operations/issues
+├ ƒ /api/operations/pod
+├ ƒ /api/payments
+├ ƒ /api/payments/banks
+├ ƒ /api/payments/proof
+├ ƒ /api/payments/proof/[id]
+├ ƒ /api/public/analytics
+├ ƒ /api/public/market
+├ ƒ /api/sales/guest-link
+├ ƒ /api/sales/pricing
+├ ƒ /api/sales/quotes
+├ ƒ /api/sales/quotes/[id]/send
+├ ƒ /api/sales/quotes/manual
+├ ƒ /api/staging/files/[id]
+├ ƒ /api/staging/session
+├ ƒ /api/tracking
+├ ƒ /auth/callback
+├ ƒ /login
+├ ○ /robots.txt
+└ ○ /sitemap.xml
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

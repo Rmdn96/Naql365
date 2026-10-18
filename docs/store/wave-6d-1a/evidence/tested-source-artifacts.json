@@ -1,0 +1,74 @@
+{
+  "base": "29baff49a143e2ed24856c80cbc08c9b65c3f941",
+  "mode": "Tested worktree source; final local commit supplied in handoff; no hosted CI claim",
+  "source": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "a8e4f7c824aea6a16ce600229e9a88da82defbf61649b4f1e5d809d722592a54"
+    },
+    {
+      "path": "scripts/local-supabase.mjs",
+      "sha256": "2633b133788e5a32c4c6be22cccb3722121823468cd8fb0fe0a239d8a4c253a3"
+    },
+    {
+      "path": "scripts/test-driver-concurrency.mjs",
+      "sha256": "7e4d310b95119aaf7e23df93b05ddd6b108538bc4ac17399c69c3a38ece2ee66"
+    },
+    {
+      "path": "scripts/test-guest-concurrency.mjs",
+      "sha256": "539691ba3ba45f91bc4e456f1de4c0a39360b02d95cbde498363064be04a81b8"
+    },
+    {
+      "path": "scripts/test-manual-pricing-concurrency.mjs",
+      "sha256": "e8c5aad08c5126d7b6c1ad40efa8876eaa78ab2102a7d5d205faa34e71b4d000"
+    },
+    {
+      "path": "scripts/test-operations-concurrency.mjs",
+      "sha256": "bdb590cc81c470c6d629de141e3c93c8ed40585e8a803e2490284281939b5c79"
+    },
+    {
+      "path": "scripts/test-payment-concurrency.mjs",
+      "sha256": "c22590cfb85b91feb55a11692742e6f26bf3c217380d5979ef5cfb6e29c0b788"
+    },
+    {
+      "path": "scripts/test-staff-workspace.mjs",
+      "sha256": "137da02578a9a7a4a6d625005f9ad3614240a5a944fa2afb0963c10959092a1c"
+    },
+    {
+      "path": "scripts/test-store-catalog-concurrency.mjs",
+      "sha256": "c4a628871b751ce74edb4e4804856169a348548e19dcb576b4437d53bc4b9bd3"
+    },
+    {
+      "path": "scripts/test-store-catalog-upgrade.mjs",
+      "sha256": "49eb7f059428723c38c4a67dc7cd244f7118be2423b9abed6750a7a4dcd5150d"
+    },
+    {
+      "path": "scripts/test-tracking-concurrency.mjs",
+      "sha256": "a64a8b6ef7094cd2e90f19d5ccc19ec1dca681160dc8a536d8df1cfa99bc6ca9"
+    },
+    {
+      "path": "scripts/verify-store-catalog-migration.mjs",
+      "sha256": "18fa737b1ad0961d643c97facb124619bf3933dc3a2648fcbf462eb2fa8834ef"
+    },
+    {
+      "path": "src/infrastructure/supabase/database.types.ts",
+      "sha256": "48b888c9125548f09d21b3bebc04982fc89d3f66158557e0b49cb713b6480f38"
+    },
+    {
+      "path": "supabase/migrations/20261018000100_store_catalog_foundation.sql",
+      "sha256": "0816abc8bf7ef64258adfddc7f92633786b8d30bff9c00453caecfbb37459ebd"
+    },
+    {
+      "path": "supabase/tests/store_catalog.test.sql",
+      "sha256": "05f840f136f53ccf26590b72120d3a728e580968e0194d13a104e6fe63c4a15e"
+    },
+    {
+      "path": "tests/integration/deployment-attestation.test.ts",
+      "sha256": "1eec48cef6c8278b52249eb9053495b56be64f193496bcf125638aa7a9d1a793"
+    },
+    {
+      "path": "tests/integration/store-catalog.test.ts",
+      "sha256": "fcadbc977971ae1d042989abccf9b3b432e61b67345f5bf4f8b1ed160ffff2e0"
+    }
+  ]
+}

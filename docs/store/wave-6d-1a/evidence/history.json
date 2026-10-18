@@ -1,0 +1,65 @@
+{
+  "mode": "Historical failures are preserved, not relabeled PASS",
+  "attempts": [
+    {
+      "category": "LOCAL_RUNNER_PORT_CONFIGURATION",
+      "result": "BLOCKED",
+      "evidence": "Windows TCP excluded range 54271-54370 blocked local 54321 and 54322",
+      "resolution": "Isolated temporary local Supabase configuration uses 55321/55322; repository config unchanged"
+    },
+    {
+      "category": "MIGRATION_TRIGGER_DEFECT",
+      "result": "FAIL",
+      "evidence": "record new has no field terms in store_row_guard",
+      "resolution": "Use explicit row JSON fields in shared trigger; subsequent native SQL and PGlite tests pass"
+    },
+    {
+      "category": "TEST_FIXTURE_REVISION",
+      "result": "FAIL",
+      "evidence": "CF08 expected 42501, got PT409 when test supplied scope revision 1 after owner-only pause fixture advanced it to 2",
+      "resolution": "Correct fixture expected revision to 2; scope mutation still denied"
+    },
+    {
+      "category": "MIGRATION_PORTABILITY_DEFECT",
+      "result": "FAIL",
+      "evidence": "PGlite reconstruction: role service_role does not exist",
+      "resolution": "Revoke optional service_role privileges only when that role exists; no role created and actual Supabase revoke retained"
+    },
+    {
+      "category": "UPGRADE_TEST_EXPECTATION",
+      "result": "FAIL",
+      "evidence": "Original whole-audit-table comparison detected seven new permission-definition audit inserts",
+      "resolution": "Preserve/hash every old audit row and assert only seven exact new permission-definition events; no business/audit rows ignored"
+    },
+    {
+      "category": "STALE_MIGRATION_COUNT_ASSERTION",
+      "result": "FAIL",
+      "evidence": "Existing attestation test expected exactly 47, received authorized 48",
+      "resolution": "Change exact count to 48; all original migration integrity and attestation assertions retained"
+    },
+    {
+      "category": "LOCAL_RESOURCE_TIMEOUT",
+      "result": "FAIL",
+      "evidence": "Five tests/hooks exceeded existing 30000ms limits during concurrent verification",
+      "resolution": "Full suite repeated with two workers and unchanged timeouts/assertions: 354/354"
+    },
+    {
+      "category": "LOCAL_RUNNER_OUTPUT_ISOLATION",
+      "result": "INTERRUPTED",
+      "evidence": "Initial Playwright run stalled before any test result with shared default output directory",
+      "resolution": "Stop owned runner, isolate output/reporting, rerun full unchanged tests: 60/60; no application cause claimed"
+    },
+    {
+      "category": "INHERITED_OPERATOR_ENVIRONMENT",
+      "result": "BLOCKED",
+      "evidence": "Local type generation: password authentication failed for postgres; first metadata read: Invalid access token",
+      "resolution": "Exclude stale inherited operator overrides from child processes; use local default credential and existing CLI login without printing or changing credentials"
+    },
+    {
+      "category": "PREEXISTING_CHECKOUT_EOL",
+      "result": "RAW_BYTE_CHECK_FAILED",
+      "evidence": "Nine historical checkout files have mixed line endings but match accepted Git blobs",
+      "resolution": "Verify exact canonical Git blob bytes and separately record raw checkout hashes; no old file rewritten"
+    }
+  ]
+}

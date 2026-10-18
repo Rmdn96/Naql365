@@ -1,0 +1,19 @@
+{
+  "scope": "local regression, not hosted launch evidence",
+  "journeys": 12,
+  "captures": 60,
+  "hashesVerified": true,
+  "retainedDirectory": "test-results/staff-local-1792325831126",
+  "cleanup": {
+    "org": "89d95e92-7398-4d1c-96a1-a9a0d2178514",
+    "users": [
+      "46e9300c-e363-49e3-aff8-69a0a5ba129f",
+      "9c0929d0-335a-489c-aabb-0d5f6c63042c",
+      "a6ebee3f-b0cc-48ea-b050-da37d92a660d",
+      "8dce6c15-8de7-497c-9a52-974e7c86adcf",
+      "b678ded9-558b-4296-89d6-90d47dc0ef7b",
+      "67a176e7-0a87-4ff2-ab94-db19a663d4cd"
+    ],
+    "cleanup": true
+  }
+}

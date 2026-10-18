@@ -1,6 +1,7 @@
+import { localSupabase } from './local-supabase.mjs';
 // Ephemeral LOCAL Supabase only. Each call spawns an independent psql connection.
 // Do not emit SQL, headers, capabilities, database output or credentials on failure.
-import { spawn, execFileSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { randomUUID, randomBytes } from 'node:crypto';
 const assert = (condition, label) => {
@@ -8,16 +9,10 @@ const assert = (condition, label) => {
 };
 const q = (value) => "'" + String(value).replaceAll("'", "''") + "'";
 const json = (value) => q(JSON.stringify(value)) + '::jsonb';
-const local = JSON.parse(
-  execFileSync(
-    process.execPath,
-    ['node_modules/supabase/dist/supabase.js', 'status', '--output', 'json'],
-    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
-  ),
-);
+const local = localSupabase();
 const endpoint = new URL(local.API_URL);
 assert(
-  ['localhost', '127.0.0.1'].includes(endpoint.hostname) && endpoint.port === '54321',
+  ['localhost', '127.0.0.1'].includes(endpoint.hostname) && endpoint.port === local.apiPort,
   'local environment required',
 );
 const org = '21000000-0000-4000-8000-000000000001',

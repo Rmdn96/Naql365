@@ -1,3 +1,4 @@
+import { localSupabase } from './local-supabase.mjs';
 // Local-only real Auth + restricted-role browser regression. No cloud credentials or bypass.
 import { execFileSync, spawn } from 'node:child_process';
 import { randomUUID, randomBytes, createHash } from 'node:crypto';
@@ -5,13 +6,7 @@ import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-const local = JSON.parse(
-  execFileSync(
-    process.execPath,
-    ['node_modules/supabase/dist/supabase.js', 'status', '-o', 'json'],
-    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
-  ),
-);
+const local = localSupabase();
 if (new URL(local.API_URL).hostname !== '127.0.0.1') throw Error('LOCAL_ONLY');
 const origin = 'http://127.0.0.1:3013';
 const env = {

@@ -1,0 +1,8 @@
+PASS: two identical Driver starts replay
+PASS: Driver Stop completion versus Dispatcher reassignment
+PASS: old Driver loses authority after reassignment
+PASS: duplicate Driver issue retry
+PASS: two identical Stop completions replay
+PASS: two Driver POD submissions replay
+PASS: Driver versus staff final completion
+PASS: independent-connection Driver concurrency matrix

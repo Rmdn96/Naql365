@@ -1,0 +1,1 @@
+PASS: independent PostgreSQL Job/reference/assignment/resource/reassignment/Stop/POD/aggregate races

@@ -1,6 +1,7 @@
+import { localSupabase } from './local-supabase.mjs';
 // Actual independent PostgreSQL connections, restricted to the named LOCAL container.
 // Never accepts a remote URL, password or cloud project. Fixtures are removed in finally.
-import { spawn, execFileSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { createClient } from '@supabase/supabase-js';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
@@ -255,16 +256,10 @@ try {
   if (setup) {
     // Supabase Storage disallows direct object DELETE, including maintenance SQL.
     // Use its supported LOCAL API; never print the CLI credential summary.
-    const local = JSON.parse(
-      execFileSync(
-        process.execPath,
-        ['node_modules/supabase/dist/supabase.js', 'status', '--output', 'json'],
-        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
-      ),
-    );
+    const local = localSupabase();
     const endpoint = new URL(local.API_URL);
     assert(
-      ['127.0.0.1', 'localhost'].includes(endpoint.hostname) && endpoint.port === '54321',
+      ['127.0.0.1', 'localhost'].includes(endpoint.hostname) && endpoint.port === local.apiPort,
       'local Storage cleanup endpoint',
     );
     const storage = createClient(endpoint.origin, local.SERVICE_ROLE_KEY, {

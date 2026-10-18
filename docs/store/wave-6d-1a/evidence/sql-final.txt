@@ -1,0 +1,13 @@
+Connecting to local database...
+/Users/DELL/AppData/Local/Temp/naql365-store-6d-local/supabase/tests/customer_request.test.sql ........ ok
+/Users/DELL/AppData/Local/Temp/naql365-store-6d-local/supabase/tests/deployment-attestation.test.sql .. ok
+/Users/DELL/AppData/Local/Temp/naql365-store-6d-local/supabase/tests/foundation.test.sql .............. ok
+/Users/DELL/AppData/Local/Temp/naql365-store-6d-local/supabase/tests/manual_pricing.test.sql .......... ok
+/Users/DELL/AppData/Local/Temp/naql365-store-6d-local/supabase/tests/market.test.sql .................. ok
+/Users/DELL/AppData/Local/Temp/naql365-store-6d-local/supabase/tests/phase2.test.sql .................. ok
+/Users/DELL/AppData/Local/Temp/naql365-store-6d-local/supabase/tests/phase3.test.sql .................. ok
+/Users/DELL/AppData/Local/Temp/naql365-store-6d-local/supabase/tests/store_catalog.test.sql ........... ok
+/Users/DELL/AppData/Local/Temp/naql365-store-6d-local/supabase/tests/support_queue.test.sql ........... ok
+All tests successful.
+Files=9, Tests=110,  5 wallclock secs ( 0.06 usr  0.04 sys +  0.13 cusr  0.12 csys =  0.35 CPU)
+Result: PASS

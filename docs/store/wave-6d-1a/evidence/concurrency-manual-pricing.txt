@@ -1,0 +1,7 @@
+PASS: duplicate manual draft across independent connections
+PASS: conflicting mutation payload admits one result
+PASS: duplicate send
+PASS: duplicate acceptance preserves exactly one order
+PASS: request revision versus manual draft
+PASS: pricing configuration versus manual draft
+PASS: manual pricing independent-connection checks; local disposable database only, removed by final CI teardown

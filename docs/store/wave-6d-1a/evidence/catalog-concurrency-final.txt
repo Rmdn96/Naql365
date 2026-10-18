@@ -1,0 +1,1 @@
+Store catalog scenarios PASS: 10; independent barrier races: 9; rollback scenario: 1

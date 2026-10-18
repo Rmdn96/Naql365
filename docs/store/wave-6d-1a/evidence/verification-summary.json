@@ -1,0 +1,36 @@
+{
+  "localOnly": true,
+  "base": "29baff49a143e2ed24856c80cbc08c9b65c3f941",
+  "unitIntegration": {
+    "passed": 354,
+    "total": 354,
+    "files": 70,
+    "workers": 2,
+    "timeLimitsUnchanged": true
+  },
+  "e2e": {
+    "passed": 60,
+    "total": 60
+  },
+  "sql": {
+    "files": 9,
+    "tapAssertions": 110,
+    "catalogAssertions": 102
+  },
+  "catalog": {
+    "barrierRaces": 9,
+    "rollbackScenario": 1,
+    "cleanupObserver": "PASS"
+  },
+  "legacyConcurrencySuites": 6,
+  "staffLocalJourneys": 12,
+  "staffLocalCaptureHashesVerified": 60,
+  "generatedTypesExact": true,
+  "populatedUpgrade": "PASS",
+  "migrationCount": 48,
+  "original47GitBlobsByteIdentical": true,
+  "localLinks": 8,
+  "cloudSqlExecuted": false,
+  "cloudApply": "BLOCKED pending live history, drift, backup/restore and owner approvals",
+  "remoteCI": "NOT RUN - branch remains local"
+}

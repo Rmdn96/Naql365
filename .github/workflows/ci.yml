@@ -29,6 +29,7 @@ jobs:
       - run: npm ci
       - run: npm run check:secrets
       - run: node scripts/check-secret-history.mjs
+      - run: node scripts/verify-store-catalog-migration.mjs
       - run: npm run format:check
       - run: npm run lint
       - run: npm run typecheck
@@ -64,6 +65,7 @@ jobs:
           path: src/infrastructure/supabase/database.types.ts
           retention-days: 7
       - run: npm run test:db
+      - run: node scripts/test-store-catalog-concurrency.mjs
       - run: node scripts/test-operations-concurrency.mjs
       - run: node scripts/test-driver-concurrency.mjs
       - run: node scripts/test-tracking-concurrency.mjs

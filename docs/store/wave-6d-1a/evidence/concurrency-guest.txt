@@ -1,0 +1,16 @@
+PASS: independent-connection customer onboarding and retry
+PASS: initial creation replay
+PASS: Quote acceptance replay
+PASS: accept versus revoke
+PASS: post-revocation acceptance
+PASS: concurrent link replacements
+PASS: old capability revoked
+PASS: revocation during mutation
+PASS: revoked mutation denied
+PASS: proof reservation replay
+PASS: immutable proof upload retry
+PASS: proof finalization and submission replay
+PASS: cross-customer payment denied
+PASS: cross-customer proof denied
+PASS: cross-tenant staff denied
+PASS: guest independent-connection matrix; fixtures remain only in disposable local CI database, removed by final Supabase teardown

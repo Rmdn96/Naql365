@@ -1,0 +1,113 @@
+{
+  "timestamp": "2026-10-18T12:21:10.484Z",
+  "head": "29baff49a143e2ed24856c80cbc08c9b65c3f941",
+  "results": [
+    {
+      "label": "CF30 same mutation same intent",
+      "outcomes": [
+        {
+          "ok": true
+        },
+        {
+          "ok": true
+        }
+      ]
+    },
+    {
+      "label": "CF32 stale revision",
+      "outcomes": [
+        {
+          "ok": false,
+          "sqlstate": "PT409"
+        },
+        {
+          "ok": true
+        }
+      ]
+    },
+    {
+      "label": "CF29 A/B reparent cycle",
+      "outcomes": [
+        {
+          "ok": false,
+          "sqlstate": "22023"
+        },
+        {
+          "ok": true
+        }
+      ]
+    },
+    {
+      "label": "CF31 same mutation different intent",
+      "outcomes": [
+        {
+          "ok": true
+        },
+        {
+          "ok": false,
+          "sqlstate": "PT409"
+        }
+      ]
+    },
+    {
+      "label": "CF36 revoke membership while waiting",
+      "outcomes": [
+        {
+          "ok": false,
+          "sqlstate": "42501"
+        }
+      ]
+    },
+    {
+      "label": "CF36 revoked replay",
+      "outcomes": [
+        {
+          "ok": false,
+          "sqlstate": "42501"
+        }
+      ]
+    },
+    {
+      "label": "CF36 effective permission revoked while waiting",
+      "outcomes": [
+        {
+          "ok": false,
+          "sqlstate": "42501"
+        }
+      ]
+    },
+    {
+      "label": "CF34 publish versus price approval",
+      "outcomes": [
+        {
+          "ok": true
+        },
+        {
+          "ok": true
+        }
+      ]
+    },
+    {
+      "label": "CF35 publish versus source revocation",
+      "outcomes": [
+        {
+          "ok": true
+        },
+        {
+          "ok": true
+        }
+      ]
+    },
+    {
+      "label": "CF33 transaction abort",
+      "result": "PASS"
+    },
+    {
+      "label": "CF42 cleanup independently verified",
+      "result": "PASS",
+      "credentials": "none created; local Docker PostgreSQL only"
+    }
+  ],
+  "sourceMode": "Local worktree; head denotes base before implementation commit",
+  "migrationSha256": "0816abc8bf7ef64258adfddc7f92633786b8d30bff9c00453caecfbb37459ebd"
+}

@@ -1,0 +1,13 @@
+PASS local SUPER_ADMIN ar: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local SUPER_ADMIN en: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local SALES ar: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local SALES en: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local OPERATIONS ar: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local OPERATIONS en: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local DISPATCHER ar: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local DISPATCHER en: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local FINANCE ar: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local FINANCE en: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local CUSTOMER_SERVICE ar: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+PASS local CUSTOMER_SERVICE en: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout
+Local evidence: test-results/staff-local-1792325831126; captures=60; owned fixture cleanup PASS

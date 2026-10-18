@@ -1,0 +1,8 @@
+
+ RUN  v5.0.0 C:/Users/DELL/Documents/Codex/2026-09-09/project-naql365-phase-0-foundation-architecture/work/Naql365
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  15:18:21
+   Duration  8.49s (tests 98%, import 1%, transform 1%)

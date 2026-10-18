@@ -1,5 +1,6 @@
+import { localSupabase } from './local-supabase.mjs';
 // Each call opens an independent real PostgreSQL connection. LOCAL only, no cloud URL.
-import { spawn, execFileSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
@@ -262,16 +263,10 @@ try {
   console.log('PASS: independent-connection Driver concurrency matrix');
 } finally {
   if (setup) {
-    const local = JSON.parse(
-      execFileSync(
-        process.execPath,
-        ['node_modules/supabase/dist/supabase.js', 'status', '--output', 'json'],
-        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
-      ),
-    );
+    const local = localSupabase();
     const endpoint = new URL(local.API_URL);
     assert(
-      ['127.0.0.1', 'localhost'].includes(endpoint.hostname) && endpoint.port === '54321',
+      ['127.0.0.1', 'localhost'].includes(endpoint.hostname) && endpoint.port === local.apiPort,
       'local cleanup only',
     );
     const client = createClient(endpoint.origin, local.SERVICE_ROLE_KEY, {

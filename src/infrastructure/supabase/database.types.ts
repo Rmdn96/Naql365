@@ -4029,6 +4029,89 @@ export type Database = {
         Args: { p_country: string; p_creation_token?: string }
         Returns: Json
       }
+      store_catalog_draft_command_v1: {
+        Args: {
+          p_expected: number
+          p_market: string
+          p_mutation: string
+          p_operation: string
+          p_org: string
+          p_payload: Json
+          p_target: string
+          p_version?: number
+        }
+        Returns: Json
+      }
+      store_catalog_policy_command_v1: {
+        Args: {
+          p_expected: number
+          p_market: string
+          p_mutation: string
+          p_operation: string
+          p_org: string
+          p_payload: Json
+          p_target: string
+          p_version?: number
+        }
+        Returns: Json
+      }
+      store_catalog_public_v1: {
+        Args: {
+          p_after?: string
+          p_country?: string
+          p_kind?: string
+          p_limit?: number
+          p_search?: string
+          p_slug?: string
+        }
+        Returns: Json
+      }
+      store_catalog_publication_command_v1: {
+        Args: {
+          p_expected: number
+          p_market: string
+          p_mutation: string
+          p_operation: string
+          p_org: string
+          p_payload: Json
+          p_target: string
+          p_version?: number
+        }
+        Returns: Json
+      }
+      store_catalog_sourcing_v1: {
+        Args: {
+          p_after?: string
+          p_kind?: string
+          p_limit?: number
+          p_market: string
+          p_org: string
+        }
+        Returns: Json
+      }
+      store_catalog_workspace_v1: {
+        Args: {
+          p_after?: string
+          p_kind?: string
+          p_limit?: number
+          p_market: string
+          p_org: string
+        }
+        Returns: Json
+      }
+      store_sourcing_command_v1: {
+        Args: {
+          p_expected: number
+          p_market: string
+          p_mutation: string
+          p_operation: string
+          p_org: string
+          p_payload: Json
+          p_target: string
+          p_version?: number
+        }
+        Returns: Json
+      }
       support_request_queue: {
         Args: {
           p_before_created?: string

@@ -1,0 +1,5 @@
+PASS: independent duplicate location replay
+PASS: newer then delayed older location
+PASS: simultaneous independent samples remain rate bounded
+PASS: independent Driver publication versus Dispatcher reassignment; old denied/new accepted
+PASS: twenty independent publications across two active Trips remain bounded

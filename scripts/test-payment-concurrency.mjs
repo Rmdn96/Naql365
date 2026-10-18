@@ -1,5 +1,6 @@
+import { localSupabase } from './local-supabase.mjs';
 // Local Supabase only. Every sql() call is an independent PostgreSQL connection.
-import { spawn, execFileSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
@@ -71,16 +72,10 @@ async function race(calls, label, min, max = min) {
   console.log(`PASS: ${label}`);
   return results;
 }
-const local = JSON.parse(
-  execFileSync(
-    process.execPath,
-    ['node_modules/supabase/dist/supabase.js', 'status', '--output', 'json'],
-    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
-  ),
-);
+const local = localSupabase();
 const endpoint = new URL(local.API_URL);
 assert(
-  ['127.0.0.1', 'localhost'].includes(endpoint.hostname) && endpoint.port === '54321',
+  ['127.0.0.1', 'localhost'].includes(endpoint.hostname) && endpoint.port === local.apiPort,
   'local fixtures only',
 );
 const storage = createClient(endpoint.origin, local.SERVICE_ROLE_KEY, {

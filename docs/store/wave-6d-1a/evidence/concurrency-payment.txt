@@ -1,0 +1,7 @@
+PASS: cash confirmation duplicate replay
+PASS: duplicate proof submission replays one attempt
+PASS: Finance confirmation versus rejection has one winner
+PASS: duplicate proof submission replays one attempt
+PASS: Finance confirmation versus physical start is serialized
+PASS: method switch versus physical start has one safe winner
+PASS: payment independent-connection races and scoped cleanup
