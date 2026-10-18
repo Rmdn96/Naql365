@@ -104,6 +104,9 @@ html[data-theme] .staff-app--collapsed {
 .staff-app .staff-context strong {
   font-size: 0.875rem;
 }
+.staff-app .staff-organization-context {
+  overflow-wrap: anywhere;
+}
 .staff-app .staff-topbar-actions {
   gap: 8px;
 }

@@ -5,10 +5,9 @@ import { selectedPublicCountry } from '@/infrastructure/markets/public';
 import { staffModules } from '@/infrastructure/identity/staff-context';
 import { salesQueue } from '@/infrastructure/pricing/service';
 import { operationsWorkspace } from '@/infrastructure/operations/service';
-import { getFinanceQueue } from '@/infrastructure/payments/service';
+import { StaffFinanceUnavailable } from '@/components/payments/staff-market-unavailable';
 import { quoteStatusLabel } from '@/i18n/quotes';
 import { operationalStatus } from '@/i18n/operations';
-import { paymentDictionary } from '@/i18n/payments';
 import { PageHeader } from '@/components/ui/presentation';
 import { Badge, EmptyState } from '@/components/ui/primitives';
 export const dynamic = 'force-dynamic';
@@ -19,10 +18,9 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   const ar = locale === 'ar',
     m = await staffModules();
   if (m.context.status !== 'authorized') return null;
-  const [sales, ops, finance] = await Promise.all([
+  const [sales, ops] = await Promise.all([
     m.sales ? salesQueue() : null,
     m.operations ? operationsWorkspace() : null,
-    m.finance ? getFinanceQueue({ organizationId: m.context.principal.organizationId }) : null,
   ]);
   const country = await selectedPublicCountry();
   const currency = country === 'SA' ? 'SAR' : 'EGP';
@@ -129,19 +127,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
               })),
             200,
           )}
-        {finance &&
-          panel(
-            ar ? 'متابعة المدفوعات' : 'Payment follow-up',
-            root + '/finance',
-            finance
-              .filter((p) => p.currency === currency)
-              .map((p) => ({
-                label: p.reference,
-                status: paymentDictionary(locale).states[p.status],
-                href: root + '/finance/' + p.orderId,
-              })),
-            30,
-          )}
+        {m.finance && <StaffFinanceUnavailable locale={locale} />}
         {m.support && (
           <section className="staff-dashboard-panel">
             <h2>{ar ? 'دعم العملاء' : 'Customer Support'}</h2>

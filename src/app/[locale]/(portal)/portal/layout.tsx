@@ -4,6 +4,7 @@ import { dictionary } from '@/i18n/dictionaries';
 import { isLocale } from '@/i18n/config';
 import { staffModules } from '@/infrastructure/identity/staff-context';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
+import { staffDisplayContext } from '@/infrastructure/identity/staff-market';
 import { StaffShell, type StaffLink } from '@/components/shell/staff-shell';
 import { customerLogout } from '@/app/auth/customer-actions';
 import { Alert, Button } from '@/components/ui/primitives';
@@ -86,10 +87,13 @@ export default async function Layout({
     });
   const theme = (await cookies()).get('naql365_theme')?.value;
   const themeMode = theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
+  const display = await staffDisplayContext();
   return (
     <StaffShell
       locale={locale}
       country={await selectedPublicCountry()}
+      organizationName={display.organizationName}
+      marketName={ar ? display.market.name_ar : display.market.name_en}
       themeMode={themeMode}
       links={links}
       logout={

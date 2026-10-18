@@ -120,6 +120,33 @@ try {
         await expect(page).toHaveURL(new RegExp('/' + locale + '/portal$'));
         checkpoint = role + ' ' + locale + ' workspaceModule visibility';
         const nav = page.locator('.staff-sidebar nav');
+        for (const country of ['EG', 'SA']) {
+          checkpoint = role + ' ' + locale + ' Market navigation ' + country;
+          const changed = page.waitForResponse(
+            (r) => r.url().endsWith('/api/public/market') && r.request().method() === 'POST',
+          );
+          await page.locator('#staff-market').selectOption(country);
+          expect((await changed).status()).toBe(200);
+          await expect(page.locator('#staff-market')).toHaveValue(country);
+          await expect(page.locator('.staff-organization-context')).toContainText(
+            country === 'SA'
+              ? locale === 'ar'
+                ? 'السعودية'
+                : 'Saudi Arabia'
+              : locale === 'ar'
+                ? 'مصر'
+                : 'Egypt',
+          );
+          await page.reload();
+          await expect(page.locator('#staff-market')).toHaveValue(country);
+          const other = locale === 'ar' ? 'en' : 'ar';
+          await page.goto(origin + '/' + other + '/portal');
+          await expect(page.locator('#staff-market')).toHaveValue(country);
+          await page.goto(origin + '/' + locale + '/portal');
+          await expect(page.locator('.staff-organization-context')).toContainText(
+            'Synthetic staff workspace',
+          );
+        }
         for (const workspaceModule of [
           'quotes',
           'operations',
@@ -174,6 +201,14 @@ try {
           await page.goto(origin + '/' + locale + '/portal/' + workspaceModule);
           await expect(page.locator('.staff-app')).toBeVisible();
           await expect(page.locator('.staff-workspace-content h1')).toBeVisible();
+          if (workspaceModule === 'finance') {
+            await expect(page.locator('.staff-workspace-content')).toContainText(
+              locale === 'ar'
+                ? 'قائمة المالية غير متاحة مؤقتًا'
+                : 'Finance queue temporarily unavailable',
+            );
+            await expect(page.locator('.finance-queue')).toHaveCount(0);
+          }
         }
         for (const denied of ['quotes', 'operations', 'finance', 'finance/banks', 'support'].filter(
           (item) => !allowed.includes(item),

@@ -19,6 +19,8 @@ it.each(['ar', 'en'] as const)(
         locale,
         country: 'SA',
         themeMode: 'dark',
+        organizationName: 'Synthetic organization',
+        marketName: locale === 'ar' ? 'السعودية' : 'Saudi Arabia',
         logout: createElement('button', null, 'Sign out'),
         links: [
           { href: root, label: 'Dashboard', symbol: 'D' },
@@ -41,6 +43,8 @@ it.each(['ar', 'en'] as const)(
     expect(markup).toContain('value="dark" selected=""');
     expect(markup).toContain('aria-haspopup="dialog"');
     expect(markup).toContain('href="#staff-content"');
+    expect(markup).toContain('Synthetic organization');
+    expect(markup).toContain(locale === 'ar' ? 'السعودية' : 'Saudi Arabia');
     expect(markup).not.toMatch(/pricing.calculate|finance.accounts.manage|@/);
   },
 );

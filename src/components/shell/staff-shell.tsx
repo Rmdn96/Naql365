@@ -11,6 +11,8 @@ export type StaffLink = { href: string; label: string; symbol: string };
 export function StaffShell({
   locale,
   country,
+  organizationName,
+  marketName,
   themeMode,
   links,
   logout,
@@ -18,6 +20,8 @@ export function StaffShell({
 }: {
   locale: Locale;
   country: PublicCountry;
+  organizationName?: string;
+  marketName?: string;
   themeMode: 'light' | 'dark' | 'system';
   links: StaffLink[];
   logout: React.ReactNode;
@@ -93,6 +97,11 @@ export function StaffShell({
           <div className="staff-context">
             <span>{ar ? 'مساحة الموظفين' : 'Staff workspace'}</span>
             <strong>{active?.label ?? (ar ? 'تفاصيل العمل' : 'Work details')}</strong>
+            {organizationName && marketName && (
+              <span className="staff-organization-context">
+                {organizationName} · {marketName}
+              </span>
+            )}
           </div>
           <div className="staff-topbar-actions">
             <MarketSelector country={country} locale={locale} id="staff-market" />

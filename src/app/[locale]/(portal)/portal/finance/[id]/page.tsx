@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { paymentDictionary } from '@/i18n/payments';
-import { getPayment } from '@/infrastructure/payments/service';
+import { staffPayment } from '@/infrastructure/payments/staff-views';
 import { staffAccess as portalAccess } from '@/infrastructure/identity/staff-context';
 import { AppError } from '@/domain/shared/errors';
 import { Checkout } from '@/components/payments/checkout';
@@ -19,7 +19,7 @@ export default async function Page({
   if (workspace.status !== 'authorized') notFound();
   let data;
   try {
-    data = await getPayment(id);
+    data = await staffPayment(id);
   } catch (error) {
     if (error instanceof AppError && error.code === 'unauthenticated') redirect(`/${locale}/login`);
     if (error instanceof AppError && ['forbidden', 'not_found'].includes(error.code)) notFound();
