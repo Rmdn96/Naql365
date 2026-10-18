@@ -69,6 +69,7 @@ for (const country of ['SA', 'EG'] as const)
       if (country === 'SA') {
         await page.getByRole('button', { name: t.cash, exact: true }).click();
         await expect(page.getByText(t.states.CASH_DUE, { exact: true })).toBeVisible();
+        await stage1Capture(page, `payment-cash-${country.toLowerCase()}-${locale}`);
       } else {
         await page
           .getByRole('button', { name: `${t.transfer} · TEST InstaPay`, exact: true })
@@ -82,11 +83,13 @@ for (const country of ['SA', 'EG'] as const)
           .png()
           .toBuffer();
         for (let attempt = 0; attempt < 2; attempt++) {
+          await expect(page.locator('#transfer-proof-file')).toBeEnabled();
           await page
             .locator('#transfer-proof-file')
             .setInputFiles({ name: 'test-proof.png', mimeType: 'image/png', buffer });
           await page.getByRole('button', { name: t.upload, exact: true }).click();
           await expect(page.getByText(t.states.UNDER_REVIEW, { exact: true })).toBeVisible();
+          await stage1Capture(page, `payment-proof-pending-${country.toLowerCase()}-${locale}`);
           const payment = (
             await admin
               .from('payments')
@@ -152,11 +155,13 @@ for (const country of ['SA', 'EG'] as const)
             await expect(
               page.getByText('TEST clearer proof required', { exact: true }),
             ).toBeVisible();
+            await stage1Capture(page, `payment-proof-retry-${country.toLowerCase()}-${locale}`);
           } else {
             await staff.getByRole('button', { name: t.confirmTransfer, exact: true }).click();
             await expect(staff.getByText(t.states.PAID, { exact: true })).toBeVisible();
             await page.reload();
             await expect(page.getByText(t.states.PAID, { exact: true })).toBeVisible();
+            await stage1Capture(page, `payment-confirmed-${country.toLowerCase()}-${locale}`);
           }
         }
       }
@@ -216,6 +221,7 @@ for (const country of ['SA', 'EG'] as const)
       await expect(
         page.getByText(guestDictionary(locale).unavailable, { exact: true }),
       ).toBeVisible();
+      await stage1Capture(page, `guest-revoked-${country.toLowerCase()}-${locale}`);
     } finally {
       await staffContext.close();
     }
@@ -237,6 +243,10 @@ test('guest rejects sent Quote without creating an Order', async ({ page, browse
             .data?.status,
       )
       .toBe('REJECTED');
+    await expect(
+      page.getByRole('button', { name: quotesDictionary('ar').accept, exact: true }),
+    ).toHaveCount(0);
+    await stage1Capture(page, 'quote-rejected-sa-ar');
     expect(
       (await admin.from('orders').select('id').eq('request_id', journey.requestId)).data,
     ).toEqual([]);

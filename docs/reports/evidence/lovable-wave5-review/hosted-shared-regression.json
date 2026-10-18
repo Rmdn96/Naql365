@@ -1,0 +1,31 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "result": "PASS",
+  "pass": 10,
+  "total": 10,
+  "records": [
+    "passed: hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration; durationMs=140602\r",
+    "passed: hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration; durationMs=216792\r",
+    "passed: hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order; durationMs=45871\r",
+    "passed: hosted-phase7 > manual-customer.spec.ts > SA registered customer manual quote and CASH regression; durationMs=80865\r",
+    "passed: hosted-phase7 > manual-customer.spec.ts > EG registered customer manual quote and CASH regression; durationMs=85246\r",
+    "passed: hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact; durationMs=10049\r",
+    "passed: hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact; durationMs=10593\r",
+    "passed: hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed; durationMs=5920\r",
+    "passed: hosted-phase7 > stage1-session.spec.ts > ar normal SUPER_ADMIN session, explicit logout and history denial; durationMs=19016\r",
+    "passed: hosted-phase7 > stage1-session.spec.ts > en normal SUPER_ADMIN session, explicit logout and history denial; durationMs=19475\r"
+  ],
+  "ownedIdentityCount": 16,
+  "credentialReuseDenial": {
+    "status": 400,
+    "code": "invalid_credentials",
+    "sessionIssued": false
+  },
+  "cleanup": "PASS",
+  "runner": "existing bounded --stage3-business regression; filename retained for compatibility",
+  "readOnlyObserverInterruption": {
+    "result": "INTERRUPTED",
+    "rootCause": "One CLI db query failed with suppressed output; bounded identical probe succeeded. Underlying cause undetermined; no application failure inferred.",
+    "resumed": true
+  }
+}

@@ -4029,6 +4029,16 @@ export type Database = {
         Args: { p_country: string; p_creation_token?: string }
         Returns: Json
       }
+      support_request_queue: {
+        Args: {
+          p_before_created?: string
+          p_before_id?: string
+          p_limit?: number
+          p_market: string
+          p_org: string
+        }
+        Returns: Json
+      }
       tracking_feed: {
         Args: {
           p_driver?: string

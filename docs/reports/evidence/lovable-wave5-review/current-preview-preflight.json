@@ -1,0 +1,10 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "deploymentId": "dpl_65MSuwGmpjSR4WQFAk4jHJ2xJ89i",
+  "url": "https://naql365-staging-ui-v2-naql365.vercel.app",
+  "status": "READY",
+  "anonymousStatus": 302,
+  "protectedStatus": 200,
+  "protectionRetained": true,
+  "verifiedAt": "2026-10-17T09:44:32.109Z"
+}

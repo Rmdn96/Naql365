@@ -1,0 +1,85 @@
+{
+  "project": "45d7c85b-e937-48ee-8d57-251cc16a57b8",
+  "exportSha256": "cf8091cd847b01c5d2c53f1940dd4a9dfeff86b6c745af3f800e33e37ef92743",
+  "changed": [
+    {
+      "path": "AGENTS.md",
+      "status": "modified",
+      "sha256": "84272abec1206a32e2afb76f8226c049aa9d609e92b6102862acd23fdfa31788"
+    },
+    {
+      "path": "bun.lock",
+      "status": "modified",
+      "sha256": "4a2f15b39287f71cb09885e15ca6ebb42c540b4451c29082ef91eecf0439c262"
+    },
+    {
+      "path": "DESIGN-LAB.md",
+      "status": "modified",
+      "sha256": "794100b215651c6233d241f11d551a7f9695d9bd213848cdcc29962b7bcb7c53"
+    },
+    {
+      "path": "package.json",
+      "status": "modified",
+      "sha256": "c306d5b56af1a53dd8f650102fb47a708c4edd31791092cbf1241318c49a12c6"
+    },
+    {
+      "path": "roadmap.md",
+      "status": "modified",
+      "sha256": "035496cde2b2f86d815e8785dcfc32a835c42c43fa51add5a220e9d523a236ca"
+    },
+    {
+      "path": "src/components/naql/customer-preview.tsx",
+      "status": "added",
+      "sha256": "c2b849780d6aca723b4afa88fd18f94d3c6b51edd82d961f9c721d5d5ff0a83d"
+    },
+    {
+      "path": "src/lib/naql/customer-concept.test.ts",
+      "status": "added",
+      "sha256": "6174686dc6cfef6593119d655f7235477ed475db5ff57d644d1f0622c600cc97"
+    },
+    {
+      "path": "src/lib/naql/customer-concept.ts",
+      "status": "added",
+      "sha256": "931aba5de004df8f940a0d88e5316de584b39d22164326a12c65c0854470f805"
+    },
+    {
+      "path": "src/lib/naql/customer-content.ts",
+      "status": "added",
+      "sha256": "3e1cde7c3472a474423fdfe5392606f4097cf261fbbd1f7dc1b6e4305ea0d79f"
+    },
+    {
+      "path": "src/routes/customer-preview.tsx",
+      "status": "added",
+      "sha256": "b3ab22ed1f25f8d54279452d1c22263bb47a266690ba3222f143aee64ce2ca9e"
+    },
+    {
+      "path": "src/routes/index.tsx",
+      "status": "modified",
+      "sha256": "1189beae49883d143f2c57762829c16418747bb425bb2bd86edcd20565c36b11"
+    },
+    {
+      "path": "src/routes/__root.tsx",
+      "status": "modified",
+      "sha256": "49fd6b3d277940b200fc464dae42fb2863e9d78108c40f893bb3dd21642733f1"
+    },
+    {
+      "path": "src/routeTree.gen.ts",
+      "status": "modified",
+      "sha256": "6df6a3dbd3cc871c81e02cea0fec7598feaca80d3b5e2f663f5c07805241ce69"
+    },
+    {
+      "path": "src/styles.css",
+      "status": "modified",
+      "sha256": "6109ce4d6574e338fa1b37e1d77d0f84df80b7ff1e901bda709793b1e67ef4c6"
+    }
+  ],
+  "accepted": "Visual hierarchy, next-action panel, bounded lists, semantic surfaces, route/money/payment grouping, wizard progress.",
+  "rejected": [
+    "Lab router/runtime and generated route tree",
+    "Synthetic LAB records, monetary examples and local tax calculation",
+    "Pure preview authorization/payment predicates; canonical authority retained",
+    "State selectors and fake outcomes",
+    "Independent localStorage theme implementation; accepted cookie/System foundation retained",
+    "Generated instructions replacing repository AGENTS.md"
+  ]
+}

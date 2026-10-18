@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "ownedIdentities": 16,
+  "remaining": {
+    "auth_identities": 0,
+    "bank_fixtures": 0,
+    "customers": 0,
+    "files": 0,
+    "isolated_organizations": 0,
+    "memberships": 0,
+    "profiles": 0,
+    "roles": 0
+  },
+  "guestPolicyRestored": true,
+  "verifiedAt": "2026-10-15T12:59:05.067Z"
+}

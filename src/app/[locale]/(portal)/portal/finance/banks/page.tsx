@@ -1,8 +1,8 @@
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { paymentDictionary } from '@/i18n/payments';
-import { getBankConfiguration } from '@/infrastructure/payments/service';
-import { portalAccess } from '@/infrastructure/identity/access';
+import { staffBankConfiguration } from '@/infrastructure/payments/staff-views';
+import { staffAccess as portalAccess } from '@/infrastructure/identity/staff-context';
 import { BankForm } from '@/components/payments/bank-admin';
 import { transferDestinationType } from '@/domain/payments/model';
 export const dynamic = 'force-dynamic';
@@ -14,7 +14,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   if (access.status === 'unauthenticated') redirect(`/${locale}/login`);
   if (access.status !== 'authorized') notFound();
   const organizationId = access.principal.organizationId,
-    data = await getBankConfiguration(organizationId);
+    data = await staffBankConfiguration();
   return (
     <div className="container page">
       <h1>{paymentDictionary(locale).bankAdmin}</h1>

@@ -1,4 +1,5 @@
 import { protectionHeaders } from '../../scripts/staging/target.mjs';
+import { driverVisual } from './driver-v2-evidence';
 import { randomUUID } from 'node:crypto';
 import sharp from 'sharp';
 import type { Page, BrowserContext } from '@playwright/test';
@@ -116,6 +117,7 @@ export function registerDriverJourneys(
     started?: (args: DriverJourneyHook) => Promise<void>;
     reassigned?: (args: DriverJourneyHook) => Promise<void>;
     completed?: (args: DriverJourneyHook) => Promise<void>;
+    beforePod?: (args: DriverJourneyHook, image: Buffer) => Promise<void>;
   } = {},
 ) {
   for (const country of ['SA', 'EG'] as const)
@@ -306,15 +308,22 @@ export function registerDriverJourneys(
       await expect(page.locator('main')).not.toContainText(
         refs.data!.find((r) => r.id === trip2)!.reference,
       );
+      await driverVisual(page, 'today', country);
+      await driverVisual(page, 'loading', country);
       await page.getByRole('link', { name: dt.upcoming, exact: true }).click();
       await expect(page.locator('main')).toContainText(
         refs.data!.find((r) => r.id === trip2)!.reference,
       );
+      await driverVisual(page, 'upcoming', country);
       await page.goto(`/${locale}/driver/trips/${trip1}`);
       await page.reload();
       await expect(page.locator('main')).toContainText(plan.stops[0]!.address);
       await expect(page.locator('main')).not.toContainText('Staff-only note must stay private');
       await axe(page);
+      await driverVisual(page, 'ready', country);
+      await driverVisual(page, 'command-error', country);
+      await driverVisual(page, 'command-busy-disabled', country);
+      await driverVisual(page, 'offline-unconfirmed', country);
       const driver = await principal(a),
         replacement = await principal(b),
         customer = await principal('customer');
@@ -387,6 +396,7 @@ export function registerDriverJourneys(
         customer,
       };
       await hooks.started?.(hookArgs);
+      await driverVisual(page, 'active', country);
       await admin
         .from('organization_memberships')
         .update({ status: 'suspended' })
@@ -419,6 +429,9 @@ export function registerDriverJourneys(
       await page.goto(`/${locale}/driver/trips/${trip1}`);
       await hooks.reassigned?.(hookArgs);
       await axe(page);
+      await driverVisual(page, 'reassigned', country);
+      await driverVisual(page, 'issue-form', country);
+      await driverVisual(page, 'issue-validation', country);
       await page.getByText(dt.issue, { exact: true }).click();
       await page.locator('#issue-reason').fill('Private controlled access problem');
       await page.locator('#issue-category').selectOption('ACCESS_BLOCKED');
@@ -446,6 +459,7 @@ export function registerDriverJourneys(
       const issue = (await admin.from('issues').select('id').eq('trip_id', trip1).single()).data!
         .id;
       await expect(page.locator('main')).toContainText(dt.attention);
+      await driverVisual(page, 'issue-open', country);
       await command(page, trip1, 'start_service', { stopId: stops.data![0]!.id }, 400);
       expect(
         (await customer.rpc('driver_evidence_path', { p_kind: 'issue', p_id: issue })).error,
@@ -487,6 +501,9 @@ export function registerDriverJourneys(
       }
       await command(page, trip1, 'complete_trip', {}, 400);
       await axe(page);
+      await driverVisual(page, 'pod-form', country);
+      await driverVisual(page, 'pod-validation', country);
+      await driverVisual(page, 'pod-upload-pending', country);
       await page.locator('#pod-recipient').fill('Distinct controlled recipient');
       if (country === 'SA') {
         await page.locator('canvas').scrollIntoViewIfNeeded();
@@ -515,6 +532,7 @@ export function registerDriverJourneys(
         await page
           .locator('#pod-file')
           .setInputFiles({ name: 'signature.png', mimeType: 'image/png', buffer: png });
+      await hooks.beforePod?.(hookArgs, png);
       await page.getByRole('button', { name: dt.submitPod, exact: true }).click();
       await expect
         .poll(
@@ -524,6 +542,7 @@ export function registerDriverJourneys(
         )
         .toBe('FINAL');
       await page.reload();
+      await driverVisual(page, 'pod-final', country);
       const pod = (await admin.from('trip_pods').select('*').eq('trip_id', trip1).single()).data!;
       expect(pod.actor_id).toBe(identities[b]!.id);
       expect(pod.recipient_name).toBe('Distinct controlled recipient');
@@ -571,9 +590,16 @@ export function registerDriverJourneys(
       await expect(page.locator('main')).toContainText(
         refs.data!.find((r) => r.id === trip1)!.reference,
       );
+      await driverVisual(page, 'completed-list', country);
       await page.goto(`/${locale}/driver/trips/${trip1}`);
       await expect(page.locator('main')).not.toContainText(plan.stops[0]!.address);
       await axe(page);
+      await driverVisual(page, 'completed-detail', country);
+      if (process.env.STAGING_WAVE5_CAPTURE_DIR) {
+        await page.goto(`/${locale}/driver?view=upcoming`);
+        await expect(page.locator('.driver-empty')).toBeVisible();
+        await driverVisual(page, 'empty-upcoming', country);
+      }
       await driverLogin(page, a, locale);
       await page.goto(`/${locale}/driver/trips/${trip2}`);
       await uiAction(page, trip2, 'dispatch', locale);

@@ -1,0 +1,22 @@
+{
+  "state": "quote-sa-ar",
+  "locale": "ar",
+  "theme": "dark",
+  "width": 360,
+  "applicationSha": "f37273861fd0cfddf0965ba09b0adf02a9ac000b",
+  "result": "FAIL",
+  "category": "AXE",
+  "rules": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "targets": [
+        ["dd:nth-child(2) > bdi"],
+        ["dt:nth-child(3)"],
+        ["dd:nth-child(4) > bdi"],
+        ["dd:nth-child(6) > bdi"],
+        ["time"]
+      ]
+    }
+  ]
+}

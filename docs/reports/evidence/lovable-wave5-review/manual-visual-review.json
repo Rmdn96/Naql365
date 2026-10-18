@@ -1,0 +1,30 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "result": "PASS",
+  "scope": "Representative visual inspection only, complementing indexed deterministic checks; no WCAG certification",
+  "checkedAt": "2026-10-17T09:13:22.151Z",
+  "findings": [
+    "AR dark mobile POD labels, canvas alternative, consent and primary action readable and contained",
+    "EN light mobile next action, Stop ordering and required issue input reachable",
+    "AR dark desktop assigned card, 0 / 4 LTR numerical isolation, focus outline and safe-stop note clear",
+    "EG EN 390px completed read-only history: contact/address redactions retained, text statuses and POD result readable, actions contained"
+  ],
+  "files": [
+    {
+      "filename": "SA-ar-pod-form-360-dark-dark.png",
+      "sha256": "cc177aebb95427573d3f310eeefb55e8acfc8f984e70bd0f33fca631993eddb7"
+    },
+    {
+      "filename": "SA-en-issue-validation-360-light-light.png",
+      "sha256": "cf88b38fbfdcf89221635dbd68ace8c31d2fa658c6ea982c452ef9a386a13f3b"
+    },
+    {
+      "filename": "SA-ar-today-1440-dark-light.png",
+      "sha256": "31201bb3bfb88ced404c1277dd9ec9f879fef9ffb83557ba64630a85f0c2c0a9"
+    },
+    {
+      "filename": "EG-en-completed-detail-390-light-light.png",
+      "sha256": "c59940a0891dea1af7baccf85829d670694cfe17bdfe848170b7a24cca56587e"
+    }
+  ]
+}

@@ -1,10 +1,11 @@
+import { AuthExperience } from '@/components/auth/auth-experience';
 import { authErrorMessage } from '@/i18n/auth-errors';
 import { customerExperience } from '@/i18n/customer-experience';
 import { notFound, redirect } from 'next/navigation';
 import { loginDestination } from '@/infrastructure/identity/login-destination';
 import { isLocale } from '@/i18n/config';
 import { dictionary } from '@/i18n/dictionaries';
-import { Card, Badge, Alert } from '@/components/ui/primitives';
+import { Badge, Alert } from '@/components/ui/primitives';
 import { stagingAuthEnabled } from '@/infrastructure/config/deployment-env';
 import { SmokeLoginForm } from '@/components/auth/smoke-login-form';
 import { CustomerAuthForm } from '@/components/auth/customer-form';
@@ -31,22 +32,18 @@ export default async function Login({
   const t = dictionary(locale);
   const notice = (await searchParams).notice;
   return (
-    <div className="container page narrow customer-experience">
-      <Card className="auth-card">
-        {!getPublicEnv() && <Badge>{t.foundation}</Badge>}
-        <h1>{t.login}</h1>
-        <p className="auth-intro">{customerExperience(locale).loginHelp}</p>
-        {notice === 'confirmation-link' && (
-          <Alert tone="error">{authErrorMessage(locale, 'confirmationLink')}</Alert>
-        )}
-        {getPublicEnv() ? (
-          <CustomerAuthForm locale={locale} mode="login" />
-        ) : stagingAuthEnabled() ? (
-          <SmokeLoginForm locale={locale} />
-        ) : (
-          <p>{t.authBody}</p>
-        )}
-      </Card>
-    </div>
+    <AuthExperience locale={locale} title={t.login} intro={customerExperience(locale).loginHelp}>
+      {!getPublicEnv() && <Badge>{t.foundation}</Badge>}
+      {notice === 'confirmation-link' && (
+        <Alert tone="error">{authErrorMessage(locale, 'confirmationLink')}</Alert>
+      )}
+      {getPublicEnv() ? (
+        <CustomerAuthForm locale={locale} mode="login" />
+      ) : stagingAuthEnabled() ? (
+        <SmokeLoginForm locale={locale} />
+      ) : (
+        <p>{t.authBody}</p>
+      )}
+    </AuthExperience>
   );
 }

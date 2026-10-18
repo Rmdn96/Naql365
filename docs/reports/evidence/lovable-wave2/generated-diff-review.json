@@ -1,0 +1,61 @@
+{
+  "baseline": "70cba96307745bb8c6de2538eb1059676cd3d901",
+  "exportSha256": "678527645848411abbadd1eeed2d8fca1bda1ad979f49979748d9fe2b980706c",
+  "changed": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "b855081810035a4d6ca9534ffb731bb19754632bfd27f76621e095f34225ef83"
+    },
+    {
+      "path": "DESIGN-LAB.md",
+      "sha256": "d05b9f380d7e4b7c4eac8cb0bfaf020026a467cb829524449bf1db0daad479e1"
+    },
+    {
+      "path": "roadmap.md",
+      "sha256": "419eaf9ac5a2992359143dfdc960a3056736041b43a6426eebfbbbd09e7d10cd"
+    },
+    {
+      "path": "src/components/naql/auth-preview.tsx",
+      "sha256": "c40ff303997d8fbde2c77539b1e4f51b37f9348cc40e0be9ba8e4cfc42ad64c8"
+    },
+    {
+      "path": "src/lib/naql/auth-concept.test.ts",
+      "sha256": "695c7e1ed99810a0f45dff8d51bd02eb0ee54b4893dfef76cb6c817dea6b56e6"
+    },
+    {
+      "path": "src/lib/naql/auth-concept.ts",
+      "sha256": "7b482274407ed0329868f7bf7537f7f5e3337872e2994faa6f24b3d3fe27e91d"
+    },
+    {
+      "path": "src/lib/naql/content.ts",
+      "sha256": "d31fbae290d10cd3475ebf8cd511c4bf53bf81eabbb293443d268449a5587db3"
+    },
+    {
+      "path": "src/routes/auth-preview.tsx",
+      "sha256": "c54f52646f3334e37e49e5714191aa274a00939190fd6cccbff54a3b125ecca9"
+    },
+    {
+      "path": "src/routes/index.tsx",
+      "sha256": "a4496528adbfd11a79c755ff3474ef607be3a10c07171d3bf9914258d3ada8ef"
+    },
+    {
+      "path": "src/routeTree.gen.ts",
+      "sha256": "8bb599460d26b38ee54de79c7e724d981bc26eb03988ce552a3cbd7b606e6892"
+    },
+    {
+      "path": "src/styles.css",
+      "sha256": "05ddc7d2c8e8d9437028f69c3df247ca0f33aa20a28246d08814ab030a2e3aff"
+    }
+  ],
+  "accepted": "Visual split layout, story panel, form surface, safe message hierarchy, accessible reveal pattern, logical responsive spacing",
+  "rejected": [
+    "TanStack/Vite router and generated route tree",
+    "Demo state selectors, timeout-based fake results and noValidate",
+    "Alternative validation/password-confirmation input",
+    "Generated AGENTS.md",
+    "Demo copy that claims reset success without server authority",
+    "New backend/Auth/database integrations"
+  ],
+  "canonicalAuthority": "Existing Next.js server actions, validation, session, callback and role routing unchanged",
+  "generatedCodeExecuted": false
+}

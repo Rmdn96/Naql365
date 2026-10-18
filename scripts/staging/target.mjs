@@ -16,7 +16,10 @@ export function acceptanceTarget(env = process.env, approved = manifest) {
   if (url.protocol !== 'https:' || url.origin !== origin || url.username || url.password)
     throw Error('ACCEPTANCE_ORIGIN_DENIED');
   if (provider === 'VERCEL_STAGING') {
-    if (!approved.staging.origins.includes(origin) || !env.VERCEL_AUTOMATION_BYPASS_SECRET)
+    if (
+      !approved.staging.origins.includes(origin) ||
+      (!env.VERCEL_AUTOMATION_BYPASS_SECRET && !env.VERCEL_OIDC_TOKEN)
+    )
       throw Error('ACCEPTANCE_PROTECTION_REQUIRED');
   } else if (provider === 'HOSTINGER_ACCEPTANCE') {
     // Exact entries may be added only after platform access restriction is independently verified.
@@ -31,7 +34,8 @@ export function acceptanceTarget(env = process.env, approved = manifest) {
 }
 export function protectionHeaders(env = process.env, approved = manifest) {
   const target = acceptanceTarget(env, approved);
-  return target.provider === 'VERCEL_STAGING'
-    ? { 'x-vercel-protection-bypass': env.VERCEL_AUTOMATION_BYPASS_SECRET }
-    : {};
+  if (target.provider !== 'VERCEL_STAGING') return {};
+  return env.VERCEL_OIDC_TOKEN
+    ? { 'x-vercel-trusted-oidc-idp-token': env.VERCEL_OIDC_TOKEN }
+    : { 'x-vercel-protection-bypass': env.VERCEL_AUTOMATION_BYPASS_SECRET };
 }

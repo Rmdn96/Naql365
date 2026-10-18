@@ -1,0 +1,16 @@
+{
+  "state": "request-sa-en-mobile",
+  "locale": "en",
+  "theme": "dark",
+  "width": 360,
+  "applicationSha": "823382fb0ed8e0e89096f5e9a395263579ffac68",
+  "result": "FAIL",
+  "category": "AXE",
+  "rules": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "targets": [[".wizard-state-bar > span"], [".save-status"]]
+    }
+  ]
+}

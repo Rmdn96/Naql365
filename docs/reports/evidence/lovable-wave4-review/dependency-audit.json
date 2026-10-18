@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-15T21:55:04.2903196Z",
+  "applicationSha": "8e340a537a8f469324e13e5f050077881489d0de",
+  "runtimeVulnerabilities": 0,
+  "fullAudit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 5,
+    "critical": 0,
+    "total": 5
+  },
+  "affectedPackages": [
+    "@next/eslint-plugin-next",
+    "braces",
+    "eslint-config-next",
+    "fast-glob",
+    "micromatch"
+  ],
+  "manifestChanged": false,
+  "disposition": "Existing scoped development dependency-risk acceptance; no package or lockfile change/suppression."
+}

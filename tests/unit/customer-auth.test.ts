@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   getUser: vi.fn(),
   rpc: vi.fn(),
   resetPasswordForEmail: vi.fn(),
+  updateUser: vi.fn(),
 }));
 vi.mock('next/headers', () => ({ headers: async () => new Headers({ origin: mocks.origin }) }));
 vi.mock('@/infrastructure/config/server-env', () => ({
@@ -88,6 +89,18 @@ it('constructs a locale-safe recovery callback', async () => {
   expect(mocks.resetPasswordForEmail).toHaveBeenCalledWith('fixture@example.test', {
     redirectTo: 'https://staging.example/auth/callback?locale=en&next=/en/password',
   });
+});
+it('successful password reset keeps the existing global sign-out and login redirect contract', async () => {
+  mocks.getUser.mockResolvedValue({ data: { user: { id: 'synthetic' } }, error: null });
+  mocks.updateUser.mockResolvedValue({ error: null });
+  mocks.signOut.mockResolvedValue({ error: null });
+  const form = new FormData();
+  form.set('password', 'Synthetic-reset-password');
+  await expect(customerAuth('en', 'password', { status: 'idle' }, form)).rejects.toMatchObject({
+    digest: expect.stringContaining('/en/login'),
+  });
+  expect(mocks.updateUser).toHaveBeenCalledWith({ password: 'Synthetic-reset-password' });
+  expect(mocks.signOut).toHaveBeenCalledWith({ scope: 'global' });
 });
 
 it('returns field-level validation without calling the database', async () => {

@@ -3,14 +3,19 @@ import { Alexandria, Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { isLocale, direction, locales } from '@/i18n/config';
 import { dictionary } from '@/i18n/dictionaries';
+import { PublicChrome } from '@/components/shell/public-chrome';
 import { HistoryRefresh } from '@/components/shell/history-refresh';
 import { Header, Footer } from '@/components/shell/public-shell';
 import { appUrl } from '@/infrastructure/config/server-env';
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { preventIndexing } from '@/infrastructure/config/deployment-env';
 import '../globals.css';
 import '../../styles/stage1.css';
 import '../../styles/customer-experience.css';
+import '../../styles/staff-experience.css';
+import '../../styles/customer-v2.css';
+import '../../styles/staff-v2.css';
+import '../../styles/driver-v2.css';
 const arabic = Alexandria({ subsets: ['arabic'], display: 'swap', variable: '--font-arabic' });
 const english = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-english' });
 
@@ -40,6 +45,8 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   await headers(); // Per-request CSP nonces require dynamic rendering.
+  const theme = (await cookies()).get('naql365_theme')?.value;
+  const themeMode = theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   return (
@@ -47,14 +54,19 @@ export default async function LocaleLayout({
       lang={locale}
       dir={direction(locale)}
       className={`${arabic.variable} ${english.variable}`}
+      data-theme={themeMode}
     >
       <body>
         <HistoryRefresh />
-        <Header locale={locale} />
+        <PublicChrome>
+          <Header locale={locale} themeMode={themeMode} />
+        </PublicChrome>
         <main id="main" tabIndex={-1}>
           {children}
         </main>
-        <Footer locale={locale} />
+        <PublicChrome>
+          <Footer locale={locale} />
+        </PublicChrome>
       </body>
     </html>
   );

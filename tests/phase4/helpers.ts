@@ -334,6 +334,16 @@ export async function acceptedOrder(
   await logout(page);
   await login(page, customerRole);
   await openHydratedAction(page, `/ar/account/quotes/${versionId}`, qt.accept);
+  if (process.env.STAGING_WAVE3_CAPTURE_DIR) {
+    // Opening the Quote records VIEWED through the existing authoritative command.
+    await page.goto('/ar/account');
+    await expect(page.locator('.customer-next-action a')).toHaveAttribute(
+      'href',
+      `/ar/account/quotes/${versionId}`,
+    );
+    await stage1Capture(page, `customer-pending-quote-${country.toLowerCase()}-ar`);
+    await openHydratedAction(page, `/ar/account/quotes/${versionId}`, qt.accept);
+  }
   page.once('dialog', (dialog) => void dialog.accept());
   await page.getByRole('button', { name: qt.accept, exact: true }).click();
   await expect(page.getByRole('button', { name: qt.accept, exact: true })).toBeHidden();

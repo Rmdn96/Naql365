@@ -1,0 +1,198 @@
+[
+  {
+    "role": "SUPER_ADMIN",
+    "locale": "ar",
+    "permissions": [
+      "audit.read",
+      "customers.read",
+      "dispatch.manage",
+      "files.read",
+      "finance.accounts.manage",
+      "finance.read",
+      "finance.verify",
+      "fleet.manage",
+      "fleet.read",
+      "guest.links.manage",
+      "markets.manage",
+      "notifications.manage",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "pricing.calculate",
+      "quality.read",
+      "quotes.manage",
+      "quotes.read",
+      "requests.read",
+      "services.read",
+      "support.read",
+      "trips.read",
+      "users.manage"
+    ],
+    "modules": ["quotes", "operations", "finance", "finance/banks", "support"],
+    "result": "PASS"
+  },
+  {
+    "role": "SUPER_ADMIN",
+    "locale": "en",
+    "permissions": [
+      "audit.read",
+      "customers.read",
+      "dispatch.manage",
+      "files.read",
+      "finance.accounts.manage",
+      "finance.read",
+      "finance.verify",
+      "fleet.manage",
+      "fleet.read",
+      "guest.links.manage",
+      "markets.manage",
+      "notifications.manage",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "pricing.calculate",
+      "quality.read",
+      "quotes.manage",
+      "quotes.read",
+      "requests.read",
+      "services.read",
+      "support.read",
+      "trips.read",
+      "users.manage"
+    ],
+    "modules": ["quotes", "operations", "finance", "finance/banks", "support"],
+    "result": "PASS"
+  },
+  {
+    "role": "SALES",
+    "locale": "ar",
+    "permissions": [
+      "customers.read",
+      "guest.links.manage",
+      "portal.access",
+      "pricing.calculate",
+      "quotes.manage",
+      "quotes.read",
+      "requests.read",
+      "services.read"
+    ],
+    "modules": ["quotes"],
+    "result": "PASS"
+  },
+  {
+    "role": "SALES",
+    "locale": "en",
+    "permissions": [
+      "customers.read",
+      "guest.links.manage",
+      "portal.access",
+      "pricing.calculate",
+      "quotes.manage",
+      "quotes.read",
+      "requests.read",
+      "services.read"
+    ],
+    "modules": ["quotes"],
+    "result": "PASS"
+  },
+  {
+    "role": "OPERATIONS",
+    "locale": "ar",
+    "permissions": [
+      "dispatch.manage",
+      "fleet.manage",
+      "fleet.read",
+      "guest.links.manage",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "requests.read",
+      "services.read",
+      "trips.read"
+    ],
+    "modules": ["operations"],
+    "result": "PASS"
+  },
+  {
+    "role": "OPERATIONS",
+    "locale": "en",
+    "permissions": [
+      "dispatch.manage",
+      "fleet.manage",
+      "fleet.read",
+      "guest.links.manage",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "requests.read",
+      "services.read",
+      "trips.read"
+    ],
+    "modules": ["operations"],
+    "result": "PASS"
+  },
+  {
+    "role": "DISPATCHER",
+    "locale": "ar",
+    "permissions": [
+      "dispatch.manage",
+      "fleet.manage",
+      "fleet.read",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "trips.read"
+    ],
+    "modules": ["operations"],
+    "result": "PASS"
+  },
+  {
+    "role": "DISPATCHER",
+    "locale": "en",
+    "permissions": [
+      "dispatch.manage",
+      "fleet.manage",
+      "fleet.read",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "trips.read"
+    ],
+    "modules": ["operations"],
+    "result": "PASS"
+  },
+  {
+    "role": "FINANCE",
+    "locale": "ar",
+    "permissions": ["finance.read", "finance.verify", "portal.access"],
+    "modules": ["finance"],
+    "result": "PASS"
+  },
+  {
+    "role": "FINANCE",
+    "locale": "en",
+    "permissions": ["finance.read", "finance.verify", "portal.access"],
+    "modules": ["finance"],
+    "result": "PASS"
+  },
+  {
+    "role": "CUSTOMER_SERVICE",
+    "locale": "ar",
+    "permissions": ["customers.read", "portal.access", "requests.read", "support.read"],
+    "modules": ["support"],
+    "result": "PASS"
+  },
+  {
+    "role": "CUSTOMER_SERVICE",
+    "locale": "en",
+    "permissions": ["customers.read", "portal.access", "requests.read", "support.read"],
+    "modules": ["support"],
+    "result": "PASS"
+  }
+]

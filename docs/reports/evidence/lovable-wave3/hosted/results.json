@@ -1,0 +1,71 @@
+{
+  "applicationSha": "f758f42868f97984999a5673d2f5ed0ca5d13b89",
+  "deploymentId": "dpl_DoWpuNVJaoPqSTwqtpzJweKr9sJo",
+  "result": "PASS",
+  "passed": 10,
+  "failed": 0,
+  "cases": [
+    {
+      "case": "hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration",
+      "durationMs": 206623,
+      "result": "PASS"
+    },
+    {
+      "case": "hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration",
+      "durationMs": 299082,
+      "result": "PASS"
+    },
+    {
+      "case": "hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order",
+      "durationMs": 90454,
+      "result": "PASS"
+    },
+    {
+      "case": "hosted-phase7 > manual-customer.spec.ts > SA registered customer manual quote and CASH regression",
+      "durationMs": 180703,
+      "result": "PASS"
+    },
+    {
+      "case": "hosted-phase7 > manual-customer.spec.ts > EG registered customer manual quote and CASH regression",
+      "durationMs": 195150,
+      "result": "PASS"
+    },
+    {
+      "case": "hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact",
+      "durationMs": 11185,
+      "result": "PASS"
+    },
+    {
+      "case": "hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact",
+      "durationMs": 11079,
+      "result": "PASS"
+    },
+    {
+      "case": "hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed",
+      "durationMs": 5997,
+      "result": "PASS"
+    },
+    {
+      "case": "hosted-phase7 > stage1-session.spec.ts > ar normal SUPER_ADMIN session, explicit logout and history denial",
+      "durationMs": 21975,
+      "result": "PASS"
+    },
+    {
+      "case": "hosted-phase7 > stage1-session.spec.ts > en normal SUPER_ADMIN session, explicit logout and history denial",
+      "durationMs": 20388,
+      "result": "PASS"
+    }
+  ],
+  "matrix": {
+    "required": 371,
+    "passed": 371,
+    "missing": 0,
+    "missingStates": [],
+    "result": "PASS"
+  },
+  "note": "Legacy safe-reporter Failed test step lines inside successful polling expectations are retries, not terminal failed test cases.",
+  "logFilename": "business.txt",
+  "originalRunLogSha256": "86332d3d8f96d231aa5942ad503137de31187d2429ac6fe635e90dcb2b708d0f",
+  "canonicalLogSha256": "a81c8d0569555fdc6b301303a7ecf275e6c49b666dced036fb37c488bd1d196b",
+  "logHashScope": "canonicalLogSha256 hashes canonical Git blob bytes (LF); originalRunLogSha256 hashes the retained raw CRLF operator log"
+}

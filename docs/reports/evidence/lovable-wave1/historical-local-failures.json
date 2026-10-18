@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-14",
+  "initialE2E": {
+    "passed": 30,
+    "failed": 10,
+    "cause": "Old footer rules resolved root muted color #536579 on V2 navy #0b1625 in English; contrast 3.03 versus required 4.5",
+    "rule": "color-contrast",
+    "details": [
+      {
+        "test": "driver-en-Driver-login-is--b0ef9-ithout-public-Driver-signup-desktop",
+        "contextSha256": "4c0cc2f179bcfc0e241aea00d811c105641c3ef839e579ade5870548f7ebcd52"
+      },
+      {
+        "test": "driver-en-Driver-login-is--b0ef9-ithout-public-Driver-signup-mobile",
+        "contextSha256": "4c0cc2f179bcfc0e241aea00d811c105641c3ef839e579ade5870548f7ebcd52"
+      },
+      {
+        "test": "foundation-en-public-page-is-accessible-and-has-correct-SEO-desktop",
+        "contextSha256": "1eeb4a27faf07b792f8f6c27f50b725446502fbe1006288eda4029c97a37bb39"
+      },
+      {
+        "test": "foundation-en-public-page-is-accessible-and-has-correct-SEO-mobile",
+        "contextSha256": "5e2ad497f9e51b98dba18187195c44339822395d8851e89b7d18f93ab5480624"
+      },
+      {
+        "test": "foundation-en-showcase-and-dialog-keyboard-behavior-desktop",
+        "contextSha256": "2c16e7512104f3ebfc4849484311a1150d7e35797210700f01e1454cade23126"
+      },
+      {
+        "test": "foundation-en-showcase-and-dialog-keyboard-behavior-mobile",
+        "contextSha256": "d2cf77c3e12d1490974c38629a2567e60bd5f9b5b41fef1f47705e75ba7bad3a"
+      },
+      {
+        "test": "stage1-en-Stage-1-navigati-617ce-chy-and-safe-locale-context-desktop",
+        "contextSha256": "c638d0b4088336cc6d383521611e59e72dfb1c6f2b48c5c9a86e0ed017358625"
+      },
+      {
+        "test": "stage1-en-Stage-1-navigati-617ce-chy-and-safe-locale-context-mobile",
+        "contextSha256": "c638d0b4088336cc6d383521611e59e72dfb1c6f2b48c5c9a86e0ed017358625"
+      },
+      {
+        "test": "stage2-en-customer-payment-cf670-tinuation-remain-accessible-desktop",
+        "contextSha256": "915b112ea286bde7b3f4aa647d1b4a16379a1e8847466de0c1ca8f4463fc477e"
+      },
+      {
+        "test": "stage2-en-customer-payment-cf670-tinuation-remain-accessible-mobile",
+        "contextSha256": "915b112ea286bde7b3f4aa647d1b4a16379a1e8847466de0c1ca8f4463fc477e"
+      }
+    ],
+    "remediation": "Scope existing muted/link semantic variables inside V2 footer; no test threshold weakened"
+  },
+  "initialLint": {
+    "cause": "Downloaded lab exports inside ignored repository temporary folder were traversed by ESLint",
+    "remediation": "Move exports to isolated sibling review directory; no ESLint rule changed"
+  },
+  "initialBuildWrapper": {
+    "cause": "Legacy helper required Docker status although UI build needs no database",
+    "remediation": "Local-only runner clears public backend environment and does not query Docker"
+  },
+  "secondE2E": {
+    "passed": 36,
+    "failed": 4,
+    "cause": "Payment explanation retained a white section and navy heading rules under the V2 surface",
+    "remediation": "Scope payment section and headings to V2 semantic colors; retain all assertions"
+  },
+  "previewSetup": {
+    "result": "STOPPED_WITHOUT_ENVIRONMENT_CHANGE",
+    "cause": "Vercel requires the new branch to exist remotely before branch-scoped APP_URL can be created",
+    "remediation": "Publish the reviewed source branch, then configure Preview-only branch values and rebuild if necessary"
+  },
+  "exactHeadCI": {
+    "run": 38535219643,
+    "source": "8a6636292fd3421a23b619ed6f14fac2f301ecb4",
+    "result": "FAIL",
+    "e2e": {
+      "passed": 39,
+      "failed": 1
+    },
+    "classification": "TEST_HARNESS_SELECTOR",
+    "cause": "Global alert selector matched business denial and Next route announcer",
+    "remediation": "Assert business alert inside main; preserve existing route, absence-of-input and accessibility assertions; no application/Auth change",
+    "artifact": {
+      "id": 11879113783,
+      "sha256": "5557ed5d6dd1d20a9b538825eb6d904e8fed50371555a533d3f98663b7aee1ab"
+    }
+  }
+}

@@ -510,7 +510,10 @@ export function RequestWizard({
       <nav aria-label={t.progress}>
         <ol className="wizard-progress">
           {steps.map((key, i) => (
-            <li key={key}>
+            <li
+              key={key}
+              data-progress={i === step ? 'current' : i < step ? 'previous' : 'upcoming'}
+            >
               <button
                 type="button"
                 aria-current={i === step ? 'step' : undefined}
@@ -532,6 +535,7 @@ export function RequestWizard({
           {busy ? t.loading : t[saveState]}
         </div>
       </div>
+      <progress className="wizard-completion" max={8} value={step + 1} aria-label={t.progress} />
       {saveState === 'conflict' ? (
         <Alert tone="error">
           {t.conflict}{' '}

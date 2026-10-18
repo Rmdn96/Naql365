@@ -45,7 +45,7 @@ export default async function Page({
   }
   if (details.request.status === 'DRAFT')
     return (
-      <section className="container page">
+      <section className="container page customer-experience">
         <RequestWizard
           locale={locale}
           initial={details}
@@ -57,7 +57,7 @@ export default async function Page({
   const [quotes, preliminary] = await Promise.all([customerQuotes(true), guestPreliminaryPrice()]);
   const qt = quotesDictionary(locale);
   return (
-    <section className="container page">
+    <section className="container page customer-experience guest-request-detail">
       <h1>{details.request.status === 'SUBMITTED' ? t.received : t.cancelled}</h1>
       {details.request.reference && (
         <p>

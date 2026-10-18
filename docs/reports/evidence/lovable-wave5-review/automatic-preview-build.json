@@ -1,0 +1,14 @@
+{
+  "applicationSourceSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "hostedAcceptanceDeployment": "dpl_65MSuwGmpjSR4WQFAk4jHJ2xJ89i",
+  "observedAutomaticRebuild": {
+    "id": "dpl_GC4KxaGt7knC2AP4WRb6MVoypFZj",
+    "deployedGitSha": "b1f8cf82f694a5740f48fb1786c47618b625b1a6",
+    "state": "READY",
+    "environment": "Preview",
+    "canonicalAlias": true
+  },
+  "applicationSourceTreeIdentical": true,
+  "applicationConfigAndDependenciesIdentical": true,
+  "meaning": "Automatic evidence-only Preview rebuild; not a new application-source commit. Final alias deployment metadata is reported separately in the handoff."
+}

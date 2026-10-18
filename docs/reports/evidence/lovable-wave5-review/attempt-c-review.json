@@ -1,0 +1,13 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "result": "FAILED_HARNESS_RENDERER",
+  "classification": "TEST_HARNESS_DEFECT",
+  "rootCause": "Playwright TSX transform returns __pw_type descriptors; React Server Renderer rejects them as children.",
+  "reproducedWithoutBrowserOrFixtures": true,
+  "fix": "Compile the trusted canonical presentation module with injected real React, as the accepted staff harness does.",
+  "adapterUnitPass": 1,
+  "purePlaywrightAdapterPass": 1,
+  "applicationSourceChanged": false,
+  "cleanup": "PASS",
+  "timestamp": "2026-10-17T07:39:11.965Z"
+}

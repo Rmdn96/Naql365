@@ -142,6 +142,32 @@ describe('independently approved deployment authority', () => {
       'ENV_BACKEND_ATTESTATION_UNAVAILABLE',
     );
   });
+  it('supports short-lived Vercel OIDC without weakening origin, project or environment gates', () => {
+    const approved = {
+      staging: {
+        projectRef: 'synthetic-project',
+        origins: ['https://approved.example.test'],
+        hostingerOrigins: [],
+      },
+    };
+    const env = {
+      APP_ENV: 'staging',
+      STAGING_SUPABASE_PROJECT_REF: 'synthetic-project',
+      STAGING_BASE_URL: 'https://approved.example.test',
+      VERCEL_OIDC_TOKEN: 'synthetic-oidc-only',
+    };
+    expect(protectionHeaders(env, approved)).toEqual({
+      'x-vercel-trusted-oidc-idp-token': 'synthetic-oidc-only',
+    });
+    expect(() =>
+      acceptanceTarget({ ...env, STAGING_BASE_URL: 'https://other.example.test' }, approved),
+    ).toThrow();
+    expect(() => acceptanceTarget({ ...env, APP_ENV: 'production' }, approved)).toThrow();
+    expect(() =>
+      acceptanceTarget({ ...env, STAGING_SUPABASE_PROJECT_REF: 'other-project' }, approved),
+    ).toThrow();
+    expect(() => acceptanceTarget({ ...env, VERCEL_OIDC_TOKEN: undefined }, approved)).toThrow();
+  });
   it('separates exact Hostinger acceptance from Vercel credentials', () => {
     const env = {
       APP_ENV: 'staging',

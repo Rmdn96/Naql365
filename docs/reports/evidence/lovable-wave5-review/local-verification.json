@@ -1,0 +1,26 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "unitIntegration": {
+    "pass": 332,
+    "files": 67,
+    "existing": 323,
+    "driverPresentation": 6,
+    "evidenceDefinition": 2,
+    "loadingRenderer": 1
+  },
+  "e2e": {
+    "pass": 60,
+    "total": 60,
+    "isolatedOutput": true
+  },
+  "historicalInterruptions": [
+    "ENV_BUILD_RUNTIME_MISMATCH before tests; rebuilt for exact local origin",
+    "59 passed and ENOENT trace teardown from shared output directory; full isolated rerun 60/60"
+  ],
+  "sourceCi": {
+    "run": 39013193885,
+    "result": "PASS",
+    "requiredJobs": 2
+  },
+  "migrations": 47
+}

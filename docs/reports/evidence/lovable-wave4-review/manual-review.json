@@ -1,0 +1,20 @@
+{
+  "applicationSha": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+  "scope": "Representative human inspection; complete indexed combinations receive automated geometry/direction/keyboard/axe checks. Not exhaustive assistive-technology certification.",
+  "rows": [
+    {
+      "filename": "shell-super_admin-ar-1440-dark-light.png",
+      "sha256": "f5d48e20d20bf5fdc4f590bc1c6e715e43c4cb6cf621954c09ab417626401fb2",
+      "result": "PASS",
+      "review": "Dashboard repair verified: short queue card no longer stretches; long references remain readable above status text; RTL sidebar/context and visible focus retained."
+    },
+    {
+      "filename": "sales-draft-ar-1440-dark-light.png",
+      "sha256": "4e64835782e721d21f343776dad128df202a6fc74c6c4c9a0c2030d0cfb6de27",
+      "result": "PASS",
+      "review": "Customer-provided route/service/contact facts remain separated from Sales verified-distance/manual subtotal/final immutable version. Dark surfaces, labels, commercial hierarchy and long Arabic wrapping inspected."
+    }
+  ],
+  "reviewedAt": "2026-10-15T16:14:46.176Z",
+  "evidenceDirectory": "docs/reports/evidence/lovable-wave4-staff-140165f"
+}

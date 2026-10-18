@@ -1,3 +1,5 @@
+import { formatMoney } from '@/domain/markets/model';
+import { quoteStatusLabel } from '@/i18n/quotes';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
@@ -111,36 +113,74 @@ export default async function Page({
     <div className="container page">
       <Link href={`/${locale}/portal/quotes`}>{t.back}</Link>
       <h1>
-        {t.pricing} · <bdi>{details.request.reference}</bdi>
+        {details.pricingMode === 'MANUAL'
+          ? locale === 'ar'
+            ? 'مراجعة التسعير اليدوي'
+            : 'Manual pricing review'
+          : t.pricing}{' '}
+        · <bdi>{details.request.reference}</bdi>
       </h1>
       <p>
         {locale === 'ar' ? details.request.markets.name_ar : details.request.markets.name_en} ·{' '}
         <bdi>{details.request.markets.currency}</bdi>
       </p>
-      <RequestSummary
-        locale={locale}
-        payload={payload}
-        services={[
-          {
-            id: '',
-            name_ar: details.request.services?.name_ar ?? '',
-            name_en: details.request.services?.name_en ?? '',
-            property_required: true,
-            active: true,
-          },
-        ]}
-        options={options}
-        attachments={[]}
-      />
-      <SalesPricing
-        locale={locale}
-        requestId={id}
-        requestRevision={details.request.revision}
-        pricingMode={details.pricingMode}
-        vehicles={details.vehicles}
-        evaluation={latest ?? undefined}
-        draft={draft ?? undefined}
-      />
+      <section className="staff-dashboard-panel">
+        <h2>
+          {locale === 'ar' ? 'بيانات الطلب المقدمة من العميل' : 'Customer-provided request facts'}
+        </h2>
+        <RequestSummary
+          locale={locale}
+          payload={payload}
+          services={[
+            {
+              id: '',
+              name_ar: details.request.services?.name_ar ?? '',
+              name_en: details.request.services?.name_en ?? '',
+              property_required: true,
+              active: true,
+            },
+          ]}
+          options={options}
+          attachments={[]}
+        />
+      </section>
+      <section className="staff-dashboard-panel">
+        <h2>{locale === 'ar' ? 'مراجعة المبيعات والعرض النهائي' : 'Sales review & final quote'}</h2>
+        <SalesPricing
+          locale={locale}
+          requestId={id}
+          requestRevision={details.request.revision}
+          pricingMode={details.pricingMode}
+          vehicles={details.vehicles}
+          evaluation={latest ?? undefined}
+          draft={draft ?? undefined}
+        />
+      </section>
+      <section className="staff-dashboard-panel">
+        <h2>{locale === 'ar' ? 'إصدارات العرض' : 'Quote versions'}</h2>
+        <ul className="request-list">
+          {details.request.quotes
+            .flatMap((q) => q.quote_versions)
+            .sort((a, b) => b.version - a.version)
+            .map((v) => (
+              <li key={v.id}>
+                <span>
+                  {locale === 'ar' ? 'الإصدار' : 'Version'} {v.version}
+                </span>
+                <span>{quoteStatusLabel(v.status, locale)}</span>
+                <bdi>{formatMoney(v.total_minor, v.currency, locale)}</bdi>
+                {v.expires_at && (
+                  <time dateTime={v.expires_at}>
+                    {new Intl.DateTimeFormat(locale, {
+                      dateStyle: 'medium',
+                      timeZone: details.request.markets.timezone,
+                    }).format(new Date(v.expires_at))}
+                  </time>
+                )}
+              </li>
+            ))}
+        </ul>
+      </section>
       {guestLink?.guest && <StaffGuestLink locale={locale} requestId={id} />}
     </div>
   );

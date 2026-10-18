@@ -1,0 +1,32 @@
+{
+  "applicationSha": "8e340a537a8f469324e13e5f050077881489d0de",
+  "evidenceDirectory": "docs/reports/evidence/lovable-wave4-staff-final",
+  "scope": "Representative visual inspection alongside per-entry automated checks; not exhaustive assistive-technology certification.",
+  "rows": [
+    {
+      "filename": "shell-super_admin-ar-1440-dark-light.png",
+      "sha256": "9f3ad9f72e90f35f3930b49de34dd70093ca4c1d7feb40127bbc99c89463d76f",
+      "result": "PASS",
+      "review": "Compact RTL desktop shell and bounded queues; readable stacked references/status; short cards retain natural height; dark themed control/focus and permission-driven modules inspected."
+    },
+    {
+      "filename": "operations-planned-ar-1440-dark-light.png",
+      "sha256": "cc96ed0f4e9ba1fdf86c0b84939e9c903ff8d579e34f6b2193c718d6b7d25e65",
+      "result": "PASS",
+      "review": "Native calendar icons now visibly contrast on dark date fields. RTL planned-stop grouping, assignment section, restrained primary/secondary action hierarchy, execution clearance and issue/event sections inspected; Operations-only navigation retained."
+    },
+    {
+      "filename": "finance-review-ar-1440-dark-light.png",
+      "sha256": "21a292dc4348da9918ae12bb5970ffc4e03b9562b3f31d71ba516e8e14671874",
+      "result": "PASS",
+      "review": "Expected subtotal/tax/total, synthetic TEST destination, proof-review state and explicit Finance confirmation/rejection are distinct. Download control exposes no private URL in the capture. Finance-only sidebar excludes pricing, dispatch and bank configuration. Visible focus and disabled rejection preserved."
+    },
+    {
+      "filename": "empty-sales-ar-360-dark-dark.png",
+      "sha256": "95858f0472561548f479c98fd39fc37d243c53319a6cb26077d7a00a4380af9c",
+      "result": "PASS",
+      "review": "Narrow RTL shell retains reachable drawer, Market/locale/theme/logout; context wraps within its own flex column. Empty queue clearly differs from loading; no fabricated totals and no clipped primary actions. Visible drawer focus inspected."
+    }
+  ],
+  "reviewedAt": "2026-10-15T22:06:35.778Z"
+}

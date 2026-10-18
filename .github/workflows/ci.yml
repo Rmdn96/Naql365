@@ -70,6 +70,14 @@ jobs:
       - run: node scripts/test-payment-concurrency.mjs
       - run: node scripts/test-manual-pricing-concurrency.mjs
       - run: node scripts/test-guest-concurrency.mjs
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/test-staff-workspace.mjs
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        if: always()
+        with:
+          name: restricted-staff-local-evidence
+          path: test-results/staff-local-*/
+          retention-days: 7
       - run: git diff --exit-code -- src/infrastructure/supabase/database.types.ts
       - run: npm run typecheck
       - run: npx supabase stop --no-backup

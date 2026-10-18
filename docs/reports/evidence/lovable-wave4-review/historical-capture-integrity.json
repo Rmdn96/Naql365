@@ -1,0 +1,10 @@
+{
+  "applicationSha": "19b5cf1b537b28759668986e464476171047a31a",
+  "captures": 119,
+  "hashes": "PASS",
+  "indexSha256": "2065abd139add3d9a5cfac7b37994920174ab1a8a79bbabc3224fcf273b9656c",
+  "missing": 471,
+  "failuresRetained": 1,
+  "acceptance": "Historical automated capture checks only; manual dashboard defect required repair; not final acceptance.",
+  "verifiedAt": "2026-10-15T15:56:51.307Z"
+}

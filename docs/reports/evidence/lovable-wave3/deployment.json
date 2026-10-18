@@ -1,0 +1,10 @@
+{
+  "deploymentId": "dpl_DoWpuNVJaoPqSTwqtpzJweKr9sJo",
+  "applicationSha": "f758f42868f97984999a5673d2f5ed0ca5d13b89",
+  "canonicalOrigin": "https://naql365-staging-ui-v2-naql365.vercel.app",
+  "uniqueHostname": "naql365-staging-51s1w1b42-naql365.vercel.app",
+  "state": "READY",
+  "target": null,
+  "createdAt": 1792069342064,
+  "protection": "all_except_custom_domains"
+}

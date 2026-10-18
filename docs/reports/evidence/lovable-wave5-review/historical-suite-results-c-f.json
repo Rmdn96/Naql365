@@ -1,0 +1,44 @@
+{
+  "applicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "historical": true,
+  "records": [
+    {
+      "attempt": "c",
+      "result": "FAILED",
+      "safeRecords": [
+        "failed: hosted-phase4 > journey.spec.ts > hosted SA authenticated Driver execution, reassignment, issues, private POD and tracking; durationMs=163720\r",
+        "Diagnostic category: assertion-or-runtime; source line: 72\r",
+        "Staging suite: failed\r"
+      ]
+    },
+    {
+      "attempt": "d",
+      "result": "FAILED",
+      "safeRecords": [
+        "failed: hosted-phase4 > journey.spec.ts > hosted SA authenticated Driver execution, reassignment, issues, private POD and tracking; durationMs=265097\r",
+        "Diagnostic category: assertion-or-runtime; source line: 182\r",
+        "Staging suite: failed\r"
+      ]
+    },
+    {
+      "attempt": "e",
+      "result": "FAILED",
+      "safeRecords": [
+        "passed: hosted-phase4 > journey.spec.ts > hosted SA authenticated Driver execution, reassignment, issues, private POD and tracking; durationMs=708632\r",
+        "timedOut: hosted-phase4 > journey.spec.ts > hosted EG authenticated Driver execution, reassignment, issues, private POD and tracking; durationMs=900448\r",
+        "Diagnostic category: assertion-or-runtime; source line: unavailable\r",
+        "Diagnostic category: assertion-or-runtime; source line: 101\r",
+        "Staging suite: failed\r"
+      ]
+    },
+    {
+      "attempt": "f",
+      "result": "FAILED",
+      "safeRecords": [
+        "failed: hosted-wave5 > driver.spec.ts > hosted SA authenticated Driver execution, reassignment, issues, private POD and tracking; durationMs=302733\r",
+        "Diagnostic category: timeout; source line: 90\r",
+        "Staging suite: failed\r"
+      ]
+    }
+  ]
+}

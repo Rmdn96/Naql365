@@ -7,7 +7,8 @@ import {
   quoteResponseInput,
   manualQuoteInput,
 } from '@/domain/pricing/model';
-import { portalAccess } from '@/infrastructure/identity/access';
+import { staffAccess as portalAccess } from '@/infrastructure/identity/staff-context';
+import { staffMarket } from '@/infrastructure/identity/staff-market';
 import { customerClient } from '@/infrastructure/requests/service';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { guestSessionClient } from '@/infrastructure/guest/session';
@@ -52,15 +53,18 @@ async function salesClient(permission: 'pricing.calculate' | 'quotes.manage', wr
 }
 
 export async function salesQueue() {
-  const { client, organizationId } = await salesClient('pricing.calculate');
+  const { organizationId, market } = await staffMarket('pricing.calculate');
+  const client = await createSupabaseServerClient();
   const { data, error } = await client
     .from('requests')
     .select(
       'id,market_id,markets(name_ar,name_en,currency,timezone),reference,submitted_at,contact_name,status,services(name_ar,name_en),request_locations(kind,city),quotes(reference,quote_versions(id,status,version,total_minor,expires_at))',
     )
     .eq('organization_id', organizationId)
+    .eq('market_id', market.id)
     .eq('status', 'SUBMITTED')
     .order('submitted_at', { ascending: true })
+    .order('id', { ascending: true })
     .limit(100);
   if (error) pricingError(error.code);
   return data;
@@ -68,12 +72,14 @@ export async function salesQueue() {
 
 export async function salesRequestDetails(requestId: string) {
   z.uuid().parse(requestId);
-  const { client, organizationId } = await salesClient('pricing.calculate');
+  const { organizationId, market } = await staffMarket('pricing.calculate');
+  const client = await createSupabaseServerClient();
   const context = await client
     .from('requests')
     .select('market_id')
     .eq('id', requestId)
     .eq('organization_id', organizationId)
+    .eq('market_id', market.id)
     .maybeSingle();
   if (context.error) pricingError(context.error.code);
   if (!context.data) throw new AppError('not_found', 'Request unavailable');

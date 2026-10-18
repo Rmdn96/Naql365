@@ -6,6 +6,7 @@ import { customerDictionary } from '@/i18n/customer';
 import { customerRequests } from '@/infrastructure/requests/list';
 import { StartRequest } from '@/components/requests/wizard';
 import { EmptyState, Badge } from '@/components/ui/primitives';
+import { CustomerWorkspaceNav } from '@/components/ui/customer-workspace';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({
   params,
@@ -22,6 +23,7 @@ export default async function Page({
   const data = await customerRequests(locale, page);
   return (
     <div className="container page customer-experience">
+      <CustomerWorkspaceNav locale={locale} current="requests" />
       <div className="wizard-top">
         <h1>{t.myRequests}</h1>
         <StartRequest locale={locale} markets={await availableMarkets()} />

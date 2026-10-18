@@ -1,0 +1,303 @@
+{
+  "runs": [
+    {
+      "run": 1791894336944,
+      "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "FAIL"
+      },
+      "recovery": {
+        "result": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        },
+        "timestamp": "2026-10-13T12:29:13.304Z"
+      },
+      "baselinePreserved": false,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791894626347,
+      "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "FAIL"
+      },
+      "recovery": {
+        "result": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        },
+        "timestamp": "2026-10-13T12:38:27.222Z"
+      },
+      "baselinePreserved": false,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791894969872,
+      "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": null,
+      "recovery": {
+        "result": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        },
+        "timestamp": "2026-10-13T12:38:48.246Z"
+      },
+      "baselinePreserved": false,
+      "credentialRevokedAndReuseDenied": false,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791895191536,
+      "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791895351857,
+      "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791895535429,
+      "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791896501708,
+      "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 6,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791897579294,
+      "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 6,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791899032027,
+      "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 6,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791900429795,
+      "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 6,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791901672329,
+      "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 6,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791902923248,
+      "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 6,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791905786412,
+      "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "PASS"
+    },
+    {
+      "run": 1791906032725,
+      "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [
+        {
+          "kind": "loading-diagnostic",
+          "route": "/portal",
+          "htmlHasLoading": false,
+          "loadingPosition": -1,
+          "firstHiddenSegment": 18560,
+          "hiddenSegments": 11,
+          "suspenseTemplates": 10
+        }
+      ],
+      "executionResult": "HISTORICAL_FAILED_ATTEMPT"
+    },
+    {
+      "run": 1791906297939,
+      "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+      "ownedAuthIdentities": 7,
+      "ownedStorageObjects": 0,
+      "cleanup": {
+        "result": "PASS",
+        "remaining": {
+          "auth": 0,
+          "organizations": 0,
+          "storage": 0
+        }
+      },
+      "recovery": null,
+      "baselinePreserved": true,
+      "credentialRevokedAndReuseDenied": true,
+      "loadingDiagnostic": [],
+      "executionResult": "PASS"
+    }
+  ]
+}

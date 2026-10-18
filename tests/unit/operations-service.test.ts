@@ -2,7 +2,7 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import { executeOperation } from '@/infrastructure/operations/service';
 import { apiResult } from '@/infrastructure/requests/http';
 const mocks = vi.hoisted(() => ({ access: vi.fn(), rpc: vi.fn() }));
-vi.mock('@/infrastructure/identity/access', () => ({ portalAccess: mocks.access }));
+vi.mock('@/infrastructure/identity/staff-context', () => ({ staffAccess: mocks.access }));
 vi.mock('@/infrastructure/supabase/server', () => ({
   createSupabaseServerClient: async () => ({ rpc: mocks.rpc }),
 }));

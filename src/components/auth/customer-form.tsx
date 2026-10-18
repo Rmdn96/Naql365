@@ -1,4 +1,5 @@
 'use client';
+import { PasswordField } from './password-field';
 import { customerExperience } from '@/i18n/customer-experience';
 import { useActionState, useState } from 'react';
 import Link from 'next/link';
@@ -37,16 +38,7 @@ export function CustomerAuthForm({
         )}
         {mode !== 'recover' && (
           <>
-            <Input
-              id="password"
-              label={t.password}
-              name="password"
-              type="password"
-              required
-              minLength={mode === 'login' ? 1 : 12}
-              maxLength={128}
-              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-            />
+            <PasswordField locale={locale} label={t.password} login={mode === 'login'} />
             {mode !== 'login' && <small>{t.passwordHint}</small>}
           </>
         )}
@@ -55,6 +47,9 @@ export function CustomerAuthForm({
         )}
         {state.status === 'sent' && (
           <Alert tone="success">
+            <span className="auth-v2-mail-symbol" aria-hidden="true">
+              ✉
+            </span>
             <strong>{t.sent}</strong>
             <p>
               {locale === 'ar'
@@ -63,7 +58,7 @@ export function CustomerAuthForm({
             </p>
           </Alert>
         )}
-        <Button disabled={pending}>
+        <Button type="submit" disabled={pending}>
           {pending
             ? t.loading
             : mode === 'login'
@@ -103,8 +98,8 @@ export function CustomerProfileForm({
   const [phone, setPhone] = useState(profile.phone ?? '');
   const [preferredLocale, setPreferredLocale] = useState(profile.locale);
   return (
-    <form action={action} className="stack profile-form" aria-busy={pending}>
-      <p className="muted">{customerExperience(locale).profileHelp}</p>
+    <form action={action} className="stack profile-form profile-v2" aria-busy={pending}>
+      <p className="profile-v2-intro">{customerExperience(locale).profileHelp}</p>
       <Input
         id="name"
         name="name"

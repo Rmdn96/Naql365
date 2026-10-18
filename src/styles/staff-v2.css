@@ -1,0 +1,515 @@
+/* Wave 4: reviewed Lovable staff concepts adapted to the existing authorized
+   Next.js workspace. All theme and density rules are scoped to the staff shell. */
+html[data-theme] .staff-app {
+  --navy: var(--theme-text-primary);
+  --white: var(--theme-surface);
+  --background: var(--theme-background);
+  --muted: var(--theme-text-secondary);
+  --border: var(--theme-border);
+  --link: var(--theme-brand-hover);
+  --action: var(--theme-brand-hover);
+  --error: var(--theme-destructive);
+  --success: var(--theme-success);
+  --staff-nav: #0b1f33;
+  --staff-nav-ink: #ecf2f8;
+  --staff-nav-muted: #b0c1d2;
+  --staff-nav-active: #173b5c;
+  --staff-nav-border: #557087;
+  grid-template-columns: 220px minmax(0, 1fr);
+  background: var(--theme-background);
+  color: var(--theme-text-primary);
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+}
+html[data-theme] .staff-app--collapsed {
+  grid-template-columns: 76px minmax(0, 1fr);
+}
+.staff-app :is(section, article, form, fieldset, .field, .table-scroll) {
+  min-width: 0;
+}
+.staff-app .staff-sidebar,
+.staff-app .staff-drawer {
+  background: var(--staff-nav);
+  color: var(--staff-nav-ink);
+  --link: var(--staff-nav-ink);
+  --border: var(--staff-nav-border);
+  color-scheme: dark;
+}
+.staff-app .staff-sidebar {
+  padding: 24px 12px 16px;
+  gap: 16px;
+}
+.staff-app .staff-brand {
+  padding-inline: 10px;
+  color: var(--staff-nav-ink);
+}
+.staff-app .staff-sidebar-caption {
+  padding-inline: 10px;
+  color: var(--staff-nav-muted);
+  opacity: 1;
+}
+.staff-app :is(.staff-sidebar, .staff-drawer) nav a {
+  min-height: 44px;
+  padding: 10px;
+  gap: 10px;
+  line-height: 1.6;
+  font-size: 0.8125rem;
+  border-radius: 5px;
+}
+.staff-app :is(.staff-sidebar, .staff-drawer) nav a[aria-current],
+.staff-app :is(.staff-sidebar, .staff-drawer) nav a:hover {
+  background: var(--staff-nav-active);
+  color: var(--staff-nav-ink);
+  box-shadow: none;
+  outline-offset: -3px;
+}
+.staff-app :is(.staff-sidebar, .staff-drawer) nav a[aria-current] {
+  border-inline-start: 3px solid #22c7e8;
+  padding-inline-start: 7px;
+}
+.staff-app :is(.staff-sidebar, .staff-drawer) nav .staff-nav-child {
+  padding-inline-start: 22px;
+  color: var(--staff-nav-muted);
+  font-size: 0.75rem;
+}
+.staff-app .staff-nav-symbol {
+  font-size: 18px;
+  flex: 0 0 20px;
+}
+.staff-app .staff-collapse {
+  color: var(--staff-nav-ink);
+  border-color: var(--staff-nav-border);
+  min-height: 44px;
+}
+.staff-app .staff-sidebar > a:last-child {
+  color: var(--staff-nav-muted);
+  padding-inline: 10px;
+}
+.staff-app .staff-topbar {
+  min-height: 72px;
+  background: var(--theme-surface);
+  border-color: var(--theme-border);
+  padding: 10px 22px;
+  gap: 12px;
+}
+.staff-app .staff-context {
+  gap: 2px;
+  min-width: 0;
+}
+.staff-app .staff-context > span,
+.staff-app .staff-identity {
+  color: var(--theme-text-secondary);
+  font-size: 0.6875rem;
+}
+.staff-app .staff-context strong {
+  font-size: 0.875rem;
+}
+.staff-app .staff-organization-context {
+  overflow-wrap: anywhere;
+}
+.staff-app .staff-topbar-actions {
+  gap: 8px;
+}
+.staff-app .staff-topbar :is(select, .button, .language-link) {
+  font-size: 0.8125rem;
+  min-height: 44px;
+}
+.staff-app .staff-topbar .market-control select {
+  max-width: 132px;
+}
+.staff-app .staff-topbar .theme-control select {
+  max-width: 116px;
+}
+.staff-app .staff-topbar .language-link {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: 8px;
+}
+.staff-app .staff-workspace-content {
+  padding: 22px;
+  max-width: 1480px;
+}
+.staff-app .staff-breadcrumb {
+  color: var(--theme-text-secondary);
+  margin-block-end: 20px;
+  font-size: 0.75rem;
+}
+.staff-app .page-heading {
+  margin-block-end: 24px;
+  gap: 16px;
+}
+.staff-app .page-heading h1,
+.staff-app .staff-workspace-content h1 {
+  font-size: clamp(1.375rem, 2.3vw, 1.875rem);
+  line-height: 1.5;
+}
+.staff-app .page-description {
+  font-size: 0.875rem;
+  max-width: 58rem;
+}
+.staff-app .staff-dashboard-grid {
+  align-items: start;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+}
+.staff-app
+  :is(
+    .staff-dashboard-panel,
+    .staff-support-card,
+    .workspace-panel,
+    .staff-panel,
+    .card,
+    .summary-card
+  ) {
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 20px;
+}
+.staff-app .staff-dashboard-panel header {
+  border-color: var(--theme-border);
+  padding-block-end: 12px;
+  margin-block-end: 12px;
+  align-items: center;
+}
+.staff-app .staff-dashboard-panel h2 {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.staff-app .staff-dashboard-panel header a {
+  font-size: 0.8125rem;
+  flex-shrink: 0;
+}
+.staff-app .staff-dashboard-panel li {
+  border-color: var(--theme-border);
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+.staff-app .staff-dashboard-grid .staff-dashboard-panel li {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+}
+.staff-app .staff-window-note {
+  color: var(--theme-text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+.staff-app .staff-support-card {
+  padding: 18px;
+}
+.staff-app .page > .staff-dashboard-panel + .staff-dashboard-panel {
+  margin-block-start: 18px;
+}
+.staff-app .staff-dashboard-panel > h2 {
+  padding-block-end: 12px;
+  border-block-end: 1px solid var(--theme-border);
+  margin-block-end: 16px;
+}
+.staff-app :is(.staff-filter-bar, .staff-workspace-nav) {
+  background: var(--theme-surface);
+  border-color: var(--theme-border);
+  border-radius: 6px;
+  box-shadow: none;
+}
+.staff-app :is(.staff-filter-bar, .staff-workspace-nav) a[aria-current] {
+  background: var(--theme-surface-muted);
+  color: var(--theme-text-primary);
+  border-block-end: 2px solid var(--theme-brand-hover);
+  border-radius: 4px;
+}
+.staff-app .staff-count {
+  background: var(--theme-surface-muted);
+  color: var(--theme-text-primary);
+  font-size: 0.875rem;
+  min-height: 32px;
+  min-width: 32px;
+  border-radius: 5px;
+}
+.staff-app .staff-queue > li + li {
+  margin-block-start: 10px;
+}
+.staff-app .staff-route {
+  border-inline-start: 2px solid var(--theme-accent);
+  padding-inline-start: 8px;
+}
+.staff-app .staff-amount,
+.staff-app .commercial-total {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.25rem;
+  color: var(--theme-text-primary);
+}
+.staff-app .commercial-stack > .card {
+  border-inline-start: 3px solid var(--theme-border);
+}
+.staff-app .commercial-stack > .card:last-child {
+  border-inline-start-color: var(--theme-brand-hover);
+}
+.staff-app .staff-support-card :is(dt, small) {
+  color: var(--theme-text-secondary);
+}
+.staff-app .workspace-sections {
+  background: var(--theme-surface-muted);
+  border-color: var(--theme-border);
+  box-shadow: none;
+  border-radius: 6px;
+  padding: 4px;
+  gap: 4px;
+}
+.staff-app .workspace-sections a {
+  min-height: 44px;
+  font-size: 0.8125rem;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+}
+.staff-app :is(.workspace-panel, .staff-panel) h2 {
+  font-size: 1.125rem;
+}
+.staff-app :is(.workspace-panel, .staff-panel) h3 {
+  font-size: 1rem;
+}
+.staff-app
+  :is(
+    .request-list > li,
+    .choice,
+    .quote-total,
+    .quote-lines,
+    .request-summary section,
+    .journey-route
+  ) {
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border);
+  box-shadow: none;
+}
+.staff-app .request-list > li {
+  border-radius: 6px;
+  padding: 14px;
+}
+.staff-app .table-scroll {
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  background: var(--theme-surface);
+}
+.staff-app table {
+  border-collapse: collapse;
+  text-align: start;
+  font-size: 0.8125rem;
+}
+.staff-app :is(th, td) {
+  border-color: var(--theme-border);
+  padding: 12px;
+  vertical-align: middle;
+}
+.staff-app th {
+  background: var(--theme-surface-muted);
+  color: var(--theme-text-secondary);
+  font-weight: 600;
+  text-align: start;
+}
+.staff-app td {
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+}
+.staff-app .table-scroll :is(th, td) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.staff-app :is(input, select, textarea) {
+  background: var(--theme-surface-elevated);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border);
+  border-radius: 5px;
+}
+.staff-app :is(input, select):not([type='checkbox']):not([type='radio']) {
+  min-height: 44px;
+}
+html[data-theme='dark'] .staff-app input[type='datetime-local'] {
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  html[data-theme='system'] .staff-app input[type='datetime-local'] {
+    color-scheme: dark;
+  }
+}
+.staff-app .field {
+  gap: 6px;
+}
+.staff-app .field label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.staff-app .form-columns {
+  gap: 16px;
+}
+.staff-app :is(.help, .muted, .eyebrow, .page-description) {
+  color: var(--theme-text-secondary);
+}
+.staff-app .button {
+  border-radius: 5px;
+  min-height: 44px;
+  font-size: 0.875rem;
+  padding: 8px 14px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.7;
+}
+.staff-app .button--primary {
+  background: var(--theme-brand-hover);
+  border-color: var(--theme-brand-hover);
+  color: var(--theme-on-brand);
+}
+.staff-app .button--secondary {
+  background: var(--theme-surface-muted);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border);
+}
+.staff-app :is(.badge, .status-badge) {
+  background: var(--theme-surface-muted);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  border-radius: 4px;
+}
+.staff-app .status-badge--success {
+  color: var(--theme-success);
+}
+.staff-app .status-badge--warning {
+  color: var(--theme-warning);
+}
+.staff-app .status-badge--error {
+  color: var(--theme-destructive);
+}
+.staff-app .alert {
+  background: var(--theme-surface-muted);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border);
+  border-inline-start: 3px solid var(--theme-accent);
+  border-radius: 5px;
+}
+.staff-app .alert--error {
+  border-inline-start-color: var(--theme-destructive);
+}
+.staff-app .alert--success {
+  border-inline-start-color: var(--theme-success);
+}
+.staff-app :is(.error-text, .validation-link) {
+  color: var(--theme-destructive);
+}
+.staff-app .empty-state {
+  background: var(--theme-surface-muted);
+  border-color: var(--theme-border);
+  padding: 28px 18px;
+  border-radius: 6px;
+}
+.staff-app .empty-state :is(p, .empty-symbol) {
+  color: var(--theme-text-secondary);
+}
+.staff-app :is(.skeleton-line, .skeleton-block) {
+  background: var(--theme-border);
+}
+.staff-app dialog:not(.staff-drawer) {
+  color: var(--theme-text-primary);
+  background: var(--theme-surface-elevated);
+  border-color: var(--theme-border);
+  border-radius: 8px;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+.staff-app dialog:not(.staff-drawer) .button--secondary {
+  background: var(--theme-surface-muted);
+}
+.staff-app .staff-drawer .button--secondary {
+  background: var(--staff-nav-active);
+  color: var(--staff-nav-ink);
+  border-color: var(--staff-nav-border);
+}
+.staff-app :focus-visible {
+  outline: 3px solid var(--theme-focus);
+  outline-offset: 3px;
+}
+.staff-app :is(.staff-sidebar, .staff-drawer) :focus-visible {
+  outline-color: #22c7e8;
+}
+.staff-app .staff-workspace-content .operations :is(.actions, .wizard-actions) {
+  position: static;
+  flex-wrap: wrap;
+  background: transparent;
+}
+@media (max-width: 1100px) {
+  .staff-app .staff-identity {
+    display: none;
+  }
+}
+@media (max-width: 1023px) {
+  html[data-theme] .staff-app,
+  html[data-theme] .staff-app--collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .staff-app .staff-topbar {
+    padding: 10px 16px;
+  }
+  .staff-app .staff-workspace-content {
+    padding: 18px 16px;
+  }
+}
+@media (max-width: 600px) {
+  .staff-app .staff-topbar {
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .staff-app .staff-context {
+    flex: 1;
+  }
+  .staff-app .staff-topbar-actions {
+    width: 100%;
+    gap: 6px;
+    justify-content: space-between;
+  }
+  .staff-app .staff-topbar-actions .market-control {
+    flex: 0 1 auto;
+  }
+  .staff-app .staff-topbar :is(select, .button, .language-link) {
+    font-size: 0.75rem;
+  }
+  .staff-app .staff-topbar .button {
+    padding-inline: 10px;
+  }
+  .staff-app .staff-topbar .market-control select {
+    max-width: 116px;
+  }
+  .staff-app .staff-topbar .theme-control select {
+    max-width: 106px;
+  }
+  .staff-app .staff-workspace-content {
+    padding: 18px 12px;
+  }
+  .staff-app
+    :is(
+      .staff-dashboard-panel,
+      .staff-support-card,
+      .workspace-panel,
+      .staff-panel,
+      .card,
+      .summary-card
+    ) {
+    padding: 16px;
+  }
+  .staff-app .staff-dashboard-panel li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+  .staff-app .staff-dashboard-panel header {
+    align-items: start;
+  }
+  .staff-app .table-scroll table {
+    min-width: 560px;
+  }
+  .staff-app :is(.actions, .wizard-actions) {
+    gap: 8px;
+  }
+}

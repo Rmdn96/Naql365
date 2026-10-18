@@ -1,0 +1,28 @@
+{
+  "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+  "origin": "https://naql365-staging-ux-stage3-naql365.vercel.app",
+  "run": 1791874031495,
+  "result": "PASS",
+  "groups": 10,
+  "tests": [
+    "passed: hosted-phase7 > journey.spec.ts > SA guest Request to delivery without registration; durationMs=148270",
+    "passed: hosted-phase7 > journey.spec.ts > EG guest Request to delivery without registration; durationMs=202312",
+    "passed: hosted-phase7 > journey.spec.ts > guest rejects sent Quote without creating an Order; durationMs=40631",
+    "passed: hosted-phase7 > manual-customer.spec.ts > SA registered customer manual quote and CASH regression; durationMs=74033",
+    "passed: hosted-phase7 > manual-customer.spec.ts > EG registered customer manual quote and CASH regression; durationMs=78656",
+    "passed: hosted-phase7 > public.spec.ts > ar hosted public MVP responsive accessibility, SEO and market contact; durationMs=11551",
+    "passed: hosted-phase7 > public.spec.ts > en hosted public MVP responsive accessibility, SEO and market contact; durationMs=17350",
+    "passed: hosted-phase7 > security.spec.ts > hosted guest creation replay and capability isolation fail closed; durationMs=5616",
+    "passed: hosted-phase7 > stage1-session.spec.ts > ar normal SUPER_ADMIN session, explicit logout and history denial; durationMs=22801",
+    "passed: hosted-phase7 > stage1-session.spec.ts > en normal SUPER_ADMIN session, explicit logout and history denial; durationMs=16461"
+  ],
+  "cleanup": "PASS",
+  "credentialRevoked": true,
+  "reuseDenied": true,
+  "readback": {
+    "guest_quota": 30,
+    "run_window_auth_remaining": 0
+  },
+  "timestamp": "2026-10-13T07:07:41.984Z",
+  "limitation": "Business regression evidence; not a complete populated staff visual/state matrix."
+}

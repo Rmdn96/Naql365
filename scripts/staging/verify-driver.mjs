@@ -18,6 +18,9 @@ export async function verifyDriverAcceptance(phase) {
         !(
           phase === 7 &&
           [
+            '--stage3-business',
+            '--wave3-customer',
+            '--wave3-remaining',
             '--visual-matrix',
             '--visual-batch-a',
             '--visual-batch-b',
@@ -31,25 +34,48 @@ export async function verifyDriverAcceptance(phase) {
   )
     throw new Error('Unknown verification option');
   // Session-only is supplemental evidence; the default includes both execution journeys.
-  const selectedTests = args.includes('--visual-c1')
-    ? ['tests/phase7/visual-batch-b.spec.ts', '--grep', 'owned Quote']
-    : args.includes('--visual-c2')
-      ? ['tests/phase7/visual-batch-c.spec.ts', '--grep', 'tracking lifecycle']
-      : args.includes('--visual-c3')
-        ? ['tests/phase7/visual-batch-c.spec.ts', '--grep', 'registration nondisclosing']
-        : args.includes('--visual-batch-c')
-          ? ['tests/phase7/visual-batch-c.spec.ts']
-          : args.includes('--visual-batch-b')
-            ? ['tests/phase7/visual-batch-b.spec.ts']
-            : args.includes('--visual-batch-a')
-              ? ['tests/phase7/visual-batch-a.spec.ts']
-              : args.includes('--visual-matrix')
-                ? ['tests/phase7/visual-matrix.spec.ts']
-                : args.includes('--session-only')
-                  ? [`tests/phase${phase}/session.spec.ts`]
-                  : args.includes('--payment-diagnostic')
-                    ? ['--grep', 'SA CASH']
-                    : [];
+  const selectedTests = args.includes('--wave3-customer')
+    ? ['tests/phase7/manual-customer.spec.ts', '--max-failures=1']
+    : args.includes('--wave3-remaining')
+      ? [
+          'tests/phase7/journey.spec.ts',
+          'tests/phase7/public.spec.ts',
+          'tests/phase7/security.spec.ts',
+          'tests/phase7/stage1-session.spec.ts',
+          '--max-failures=1',
+        ]
+      : args.includes('--stage3-business')
+        ? [
+            'tests/phase7/journey.spec.ts',
+            'tests/phase7/manual-customer.spec.ts',
+            'tests/phase7/public.spec.ts',
+            'tests/phase7/security.spec.ts',
+            'tests/phase7/stage1-session.spec.ts',
+            '--max-failures=1',
+          ]
+        : args.includes('--visual-c1')
+          ? ['tests/phase7/visual-batch-b.spec.ts', '--grep', 'owned Quote']
+          : args.includes('--visual-c2')
+            ? ['tests/phase7/visual-batch-c.spec.ts', '--grep', 'tracking lifecycle']
+            : args.includes('--visual-c3')
+              ? ['tests/phase7/visual-batch-c.spec.ts', '--grep', 'registration nondisclosing']
+              : args.includes('--visual-batch-c')
+                ? ['tests/phase7/visual-batch-c.spec.ts']
+                : args.includes('--visual-batch-b')
+                  ? ['tests/phase7/visual-batch-b.spec.ts']
+                  : args.includes('--visual-batch-a')
+                    ? ['tests/phase7/visual-batch-a.spec.ts']
+                    : args.includes('--visual-matrix')
+                      ? ['tests/phase7/visual-matrix.spec.ts']
+                      : args.includes('--session-only')
+                        ? [
+                            process.env.WAVE5_FOCUSED_DRIVER === 'true'
+                              ? 'tests/wave5/session.spec.ts'
+                              : `tests/phase${phase}/session.spec.ts`,
+                          ]
+                        : args.includes('--payment-diagnostic')
+                          ? ['--grep', 'SA CASH']
+                          : [];
   acceptanceTarget();
   const release = acquireHostedRun();
   const ledger =
@@ -60,7 +86,8 @@ export async function verifyDriverAcceptance(phase) {
   let previousGuestPolicy;
   const users = [];
   const otherOrg = randomUUID();
-  let ref, admin, org;
+  let ref, admin, org, publicAuth;
+  const identities = {};
   let stage = 'staging-allowlist';
   try {
     ref = stagingProject();
@@ -96,7 +123,10 @@ export async function verifyDriverAcceptance(phase) {
       ref,
       `insert into public.organizations(id,name) values('${otherOrg}','Driver isolation fixture');select private.provision_initial_market_catalogue('${otherOrg}');update public.markets set active=true where organization_id='${otherOrg}'`,
     );
-    const identities = {};
+    if (process.env.WAVE5_VERIFY_DISPOSAL === 'true')
+      publicAuth = createClient(url, publicKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
     for (const label of [
       'customer',
       'sales',
@@ -190,7 +220,16 @@ export async function verifyDriverAcceptance(phase) {
           'test',
           ...selectedTests,
           '--config',
-          `playwright.phase${phase}.config.ts`,
+          process.env.WAVE5_FOCUSED_DRIVER === 'true'
+            ? 'playwright.wave5.config.ts'
+            : `playwright.phase${phase}.config.ts`,
+          ...(process.env.STAGING_WAVE5_RUN_DIR
+            ? [
+                '--output',
+                process.env.STAGING_WAVE5_RUN_DIR + '/playwright-output',
+                '--max-failures=1',
+              ]
+            : []),
         ],
         {
           env: {
@@ -295,6 +334,21 @@ export async function verifyDriverAcceptance(phase) {
         for (const id of users) {
           if ((await admin.auth.admin.deleteUser(id)).error)
             throw new Error('Fixture identity cleanup failed');
+        }
+        if (publicAuth) {
+          for (const identity of Object.values(identities)) {
+            const response = await publicAuth.auth.signInWithPassword({
+              email: identity.email,
+              password: identity.password,
+            });
+            if (
+              response.error?.code !== 'invalid_credentials' ||
+              response.error.status !== 400 ||
+              response.data.session
+            )
+              throw Error('DELETED_FIXTURE_CREDENTIAL_REUSE_NOT_DENIED');
+          }
+          console.log('Deleted synthetic identity credential reuse denied');
         }
         query(
           ref,

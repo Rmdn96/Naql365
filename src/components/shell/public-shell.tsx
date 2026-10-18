@@ -10,6 +10,8 @@ import { MarketSelector } from './market-selector';
 import { PublicContact } from './public-contact';
 import { loginDestination } from '@/infrastructure/identity/login-destination';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
+import { BrandLink } from './brand-link';
+import { ThemeControl } from './theme-control';
 
 export async function IdentityLink({ locale }: { locale: Locale }) {
   const destination = getPublicEnv() ? await loginDestination() : 'unauthenticated';
@@ -37,7 +39,13 @@ export async function IdentityLink({ locale }: { locale: Locale }) {
   );
 }
 
-export async function Header({ locale }: { locale: Locale }) {
+export async function Header({
+  locale,
+  themeMode,
+}: {
+  locale: Locale;
+  themeMode: 'light' | 'dark' | 'system';
+}) {
   const t = dictionary(locale);
   const p = publicDictionary(locale);
   const country = await selectedPublicCountry();
@@ -47,18 +55,9 @@ export async function Header({ locale }: { locale: Locale }) {
       <a className="skip-link" href="#main">
         {t.skip}
       </a>
-      <header className="site-header">
+      <header className="site-header public-v2-header">
         <div className="container header-inner">
-          <Link href={`/${locale}`} className="brand" aria-label={t.brand}>
-            <span className="brand-symbol" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            <span dir="ltr">
-              Naql<span>365</span>
-            </span>
-          </Link>
+          <BrandLink href={`/${locale}`} label={t.brand} />
           <nav className="desktop-header-nav" aria-label={t.home}>
             <Link href={`/${locale}`}>{t.home}</Link>
             <Link className="desktop-nav" href={`/${locale}#services`}>
@@ -78,6 +77,7 @@ export async function Header({ locale }: { locale: Locale }) {
               {p.request}
             </Link>
             <LocaleLink locale={locale} label={t.language} />
+            <ThemeControl locale={locale} initialMode={themeMode} />
           </nav>
           <div className="header-market">
             <MarketSelector country={country} locale={locale} />
@@ -93,6 +93,7 @@ export async function Header({ locale }: { locale: Locale }) {
             <Link href={`/${locale}#contact`}>{p.contact}</Link>
             <IdentityLink locale={locale} />
             <LocaleLink locale={locale} label={t.language} />
+            <ThemeControl locale={locale} initialMode={themeMode} />
             <Link className="button button--primary" href={`/${locale}/request`}>
               {p.request}
             </Link>
@@ -107,9 +108,19 @@ export async function Footer({ locale }: { locale: Locale }) {
   const p = publicDictionary(locale);
   const country = await selectedPublicCountry();
   return (
-    <footer className="site-footer">
+    <footer className="site-footer public-v2-footer">
       <div className="container footer-inner">
-        <p>{t.rights}</p>
+        <div className="footer-brand">
+          <BrandLink href={`/${locale}`} label={t.brand} />
+          <p>{t.positioning}</p>
+          <small>{t.rights}</small>
+        </div>
+        <nav aria-label={p.services}>
+          <Link href={`/${locale}#services`}>{p.services}</Link>
+          <Link href={`/${locale}#how`}>{p.how}</Link>
+          <Link href={`/${locale}#coverage`}>{locale === 'ar' ? 'نطاق الخدمة' : 'Coverage'}</Link>
+          <Link href={`/${locale}#tracking`}>{p.track}</Link>
+        </nav>
         <nav aria-label={t.positioning}>
           <Link href={`/${locale}/request`}>{p.request}</Link>
           <IdentityLink locale={locale} />

@@ -6,6 +6,7 @@ if (!origin || !/^https:\/\/naql365-staging-[a-z0-9-]+\.vercel\.app$/.test(origi
   throw Error('Verified Phase 7 Preview required');
 export default defineConfig({
   testDir: './tests/phase7',
+  outputDir: './test-results/phase7-playwright',
   fullyParallel: false,
   workers: 1,
   forbidOnly: true,

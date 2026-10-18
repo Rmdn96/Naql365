@@ -7,7 +7,7 @@ import { driverDictionary } from '@/i18n/driver';
 import { operationsDictionary, operationalStatus } from '@/i18n/operations';
 import { getDriverTrip } from '@/infrastructure/driver/service';
 import { DriverAccessError } from '@/components/driver/access';
-import { DriverNavigation, driverTime } from '@/components/driver/views';
+import { DriverNavigation, DriverSafety, driverTime } from '@/components/driver/views';
 import {
   DriverExecution,
   DriverIssueForm,
@@ -40,15 +40,22 @@ export default async function Page({
   return (
     <div className="container page driver-shell">
       <DriverNavigation locale={locale} tripId={trip.id} />
-      <h1>{trip.reference}</h1>
-      <Badge>{operationalStatus(trip.status, locale)}</Badge>
-      <p>
-        {locale === 'ar' ? trip.market.nameAr : trip.market.nameEn} ·{' '}
-        {driverTime(trip.plannedStart, trip, locale)}
-      </p>
-      <p>
-        {t.vehicle}: <bdi>{trip.vehicle.identifier}</bdi>
-      </p>
+      <DriverSafety locale={locale} />
+      <header className="driver-page-heading">
+        <div className="driver-trip-heading">
+          <h1>
+            <bdi>{trip.reference}</bdi>
+          </h1>
+          <Badge>{operationalStatus(trip.status, locale)}</Badge>
+        </div>
+        <p>
+          {locale === 'ar' ? trip.market.nameAr : trip.market.nameEn} ·{' '}
+          {driverTime(trip.plannedStart, trip, locale)}
+        </p>
+        <p>
+          {t.vehicle}: <bdi>{trip.vehicle.identifier}</bdi>
+        </p>
+      </header>
       {!completed && (
         <section className="driver-focus">
           <p className="eyebrow">{locale === 'ar' ? 'خطوتك التالية' : 'Your next step'}</p>
@@ -104,7 +111,11 @@ export default async function Page({
       <h2>{t.stops}</h2>
       <ol className="driver-stops">
         {trip.stops.map((stop) => (
-          <li key={stop.id} className="card">
+          <li
+            key={stop.id}
+            className="card"
+            data-current={!completed && next?.id === stop.id ? 'true' : undefined}
+          >
             <h3>
               {stop.kind === 'PICKUP' ? ot.pickup : ot.delivery} {stop.position}
             </h3>
@@ -121,7 +132,7 @@ export default async function Page({
           </li>
         ))}
       </ol>
-      <section>
+      <section className="driver-issues">
         <h2>{t.issues}</h2>
         {trip.issues.length === 0 ? (
           <p>{t.empty}</p>

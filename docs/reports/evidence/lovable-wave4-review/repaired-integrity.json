@@ -1,0 +1,11 @@
+{
+  "baseline": "e38fd0b99000e6cd49a6cae650e9ce563f9a3fb0",
+  "application": "140165f475e6e66e7f30b0e3cef41939ecf3be18",
+  "unchanged": true,
+  "count": 47,
+  "baselineTree": "20ae191f7838e46c61a1ff3d92dd058483aad6ff",
+  "applicationTree": "20ae191f7838e46c61a1ff3d92dd058483aad6ff",
+  "migration47": "20261012000100_support_request_queue.sql",
+  "authorityDiff": "",
+  "verifiedAt": "2026-10-15T15:55:43.401Z"
+}

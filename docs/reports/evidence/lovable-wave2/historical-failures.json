@@ -1,0 +1,52 @@
+{
+  "attempts": [
+    {
+      "category": "Lovable submission infrastructure",
+      "result": "FAILED BEFORE GENERATION",
+      "detail": "Connection/unexpected error; draft retained and submitted after session refresh."
+    },
+    {
+      "category": "Local lint test style",
+      "result": "FAIL",
+      "detail": "React no-children-prop in new presentation test; test uses a props object."
+    },
+    {
+      "category": "Local accessibility",
+      "result": "40 E2E PASS / 4 new E2E FAIL",
+      "detail": "Existing brand numeric suffix inherited action blue on new navy story surface; contrast 2.91 vs required 3. Scoped story suffix changed to existing cyan token; no Auth behavior change."
+    },
+    {
+      "category": "Exact-head CI restricted staff harness",
+      "run": 38595733160,
+      "result": "Quality PASS / database job FAIL at staff browser submit",
+      "detail": "Accepted staff harness selected .auth-form button. Password reveal adds a second button; selector now excludes type=button, preserving compatibility with prior default-submit markup. No Auth/application source change. SQL/RLS/types/concurrency steps had already passed; fixture cleanup PASS."
+    },
+    {
+      "category": "Hosted visual review",
+      "applicationSha": "1298411f45b5214b859232fe3c92f76f30adc4fe",
+      "result": "MOBILE ACTION OVERLAP",
+      "detail": "Floating WhatsApp control covered signup CTA at 390px. Scoped auth-v2 CSS places support in normal document flow. Prior 90 visual captures are historical, not final evidence for the repaired application."
+    },
+    {
+      "category": "Hosted evidence output lifecycle",
+      "result": "6/6 session groups PASS; visual evidence not retained; writer closeout FAIL",
+      "detail": "Concurrent local Playwright run reset shared test-results directory. Independent ledger persisted in supabase/.temp; read-only recovery confirmed zero run-owned Auth, Customer, Driver, membership or organization rows. Temporary credential revoked and reuse denied. Output moved outside local Playwright lifecycle. Prior 90 captures are not counted as final evidence."
+    },
+    {
+      "category": "Final hosted runner cleanup",
+      "applicationSha": "a3a96256c43b06d3d30306a713eacc15b7fa7a4f",
+      "result": "150 visual states and 6 session groups PASS; runner exit 1 during cleanup",
+      "detail": "Harness used actor_profile_id instead of actual audit_logs.actor_id. Independent operator cleanup verified exact ownership from separate ledger, used locally-tested corrected SQL, removed four identities and all owned relations, preserved owner data, and retained original failed runner status. Temporary credential revoked; reuse denied. Corrected cleanup is regression-tested on 47 migrations."
+    },
+    {
+      "category": "Local cleanup test development",
+      "result": "Two initial test failures preserved",
+      "detail": "First assertion did not scope pre-existing catalogue audit events; second SQL dollar-quote construction was malformed. Both corrected in test/operator tooling, then 2/2 focused tests PASS. No database migration or application change."
+    },
+    {
+      "category": "Cleanup completeness follow-up",
+      "result": "PASS after exact-owned audit cleanup",
+      "detail": "Final readback found two membership/role audit rows linked to the onboarding fixture after its identity relations were removed. Helper and integration assertion now cover exact fixture identity audit links; two rows removed, zero remain, unrelated tenant audit preserved. Application source unchanged."
+    }
+  ]
+}

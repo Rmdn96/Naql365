@@ -1,0 +1,10 @@
+{
+  "applicationSha": "13eda079c82d10e410623c5d573eb7a341728a6b",
+  "result": "INTERRUPTED_AFTER_VISUAL_DEFECT",
+  "capturesRetained": 21,
+  "visualDecision": "NOT ACCEPTED AS FINAL",
+  "defect": "RTL reordered the completed/total Stop count; isolated the numeric pair with bdi dir=ltr.",
+  "repairApplicationSha": "67100f64dda4e5b47f7f82c65d4c1fccdbe7f72a",
+  "execution": "Only the Playwright child tree stopped; parent runner completed scoped cleanup and independent readback.",
+  "timestamp": "2026-10-17T07:23:51.280Z"
+}

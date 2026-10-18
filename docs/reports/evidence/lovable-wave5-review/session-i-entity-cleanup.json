@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "observedEntities": 2,
+  "remaining": {
+    "customers": 0,
+    "drivers": 0
+  },
+  "verifiedAt": "2026-10-17T09:30:57.506Z"
+}

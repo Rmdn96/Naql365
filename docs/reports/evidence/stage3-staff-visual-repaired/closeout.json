@@ -1,0 +1,358 @@
+{
+  "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+  "completedAt": "2026-10-13T15:53:28.341Z",
+  "total": 670,
+  "pass": 670,
+  "missing": 0,
+  "na": 0,
+  "counts": {
+    "sales-support": 220,
+    "operations": 120,
+    "finance": 180,
+    "loading": 100,
+    "empty": 50
+  },
+  "priorAccepted": {
+    "index": "docs/reports/evidence/stage3-staff-shell/index.json",
+    "count": 60,
+    "sha256": "3524424f1e368e34bc15d07c6ad06c4ee13ff53dd021d244ea1b9b3c581a328b",
+    "hashesVerified": true,
+    "applicationSha": "1b1e02fc6c316950d53d70e671faeeca82be004e",
+    "applicability": "Historical accepted empty-shell evidence; the new CSS selector targets operational action bars only. New detailed captures use the repaired SHA."
+  },
+  "roleNavigation": [
+    {
+      "role": "SALES",
+      "locale": "ar",
+      "permissions": [
+        "customers.read",
+        "guest.links.manage",
+        "portal.access",
+        "pricing.calculate",
+        "quotes.manage",
+        "quotes.read",
+        "requests.read",
+        "services.read"
+      ],
+      "modules": ["quotes"],
+      "result": "PASS"
+    },
+    {
+      "role": "SALES",
+      "locale": "en",
+      "permissions": [
+        "customers.read",
+        "guest.links.manage",
+        "portal.access",
+        "pricing.calculate",
+        "quotes.manage",
+        "quotes.read",
+        "requests.read",
+        "services.read"
+      ],
+      "modules": ["quotes"],
+      "result": "PASS"
+    },
+    {
+      "role": "OPERATIONS",
+      "locale": "ar",
+      "permissions": [
+        "dispatch.manage",
+        "fleet.manage",
+        "fleet.read",
+        "guest.links.manage",
+        "operations.manage",
+        "orders.read",
+        "pod.read",
+        "portal.access",
+        "requests.read",
+        "services.read",
+        "trips.read"
+      ],
+      "modules": ["operations"],
+      "result": "PASS"
+    },
+    {
+      "role": "OPERATIONS",
+      "locale": "en",
+      "permissions": [
+        "dispatch.manage",
+        "fleet.manage",
+        "fleet.read",
+        "guest.links.manage",
+        "operations.manage",
+        "orders.read",
+        "pod.read",
+        "portal.access",
+        "requests.read",
+        "services.read",
+        "trips.read"
+      ],
+      "modules": ["operations"],
+      "result": "PASS"
+    },
+    {
+      "role": "FINANCE",
+      "locale": "ar",
+      "permissions": ["finance.read", "finance.verify", "portal.access"],
+      "modules": ["finance"],
+      "result": "PASS"
+    },
+    {
+      "role": "FINANCE",
+      "locale": "en",
+      "permissions": ["finance.read", "finance.verify", "portal.access"],
+      "modules": ["finance"],
+      "result": "PASS"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "locale": "ar",
+      "permissions": [
+        "audit.read",
+        "customers.read",
+        "dispatch.manage",
+        "files.read",
+        "finance.accounts.manage",
+        "finance.read",
+        "finance.verify",
+        "fleet.manage",
+        "fleet.read",
+        "guest.links.manage",
+        "markets.manage",
+        "notifications.manage",
+        "operations.manage",
+        "orders.read",
+        "pod.read",
+        "portal.access",
+        "pricing.calculate",
+        "quality.read",
+        "quotes.manage",
+        "quotes.read",
+        "requests.read",
+        "services.read",
+        "support.read",
+        "trips.read",
+        "users.manage"
+      ],
+      "modules": ["quotes", "operations", "finance", "finance/banks", "support"],
+      "result": "PASS"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "locale": "en",
+      "permissions": [
+        "audit.read",
+        "customers.read",
+        "dispatch.manage",
+        "files.read",
+        "finance.accounts.manage",
+        "finance.read",
+        "finance.verify",
+        "fleet.manage",
+        "fleet.read",
+        "guest.links.manage",
+        "markets.manage",
+        "notifications.manage",
+        "operations.manage",
+        "orders.read",
+        "pod.read",
+        "portal.access",
+        "pricing.calculate",
+        "quality.read",
+        "quotes.manage",
+        "quotes.read",
+        "requests.read",
+        "services.read",
+        "support.read",
+        "trips.read",
+        "users.manage"
+      ],
+      "modules": ["quotes", "operations", "finance", "finance/banks", "support"],
+      "result": "PASS"
+    },
+    {
+      "role": "CUSTOMER_SERVICE",
+      "locale": "ar",
+      "permissions": ["customers.read", "portal.access", "requests.read", "support.read"],
+      "modules": ["support"],
+      "result": "PASS"
+    },
+    {
+      "role": "CUSTOMER_SERVICE",
+      "locale": "en",
+      "permissions": ["customers.read", "portal.access", "requests.read", "support.read"],
+      "modules": ["support"],
+      "result": "PASS"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "locale": "ar",
+      "permissions": [
+        "audit.read",
+        "customers.read",
+        "dispatch.manage",
+        "files.read",
+        "finance.accounts.manage",
+        "finance.read",
+        "finance.verify",
+        "fleet.manage",
+        "fleet.read",
+        "guest.links.manage",
+        "markets.manage",
+        "notifications.manage",
+        "operations.manage",
+        "orders.read",
+        "pod.read",
+        "portal.access",
+        "pricing.calculate",
+        "quality.read",
+        "quotes.manage",
+        "quotes.read",
+        "requests.read",
+        "services.read",
+        "support.read",
+        "trips.read",
+        "users.manage"
+      ],
+      "modules": ["quotes", "operations", "finance", "finance/banks", "support"],
+      "result": "PASS"
+    },
+    {
+      "role": "SUPER_ADMIN",
+      "locale": "en",
+      "permissions": [
+        "audit.read",
+        "customers.read",
+        "dispatch.manage",
+        "files.read",
+        "finance.accounts.manage",
+        "finance.read",
+        "finance.verify",
+        "fleet.manage",
+        "fleet.read",
+        "guest.links.manage",
+        "markets.manage",
+        "notifications.manage",
+        "operations.manage",
+        "orders.read",
+        "pod.read",
+        "portal.access",
+        "pricing.calculate",
+        "quality.read",
+        "quotes.manage",
+        "quotes.read",
+        "requests.read",
+        "services.read",
+        "support.read",
+        "trips.read",
+        "users.manage"
+      ],
+      "modules": ["quotes", "operations", "finance", "finance/banks", "support"],
+      "result": "PASS"
+    },
+    {
+      "role": "SALES",
+      "locale": "ar",
+      "permissions": [
+        "customers.read",
+        "guest.links.manage",
+        "portal.access",
+        "pricing.calculate",
+        "quotes.manage",
+        "quotes.read",
+        "requests.read",
+        "services.read"
+      ],
+      "modules": ["quotes"],
+      "result": "PASS"
+    },
+    {
+      "role": "SALES",
+      "locale": "en",
+      "permissions": [
+        "customers.read",
+        "guest.links.manage",
+        "portal.access",
+        "pricing.calculate",
+        "quotes.manage",
+        "quotes.read",
+        "requests.read",
+        "services.read"
+      ],
+      "modules": ["quotes"],
+      "result": "PASS"
+    },
+    {
+      "role": "OPERATIONS",
+      "locale": "ar",
+      "permissions": [
+        "dispatch.manage",
+        "fleet.manage",
+        "fleet.read",
+        "guest.links.manage",
+        "operations.manage",
+        "orders.read",
+        "pod.read",
+        "portal.access",
+        "requests.read",
+        "services.read",
+        "trips.read"
+      ],
+      "modules": ["operations"],
+      "result": "PASS"
+    },
+    {
+      "role": "OPERATIONS",
+      "locale": "en",
+      "permissions": [
+        "dispatch.manage",
+        "fleet.manage",
+        "fleet.read",
+        "guest.links.manage",
+        "operations.manage",
+        "orders.read",
+        "pod.read",
+        "portal.access",
+        "requests.read",
+        "services.read",
+        "trips.read"
+      ],
+      "modules": ["operations"],
+      "result": "PASS"
+    },
+    {
+      "role": "FINANCE",
+      "locale": "ar",
+      "permissions": ["finance.read", "finance.verify", "portal.access"],
+      "modules": ["finance"],
+      "result": "PASS"
+    },
+    {
+      "role": "FINANCE",
+      "locale": "en",
+      "permissions": ["finance.read", "finance.verify", "portal.access"],
+      "modules": ["finance"],
+      "result": "PASS"
+    },
+    {
+      "role": "CUSTOMER_SERVICE",
+      "locale": "ar",
+      "permissions": ["customers.read", "portal.access", "requests.read", "support.read"],
+      "modules": ["support"],
+      "result": "PASS"
+    },
+    {
+      "role": "CUSTOMER_SERVICE",
+      "locale": "en",
+      "permissions": ["customers.read", "portal.access", "requests.read", "support.read"],
+      "modules": ["support"],
+      "result": "PASS"
+    }
+  ],
+  "protectedPreview": "https://naql365-staging-ux-stage3-naql365.vercel.app",
+  "deployment": "dpl_E76q5BwzafRsT3rMQ2yKhvnAqF2K",
+  "indexSha256": "bb06d68a1a1a6746d3f4ba8ca502fcb121421cf42761e55e2354c61ef43c10e8",
+  "loadingEvidence": "CONTROLLED_PRESENTATION: actual committed loading.tsx rendered verbatim in the authorized hosted shell; not a claim about network-transition timing",
+  "accessibilityScope": "axe and keyboard/focus/geometry smoke, not WCAG certification"
+}

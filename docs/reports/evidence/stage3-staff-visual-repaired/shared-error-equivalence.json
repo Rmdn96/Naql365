@@ -1,0 +1,34 @@
+{
+  "applicationSha": "8062e3ec5884827b507e8e18dab7747c369e9927",
+  "source": "src/app/[locale]/(portal)/portal/error.tsx",
+  "gitBlob": "32a0e47581e4f382619142a855461b5baf705d78",
+  "test": "tests/unit/staff-error-equivalence.test.ts",
+  "result": "PASS",
+  "routes": [
+    "/portal/quotes",
+    "/portal/operations",
+    "/portal/finance",
+    "/portal/finance/banks",
+    "/portal/support",
+    "/portal",
+    "/portal/quotes/[id]",
+    "/portal/operations/jobs/[id]",
+    "/portal/operations/trips/[id]",
+    "/portal/finance/[id]"
+  ],
+  "representativeCaptureIds": [
+    "support-error-retry-ar-360",
+    "support-error-retry-ar-390",
+    "support-error-retry-ar-768",
+    "support-error-retry-ar-1280",
+    "support-error-retry-ar-1440",
+    "support-error-retry-en-360",
+    "support-error-retry-en-390",
+    "support-error-retry-en-768",
+    "support-error-retry-en-1280",
+    "support-error-retry-en-1440"
+  ],
+  "basis": "Only locale affects the shared error/retry component; rendered markup equality is tested across every implemented route, and there are no nested error overrides. Role-safe shell/navigation is independently captured for each persona. Representative error-section evidence is not relabeled as an actual failure of every route.",
+  "coverage": "AR/EN and all five widths; keyboard/focus, labels, overflow and axe smoke in referenced actual hosted Support error captures",
+  "timestamp": "2026-10-13T15:49:55.099Z"
+}

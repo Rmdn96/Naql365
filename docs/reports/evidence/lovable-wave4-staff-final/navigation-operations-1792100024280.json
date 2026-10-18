@@ -1,0 +1,72 @@
+[
+  {
+    "role": "OPERATIONS",
+    "locale": "ar",
+    "permissions": [
+      "dispatch.manage",
+      "fleet.manage",
+      "fleet.read",
+      "guest.links.manage",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "requests.read",
+      "services.read",
+      "trips.read"
+    ],
+    "modules": ["operations"],
+    "result": "PASS"
+  },
+  {
+    "role": "OPERATIONS",
+    "locale": "en",
+    "permissions": [
+      "dispatch.manage",
+      "fleet.manage",
+      "fleet.read",
+      "guest.links.manage",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "requests.read",
+      "services.read",
+      "trips.read"
+    ],
+    "modules": ["operations"],
+    "result": "PASS"
+  },
+  {
+    "role": "DISPATCHER",
+    "locale": "ar",
+    "permissions": [
+      "dispatch.manage",
+      "fleet.manage",
+      "fleet.read",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "trips.read"
+    ],
+    "modules": ["operations"],
+    "result": "PASS"
+  },
+  {
+    "role": "DISPATCHER",
+    "locale": "en",
+    "permissions": [
+      "dispatch.manage",
+      "fleet.manage",
+      "fleet.read",
+      "operations.manage",
+      "orders.read",
+      "pod.read",
+      "portal.access",
+      "trips.read"
+    ],
+    "modules": ["operations"],
+    "result": "PASS"
+  }
+]
