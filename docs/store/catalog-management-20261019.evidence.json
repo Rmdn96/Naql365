@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-19",
+  "branch": "feature/unified-egypt-mvp",
+  "startingLocalAndRemote": "baa6759a2f12c2ad0344a2a8f64b0eada72f649d",
+  "application": "777bfd44e975bf038dd9ef06e4b1d5306f65cc4d",
+  "migration": {
+    "number": 51,
+    "path": "supabase/migrations/20261019000200_store_catalog_management.sql",
+    "sha256": "7acd143c5e5a3d35ef9f6633bd26e7c346d5c42d93fdbfe6a398546c0ab99d22",
+    "accepted1Through50GitBlobsUnchanged": true,
+    "cloudApplied": false
+  },
+  "checks": {
+    "unitIntegration": {
+      "files": 57,
+      "passed": 294,
+      "scope": "all unit tests plus affected catalog and Store purchase/security integrations"
+    },
+    "sql": {
+      "files": 12,
+      "passed": true,
+      "newManagementAssertions": 31
+    },
+    "catalogConcurrency": {
+      "scenarios": 13,
+      "barrierRaces": 12,
+      "passed": true
+    },
+    "purchaseAndSharedReceiptConcurrency": {
+      "scenarios": 4,
+      "passed": true
+    },
+    "storeBrowser": {
+      "checks": 13,
+      "captures": 8,
+      "passed": true,
+      "cleanupVerified": true,
+      "deletedCredentialReuseDenied": true
+    },
+    "e2e": {
+      "fullPassed": 71,
+      "fullTimedOut": 1,
+      "focusedSameCasePassed": 1,
+      "focusedSeconds": 12.4,
+      "uniquePassingCases": 72,
+      "fullRunEntirelyGreen": false,
+      "timeoutAndAssertionsUnchanged": true
+    },
+    "lint": true,
+    "types": true,
+    "build": true,
+    "formatting": true,
+    "officialGeneratedTypes": true,
+    "secretPatterns": true,
+    "historySecretPatterns": true
+  },
+  "security": {
+    "runtimeNpmAdvisories": 0,
+    "devHighAffectedPackages": 5,
+    "underlyingAdvisories": 1,
+    "advisory": "GHSA-vfj7-8cjw-p6xm",
+    "dependenciesChanged": false
+  },
+  "cloud": {
+    "writes": false,
+    "push": false,
+    "deploy": false,
+    "productionAccess": false,
+    "storeActivation": false,
+    "permissionActivation": false
+  },
+  "hostedCI": "NOT_RUN_FOR_NEW_SOURCE_PUSH_REQUIRES_SEPARATE_APPROVAL",
+  "operationalData": "Supplier agreements, entitlements, retail, policies, rights and real destinations still require owner approval; no defaults invented"
+}
