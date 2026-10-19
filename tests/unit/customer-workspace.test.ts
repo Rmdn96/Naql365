@@ -12,7 +12,9 @@ for (const locale of ['ar', 'en'] as const) {
     expect(html).toContain(`href="/${locale}/account/requests"`);
     const currentLink = html.match(/<a\b[^>]*aria-current="page"[^>]*>/)?.[0];
     expect(currentLink).toContain(`href="/${locale}/account/quotes"`);
-    expect(html).not.toMatch(/\/portal|\/driver|\/orders|capability|token=/);
+    expect(html).toContain(`href="/${locale}/store/orders"`);
+    expect(html).toContain(`href="/${locale}/store/cart"`);
+    expect(html).not.toMatch(/\/portal|\/driver|capability|token=/);
     expect(html.match(/aria-current="page"/g)).toHaveLength(1);
   });
 }

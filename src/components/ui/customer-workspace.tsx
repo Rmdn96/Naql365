@@ -15,7 +15,7 @@ export function CustomerWorkspaceNav({
       {(
         [
           ['account', ar ? 'نظرة عامة' : 'Overview', '◈'],
-          ['requests', ar ? 'طلباتي' : 'My requests', '↗'],
+          ['requests', ar ? 'طلبات النقل' : 'Transport requests', '↗'],
           ['quotes', ar ? 'عروض السعر' : 'Quotes', '▤'],
         ] as const
       ).map(([key, label, symbol]) => (
@@ -28,6 +28,9 @@ export function CustomerWorkspaceNav({
           {label}
         </Link>
       ))}
+      <Link href={`/${locale}/store/orders`}>{ar ? 'طلبات المتجر' : 'Store orders'}</Link>
+      <Link href={`/${locale}/store`}>{ar ? 'تسوّق مجددًا' : 'Shop again'}</Link>
+      <Link href={`/${locale}/store/cart`}>{ar ? 'السلة' : 'Cart'}</Link>
     </nav>
   );
 }

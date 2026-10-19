@@ -43,12 +43,22 @@ export default async function Page({
   )
     notFound();
   const q = await searchParams;
+  if (
+    kind === 'catalog' &&
+    typeof q.kind === 'string' &&
+    ['references', 'offers', 'suppliers', 'agreements'].includes(q.kind) &&
+    !modules.sourcing
+  )
+    notFound();
+  if (kind === 'catalog' && q.kind === 'policies' && !modules.policies) notFound();
   if (kind === 'catalog')
     return (
       <CatalogAdmin
         locale={locale}
         kind={typeof q.kind === 'string' ? q.kind : undefined}
         after={typeof q.after === 'string' ? q.after : undefined}
+        search={typeof q.search === 'string' ? q.search : ''}
+        state={typeof q.state === 'string' ? q.state : ''}
       />
     );
   return (

@@ -6,6 +6,7 @@ import { isLocale } from '@/i18n/config';
 import { dictionary } from '@/i18n/dictionaries';
 import { appUrl } from '@/infrastructure/config/server-env';
 import { headers } from 'next/headers';
+import { StoreIntroduction } from '@/components/store/introduction';
 export async function generateMetadata({
   params,
 }: {
@@ -52,7 +53,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
       />
-      <Landing locale={locale} country={country} services={services} cities={cities} />
+      <Landing
+        locale={locale}
+        country={country}
+        services={services}
+        cities={cities}
+        storeSection={<StoreIntroduction locale={locale} />}
+      />
     </>
   );
 }

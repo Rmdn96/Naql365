@@ -55,6 +55,8 @@ for (const key of Object.keys(env))
   if (key.startsWith('VERCEL') || /^SUPABASE_.*(TOKEN|PASSWORD|SERVICE|SECRET)/.test(key))
     delete env[key];
 const tables = [
+  'store_supplier_reference_prices',
+  'store_product_media',
   'store_purchase_events',
   'store_purchase_receipts',
   'store_money_entries',
@@ -81,6 +83,7 @@ let server,
   browser,
   seeded = false,
   checkpoint = 'preflight';
+console.log('CHECKPOINT ' + checkpoint);
 const password = randomBytes(24).toString('hex');
 async function login(page, identity, locale) {
   await page.goto(origin + '/' + locale + '/login');
@@ -142,6 +145,7 @@ try {
   if (sql('select ' + tables.map((t) => `(select count(*) from private.${t})`).join('+')) !== '0')
     throw Error('Local Store baseline not empty; preserving existing records');
   checkpoint = 'build';
+  console.log('CHECKPOINT ' + checkpoint);
   execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
     env,
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -164,6 +168,7 @@ try {
     await new Promise((r) => setTimeout(r, 1000));
   }
   checkpoint = 'synthetic Auth setup';
+  console.log('CHECKPOINT ' + checkpoint);
   for (let i = 1; i <= 6; i++) {
     const email = 'store-' + Date.now() + '-' + i + '@example.invalid';
     const r = await admin.auth.admin.createUser({ email, password, email_confirm: true });
@@ -200,18 +205,222 @@ try {
     financeContext = await browser.newContext();
   const page = await customerContext.newPage(),
     finance = await financeContext.newPage();
+  checkpoint = 'dynamic catalog management';
+  console.log('CHECKPOINT ' + checkpoint);
+  await login(finance, users[1], 'en');
+  await finance.goto(origin + '/en/portal/store/catalog?kind=products');
+  const creator = finance
+    .locator('details')
+    .filter({ has: finance.locator('summary', { hasText: 'Create draft' }) })
+    .first();
+  await creator.locator('summary').click();
+  for (const [name, value] of Object.entries({
+    slug: 'new-synthetic-product-31',
+    sku: 'NEW-SYNTHETIC-31',
+    title_ar: 'منتج جديد للاختبار',
+    title_en: 'New synthetic product 31',
+    category_id: '98000000-0000-4000-8000-000000000001',
+    description_ar: 'اختبار فقط',
+    description_en: 'Synthetic only',
+  }))
+    await creator.locator('[name="' + name + '"]').fill(value);
+  await creator.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(
+    finance.getByRole('heading', { name: 'New synthetic product 31', exact: true }),
+  ).toBeVisible();
+  const newCard = finance.locator('section.card').filter({
+    has: finance.getByRole('heading', { name: 'New synthetic product 31', exact: true }),
+  });
+  await newCard.getByText('Edit draft', { exact: true }).click();
+  await newCard.locator('[name="title_en"]').fill('Edited synthetic product 31');
+  await newCard.getByRole('button', { name: 'Save', exact: true }).first().click();
+  await expect(
+    finance.getByRole('heading', { name: 'Edited synthetic product 31', exact: true }),
+  ).toBeVisible();
+  checks.push('Staff creates and edits a product outside the initial 30 through the website');
+  const catalogCommand = async (operation, payload, target, revision, family = 'draft') => {
+    const response = await finance.request.post(origin + '/api/store/catalog', {
+      headers: { Origin: origin },
+      data: {
+        family,
+        operation,
+        payload,
+        mutationId: crypto.randomUUID(),
+        ...(target ? { target, revision } : {}),
+      },
+    });
+    if (!response.ok())
+      throw Error('Catalog command unconfirmed: ' + operation + ' HTTP ' + response.status());
+    return response.json();
+  };
+  const newId = sql("select id from private.store_products where sku='NEW-SYNTHETIC-31'");
+  await catalogCommand('suspend_product', { reason: 'Synthetic pause' }, newId, 2, 'publication');
+  await finance.goto(
+    origin + '/en/portal/store/catalog?kind=products&search=Edited+synthetic&state=SUSPENDED',
+  );
+  await expect(finance.getByRole('heading', { name: 'Edited synthetic product 31' })).toBeVisible();
+  checks.push('Staff suspension and server-side state/search filters');
+  await catalogCommand('resume_product', { reason: 'Synthetic resume' }, newId, 3, 'publication');
+  const newListing = await catalogCommand('create_listing', { product_id: newId });
+  const newOffer = await catalogCommand(
+    'create_offer',
+    {
+      product_id: newId,
+      supplier_id: '97000000-0000-4000-8000-000000000001',
+      agreement_id: '97000000-0000-4000-8000-000000000002',
+      offer_key: 'new-31',
+      version: 1,
+      unit_cost_minor: 600,
+      effective_from: '2026-01-01T00:00:00Z',
+      evidence_ref: 'SYNTHETIC local only',
+    },
+    undefined,
+    undefined,
+    'sourcing',
+  );
+  await catalogCommand('approve_offer', {}, newOffer.id, 1, 'sourcing');
+  const initialRetail = await catalogCommand('create_price', {
+    listing_id: newListing.id,
+    version: 1,
+    amount_minor: 1000,
+    presentation_policy_id: '96000000-0000-4000-8000-000000000003',
+    effective_from: '2026-01-01T00:00:00Z',
+  });
+  await catalogCommand('approve_price', {}, initialRetail.id, 1, 'publication');
+  const publicationTerms = {
+    product_revision: 4,
+    category_revision: 1,
+    offer_id: newOffer.id,
+    offer_revision: 2,
+    identity_policy_id: '96000000-0000-4000-8000-000000000002',
+    identity_policy_revision: 1,
+    delivery_policy_id: '96000000-0000-4000-8000-000000000004',
+    delivery_policy_revision: 1,
+    returns_policy_id: '96000000-0000-4000-8000-000000000005',
+    returns_policy_revision: 1,
+  };
+  await catalogCommand(
+    'publish_listing',
+    { ...publicationTerms, price_id: initialRetail.id, price_revision: 2 },
+    newListing.id,
+    1,
+    'publication',
+  );
+  await catalogCommand(
+    'suspend_product',
+    { reason: 'Only the new run-owned product is on sale in this isolated test' },
+    '98000000-0000-4000-8000-000000000002',
+    1,
+    'publication',
+  );
+
+  checkpoint = 'product media upload';
+  console.log('CHECKPOINT ' + checkpoint);
+  await finance.goto(origin + '/en/portal/store/catalog?kind=listings&search=Edited+synthetic');
+  await finance.getByText('Product images and order', { exact: true }).click();
+  await finance.locator('input[type=file]').setInputFiles({
+    name: 'synthetic-product.png',
+    mimeType: 'image/png',
+    buffer: await sharp({ create: { width: 120, height: 100, channels: 3, background: '#bc955f' } })
+      .png()
+      .toBuffer(),
+  });
+  await finance.locator('input[name=rightsReference]').fill('SYNTHETIC generated local test image');
+  await finance.getByRole('button', { name: 'Upload image', exact: true }).click();
+  await expect(finance.getByRole('link', { name: 'Preview', exact: true })).toBeVisible();
+  await finance.getByLabel('الوصف البديل العربي', { exact: true }).fill('صندوق تجريبي');
+  await finance.getByLabel('English alternative text', { exact: true }).fill('Synthetic carton');
+  await finance.locator('input[type=file]').setInputFiles({
+    name: 'second-synthetic.png',
+    mimeType: 'image/png',
+    buffer: await sharp({ create: { width: 100, height: 120, channels: 3, background: '#d9bb8c' } })
+      .png()
+      .toBuffer(),
+  });
+  await finance.getByRole('button', { name: 'Upload image', exact: true }).click();
+  await expect(finance.getByRole('link', { name: 'Preview', exact: true })).toHaveCount(2);
+  await finance.reload();
+  await finance.getByText('Product images and order', { exact: true }).click();
+  await expect(
+    finance.getByRole('button', { name: 'Select uploaded draft', exact: true }),
+  ).toHaveCount(2);
+  await finance.getByRole('button', { name: 'Select uploaded draft', exact: true }).last().click();
+  await finance.getByRole('button', { name: 'Select uploaded draft', exact: true }).click();
+  await finance.getByLabel('الوصف البديل العربي', { exact: true }).nth(0).fill('صندوق تجريبي');
+  await finance
+    .getByLabel('English alternative text', { exact: true })
+    .nth(0)
+    .fill('Synthetic carton');
+  await finance
+    .getByLabel('الوصف البديل العربي', { exact: true })
+    .nth(1)
+    .fill('زاوية ثانية تجريبية');
+  await finance
+    .getByLabel('English alternative text', { exact: true })
+    .nth(1)
+    .fill('Second synthetic view');
+  checks.push('Unpublished uploaded images survive reload for governed publisher selection');
+  await finance.getByRole('button', { name: 'Move up', exact: true }).nth(1).click();
+  const publication = finance.waitForResponse(
+    (response) =>
+      response.url() === origin + '/api/store/catalog' &&
+      response.request().method() === 'POST' &&
+      response.request().postDataJSON()?.operation === 'attach_media',
+  );
+  await finance.getByRole('button', { name: 'Approve images and order', exact: true }).click();
+  const publicationResponse = await publication;
+  if (!publicationResponse.ok())
+    throw Error('Image approval failed HTTP ' + publicationResponse.status());
+  if (
+    sql(
+      "select revision from private.store_product_market_listings where id='" + newListing.id + "'",
+    ) !== '3'
+  )
+    throw Error('Image approval revision unconfirmed');
+  const mediaId = sql(
+    "select id from private.store_product_media where status='READY' order by created_at limit 1",
+  );
+  const mediaResponse = await finance.request.get(origin + '/api/store/media/' + mediaId);
+  if (!mediaResponse.ok() || !mediaResponse.headers()['content-type']?.startsWith('image/webp'))
+    throw Error('Product image did not render');
+  checks.push('Authorized normalized product-image upload, rights reference and publication');
   checkpoint = 'Customer password login';
+  console.log('CHECKPOINT ' + checkpoint);
   await login(page, users[0], 'en');
   await page.goto(origin + '/en/store');
-  await expect(page.getByRole('heading', { name: 'Synthetic product' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Edited synthetic product 31' })).toBeVisible();
+  await expect(page.locator('.store-product img')).toHaveCount(1);
+  await expect(page.locator('.store-product img')).toHaveAttribute('alt', 'Second synthetic view');
+  await page.goto(origin + '/en/store/products/new-synthetic-product-31');
+  await expect(page.locator('.store-product img')).toHaveCount(2);
+  await expect
+    .poll(() =>
+      page
+        .locator('.store-product img')
+        .evaluateAll((images) => images.every((image) => image.complete && image.naturalWidth > 0)),
+    )
+    .toBe(true);
+  await capture(page, 'en', 1280, 'light', 'product-detail-images');
+  await page.goto(origin + '/ar/store/products/new-synthetic-product-31');
+  await expect(page.locator('.store-product img').first()).toHaveAttribute(
+    'alt',
+    'زاوية ثانية تجريبية',
+  );
+  await capture(page, 'ar', 390, 'dark', 'product-detail-images');
+  await page.goto(origin + '/en/store');
+  checks.push(
+    'Catalog/detail images render in approved order; bilingual alt metadata and no broken images',
+  );
   await capture(page, 'en', 1280, 'light', 'catalog');
   checkpoint = 'cart';
+  console.log('CHECKPOINT ' + checkpoint);
   await page.getByRole('button', { name: 'Add to cart', exact: true }).click();
   await expect(page.getByText('Confirmed result saved.', { exact: true })).toBeVisible();
   await page.goto(origin + '/en/store/cart');
   await expect(page.locator('.store-line')).toHaveCount(1);
   await page.getByRole('link', { name: 'Continue', exact: true }).click();
   checkpoint = 'checkout navigation';
+  console.log('CHECKPOINT ' + checkpoint);
   await expect(page).toHaveURL(origin + '/en/store/checkout');
   await expect(page.locator('#store-name')).toBeVisible();
   await expect(page.locator('#store-name')).toBeEditable();
@@ -224,13 +433,51 @@ try {
   await page.locator('#destination').selectOption('99000000-0000-4000-8000-000000000002');
   await page.locator('.store-check input').check();
   checkpoint = 'place order';
+  console.log('CHECKPOINT ' + checkpoint);
   await page.getByRole('button', { name: 'Place order', exact: true }).click();
   await expect(page).toHaveURL(/\/en\/store\/orders\/[a-f0-9-]+$/, { timeout: 20000 });
   const id = new URL(page.url()).pathname.split('/').at(-1);
+  checkpoint = 'order snapshot preservation';
+  console.log('CHECKPOINT ' + checkpoint);
+  const oldSnapshot = sql(
+    "select to_jsonb(i)::text from private.store_order_items i where order_id='" + id + "'",
+  );
+  const price = await catalogCommand('create_price', {
+    listing_id: newListing.id,
+    version: 2,
+    amount_minor: 1400,
+    presentation_policy_id: '96000000-0000-4000-8000-000000000003',
+    effective_from: '2026-01-01T00:00:00Z',
+  });
+  const saved = await catalogCommand(
+    'save_price',
+    {
+      amount_minor: 1600,
+      presentation_policy_id: '96000000-0000-4000-8000-000000000003',
+      effective_from: '2026-01-01T00:00:00Z',
+    },
+    price.id,
+    price.revision,
+  );
+  await catalogCommand('approve_price', {}, price.id, saved.revision, 'publication');
+  await catalogCommand(
+    'publish_listing',
+    { ...publicationTerms, price_id: price.id, price_revision: 3 },
+    newListing.id,
+    3,
+    'publication',
+  );
+  if (
+    sql("select to_jsonb(i)::text from private.store_order_items i where order_id='" + id + "'") !==
+    oldSnapshot
+  )
+    throw Error('Historical order snapshot changed');
+  checks.push('New approved retail version leaves placed order snapshots byte-identical');
   await page.reload();
   await expect(page.getByText('Pending', { exact: true })).toBeVisible();
   checks.push('registered Customer checkout and refresh');
   checkpoint = 'proof upload';
+  console.log('CHECKPOINT ' + checkpoint);
   await page.locator('#store-proof').setInputFiles({
     name: 'synthetic.png',
     mimeType: 'image/png',
@@ -244,6 +491,7 @@ try {
   checks.push('real normalized private proof uploaded; funds remain under review');
   await capture(page, 'en', 1280, 'system', 'under-review');
   checkpoint = 'cross Customer proof denial';
+  console.log('CHECKPOINT ' + checkpoint);
   const stranger = await browser.newContext(),
     other = await stranger.newPage();
   await login(other, users[3], 'en');
@@ -251,7 +499,9 @@ try {
   if (denied.status() !== 403) throw Error('Other Customer order not denied');
   await stranger.close();
   checkpoint = 'Finance password login';
-  await login(finance, users[1], 'en');
+  console.log('CHECKPOINT ' + checkpoint);
+  await finance.goto(origin + '/en/login');
+  await expect(finance).toHaveURL(/\/en\/portal$/);
   await finance.goto(origin + '/en/portal/store/finance');
   await expect(finance.locator('.store-experience')).toBeVisible();
   await finance.goto(origin + '/en/portal/store/orders/' + id);
@@ -277,6 +527,7 @@ try {
     'authorized Finance receipt verification followed by separate real supplier fulfillment commands',
   );
   checkpoint = 'Arabic mobile order';
+  console.log('CHECKPOINT ' + checkpoint);
   await page.goto(origin + '/ar/store/orders/' + id);
   await expect(
     page.locator('.store-status').getByText('تم التسليم', { exact: true }),
@@ -292,6 +543,26 @@ try {
   await finance.goto(origin + '/en/login');
   await expect(finance).toHaveURL(/\/en\/portal$/);
   checks.push('Staff direct login recognizes session');
+  await catalogCommand(
+    'suspend_product',
+    { reason: 'Synthetic final pause' },
+    newId,
+    4,
+    'publication',
+  );
+  if (
+    sql("select to_jsonb(i)::text from private.store_order_items i where order_id='" + id + "'") !==
+    oldSnapshot
+  )
+    throw Error('Pause altered historical order snapshot');
+  sql(
+    "update private.store_policy_versions set scope_paused=true,revision=revision+1 where kind='STOREFRONT_SCOPE' and organization_id='" +
+      ledger.organization +
+      "'",
+  );
+  if ((await page.request.get(origin + '/api/store/media/' + mediaId)).status() !== 404)
+    throw Error('Paused product media remained public');
+  checks.push('Paused scope revokes Customer product-image access');
   await customerContext.close();
   await financeContext.close();
 } catch (error) {
@@ -333,6 +604,13 @@ try {
       const r = await admin.storage.from('store-proofs').remove(paths);
       if (r.error) throw Error('Local proof cleanup failed');
     }
+    const productPaths = JSON.parse(
+      sql("select coalesce(json_agg(id::text||'.webp'),'[]') from private.store_product_media"),
+    );
+    if (productPaths.length) {
+      const removed = await admin.storage.from('store-product-media').remove(productPaths);
+      if (removed.error) throw Error('Local product-media cleanup failed');
+    }
     sql(
       `begin;truncate ${tables.map((t) => 'private.' + t).join(',')};delete from public.bank_accounts where organization_id='${organization}';delete from public.customers where organization_id in ('${organization}','91000000-0000-4000-8000-000000000002');delete from public.user_roles where profile_id in (${users.map((u) => "'" + u.id + "'").join(',')});delete from public.role_permissions where role_id='94000000-0000-4000-8000-000000000001';delete from public.roles where id='94000000-0000-4000-8000-000000000001';delete from public.organization_memberships where profile_id in (${users.map((u) => "'" + u.id + "'").join(',')});delete from public.markets where organization_id='${organization}';delete from public.audit_logs where organization_id in ('${organization}','91000000-0000-4000-8000-000000000002');delete from public.organizations where id in ('${organization}','91000000-0000-4000-8000-000000000002');drop function public.store_purchase_error(text,text,text);drop function public.store_purchase_assert(boolean,text);drop table public.store_purchase_test_results;commit;`,
     );
@@ -349,7 +627,11 @@ try {
   if (seeded) {
     if (sql('select ' + tables.map((t) => `(select count(*) from private.${t})`).join('+')) !== '0')
       throw Error('Independent local data cleanup verification failed');
-    if (sql("select count(*) from storage.objects where bucket_id='store-proofs'") !== '0')
+    if (
+      sql(
+        "select count(*) from storage.objects where bucket_id in ('store-proofs','store-product-media')",
+      ) !== '0'
+    )
       throw Error('Local Storage cleanup verification failed');
     ledger.cleanup = true;
   }

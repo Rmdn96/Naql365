@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { StoreProductImage } from './product-image';
 import { notFound, redirect } from 'next/navigation';
 import { Alert, Badge, Card, EmptyState, Input, Table } from '@/components/ui/primitives';
 import { storeCart, storeOrder, storeOrderPage } from '@/domain/store/model';
@@ -146,7 +146,7 @@ async function renderStoreBody({
             {catalog.items.map((product) => (
               <Card key={product.listingId} className="store-product">
                 {product.media[0] && (
-                  <Image
+                  <StoreProductImage
                     src={product.media[0].src}
                     alt={locale === 'ar' ? product.media[0].altAr : product.media[0].altEn}
                     width={480}
@@ -171,6 +171,28 @@ async function renderStoreBody({
                     : product.content.description_en}
                 </p>
                 <strong>{storeMoney(product.amountMinor, locale)}</strong>
+                {!!product.content.specifications?.length && (
+                  <dl className="store-specifications">
+                    {product.content.specifications.map((spec, i) => (
+                      <div key={i}>
+                        <dt>{locale === 'ar' ? spec.label_ar : spec.label_en}</dt>
+                        <dd>{locale === 'ar' ? spec.value_ar : spec.value_en}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                {segment === 'products' &&
+                  product.media
+                    .slice(1)
+                    .map((image) => (
+                      <StoreProductImage
+                        key={image.src}
+                        src={image.src}
+                        alt={locale === 'ar' ? image.altAr : image.altEn}
+                        width={480}
+                        height={360}
+                      />
+                    ))}
                 <AddToCart product={product} locale={locale} />
               </Card>
             ))}

@@ -12,9 +12,11 @@ export function Landing({
   country,
   services,
   cities,
+  storeSection,
 }: {
   locale: Locale;
   country: PublicCountry;
+  storeSection?: React.ReactNode;
   services: { id: string; nameAr: string; nameEn: string }[];
   cities: {
     id: string;
@@ -54,6 +56,9 @@ export function Landing({
                 {t.start}
                 <span aria-hidden="true"> ↗</span>
               </Link>
+              <Link href={`/${locale}/store`} className="button launch-secondary">
+                {locale === 'ar' ? 'تسوّق مستلزمات التغليف' : 'Shop packing supplies'}
+              </Link>
               <Link href={`/${locale}/guest`} className="hero-track">
                 {t.track}
               </Link>
@@ -69,6 +74,7 @@ export function Landing({
           />
         </div>
       </section>
+      {storeSection}
       <section className="container launch-quick" aria-labelledby="quick-title">
         <div>
           <p className="eyebrow">{country === 'SA' ? t.sa : t.eg}</p>

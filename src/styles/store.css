@@ -113,3 +113,63 @@
     width: 100%;
   }
 }
+.store-introduction {
+  padding-block: 3rem;
+}
+.store-introduction header {
+  max-width: 65ch;
+}
+.store-introduction .store-products {
+  margin-block-start: 1.5rem;
+}
+.store-specifications {
+  display: grid;
+  gap: 0.5rem;
+  margin-block: 1rem;
+}
+.store-specifications > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-block-end: 1px solid var(--theme-border);
+  padding-block: 0.4rem;
+}
+.store-specifications dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.store-experience fieldset {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 0.75rem;
+}
+.store-experience textarea,
+.store-experience input[type='file'] {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.7rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.5rem;
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  font: inherit;
+}
+.store-experience dd,
+.store-experience a,
+.store-introduction a {
+  overflow-wrap: anywhere;
+}
+.store-experience .store-search {
+  flex-wrap: wrap;
+}
+.store-introduction .store-notice {
+  background: var(--theme-surface-muted);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}

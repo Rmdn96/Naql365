@@ -51,6 +51,16 @@ export const productContent = z.object({
   title_en: z.string(),
   description_ar: z.string().optional(),
   description_en: z.string().optional(),
+  specifications: z
+    .object({
+      label_ar: z.string(),
+      label_en: z.string(),
+      value_ar: z.string(),
+      value_en: z.string(),
+    })
+    .array()
+    .max(30)
+    .optional(),
 });
 export const storeProduct = z.object({
   slug: z.string(),

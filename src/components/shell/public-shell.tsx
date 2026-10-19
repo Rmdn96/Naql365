@@ -12,7 +12,6 @@ import { loginDestination } from '@/infrastructure/identity/login-destination';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { BrandLink } from './brand-link';
 import { ThemeControl } from './theme-control';
-import { storeIsAvailable } from '@/infrastructure/store/service';
 
 export async function IdentityLink({ locale }: { locale: Locale }) {
   const destination = getPublicEnv() ? await loginDestination() : 'unauthenticated';
@@ -50,7 +49,6 @@ export async function Header({
   const t = dictionary(locale);
   const p = publicDictionary(locale);
   const country = await selectedPublicCountry();
-  const storeAvailable = await storeIsAvailable();
 
   return (
     <>
@@ -62,9 +60,7 @@ export async function Header({
           <BrandLink href={`/${locale}`} label={t.brand} />
           <nav className="desktop-header-nav" aria-label={t.home}>
             <Link href={`/${locale}`}>{t.home}</Link>
-            {storeAvailable && (
-              <Link href={`/${locale}/store`}>{locale === 'ar' ? 'المتجر' : 'Store'}</Link>
-            )}
+            <Link href={`/${locale}/store`}>{locale === 'ar' ? 'المتجر' : 'Store'}</Link>
             <Link className="desktop-nav" href={`/${locale}#services`}>
               {p.services}
             </Link>
@@ -92,9 +88,7 @@ export async function Header({
             close={locale === 'ar' ? 'إغلاق' : 'Close'}
           >
             <Link href={`/${locale}`}>{t.home}</Link>
-            {storeAvailable && (
-              <Link href={`/${locale}/store`}>{locale === 'ar' ? 'المتجر' : 'Store'}</Link>
-            )}
+            <Link href={`/${locale}/store`}>{locale === 'ar' ? 'المتجر' : 'Store'}</Link>
             <Link href={`/${locale}#services`}>{p.services}</Link>
             <Link href={`/${locale}#how`}>{p.how}</Link>
             <Link href={`/${locale}#tracking`}>{p.track}</Link>
@@ -124,6 +118,7 @@ export async function Footer({ locale }: { locale: Locale }) {
           <small>{t.rights}</small>
         </div>
         <nav aria-label={p.services}>
+          <Link href={`/${locale}/store`}>{locale === 'ar' ? 'المتجر' : 'Store'}</Link>
           <Link href={`/${locale}#services`}>{p.services}</Link>
           <Link href={`/${locale}#how`}>{p.how}</Link>
           <Link href={`/${locale}#coverage`}>{locale === 'ar' ? 'نطاق الخدمة' : 'Coverage'}</Link>

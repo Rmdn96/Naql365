@@ -11,6 +11,8 @@ export const storeStaffModules = cache(async () => {
     'store.catalog.read',
     'store.supplier_cost.read',
     'finance.read',
+    'store.sourcing.manage',
+    'store.catalog.policy.manage',
   ] as const;
   const access = await Promise.all(names.map((permission) => staffAccess(permission)));
   const a = access.map((result) => result.status === 'authorized');
@@ -19,5 +21,7 @@ export const storeStaffModules = cache(async () => {
     finance: !!a[1] && !!a[5],
     reconciliation: !!a[2] && !!a[4] && !!a[5],
     catalog: !!a[3],
+    sourcing: !!a[3] && !!a[4] && !!a[6],
+    policies: !!a[3] && !!a[7],
   };
 });
