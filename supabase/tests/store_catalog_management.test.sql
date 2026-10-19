@@ -76,6 +76,15 @@ do $$ declare r jsonb; p uuid; l uuid; n integer; m uuid=gen_random_uuid(); ref 
  r=public.store_catalog_ui_command_v1('EG','draft','create_price',gen_random_uuid(),jsonb_build_object('listing_id',l,'version',1,'amount_minor',1200,'presentation_policy_id','96000000-0000-4000-8000-000000000003','effective_from','2026-01-01Z'));
  r=public.store_catalog_ui_command_v1('EG','draft','save_price',gen_random_uuid(),'{"amount_minor":1400,"presentation_policy_id":"96000000-0000-4000-8000-000000000003","effective_from":"2026-01-01Z"}',(r->>'id')::uuid,1);
  perform public.store_purchase_assert(r->>'revision'='2','change draft retail independently from reference');
+ m=gen_random_uuid();
+ perform public.store_catalog_extension_v1('91000000-0000-4000-8000-000000000001','95000000-0000-4000-8000-000000000001','reserve_media',gen_random_uuid(),l,1,jsonb_build_object('assetId',m,'size',100,'sha256',repeat('a',64),'rightsReference','SYNTHETIC SQL metadata fixture only'));
+ perform set_config('storage.operation','object.upload',true);
+ insert into storage.objects(bucket_id,name,metadata) values('store-product-media',m::text||'.webp','{"mimetype":"image/webp","size":100}');
+ perform public.store_catalog_extension_v1('91000000-0000-4000-8000-000000000001','95000000-0000-4000-8000-000000000001','finalize_media',gen_random_uuid(),l,1,jsonb_build_object('assetId',m));
+ r=public.store_catalog_admin_v2('91000000-0000-4000-8000-000000000001','95000000-0000-4000-8000-000000000001','listings',null,'Edited product 31');
+ perform public.store_purchase_assert(jsonb_array_length(r->'items'->0->'pendingMedia')=1 and jsonb_array_length(r->'items'->0->'media')=0,'ready uploaded draft discoverable by publisher without premature attachment');
+ perform public.store_purchase_assert(position(m::text in public.store_shop_v1('EG')::text)=0,'unapproved media absent from public projection');
+
  r=public.store_catalog_ui_command_v1('EG','publication','suspend_product',gen_random_uuid(),'{"reason":"SYNTHETIC suspension"}',p,2);
  r=public.store_catalog_ui_command_v1('EG','publication','resume_product',gen_random_uuid(),'{"reason":"SYNTHETIC resume"}',p,(r->>'revision')::bigint);
  perform public.store_purchase_assert(r->>'revision'='4','pause and resume without losing history');

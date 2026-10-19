@@ -54,7 +54,7 @@ declare result jsonb; begin
  jsonb_build_object('id',x.id,'slug',x.slug,'parentId',x.parent_id,'content',x.draft_content,'state',x.status,'revision',x.revision)
  from private.store_categories x where p_kind='categories' and x.organization_id=p_org
  union all select x.id,x.status,concat_ws(' ',p.sku,p.slug,p.draft_content->>'title_ar',p.draft_content->>'title_en'),
- jsonb_build_object('id',x.id,'productId',x.product_id,'content',p.draft_content,'publishedContent',x.published_content,'media',x.approved_media,'state',x.status,'revision',x.revision)
+ jsonb_build_object('id',x.id,'productId',x.product_id,'content',p.draft_content,'publishedContent',x.published_content,'media',x.approved_media,'pendingMedia',coalesce((select jsonb_agg(jsonb_build_object('src','/api/store/media/'||a.id::text) order by a.created_at desc,a.id desc) from (select m.id,m.created_at from private.store_product_media m where m.organization_id=p_org and m.market_id=p_market and m.listing_id=x.id and m.status='READY' and not exists(select 1 from jsonb_array_elements(x.approved_media) used where used->>'src'='/api/store/media/'||m.id::text) order by m.created_at desc,m.id desc limit 20) a),'[]'::jsonb),'state',x.status,'revision',x.revision)
  from private.store_product_market_listings x join private.store_products p on p.id=x.product_id and p.organization_id=x.organization_id
  where p_kind='listings' and x.organization_id=p_org and x.market_id=p_market
  union all select x.id,x.status,concat_ws(' ',p.sku,p.slug,p.draft_content->>'title_ar',p.draft_content->>'title_en'),
