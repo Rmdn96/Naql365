@@ -1,0 +1,17 @@
+{
+  "status": "PROPOSAL_INCOMPLETE_NOT_DEPLOYABLE",
+  "verifiedAt": "2026-10-19T12:04:05.791Z",
+  "canonicalOrigin": "https://naql365.com",
+  "organization": "hjfxhwznfgjgywsdsqzn",
+  "production": {
+    "projectRef": "bglbivhmqcpdakaijhng",
+    "publicKeyDigest": "c6400a4e9593c6bb84f3363db1c3c4a8be4972289349f2bf74cfb56a80105070",
+    "identity": null,
+    "revision": null
+  },
+  "pending": [
+    "Separately authorized Production schema installation and deployment-marker initialization",
+    "Read-only verification of actual deployment identity and configuration revision before binding the active manifest"
+  ],
+  "activeManifestChanged": false
+}
