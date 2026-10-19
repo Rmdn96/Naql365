@@ -1,0 +1,76 @@
+{
+  "checks": [
+    "registered Customer checkout and refresh",
+    "real normalized private proof uploaded; funds remain under review",
+    "authorized Finance receipt verification followed by separate real supplier fulfillment commands",
+    "AR/EN; Light/Dark/System; 360/390/1280; no page overflow; axe smoke",
+    "Customer direct login recognizes session",
+    "Staff direct login recognizes session"
+  ],
+  "captures": [
+    {
+      "route": "/en/store",
+      "locale": "en",
+      "width": 1280,
+      "theme": "light",
+      "state": "catalog",
+      "mode": "real local application with synthetic fixtures",
+      "file": "en-1280-light-catalog.png",
+      "sha256": "2db91dedb7248d1b9eb10cca1bfee89dbb62a80324db38fc84b19917881dd1f3"
+    },
+    {
+      "route": "/en/store/checkout",
+      "locale": "en",
+      "width": 390,
+      "theme": "dark",
+      "state": "checkout",
+      "mode": "real local application with synthetic fixtures",
+      "file": "en-390-dark-checkout.png",
+      "sha256": "8d30ef5e039ca1989e4ed19b0454f675125840ccf976fc5240729bf6455cf755"
+    },
+    {
+      "route": "/en/store/orders/e86c197b-ac1b-41eb-8882-f9a95922672b",
+      "locale": "en",
+      "width": 1280,
+      "theme": "system",
+      "state": "under-review",
+      "mode": "real local application with synthetic fixtures",
+      "file": "en-1280-system-under-review.png",
+      "sha256": "d5f7e8541aad94bccc1bb66b082f757af3fae7b2e143ab2370a3c70ce97fe28a"
+    },
+    {
+      "route": "/ar/store/orders/e86c197b-ac1b-41eb-8882-f9a95922672b",
+      "locale": "ar",
+      "width": 360,
+      "theme": "dark",
+      "state": "delivered",
+      "mode": "real local application with synthetic fixtures",
+      "file": "ar-360-dark-delivered.png",
+      "sha256": "8cc604744ce028e5c07550bd4f10846ac6f9e0cfe7a62284c51a3a9f314f83a1"
+    },
+    {
+      "route": "/ar/store/orders/e86c197b-ac1b-41eb-8882-f9a95922672b",
+      "locale": "ar",
+      "width": 1280,
+      "theme": "light",
+      "state": "delivered",
+      "mode": "real local application with synthetic fixtures",
+      "file": "ar-1280-light-delivered.png",
+      "sha256": "b4ba9701becca0dcedbf0759f4e8146e2ce81169a29d69807241735a9177ddfa"
+    },
+    {
+      "route": "/ar/portal/store/orders/e86c197b-ac1b-41eb-8882-f9a95922672b",
+      "locale": "ar",
+      "width": 390,
+      "theme": "system",
+      "state": "reconciliation",
+      "mode": "real local application with synthetic fixtures",
+      "file": "ar-390-system-reconciliation.png",
+      "sha256": "d395503edb26ed134933fce43dc25cdc10757a182038f40855fa0382e35c8560"
+    }
+  ],
+  "checkpoint": "Arabic mobile order",
+  "passed": true,
+  "cleanup": true,
+  "credentialReuseDenied": true
+}

@@ -1,0 +1,28 @@
+{
+  "sourceSha": "6ab494c7dc703bba6f2e3f0afb8796b3791ed13d",
+  "migrationSha256": "179c4b9aca3e097146fe0638453efd24b73cf05b7b06954d748547f74081e3b6",
+  "results": [
+    {
+      "label": "identical checkout replays exactly one Store Order",
+      "result": "PASS"
+    },
+    {
+      "label": "different mutation IDs cannot duplicate one cart revision",
+      "result": "PASS"
+    },
+    {
+      "label": "one external receipt cannot fund two Store payments",
+      "result": "PASS"
+    },
+    {
+      "label": "Transport and Store cannot credit the same external receipt concurrently",
+      "result": "PASS"
+    },
+    {
+      "label": "revoked Store staff grant denied",
+      "result": "PASS"
+    }
+  ],
+  "cleanup": "disposable database independently verified absent",
+  "credentials": "none generated; Docker-local socket only"
+}
