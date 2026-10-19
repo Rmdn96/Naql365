@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { dictionary } from '@/i18n/dictionaries';
 import { isLocale } from '@/i18n/config';
 import { staffModules } from '@/infrastructure/identity/staff-context';
+import { storeStaffModules } from '@/infrastructure/store/access';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
 import { staffDisplayContext } from '@/infrastructure/identity/staff-market';
 import { StaffShell, type StaffLink } from '@/components/shell/staff-shell';
@@ -85,6 +86,22 @@ export default async function Layout({
       label: ar ? 'دعم العملاء' : 'Customer Support',
       symbol: '◎',
     });
+  if ((await selectedPublicCountry()) === 'EG') {
+    const storeModules = [
+      ['orders', 'store.orders.read', ar ? 'طلبات المتجر' : 'Store orders'],
+      ['finance', 'store.payments.read', ar ? 'مدفوعات المتجر' : 'Store payments'],
+      [
+        'reconciliation',
+        'store.settlements.manage',
+        ar ? 'مطابقة المورد' : 'Supplier reconciliation',
+      ],
+      ['catalog', 'store.catalog.read', ar ? 'كتالوج المتجر' : 'Store catalog'],
+    ] as const;
+    const access = await storeStaffModules();
+    for (const storeModule of storeModules)
+      if (access[storeModule[0]])
+        links.push({ href: root + '/store/' + storeModule[0], label: storeModule[2], symbol: '▦' });
+  }
   const theme = (await cookies()).get('naql365_theme')?.value;
   const themeMode = theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
   const display = await staffDisplayContext();

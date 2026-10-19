@@ -1,0 +1,115 @@
+.store-experience {
+  max-width: 1160px;
+  min-width: 0;
+  color: var(--theme-text-primary);
+}
+.store-experience :is(form, section, article, nav, div) {
+  min-width: 0;
+}
+.store-experience :is(h1, h2, h3, p, li, dd, a, address) {
+  overflow-wrap: anywhere;
+}
+.store-experience .card {
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  border-color: var(--theme-border);
+}
+.store-experience a:not(.button) {
+  color: var(--theme-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.store-experience .eyebrow {
+  color: var(--theme-text-secondary);
+}
+.store-nav,
+.store-status,
+.store-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+.store-nav {
+  margin-block: 1.25rem;
+  padding-block: 0.75rem;
+  border-block: 1px solid var(--theme-border);
+}
+.store-products,
+.store-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.store-product {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.store-product img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/3;
+  object-fit: contain;
+}
+.store-form {
+  display: grid;
+  gap: 1rem;
+  max-width: 42rem;
+  padding-block: 1rem;
+}
+.store-line {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding-block: 1rem;
+  border-block-end: 1px solid var(--theme-border);
+}
+.store-line .field {
+  flex: 0 0 6rem;
+}
+.store-totals {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+}
+.store-totals dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.store-check {
+  display: flex;
+  align-items: start;
+  gap: 0.65rem;
+}
+.store-check input {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.store-history li {
+  margin-block: 0.75rem;
+}
+.store-history time {
+  display: block;
+  color: var(--theme-text-secondary);
+}
+.store-experience input[type='file'] {
+  max-width: 100%;
+}
+.store-experience .table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+@media (max-width: 767px) {
+  .store-products,
+  .store-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .store-experience {
+    padding-inline: 1rem;
+  }
+  .store-form .button {
+    width: 100%;
+  }
+}
