@@ -211,6 +211,10 @@ try {
   await page.goto(origin + '/en/store/cart');
   await expect(page.locator('.store-line')).toHaveCount(1);
   await page.getByRole('link', { name: 'Continue', exact: true }).click();
+  checkpoint = 'checkout navigation';
+  await expect(page).toHaveURL(origin + '/en/store/checkout');
+  await expect(page.locator('#store-name')).toBeVisible();
+  await expect(page.locator('#store-name')).toBeEditable();
   await capture(page, 'en', 390, 'dark', 'checkout');
   await page.locator('#store-name').fill('SYNTHETIC Customer');
   await page.locator('#store-phone').fill('SYNTHETIC');
