@@ -1,0 +1,58 @@
+{
+  "expectedOriginalPhotoCount": 10,
+  "transferredCount": 5,
+  "missingOriginalCount": 5,
+  "photos": [
+    {
+      "sourceName": "1-161716.jpg",
+      "localReviewFile": "source-photos/1-161716.jpg",
+      "sha256": "a8c860a4f356cbf44aad81d50bfe73a4ed77a5d9d7bf70ebff21b1644df4ccd6",
+      "candidates": [8],
+      "status": "REVIEW_ONLY",
+      "reason": "Photo label 30×30×40; listed #8 is 40×30×30. Axis/orientation equivalence must be confirmed.",
+      "publication": "NOT_APPROVED",
+      "rights": "Owner supplied for local review; authorized publisher must record image rights reference before upload/publication"
+    },
+    {
+      "sourceName": "2-161710.jpg",
+      "localReviewFile": "source-photos/2-161710.jpg",
+      "sha256": "f4e53ad42c1c40e996c3c09ba2d11e7e645e908c857d91887d66d4d3a1b83080",
+      "candidates": [5],
+      "status": "SIZE_MATCH",
+      "reason": "Visible 50×50×70 label; ply/condition come from supplier list, not image evidence.",
+      "publication": "NOT_APPROVED",
+      "rights": "Owner supplied for local review; authorized publisher must record image rights reference before upload/publication"
+    },
+    {
+      "sourceName": "3-161711.jpg",
+      "localReviewFile": "source-photos/3-161711.jpg",
+      "sha256": "426d3d80c8960ce92d3a06669f9136e129f947f47844186cefae7430776e579a",
+      "candidates": [],
+      "status": "UNMATCHED",
+      "reason": "Used 38×38×58 does not match listed used #3 (40×55×35). Never attach to #3.",
+      "publication": "NOT_APPROVED",
+      "rights": "Owner supplied for local review; authorized publisher must record image rights reference before upload/publication"
+    },
+    {
+      "sourceName": "4-161718.jpg",
+      "localReviewFile": "source-photos/4-161718.jpg",
+      "sha256": "934ae2c86e0787bbb015c9f5a26fbd92e7242db76c59a39bf9d24d162fe28731",
+      "candidates": [16],
+      "status": "LABEL_MATCH",
+      "reason": "Visible label states 6 rolls, 300 metres. Confirm retail pack and publication rights.",
+      "publication": "NOT_APPROVED",
+      "rights": "Owner supplied for local review; authorized publisher must record image rights reference before upload/publication"
+    },
+    {
+      "sourceName": "5-161715.jpg",
+      "localReviewFile": "source-photos/5-161715.jpg",
+      "sha256": "cc9af93213883c6596e8d1d85daaefcd4384adfa0c5fd1f7b12dc9e977f7e1a4",
+      "candidates": [14],
+      "status": "LABEL_MATCH",
+      "reason": "Visible foam label states 100 metres and 2 mm. No unprinted width/weight inferred.",
+      "publication": "NOT_APPROVED",
+      "rights": "Owner supplied for local review; authorized publisher must record image rights reference before upload/publication"
+    }
+  ],
+  "missing": "Five additional original files mentioned by the owner were not transferred in this request. No paths or matches invented."
+}
