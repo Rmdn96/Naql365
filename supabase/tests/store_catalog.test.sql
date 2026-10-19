@@ -55,9 +55,10 @@ do $$ declare f record; begin
 for f in select c.oid::regclass tab from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='private' and c.relname like 'store_%' and c.relkind='r' loop
 perform public.store_test_check('CF18',not has_table_privilege('authenticated',f.tab,'SELECT,INSERT,UPDATE,DELETE') and not has_table_privilege('anon',f.tab,'SELECT,INSERT,UPDATE,DELETE'),f.tab::text||' ACL');
 end loop;
-for f in select p.oid::regprocedure sig from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname like 'store_%' and p.proname not in ('store_proof_access','store_proof_upload') loop
+for f in select p.oid::regprocedure sig from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname like 'store_%' and p.proname not in ('store_proof_access','store_proof_upload','store_media_access','store_media_upload') loop
 perform public.store_test_check('CF19',not has_function_privilege('authenticated',f.sig,'EXECUTE') and not has_function_privilege('anon',f.sig,'EXECUTE'),f.sig::text||' private helper denied');
 end loop;
+perform public.store_test_check('CF19',(select count(*)=2 and bool_and(prorettype='boolean'::regtype) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname in ('store_media_access','store_media_upload')),'product-media policy helpers expose booleans only');
 end $$;
 
 set local role authenticated;

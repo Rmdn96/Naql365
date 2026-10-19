@@ -4043,6 +4043,18 @@ export type Database = {
         Args: { p_country: string; p_creation_token?: string }
         Returns: Json
       }
+      store_catalog_admin_v2: {
+        Args: {
+          p_after?: string
+          p_kind?: string
+          p_limit?: number
+          p_market: string
+          p_org: string
+          p_search?: string
+          p_state?: string
+        }
+        Returns: Json
+      }
       store_catalog_draft_command_v1: {
         Args: {
           p_expected: number
@@ -4053,6 +4065,18 @@ export type Database = {
           p_payload: Json
           p_target: string
           p_version?: number
+        }
+        Returns: Json
+      }
+      store_catalog_extension_v1: {
+        Args: {
+          p_action: string
+          p_market: string
+          p_mutation: string
+          p_org: string
+          p_payload: Json
+          p_revision: number
+          p_target: string
         }
         Returns: Json
       }

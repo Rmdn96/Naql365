@@ -115,7 +115,7 @@ try {
   const bootstrap = helper
     .split('await db.exec(`')[1]
     .split('`);')[0]
-    .replace(/create role (anon|authenticated) nologin;/g, '');
+    .replace(/create role (anon|authenticated|service_role) nologin;/g, '');
   await sql(bootstrap);
   for (const file of readdirSync('supabase/migrations')
     .filter((f) => f.endsWith('.sql'))

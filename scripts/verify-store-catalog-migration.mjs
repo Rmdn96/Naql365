@@ -2,13 +2,13 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
-const baseline = '6ab494c7dc703bba6f2e3f0afb8796b3791ed13d';
+const baseline = 'baa6759a2f12c2ad0344a2a8f64b0eada72f649d';
 const folder = 'supabase/migrations/';
 const added = '20261018000100_store_catalog_foundation.sql';
 const old = execFileSync('git', ['ls-tree', '--name-only', baseline, folder], { encoding: 'utf8' })
   .trim()
   .split('\n');
-assert.equal(old.length, 49);
+assert.equal(old.length, 50);
 const hash = (data) => createHash('sha256').update(data).digest('hex');
 const hashes = old.map((path) => {
   const committed = execFileSync('git', ['show', baseline + ':' + path]);
@@ -35,10 +35,7 @@ assert.deepEqual(
   readdirSync(folder)
     .filter((n) => n.endsWith('.sql'))
     .sort(),
-  [
-    ...old.map((n) => n.slice(folder.length)),
-    '20261019000100_store_purchase_fulfillment.sql',
-  ].sort(),
+  [...old.map((n) => n.slice(folder.length)), '20261019000200_store_catalog_management.sql'].sort(),
 );
 const source = readFileSync(folder + added, 'utf8');
 assert.equal(hash(source), '0816abc8bf7ef64258adfddc7f92633786b8d30bff9c00453caecfbb37459ebd');
@@ -52,8 +49,8 @@ assert(
 const result = {
   baseline,
   originalMigrationCount: old.length,
-  originalMigrationsByteIdentical: true,
-  migrationCount: 50,
+  originalMigrationGitBlobsByteIdentical: true,
+  migrationCount: 51,
   added: folder + added,
   sha256: hash(source),
   financeAddition: {
@@ -64,6 +61,10 @@ const result = {
     path: folder + '20261019000100_store_purchase_fulfillment.sql',
     sha256: hash(readFileSync(folder + '20261019000100_store_purchase_fulfillment.sql')),
   },
+  catalogManagement: {
+    path: folder + '20261019000200_store_catalog_management.sql',
+    sha256: hash(readFileSync(folder + '20261019000200_store_catalog_management.sql')),
+  },
   previous: hashes,
 };
 mkdirSync('test-results/store-6d-1a', { recursive: true });
@@ -72,5 +73,5 @@ writeFileSync(
   JSON.stringify(result, null, 2) + '\n',
 );
 console.log(
-  'Migration integrity PASS: 49 accepted migrations byte-identical; separate additive Store purchase migration; no automatic Store grants or activation.',
+  'Migration integrity PASS: 50 accepted migration Git blobs byte-identical; separate additive catalog-management migration; no automatic Store grants or activation.',
 );

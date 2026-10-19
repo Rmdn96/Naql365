@@ -9,6 +9,8 @@ const container = 'supabase_db_naql365';
 const evidence = 'test-results/store-catalog-concurrency';
 const results = [];
 const storeTables = [
+  'store_supplier_reference_prices',
+  'store_product_media',
   'store_policy_versions',
   'store_suppliers',
   'store_supplier_agreements',
@@ -205,6 +207,90 @@ try {
   assert(
     outcomes.filter((x) => x.ok).length === 1 && outcomes.some((x) => x.sqlstate === 'PT409'),
     'different intent conflicts',
+  );
+  const managedProduct = JSON.parse(
+    await sql(
+      command('create_product', null, null, {
+        sku: 'CATALOG-RACE-31',
+        slug: 'catalog-race-31',
+        category_id: id,
+        content,
+      }),
+      true,
+    ),
+  ).id;
+  const managedSupplier = JSON.parse(
+    await sql(
+      'select public.store_sourcing_command_v1(' +
+        q(org) +
+        ',' +
+        q(market) +
+        ",'create_supplier'," +
+        q(randomUUID()) +
+        ',null,null,' +
+        json({ reference: 'race-supplier', name: 'Synthetic only' }) +
+        ')',
+      true,
+    ),
+  ).id;
+  const extension = (action, target, revision, payload, mutation = randomUUID()) =>
+    'select public.store_catalog_extension_v1(' +
+    q(org) +
+    ',' +
+    q(market) +
+    ',' +
+    q(action) +
+    ',' +
+    q(mutation) +
+    ',' +
+    q(target) +
+    ',' +
+    revision +
+    ',' +
+    json(payload) +
+    ')';
+  const observation = {
+    supplierId: managedSupplier,
+    version: 1,
+    amountMinor: 5000,
+    observedAt: '2026-10-19Z',
+    evidenceReference: 'SYNTHETIC local only',
+  };
+  const referenceMutation = randomUUID();
+  outcomes = await race('CM01 reference observation same intent', [
+    extension('reference_price', managedProduct, 1, observation, referenceMutation),
+    extension('reference_price', managedProduct, 1, observation, referenceMutation),
+  ]);
+  assert(
+    outcomes.every((x) => x.ok),
+    'identical observation callers acknowledged',
+  );
+  assert(
+    (await sql('select count(*) from private.store_supplier_reference_prices')) === '1',
+    'one observation after concurrent replay',
+  );
+  outcomes = await race('CM02 unique supplier reference version', [
+    extension('reference_price', managedProduct, 1, { ...observation, version: 2 }),
+    extension('reference_price', managedProduct, 1, {
+      ...observation,
+      version: 2,
+      amountMinor: 5100,
+    }),
+  ]);
+  assert(
+    outcomes.filter((x) => x.ok).length === 1 && outcomes.some((x) => x.sqlstate === '23505'),
+    'one observation version winner',
+  );
+  const managedListing = JSON.parse(
+    await sql(command('create_listing', null, null, { product_id: managedProduct }), true),
+  ).id;
+  outcomes = await race('CM03 concurrent image selection revision', [
+    extension('attach_media', managedListing, 1, { media: [] }),
+    extension('attach_media', managedListing, 1, { media: [] }),
+  ]);
+  assert(
+    outcomes.filter((x) => x.ok).length === 1 && outcomes.some((x) => x.sqlstate === 'PT409'),
+    'one image revision winner',
   );
   outcomes = await race(
     'CF36 revoke membership while waiting',
