@@ -7,7 +7,7 @@ import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { AppError } from '@/domain/shared/errors';
 export { marketCookie } from '@/domain/markets/public-contact';
 export async function selectedPublicCountry() {
-  return publicCountry.catch('SA').parse((await cookies()).get(marketCookie)?.value);
+  return publicCountry.catch('EG').parse((await cookies()).get(marketCookie)?.value);
 }
 const catalogue = z
   .object({

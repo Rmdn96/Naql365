@@ -42,6 +42,9 @@ test('public country switch updates WhatsApp and guest request without a login w
 }) => {
   await page.goto('/en');
   const contact = page.locator('.floating-contact');
+  await expect(page.getByLabel('Service country')).toHaveValue('EG');
+  await expect(contact).toHaveAttribute('href', /^https:\/\/wa\.me\/201009402374\?/);
+  await page.getByLabel('Service country').selectOption('SA');
   await expect(contact).toHaveAttribute('href', /^https:\/\/wa\.me\/966558985250\?/);
   await page.getByLabel('Service country').selectOption('EG');
   await expect(contact).toHaveAttribute('href', /^https:\/\/wa\.me\/201009402374\?/);
