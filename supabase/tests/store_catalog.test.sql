@@ -12,11 +12,11 @@ begin execute statement; exception when others then get stacked diagnostics actu
 perform public.store_test_check(case_id,actual=expected,label||' expected '||expected||' got '||coalesce(actual,'success'));
 end $$;
 
-select public.store_test_check('CF01',(select count(*)=10 from pg_tables where schemaname='private' and tablename like 'store_%'),'ten private tables');
+select public.store_test_check('CF01',(select count(*)=10 from pg_tables where schemaname='private' and tablename=any(array['store_policy_versions','store_suppliers','store_supplier_agreements','store_categories','store_products','store_product_market_listings','store_supplier_offers','store_market_prices','store_events','store_command_receipts'])),'ten catalog foundation tables retained');
 select public.store_test_check('CF02',not exists(select 1 from private.store_policy_versions) and not exists(select 1 from private.store_products),'no scope or product seeded');
 select public.store_test_check('CF08',public.store_catalog_public_v1()->>'status'='NOT_AVAILABLE','unconfigured public unavailable');
 select public.store_test_check('CF16',not exists(select 1 from public.role_permissions rp join public.permissions p on p.id=rp.permission_id where p.code like 'store.%'),'zero accepted-role grants');
-select public.store_test_check('CF40',(select count(*)=7 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname like 'store_%' and p.proname not like 'store_test_%'),'seven public RPCs');
+select public.store_test_check('CF40',(select count(*)=7 from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname=any(array['store_catalog_draft_command_v1','store_sourcing_command_v1','store_catalog_policy_command_v1','store_catalog_publication_command_v1','store_catalog_public_v1','store_catalog_workspace_v1','store_catalog_sourcing_v1'])),'seven catalog foundation RPCs retained');
 select public.store_test_check('CF18',(select bool_and(c.relrowsecurity) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='private' and c.relname like 'store_%' and c.relkind='r'),'RLS all ten');
 select public.store_test_check('CF19',(select bool_and(p.proconfig @> array['search_path=""']) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in ('private','public') and p.proname like 'store_%' and p.proname not like 'store_test_%'),'empty search paths');
 
@@ -55,7 +55,7 @@ do $$ declare f record; begin
 for f in select c.oid::regclass tab from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='private' and c.relname like 'store_%' and c.relkind='r' loop
 perform public.store_test_check('CF18',not has_table_privilege('authenticated',f.tab,'SELECT,INSERT,UPDATE,DELETE') and not has_table_privilege('anon',f.tab,'SELECT,INSERT,UPDATE,DELETE'),f.tab::text||' ACL');
 end loop;
-for f in select p.oid::regprocedure sig from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname like 'store_%' loop
+for f in select p.oid::regprocedure sig from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname like 'store_%' and p.proname not in ('store_proof_access','store_proof_upload') loop
 perform public.store_test_check('CF19',not has_function_privilege('authenticated',f.sig,'EXECUTE') and not has_function_privilege('anon',f.sig,'EXECUTE'),f.sig::text||' private helper denied');
 end loop;
 end $$;

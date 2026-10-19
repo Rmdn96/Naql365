@@ -19,6 +19,19 @@ const storeTables = [
   'store_market_prices',
   'store_events',
   'store_command_receipts',
+  // Migration 50 adds restrictive child FKs. Empty children still participate in
+  // the LOCAL-only, ownership-checked teardown; do not weaken their constraints.
+  'store_checkout_contracts',
+  'store_carts',
+  'store_orders',
+  'store_order_items',
+  'store_payments',
+  'store_payment_proofs',
+  'store_purchase_receipts',
+  'store_purchase_events',
+  'store_money_operations',
+  'store_money_entries',
+  'manual_collection_receipts',
 ];
 const q = (v) => "'" + String(v).replaceAll("'", "''") + "'";
 const json = (v) => q(JSON.stringify(v)) + '::jsonb';
@@ -409,7 +422,7 @@ try {
           .join(' and '),
     );
     assert(fixtureOnly === 't', 'cleanup ownership guard');
-    await sql(`truncate private.store_events,private.store_command_receipts,private.store_market_prices,private.store_supplier_offers,private.store_product_market_listings,private.store_products,private.store_categories,private.store_supplier_agreements,private.store_suppliers,private.store_policy_versions;
+    await sql(`truncate ${storeTables.map((t) => 'private.' + t).join(',')};
       drop function public.store_test_error(text,text,text,text);drop function public.store_test_check(text,boolean,text);drop table public.store_test_results;
       delete from public.user_roles where profile_id::text like '62000000%';
       delete from public.role_permissions where role_id::text like '63000000%';delete from public.roles where id::text like '63000000%';

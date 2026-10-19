@@ -4103,6 +4103,18 @@ export type Database = {
         }
         Returns: Json
       }
+      store_catalog_ui_command_v1: {
+        Args: {
+          p_country: string
+          p_expected?: number
+          p_family: string
+          p_mutation: string
+          p_operation: string
+          p_payload: Json
+          p_target?: string
+        }
+        Returns: Json
+      }
       store_catalog_workspace_v1: {
         Args: {
           p_after?: string
@@ -4110,6 +4122,39 @@ export type Database = {
           p_limit?: number
           p_market: string
           p_org: string
+        }
+        Returns: Json
+      }
+      store_proof_path_v1: { Args: { p_proof: string }; Returns: Json }
+      store_purchase_command_v1: {
+        Args: {
+          p_action: string
+          p_country: string
+          p_mutation: string
+          p_payload?: Json
+          p_revision: number
+          p_target?: string
+        }
+        Returns: Json
+      }
+      store_purchase_read_v1: {
+        Args: {
+          p_after?: string
+          p_country: string
+          p_kind: string
+          p_limit?: number
+          p_target?: string
+        }
+        Returns: Json
+      }
+      store_shop_v1: {
+        Args: {
+          p_after?: string
+          p_category?: string
+          p_country: string
+          p_kind?: string
+          p_search?: string
+          p_slug?: string
         }
         Returns: Json
       }

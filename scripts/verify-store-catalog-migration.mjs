@@ -2,13 +2,13 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
-const baseline = '96eb4e9047025b4cb9065e00435e6ac167063b24';
+const baseline = '6ab494c7dc703bba6f2e3f0afb8796b3791ed13d';
 const folder = 'supabase/migrations/';
 const added = '20261018000100_store_catalog_foundation.sql';
 const old = execFileSync('git', ['ls-tree', '--name-only', baseline, folder], { encoding: 'utf8' })
   .trim()
   .split('\n');
-assert.equal(old.length, 48);
+assert.equal(old.length, 49);
 const hash = (data) => createHash('sha256').update(data).digest('hex');
 const hashes = old.map((path) => {
   const committed = execFileSync('git', ['show', baseline + ':' + path]);
@@ -35,7 +35,10 @@ assert.deepEqual(
   readdirSync(folder)
     .filter((n) => n.endsWith('.sql'))
     .sort(),
-  [...old.map((n) => n.slice(folder.length)), '20261018000200_finance_market_receipts.sql'].sort(),
+  [
+    ...old.map((n) => n.slice(folder.length)),
+    '20261019000100_store_purchase_fulfillment.sql',
+  ].sort(),
 );
 const source = readFileSync(folder + added, 'utf8');
 assert.equal(hash(source), '0816abc8bf7ef64258adfddc7f92633786b8d30bff9c00453caecfbb37459ebd');
@@ -50,12 +53,16 @@ const result = {
   baseline,
   originalMigrationCount: old.length,
   originalMigrationsByteIdentical: true,
-  migrationCount: 49,
+  migrationCount: 50,
   added: folder + added,
   sha256: hash(source),
   financeAddition: {
     path: folder + '20261018000200_finance_market_receipts.sql',
     sha256: hash(readFileSync(folder + '20261018000200_finance_market_receipts.sql')),
+  },
+  purchaseAddition: {
+    path: folder + '20261019000100_store_purchase_fulfillment.sql',
+    sha256: hash(readFileSync(folder + '20261019000100_store_purchase_fulfillment.sql')),
   },
   previous: hashes,
 };
@@ -65,5 +72,5 @@ writeFileSync(
   JSON.stringify(result, null, 2) + '\n',
 );
 console.log(
-  'Migration integrity PASS: 48 accepted migrations byte-identical; catalog remains ten tables and seven RPCs; one additive Finance migration.',
+  'Migration integrity PASS: 49 accepted migrations byte-identical; separate additive Store purchase migration; no automatic Store grants or activation.',
 );
