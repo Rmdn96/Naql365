@@ -5,6 +5,7 @@ import { storeShop, storeCategories } from '@/infrastructure/store/service';
 import { storeMoney } from '@/i18n/store';
 import '@/styles/store.css';
 import { AddToCart } from './controls';
+import { catalogTrace } from '@/infrastructure/store/catalog-trace';
 
 /** Only the existing public projection supplies products; intake drafts never enter this component. */
 export async function StoreIntroduction({ locale }: { locale: Locale }) {
@@ -14,6 +15,11 @@ export async function StoreIntroduction({ locale }: { locale: Locale }) {
     storeShop().catch(() => ({ status: 'NOT_AVAILABLE' as const, items: [], nextCursor: null })),
     storeCategories().catch(() => []),
   ]);
+  catalogTrace({
+    stage: 'render',
+    available: catalog.status === 'AVAILABLE',
+    items: catalog.items.length,
+  });
   return (
     <section
       className="container store-experience store-introduction stack"
@@ -57,6 +63,13 @@ export async function StoreIntroduction({ locale }: { locale: Locale }) {
               </Link>
             ))}
           </nav>
+          {catalog.items.length === 0 && (
+            <p className="store-notice">
+              {ar
+                ? 'لا توجد منتجات معتمدة متاحة حاليًا.'
+                : 'No approved products are currently available.'}
+            </p>
+          )}
           <div className="store-products commerce-products">
             {catalog.items.slice(0, 4).map((product) => (
               <article key={product.listingId} className="card store-product">

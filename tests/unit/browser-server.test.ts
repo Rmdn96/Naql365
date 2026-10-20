@@ -48,3 +48,14 @@ it('fails immediately when the owned child exits instead of accepting false read
   );
   await assertBrowserPortFree(port);
 });
+it('captures structured catalog boundary lines without forwarding unrelated server output', async () => {
+  const port = await freePort(),
+    events: Record<string, unknown>[] = [];
+  const child = `require('node:http').createServer((q,r)=>{console.log('discarded synthetic server output');process.stdout.write('CATALOG_');process.stdout.write('SSR '+JSON.stringify({stage:'rpc',httpStatus:200,rpcError:false})+'\\n');console.error('CATALOG_SSR not-json');r.end('ready')}).listen(${port},'127.0.0.1')`;
+  const server = await startBrowserServer(process.env, port, ['-e', child], (event) =>
+    events.push(event),
+  );
+  owned.push({ server, port });
+  await expect.poll(() => events.length).toBe(1);
+  expect(events).toEqual([{ stage: 'rpc', httpStatus: 200, rpcError: false }]);
+});

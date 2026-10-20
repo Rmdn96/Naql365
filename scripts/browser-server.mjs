@@ -48,14 +48,34 @@ export async function startBrowserServer(
   env,
   port,
   command = ['scripts/guarded-next.mjs', 'start', '-p', String(port)],
+  onCatalogTrace,
 ) {
   await assertBrowserPortFree(port);
   const server = spawn(process.execPath, command, {
     env,
-    stdio: 'ignore',
+    stdio: onCatalogTrace ? ['ignore', 'pipe', 'pipe'] : 'ignore',
     windowsHide: true,
     detached: process.platform !== 'win32',
   });
+  if (onCatalogTrace) {
+    for (const stream of [server.stdout, server.stderr]) {
+      let pending = '';
+      stream.on('data', (chunk) => {
+        pending = (pending + chunk.toString()).slice(-8192);
+        const lines = pending.split(/\r?\n/);
+        pending = lines.pop() ?? '';
+        for (const line of lines) {
+          if (!line.startsWith('CATALOG_SSR ')) continue;
+          try {
+            const event = JSON.parse(line.slice('CATALOG_SSR '.length));
+            onCatalogTrace(event);
+          } catch {
+            // Never forward unstructured server output or exception messages.
+          }
+        }
+      });
+    }
+  }
   let failed = false;
   server.once('error', () => {
     failed = true;

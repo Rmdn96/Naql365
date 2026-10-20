@@ -30,12 +30,35 @@ it.each(['ar', 'en'] as const)(
     ]);
     const html = renderToStaticMarkup(await StoreIntroduction({ locale }));
     expect(html).toContain('/' + locale + '/store/products/synthetic-box');
+    expect(html.match(/class="card store-product"/g)).toHaveLength(1);
     expect(html).toContain('/' + locale + '/store?category=packing');
     expect(html).toContain(locale === 'ar' ? 'أضف للسلة' : 'Add to cart');
     expect(html).toContain(locale === 'ar' ? '١٢٫٥٠' : '12.50');
     expect(html).not.toMatch(/supplierCost|margin|demo cart|rehearsal|in stock/);
   },
 );
+it.each(['ar', 'en'] as const)(
+  'renders a localized empty state with zero eligible cards (%s)',
+  async (locale) => {
+    mock.shop.mockResolvedValue({ status: 'AVAILABLE', items: [], nextCursor: null });
+    mock.categories.mockResolvedValue([]);
+    const html = renderToStaticMarkup(await StoreIntroduction({ locale }));
+    expect(html).toContain(
+      locale === 'ar'
+        ? 'لا توجد منتجات معتمدة متاحة حاليًا.'
+        : 'No approved products are currently available.',
+    );
+    expect(html).not.toContain('class="card store-product"');
+    expect(html).not.toContain('Add to cart');
+  },
+);
+it('fails closed when the server rejects an inaccessible or invalid catalog', async () => {
+  mock.shop.mockRejectedValue(Error('synthetic projection rejection'));
+  mock.categories.mockResolvedValue([]);
+  const html = renderToStaticMarkup(await StoreIntroduction({ locale: 'en' }));
+  expect(html).toContain('Purchasing is currently unavailable');
+  expect(html).not.toContain('class="card store-product"');
+});
 it('renders no mock product, amount or purchase action for an unapproved Store', async () => {
   mock.shop.mockResolvedValue({ status: 'NOT_AVAILABLE', items: [], nextCursor: null });
   mock.categories.mockResolvedValue([]);

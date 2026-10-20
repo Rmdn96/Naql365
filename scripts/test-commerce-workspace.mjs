@@ -35,6 +35,7 @@ const output = 'test-results/store-local-' + Date.now(),
   users = [],
   captures = [],
   checks = [];
+const serverBoundaries = [];
 mkdirSync(output, { recursive: true });
 const ledger = {
   organization: '91000000-0000-4000-8000-000000000001',
@@ -50,6 +51,7 @@ const env = {
   NEXT_PUBLIC_SUPABASE_URL: local.API_URL,
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: local.PUBLISHABLE_KEY,
   STAGING_AUTH_SMOKE_ENABLED: 'false',
+  NAQL365_CATALOG_DIAGNOSTICS: '1',
 };
 for (const key of Object.keys(env))
   if (key.startsWith('VERCEL') || /^SUPABASE_.*(TOKEN|PASSWORD|SERVICE|SECRET)/.test(key))
@@ -153,7 +155,11 @@ try {
     timeout: 240000,
     maxBuffer: 16 * 1024 * 1024,
   });
-  server = await startBrowserServer(env, 3017);
+  server = await startBrowserServer(env, 3017, undefined, (event) => {
+    serverBoundaries.push(event);
+    writeFileSync(output + '/ssr-boundary.json', JSON.stringify(serverBoundaries, null, 2));
+    console.log('CATALOG_SSR ' + JSON.stringify(event));
+  });
   checkpoint = 'synthetic Auth setup';
   console.log('CHECKPOINT ' + checkpoint);
   for (let i = 1; i <= 6; i++) {
@@ -221,11 +227,25 @@ try {
   await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
   const rendered = {
     httpStatus: homepage?.status(),
+    ssrProductCards:
+      (await homepage.text()).match(/<article[^>]*class="[^"]*\bstore-product\b/g)?.length ?? 0,
     market: await page.getByLabel('Service country', { exact: true }).inputValue(),
     productCards: await page.locator('.commerce-products .store-product').count(),
   };
   writeFileSync(output + '/homepage-boundary.json', JSON.stringify(rendered, null, 2));
   console.log('HOMEPAGE_BOUNDARY ' + JSON.stringify(rendered));
+  await expect
+    .poll(() =>
+      serverBoundaries.some(
+        (event) =>
+          event.stage === 'projection' &&
+          event.valid === true &&
+          event.available === true &&
+          event.items === publicCatalog.data.items.length,
+      ),
+    )
+    .toBe(true);
+  expect(rendered.ssrProductCards).toBe(1);
   await expect(page.locator('.commerce-products .store-product')).toHaveCount(1);
   await page
     .locator('.commerce-products')

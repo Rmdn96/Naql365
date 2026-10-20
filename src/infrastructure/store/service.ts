@@ -6,6 +6,7 @@ import { selectedPublicCountry } from '@/infrastructure/markets/public';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { AppError } from '@/domain/shared/errors';
 import { storeCatalog, storeCommand, storeReadKind } from '@/domain/store/model';
+import { catalogTrace, catalogIssueFields } from './catalog-trace';
 
 export function storeFailure(code: string): never {
   if (code === '42501') throw new AppError('forbidden', 'Store access unavailable');
@@ -30,7 +31,21 @@ export const storeIsAvailable = cache(async () => {
 export async function storeShop(
   input: { after?: string; search?: string; slug?: string; category?: string } = {},
 ) {
-  if (!getPublicEnv()) return { status: 'NOT_AVAILABLE' as const, items: [], nextCursor: null };
+  const environment = getPublicEnv();
+  catalogTrace({
+    stage: 'configuration',
+    configured: !!environment,
+    loopback:
+      !!environment && ['localhost', '127.0.0.1'].includes(new URL(environment.url).hostname),
+    ...(environment
+      ? {
+          backendPort:
+            Number(new URL(environment.url).port) ||
+            (environment.url.startsWith('https:') ? 443 : 80),
+        }
+      : {}),
+  });
+  if (!environment) return { status: 'NOT_AVAILABLE' as const, items: [], nextCursor: null };
   const query = z
     .object({
       after: z.string().max(100).optional(),
@@ -40,15 +55,32 @@ export async function storeShop(
     })
     .parse(input);
   const c = await createSupabaseServerClient();
+  const country = await selectedPublicCountry();
+  catalogTrace({ stage: 'request', country });
   const r = await c.rpc('store_shop_v1', {
-    p_country: await selectedPublicCountry(),
+    p_country: country,
     ...(query.after ? { p_after: query.after } : {}),
     ...(query.search ? { p_search: query.search } : {}),
     ...(query.slug ? { p_slug: query.slug } : {}),
     ...(query.category ? { p_category: query.category } : {}),
   });
+  catalogTrace({
+    stage: 'rpc',
+    httpStatus: r.status,
+    rpcError: !!r.error,
+    ...(r.error?.code && /^[A-Z0-9]{5,10}$/.test(r.error.code) ? { code: r.error.code } : {}),
+  });
   if (r.error) storeFailure(r.error.code);
-  return storeCatalog.parse(r.data);
+  const projection = storeCatalog.safeParse(r.data);
+  catalogTrace({
+    stage: 'projection',
+    valid: projection.success,
+    ...(projection.success
+      ? { available: projection.data.status === 'AVAILABLE', items: projection.data.items.length }
+      : { invalidFields: catalogIssueFields(projection.error.issues) }),
+  });
+  if (!projection.success) throw projection.error;
+  return projection.data;
 }
 export async function storeCategories() {
   if (!getPublicEnv()) return [];
