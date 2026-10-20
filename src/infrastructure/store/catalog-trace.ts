@@ -1,63 +1,15 @@
-// Opt-in local/CI diagnostics only. Never log RPC payloads, keys, cookies or error messages.
+// Local opt-in evidence only; never changes catalog results or authority.
 import 'server-only';
-import { z } from 'zod';
-const field = z.enum([
-  'root',
-  'status',
-  'items',
-  'nextCursor',
-  'slug',
-  'listingId',
-  'revision',
-  'category',
-  'content',
-  'title_ar',
-  'title_en',
-  'description_ar',
-  'description_en',
-  'specifications',
-  'label_ar',
-  'label_en',
-  'value_ar',
-  'value_en',
-  'amountMinor',
-  'currency',
-  'media',
-  'src',
-  'altAr',
-  'altEn',
-]);
-export function catalogIssueFields(issues: readonly { path: PropertyKey[] }[]) {
-  return [
-    ...new Set(
-      issues.map((issue) => {
-        for (const part of [...issue.path].reverse()) {
-          const parsed = field.safeParse(part);
-          if (parsed.success) return parsed.data;
-        }
-        return 'root' as const;
-      }),
-    ),
-  ].slice(0, 8);
-}
-const diagnostic = z.strictObject({
-  stage: z.enum(['configuration', 'request', 'rpc', 'projection', 'render']),
-  configured: z.boolean().optional(),
-  loopback: z.boolean().optional(),
-  backendPort: z.number().int().min(1).max(65535).optional(),
-  country: z.enum(['EG', 'SA']).optional(),
-  httpStatus: z.number().int().min(0).max(599).optional(),
-  rpcError: z.boolean().optional(),
-  code: z
-    .string()
-    .regex(/^[A-Z0-9]{5,10}$/)
-    .optional(),
-  available: z.boolean().optional(),
-  items: z.number().int().nonnegative().max(20).optional(),
-  valid: z.boolean().optional(),
-  invalidFields: field.array().max(8).optional(),
-});
+import { cache } from 'react';
+import { appendFileSync, readFileSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { relative, resolve } from 'node:path';
+import type { z } from 'zod';
+import { diagnostic, diagnosticRecord } from './catalog-diagnostic-schema';
+export { catalogIssueFields } from './catalog-diagnostic-schema';
 let emitted = 0;
+let requests = 0;
+const requestIdentity = cache(() => ++requests);
 export function catalogTrace(event: z.infer<typeof diagnostic>) {
   if (
     process.env.APP_ENV !== 'local' ||
@@ -65,8 +17,45 @@ export function catalogTrace(event: z.infer<typeof diagnostic>) {
     emitted >= 128
   )
     return;
-  const safe = diagnostic.safeParse(event);
-  if (!safe.success) return;
-  emitted++;
-  console.info('CATALOG_SSR ' + JSON.stringify(safe.data));
+  try {
+    const safe = diagnostic.safeParse(event);
+    if (!safe.success) return;
+    let build = null;
+    try {
+      build = createHash('sha256')
+        .update(readFileSync('.next/BUILD_ID'))
+        .digest('hex')
+        .slice(0, 12);
+    } catch {
+      /* Build may not yet exist. */
+    }
+    const phase = process.env.NAQL365_CATALOG_PHASE;
+    const record = diagnosticRecord.parse({
+      ...safe.data,
+      version: 1,
+      phase: phase === 'build' || phase === 'runtime' ? phase : 'unknown',
+      processId: process.pid,
+      requestId: event.stage === 'startup' ? 0 : requestIdentity(),
+      sequence: ++emitted,
+      build,
+    });
+    const line = JSON.stringify(record);
+    // File transport is independent of Next.js stdout formatting.
+    const destination = process.env.NAQL365_CATALOG_EVIDENCE_FILE;
+    if (destination) {
+      const path = resolve(destination);
+      const local = relative(process.cwd(), path).replaceAll('\\', '/');
+      if (/^test-results\/store-local-[0-9]+\/ssr-server\.ndjson$/.test(local)) {
+        try {
+          if (statSync(path).size < 65536)
+            appendFileSync(path, line + '\n', { encoding: 'utf8', mode: 0o600 });
+        } catch {
+          /* Continue to the independent structured stdout channel. */
+        }
+      }
+    }
+    console.info('CATALOG_SSR ' + line);
+  } catch {
+    /* Evidence failure must not affect application behavior. */
+  }
 }

@@ -1,5 +1,7 @@
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
+    const { catalogTrace } = await import('./infrastructure/store/catalog-trace');
+    catalogTrace({ stage: 'startup', outcome: 'started' });
     const { validateEnvironment, attestBackend, verifyArtifact } =
       await import('./infrastructure/config/environment-authority');
     const { default: manifest } = await import('../config/deployment-manifest.json');
@@ -16,5 +18,6 @@ export async function register() {
       verifyArtifact(artifact, current);
       await attestBackend(process.env, manifest);
     }
+    catalogTrace({ stage: 'startup', outcome: 'ready' });
   }
 }

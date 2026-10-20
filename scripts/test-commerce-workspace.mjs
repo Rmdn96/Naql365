@@ -7,6 +7,7 @@ import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { createCatalogEvidence } from './catalog-evidence.mjs';
 const local = localSupabase(),
   origin = 'http://127.0.0.1:3017';
 const admin = createClient(local.API_URL, local.SERVICE_ROLE_KEY, {
@@ -35,8 +36,8 @@ const output = 'test-results/store-local-' + Date.now(),
   users = [],
   captures = [],
   checks = [];
-const serverBoundaries = [];
 mkdirSync(output, { recursive: true });
+const diagnostics = createCatalogEvidence(output);
 const ledger = {
   organization: '91000000-0000-4000-8000-000000000001',
   users,
@@ -52,6 +53,8 @@ const env = {
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: local.PUBLISHABLE_KEY,
   STAGING_AUTH_SMOKE_ENABLED: 'false',
   NAQL365_CATALOG_DIAGNOSTICS: '1',
+  NAQL365_CATALOG_EVIDENCE_FILE: diagnostics.file,
+  NAQL365_CATALOG_PHASE: 'runtime',
 };
 for (const key of Object.keys(env))
   if (key.startsWith('VERCEL') || /^SUPABASE_.*(TOKEN|PASSWORD|SERVICE|SECRET)/.test(key))
@@ -83,6 +86,8 @@ const tables = [
 ];
 let server,
   browser,
+  failurePage,
+  guestEvidence = false,
   seeded = false,
   checkpoint = 'preflight';
 console.log('CHECKPOINT ' + checkpoint);
@@ -150,16 +155,27 @@ try {
   checkpoint = 'build';
   console.log('CHECKPOINT ' + checkpoint);
   execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
-    env,
+    env: { ...env, NAQL365_CATALOG_PHASE: 'build' },
     stdio: ['ignore', 'pipe', 'pipe'],
     timeout: 240000,
     maxBuffer: 16 * 1024 * 1024,
   });
-  server = await startBrowserServer(env, 3017, undefined, (event) => {
-    serverBoundaries.push(event);
-    writeFileSync(output + '/ssr-boundary.json', JSON.stringify(serverBoundaries, null, 2));
-    console.log('CATALOG_SSR ' + JSON.stringify(event));
-  });
+  server = await startBrowserServer(env, 3017, undefined, diagnostics.receive);
+  checkpoint = 'server diagnostic acknowledgement';
+  // Channel health is established before fixture assertions or product rendering.
+  await expect
+    .poll(() =>
+      diagnostics
+        .snapshot()
+        .fileRecords.some(
+          (event) =>
+            event.stage === 'startup' &&
+            event.phase === 'runtime' &&
+            event.outcome === 'ready' &&
+            event.build !== null,
+        ),
+    )
+    .toBe(true);
   checkpoint = 'synthetic Auth setup';
   console.log('CHECKPOINT ' + checkpoint);
   for (let i = 1; i <= 6; i++) {
@@ -205,9 +221,17 @@ try {
   const publicCatalog = await publicClient.rpc('store_shop_v1', { p_country: 'EG' });
   const boundary = {
     fixtureAuthority,
-    publicRpcError: publicCatalog.error?.code ?? null,
-    publicStatus: publicCatalog.data?.status ?? null,
-    publicItems: publicCatalog.data?.items?.length ?? null,
+    publicRpcError: publicCatalog.error
+      ? /^[A-Z0-9]{5,10}$/.test(publicCatalog.error.code)
+        ? publicCatalog.error.code
+        : 'OTHER'
+      : null,
+    publicStatus: ['AVAILABLE', 'NOT_AVAILABLE'].includes(publicCatalog.data?.status)
+      ? publicCatalog.data.status
+      : 'UNKNOWN',
+    publicItems: Array.isArray(publicCatalog.data?.items)
+      ? Math.min(publicCatalog.data.items.length, 21)
+      : null,
   };
   writeFileSync(output + '/catalog-boundary.json', JSON.stringify(boundary, null, 2));
   console.log('CATALOG_BOUNDARY ' + JSON.stringify(boundary));
@@ -220,6 +244,8 @@ try {
   browser = await chromium.launch();
   const customerContext = await browser.newContext();
   const page = await customerContext.newPage();
+  failurePage = page;
+  guestEvidence = true;
 
   checkpoint = 'guest homepage';
   console.log('CHECKPOINT ' + checkpoint);
@@ -236,17 +262,23 @@ try {
   console.log('HOMEPAGE_BOUNDARY ' + JSON.stringify(rendered));
   await expect
     .poll(() =>
-      serverBoundaries.some(
-        (event) =>
-          event.stage === 'projection' &&
-          event.valid === true &&
-          event.available === true &&
-          event.items === publicCatalog.data.items.length,
-      ),
+      diagnostics
+        .snapshot()
+        .fileRecords.some(
+          (event) =>
+            event.phase === 'runtime' &&
+            event.stage === 'projection' &&
+            event.valid === true &&
+            event.available === true &&
+            event.items === publicCatalog.data.items.length,
+        ),
     )
     .toBe(true);
   expect(rendered.ssrProductCards).toBe(1);
   await expect(page.locator('.commerce-products .store-product')).toHaveCount(1);
+  // Local-only fault injection tests artifact preservation; never alters application behavior.
+  if (process.env.NAQL365_COMMERCE_DIAGNOSTIC_FAILURE === '1')
+    throw Error('SIMULATED_DIAGNOSTIC_FAILURE');
   await page
     .locator('.commerce-products')
     .getByRole('button', { name: 'Add to cart', exact: true })
@@ -254,6 +286,7 @@ try {
   await expect(page).toHaveURL(origin + '/en/login');
   if (sql('select count(*) from private.store_carts') !== '0') throw Error('Guest created cart');
   checks.push('Guest homepage add redirects to canonical login; no phantom cart');
+  guestEvidence = false; // Never capture credentials, authenticated HTML or customer state.
   await login(page, users[0], 'en');
   await page.goto(origin + '/en');
   await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
@@ -406,16 +439,34 @@ try {
   );
   await customerContext.close();
 } catch (error) {
-  console.error(
-    'Store local failure at ' +
-      checkpoint +
-      ': ' +
-      (error instanceof Error ? error.message : 'unknown'),
-  );
+  diagnostics.snapshot();
+  let screenshotSaved = false;
+  if (guestEvidence && failurePage) {
+    try {
+      await failurePage.screenshot({ path: output + '/guest-failure.png', fullPage: true });
+      screenshotSaved = true;
+    } catch {
+      // The structured boundary artifact remains available if the page/browser has exited.
+    }
+  }
+  const failure = {
+    checkpoint,
+    kind:
+      error instanceof Error && error.message === 'SIMULATED_DIAGNOSTIC_FAILURE'
+        ? 'SIMULATED_DIAGNOSTIC_FAILURE'
+        : 'HARNESS_FAILURE',
+    screenshotSaved,
+    // Raw Playwright traces can retain headers, tokens and submitted form values.
+    trace: 'structured-boundaries-only',
+  };
+  writeFileSync(output + '/failure-evidence.json', JSON.stringify(failure, null, 2));
+  console.error('COMMERCE_FAILURE ' + JSON.stringify(failure));
   process.exitCode = 1;
 } finally {
+  diagnostics.snapshot();
   await browser?.close();
   await stopBrowserServer(server, 3017);
+  diagnostics.snapshot();
   if (seeded) {
     const organization = ledger.organization;
     if (

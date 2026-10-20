@@ -2,6 +2,7 @@
 import { spawn, execFileSync } from 'node:child_process';
 import { createServer, createConnection } from 'node:net';
 import { setTimeout as delay } from 'node:timers/promises';
+import { stripVTControlCharacters } from 'node:util';
 
 export async function assertBrowserPortFree(port) {
   const probe = createServer();
@@ -64,7 +65,8 @@ export async function startBrowserServer(
         pending = (pending + chunk.toString()).slice(-8192);
         const lines = pending.split(/\r?\n/);
         pending = lines.pop() ?? '';
-        for (const line of lines) {
+        for (const raw of lines) {
+          const line = stripVTControlCharacters(raw).trimStart();
           if (!line.startsWith('CATALOG_SSR ')) continue;
           try {
             const event = JSON.parse(line.slice('CATALOG_SSR '.length));

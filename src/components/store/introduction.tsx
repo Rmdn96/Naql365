@@ -12,8 +12,14 @@ export async function StoreIntroduction({ locale }: { locale: Locale }) {
   const ar = locale === 'ar',
     root = `/${locale}/store`;
   const [catalog, categories] = await Promise.all([
-    storeShop().catch(() => ({ status: 'NOT_AVAILABLE' as const, items: [], nextCursor: null })),
-    storeCategories().catch(() => []),
+    storeShop().catch(() => {
+      catalogTrace({ stage: 'fallback', source: 'catalog', outcome: 'threw' });
+      return { status: 'NOT_AVAILABLE' as const, items: [], nextCursor: null };
+    }),
+    storeCategories().catch(() => {
+      catalogTrace({ stage: 'fallback', source: 'categories', outcome: 'threw' });
+      return [];
+    }),
   ]);
   catalogTrace({
     stage: 'render',

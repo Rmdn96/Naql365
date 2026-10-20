@@ -54,16 +54,35 @@ export async function storeShop(
       category: z.string().max(100).optional(),
     })
     .parse(input);
-  const c = await createSupabaseServerClient();
+  catalogTrace({ stage: 'client', outcome: 'started' });
+  const c = await createSupabaseServerClient().then(
+    (client) => {
+      catalogTrace({ stage: 'client', outcome: 'ready' });
+      return client;
+    },
+    (error: unknown) => {
+      catalogTrace({ stage: 'client', outcome: 'threw' });
+      throw error;
+    },
+  );
   const country = await selectedPublicCountry();
   catalogTrace({ stage: 'request', country });
-  const r = await c.rpc('store_shop_v1', {
-    p_country: country,
-    ...(query.after ? { p_after: query.after } : {}),
-    ...(query.search ? { p_search: query.search } : {}),
-    ...(query.slug ? { p_slug: query.slug } : {}),
-    ...(query.category ? { p_category: query.category } : {}),
-  });
+  catalogTrace({ stage: 'rpc', outcome: 'started' });
+  const r = await c
+    .rpc('store_shop_v1', {
+      p_country: country,
+      ...(query.after ? { p_after: query.after } : {}),
+      ...(query.search ? { p_search: query.search } : {}),
+      ...(query.slug ? { p_slug: query.slug } : {}),
+      ...(query.category ? { p_category: query.category } : {}),
+    })
+    .then(
+      (result) => result,
+      (error: unknown) => {
+        catalogTrace({ stage: 'rpc', outcome: 'threw' });
+        throw error;
+      },
+    );
   catalogTrace({
     stage: 'rpc',
     httpStatus: r.status,

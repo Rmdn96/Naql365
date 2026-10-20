@@ -36,5 +36,11 @@ it('bounds output and rejects payloads, identifiers and raw errors', async () =>
   expect(log).not.toHaveBeenCalled();
   for (let i = 0; i < 140; i++) catalogTrace({ stage: 'projection', valid: true, items: 1 });
   expect(log).toHaveBeenCalledTimes(128);
-  expect(log.mock.calls[0]?.[0]).toBe('CATALOG_SSR {"stage":"projection","items":1,"valid":true}');
+  expect(JSON.parse(log.mock.calls[0]?.[0].slice('CATALOG_SSR '.length))).toMatchObject({
+    stage: 'projection',
+    items: 1,
+    valid: true,
+    version: 1,
+    sequence: 1,
+  });
 });

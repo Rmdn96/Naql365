@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-const mocks = vi.hoisted(() => ({ rpc: vi.fn(), country: vi.fn(), env: vi.fn() }));
+const mocks = vi.hoisted(() => ({ rpc: vi.fn(), country: vi.fn(), env: vi.fn(), client: vi.fn() }));
 vi.mock('@/infrastructure/supabase/server', () => ({
-  createSupabaseServerClient: async () => ({ rpc: mocks.rpc }),
+  createSupabaseServerClient: mocks.client,
 }));
 vi.mock('@/infrastructure/markets/public', () => ({ selectedPublicCountry: mocks.country }));
 vi.mock('@/infrastructure/config/public-env', () => ({ getPublicEnv: mocks.env }));
@@ -19,6 +19,7 @@ const product = {
 };
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.client.mockResolvedValue({ rpc: mocks.rpc });
   mocks.env.mockReturnValue({ url: 'http://127.0.0.1:55321', publishableKey: 'synthetic-only' });
   mocks.country.mockResolvedValue('EG');
 });
@@ -74,3 +75,18 @@ it('retains the safe unavailable state without configuration and performs no RPC
   expect(await storeShop()).toEqual({ status: 'NOT_AVAILABLE', items: [], nextCursor: null });
   expect(mocks.rpc).not.toHaveBeenCalled();
 });
+it.each(['client', 'rpc'] as const)(
+  'classifies a thrown %s boundary without exposing or replacing the exception',
+  async (boundary) => {
+    vi.stubEnv('APP_ENV', 'local');
+    vi.stubEnv('NAQL365_CATALOG_DIAGNOSTICS', '1');
+    const log = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const failure = Error('synthetic-private-exception');
+    if (boundary === 'client') mocks.client.mockRejectedValueOnce(failure);
+    else mocks.rpc.mockRejectedValueOnce(failure);
+    await expect(storeShop()).rejects.toBe(failure);
+    const records = log.mock.calls.map(([line]) => JSON.parse(line.slice('CATALOG_SSR '.length)));
+    expect(records).toContainEqual(expect.objectContaining({ stage: boundary, outcome: 'threw' }));
+    expect(JSON.stringify(records)).not.toContain('synthetic-private-exception');
+  },
+);
