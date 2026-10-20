@@ -3,7 +3,6 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Input, Select, Alert } from '@/components/ui/primitives';
 import {
-  storeCart,
   type StoreCart,
   type StoreCommand,
   type StoreOrder,
@@ -11,6 +10,7 @@ import {
 } from '@/domain/store/model';
 import { storeLabel, storeMoney, storeText } from '@/i18n/store';
 import { storeTotals } from '@/domain/store/totals';
+import { CartAccessError, activeCartItems, createCartWriter } from './cart-client';
 type Locale = 'ar' | 'en';
 function useStoreCommand(locale: Locale) {
   const router = useRouter(),
@@ -55,28 +55,60 @@ function useStoreCommand(locale: Locale) {
     ),
   };
 }
+function useCartUpdate(locale: Locale) {
+  const router = useRouter(),
+    writer = useRef(createCartWriter()),
+    locked = useRef(false);
+  const [busy, setBusy] = useState(false),
+    [feedback, setFeedback] = useState<'error' | 'success' | 'login' | null>(null);
+  async function run(change: Parameters<ReturnType<typeof createCartWriter>>[0]) {
+    if (locked.current) return;
+    locked.current = true;
+    setBusy(true);
+    setFeedback(null);
+    try {
+      await writer.current(change);
+      setFeedback('success');
+      router.refresh();
+    } catch (error) {
+      setFeedback(error instanceof CartAccessError && error.status === 401 ? 'login' : 'error');
+      if (error instanceof CartAccessError && error.status === 401)
+        router.push('/' + locale + '/login');
+    } finally {
+      locked.current = false;
+      setBusy(false);
+    }
+  }
+  return {
+    run,
+    busy,
+    status: (
+      <div aria-live="polite">
+        {busy ? (
+          <p role="status">{storeText[locale].busy}</p>
+        ) : feedback ? (
+          <Alert tone={feedback === 'success' ? 'success' : 'error'}>
+            {feedback === 'login'
+              ? locale === 'ar'
+                ? 'سجّل الدخول لاستخدام سلتك.'
+                : 'Sign in to use your cart.'
+              : storeText[locale][feedback]}
+          </Alert>
+        ) : null}
+      </div>
+    ),
+  };
+}
 export function AddToCart({ product, locale }: { product: StoreProduct; locale: Locale }) {
-  const t = storeText[locale],
-    command = useStoreCommand(locale),
-    router = useRouter();
-  const [error, setError] = useState(false);
+  const command = useCartUpdate(locale);
   return (
     <div>
       {command.status}
-      {error && <Alert tone="error">{t.error}</Alert>}
       <Button
         disabled={command.busy}
-        onClick={async () => {
-          setError(false);
-          try {
-            const response = await fetch('/api/store?kind=cart', { cache: 'no-store' });
-            if (response.status === 401) {
-              router.push('/' + locale + '/login');
-              return;
-            }
-            if (!response.ok) throw Error('Cart unavailable');
-            const cart = storeCart.parse(await response.json());
-            const items = cart.items.map((i) => ({
+        onClick={() =>
+          void command.run((cart) => {
+            const items = activeCartItems(cart).map((i) => ({
               listingId: i.listingId,
               revision: i.savedRevision,
               quantity: i.quantity,
@@ -87,38 +119,38 @@ export function AddToCart({ product, locale }: { product: StoreProduct; locale: 
               existing.revision = product.revision;
             } else
               items.push({ listingId: product.listingId, revision: product.revision, quantity: 1 });
-            await command.run({ action: 'cart', revision: cart.revision, payload: { items } });
-          } catch {
-            setError(true);
-          }
-        }}
+            return { items };
+          })
+        }
       >
-        {t.add}
+        {storeText[locale].add}
       </Button>
     </div>
   );
 }
 export function CartForm({ cart, locale }: { cart: StoreCart; locale: Locale }) {
   const t = storeText[locale],
-    command = useStoreCommand(locale);
+    command = useCartUpdate(locale);
+  function save(items: { listingId: string; revision: number; quantity: number }[]) {
+    return command.run((current) => {
+      if (current.revision !== cart.revision) throw new CartAccessError(409);
+      return { items };
+    });
+  }
   return (
     <form
       onSubmit={async (e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
-        await command.run({
-          action: 'cart',
-          revision: cart.revision,
-          payload: {
-            items: cart.items
-              .map((i) => ({
-                listingId: i.listingId,
-                revision: i.revision,
-                quantity: Number(data.get(i.listingId)),
-              }))
-              .filter((i) => i.quantity > 0),
-          },
-        });
+        await save(
+          cart.items
+            .map((i) => ({
+              listingId: i.listingId,
+              revision: i.revision,
+              quantity: Number(data.get(i.listingId)),
+            }))
+            .filter((i) => i.quantity > 0),
+        );
       }}
     >
       {command.status}
@@ -139,6 +171,28 @@ export function CartForm({ cart, locale }: { cart: StoreCart; locale: Locale }) 
             defaultValue={i.quantity}
             required
           />
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={command.busy}
+            aria-label={
+              (locale === 'ar' ? 'إزالة ' : 'Remove ') +
+              (locale === 'ar' ? i.content.title_ar : i.content.title_en)
+            }
+            onClick={() =>
+              void save(
+                cart.items
+                  .filter((x) => x.listingId !== i.listingId)
+                  .map((x) => ({
+                    listingId: x.listingId,
+                    revision: x.revision,
+                    quantity: x.quantity,
+                  })),
+              )
+            }
+          >
+            {locale === 'ar' ? 'إزالة' : 'Remove'}
+          </Button>
         </div>
       ))}
       <Button disabled={command.busy}>{t.save}</Button>

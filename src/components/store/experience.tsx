@@ -224,11 +224,11 @@ async function renderStoreBody({
             <Link href={root + '/orders/' + cart.checkedOutOrderId}>{t.orders}</Link>
           </Alert>
         )}
-        {!cart.items.length ? (
+        {!cart.items.length || cart.checkedOutOrderId ? (
           <EmptyState title={t.empty}>{t.catalog}</EmptyState>
         ) : segment === 'cart' ? (
           <>
-            <CartForm cart={cart} locale={locale} />
+            <CartForm key={cart.revision} cart={cart} locale={locale} />
             <Link className="button button--primary" href={root + '/checkout'}>
               {t.proceed}
             </Link>

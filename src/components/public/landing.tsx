@@ -1,11 +1,11 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Select, Button } from '@/components/ui/primitives';
 import { MvpView } from './analytics';
 import type { Locale } from '@/i18n/config';
 import { publicDictionary } from '@/i18n/public';
 import { whatsappUrl, type PublicCountry } from '@/domain/markets/public-contact';
 import { RouteMotif } from '@/components/ui/route-motif';
-import { RouteStory } from './route-story';
 
 export function Landing({
   locale,
@@ -29,7 +29,10 @@ export function Landing({
   const t = publicDictionary(locale),
     request = `/${locale}/request`,
     wa = whatsappUrl(country, locale),
-    headlineBreak = t.headline.indexOf(locale === 'ar' ? '…' : '.') + 1;
+    headline =
+      locale === 'ar'
+        ? ['انقل عفشك بسهولة', 'وجهّز كل شيء من مكان واحد.']
+        : ['Make your next move easy.', 'Get everything ready in one place.'];
   const coverage =
     locale === 'ar'
       ? country === 'SA'
@@ -41,15 +44,18 @@ export function Landing({
   return (
     <div className="launch-page public-v2">
       <MvpView event="homepage_viewed" market={country} context="home" />
-      <section className="launch-hero">
+      <section className="launch-hero commerce-hero">
         <div className="container launch-hero-grid">
           <div className="launch-hero-copy">
             <p className="eyebrow">{country === 'SA' ? t.sa : t.eg} · Naql365</p>
             <h1>
-              {t.headline.slice(0, headlineBreak)}{' '}
-              <strong>{t.headline.slice(headlineBreak).trim()}</strong>
+              {headline[0]} <strong>{headline[1]}</strong>
             </h1>
-            <p className="launch-lead">{t.intro}</p>
+            <p className="launch-lead">
+              {locale === 'ar'
+                ? 'اطلب خدمة النقل، واستكشف مستلزمات التغليف لخطوتك القادمة.'
+                : 'Request transport and discover packing supplies for your next chapter.'}
+            </p>
             <p className="coverage-note">{coverage}</p>
             <div className="actions">
               <Link href={request} className="button button--primary">
@@ -68,10 +74,20 @@ export function Landing({
             </div>
             <p className="launch-assurance">{t.noAccount}</p>
           </div>
-          <RouteStory
-            labels={[t.pickup, t.planning, t.driverStage, t.onWay, t.delivered]}
-            caption={t.illustration}
-          />
+          <div className="commerce-moving-scene">
+            <Image
+              src="/brand/commerce-moving.jpg"
+              alt={
+                locale === 'ar'
+                  ? 'رسم توضيحي لغرفة وصناديق استعدادًا للنقل'
+                  : 'Illustrative room and boxes prepared for moving'
+              }
+              fill
+              sizes="(max-width: 767px) 100vw, 50vw"
+              priority
+            />
+            <small>{locale === 'ar' ? 'صورة توضيحية' : 'Illustrative image'}</small>
+          </div>
         </div>
       </section>
       {storeSection}

@@ -12,6 +12,8 @@ import { loginDestination } from '@/infrastructure/identity/login-destination';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { BrandLink } from './brand-link';
 import { ThemeControl } from './theme-control';
+import { StoreSearch } from '@/components/store/search';
+import { CartLink } from '@/components/store/cart-link';
 
 export async function IdentityLink({ locale }: { locale: Locale }) {
   const destination = getPublicEnv() ? await loginDestination() : 'unauthenticated';
@@ -55,12 +57,19 @@ export async function Header({
       <a className="skip-link" href="#main">
         {t.skip}
       </a>
-      <header className="site-header public-v2-header">
+      <header className="site-header public-v2-header commerce-header">
         <div className="container header-inner">
           <BrandLink href={`/${locale}`} label={t.brand} />
+          <div className="commerce-header-search">
+            <StoreSearch locale={locale} />
+          </div>
+          <CartLink locale={locale} />
           <nav className="desktop-header-nav" aria-label={t.home}>
             <Link href={`/${locale}`}>{t.home}</Link>
             <Link href={`/${locale}/store`}>{locale === 'ar' ? 'المتجر' : 'Store'}</Link>
+            <Link href={`/${locale}/store#store-category`}>
+              {locale === 'ar' ? 'الفئات' : 'Categories'}
+            </Link>
             <Link className="desktop-nav" href={`/${locale}#services`}>
               {p.services}
             </Link>

@@ -16,6 +16,7 @@ import '../../styles/staff-experience.css';
 import '../../styles/customer-v2.css';
 import '../../styles/staff-v2.css';
 import '../../styles/driver-v2.css';
+import '../../styles/commerce.css';
 const arabic = Alexandria({ subsets: ['arabic'], display: 'swap', variable: '--font-arabic' });
 const english = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-english' });
 

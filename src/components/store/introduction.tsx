@@ -4,6 +4,7 @@ import type { Locale } from '@/i18n/config';
 import { storeShop, storeCategories } from '@/infrastructure/store/service';
 import { storeMoney } from '@/i18n/store';
 import '@/styles/store.css';
+import { AddToCart } from './controls';
 
 /** Only the existing public projection supplies products; intake drafts never enter this component. */
 export async function StoreIntroduction({ locale }: { locale: Locale }) {
@@ -20,9 +21,7 @@ export async function StoreIntroduction({ locale }: { locale: Locale }) {
     >
       <p className="eyebrow">{ar ? 'متجر نقل 365 · مصر' : 'Naql365 Store · Egypt'}</p>
       <h2 id="store-introduction-title">
-        {ar
-          ? 'خدمات النقل ومستلزمات التغليف في مكان واحد'
-          : 'Transport and packing supplies, together'}
+        {ar ? 'كل ما تحتاجه للخطوة القادمة' : 'Everything for your next move'}
       </h2>
       <p>
         {ar
@@ -45,7 +44,10 @@ export async function StoreIntroduction({ locale }: { locale: Locale }) {
         </p>
       ) : (
         <>
-          <nav className="store-nav" aria-label={ar ? 'فئات المتجر' : 'Store categories'}>
+          <nav
+            className="store-nav commerce-categories"
+            aria-label={ar ? 'فئات المتجر' : 'Store categories'}
+          >
             {categories.map((category) => (
               <Link
                 key={category.slug}
@@ -55,7 +57,7 @@ export async function StoreIntroduction({ locale }: { locale: Locale }) {
               </Link>
             ))}
           </nav>
-          <div className="store-products">
+          <div className="store-products commerce-products">
             {catalog.items.slice(0, 4).map((product) => (
               <article key={product.listingId} className="card store-product">
                 {product.media[0] && (
@@ -71,7 +73,8 @@ export async function StoreIntroduction({ locale }: { locale: Locale }) {
                     {ar ? product.content.title_ar : product.content.title_en}
                   </Link>
                 </h3>
-                <p>{storeMoney(product.amountMinor, locale)}</p>
+                <p className="commerce-price">{storeMoney(product.amountMinor, locale)}</p>
+                <AddToCart product={product} locale={locale} />
               </article>
             ))}
           </div>
