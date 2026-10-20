@@ -27,9 +27,7 @@ for (const locale of ['ar', 'en'])
     await page.goto('/' + locale);
     await expect(page.locator('.launch-hero a[href="/' + locale + '/store"]')).toBeVisible();
     await expect(page.locator('.store-introduction h2')).toHaveText(
-      locale === 'ar'
-        ? 'خدمات النقل ومستلزمات التغليف في مكان واحد'
-        : 'Transport and packing supplies, together',
+      locale === 'ar' ? 'كل ما تحتاجه للخطوة القادمة' : 'Everything for your next move',
     );
     await expect(page.locator('.store-introduction .store-product')).toHaveCount(0);
     if (isMobile) {

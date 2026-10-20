@@ -1,6 +1,7 @@
 // Real local Auth, private uploads and application commands. No cloud endpoints.
 import { localSupabase } from './local-supabase.mjs';
-import { execFileSync, spawn } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
+import { assertBrowserPortFree, startBrowserServer, stopBrowserServer } from './browser-server.mjs';
 import { randomBytes, createHash, randomUUID } from 'node:crypto';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
@@ -143,6 +144,7 @@ async function capture(page, locale, width, theme, state) {
 try {
   if (sql('select ' + tables.map((t) => `(select count(*) from private.${t})`).join('+')) !== '0')
     throw Error('Local Store baseline not empty; preserving existing records');
+  await assertBrowserPortFree(3017);
   checkpoint = 'build';
   console.log('CHECKPOINT ' + checkpoint);
   execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
@@ -151,21 +153,7 @@ try {
     timeout: 240000,
     maxBuffer: 16 * 1024 * 1024,
   });
-  server = spawn(process.execPath, ['scripts/guarded-next.mjs', 'start', '-p', '3017'], {
-    env,
-    stdio: 'ignore',
-    windowsHide: true,
-  });
-  for (let i = 0; i < 60; i++) {
-    if (
-      await fetch(origin + '/en/login')
-        .then((r) => r.ok)
-        .catch(() => false)
-    )
-      break;
-    if (i === 59) throw Error('Local server unavailable');
-    await new Promise((r) => setTimeout(r, 1000));
-  }
+  server = await startBrowserServer(env, 3017);
   checkpoint = 'synthetic Auth setup';
   console.log('CHECKPOINT ' + checkpoint);
   for (let i = 1; i <= 6; i++) {
@@ -199,14 +187,45 @@ try {
   sql(fixture + '\ncommit;');
   seeded = true;
   save();
+  // Diagnose fixture authority before crossing the HTTP/application boundary.
+  const fixtureAuthority = JSON.parse(
+    sql(
+      "select json_build_object('suppliers',(select count(*) from private.store_suppliers),'products',(select count(*) from private.store_products),'categories',(select count(*) from private.store_categories where status='PUBLISHED'),'prices',(select count(*) from private.store_market_prices where status='APPROVED'),'offers',(select count(*) from private.store_supplier_offers where status='APPROVED'),'eligible',(select count(*) from private.store_product_market_listings l where private.store_listing_eligible(l.organization_id,l.id)))",
+    ),
+  );
+  const publicClient = createClient(local.API_URL, local.PUBLISHABLE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const publicCatalog = await publicClient.rpc('store_shop_v1', { p_country: 'EG' });
+  const boundary = {
+    fixtureAuthority,
+    publicRpcError: publicCatalog.error?.code ?? null,
+    publicStatus: publicCatalog.data?.status ?? null,
+    publicItems: publicCatalog.data?.items?.length ?? null,
+  };
+  writeFileSync(output + '/catalog-boundary.json', JSON.stringify(boundary, null, 2));
+  console.log('CATALOG_BOUNDARY ' + JSON.stringify(boundary));
+  if (
+    fixtureAuthority.eligible !== 1 ||
+    publicCatalog.error ||
+    publicCatalog.data?.items?.length !== 1
+  )
+    throw Error('Synthetic catalog authority/public RPC boundary failed');
   browser = await chromium.launch();
   const customerContext = await browser.newContext();
   const page = await customerContext.newPage();
 
   checkpoint = 'guest homepage';
   console.log('CHECKPOINT ' + checkpoint);
-  await page.goto(origin + '/en');
+  const homepage = await page.goto(origin + '/en');
   await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
+  const rendered = {
+    httpStatus: homepage?.status(),
+    market: await page.getByLabel('Service country', { exact: true }).inputValue(),
+    productCards: await page.locator('.commerce-products .store-product').count(),
+  };
+  writeFileSync(output + '/homepage-boundary.json', JSON.stringify(rendered, null, 2));
+  console.log('HOMEPAGE_BOUNDARY ' + JSON.stringify(rendered));
   await expect(page.locator('.commerce-products .store-product')).toHaveCount(1);
   await page
     .locator('.commerce-products')
@@ -376,15 +395,7 @@ try {
   process.exitCode = 1;
 } finally {
   await browser?.close();
-  if (server?.pid) {
-    if (process.platform === 'win32') {
-      try {
-        execFileSync('taskkill', ['/PID', String(server.pid), '/T', '/F'], { stdio: 'ignore' });
-      } catch {
-        /* already stopped */
-      }
-    } else server.kill();
-  }
+  await stopBrowserServer(server, 3017);
   if (seeded) {
     const organization = ledger.organization;
     if (

@@ -1,6 +1,7 @@
 // Real local Auth, private uploads and application commands. No cloud endpoints.
 import { localSupabase } from './local-supabase.mjs';
-import { execFileSync, spawn } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
+import { assertBrowserPortFree, startBrowserServer, stopBrowserServer } from './browser-server.mjs';
 import { randomBytes, createHash } from 'node:crypto';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
@@ -144,6 +145,7 @@ async function capture(page, locale, width, theme, state) {
 try {
   if (sql('select ' + tables.map((t) => `(select count(*) from private.${t})`).join('+')) !== '0')
     throw Error('Local Store baseline not empty; preserving existing records');
+  await assertBrowserPortFree(3017);
   checkpoint = 'build';
   console.log('CHECKPOINT ' + checkpoint);
   execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
@@ -152,21 +154,7 @@ try {
     timeout: 240000,
     maxBuffer: 16 * 1024 * 1024,
   });
-  server = spawn(process.execPath, ['scripts/guarded-next.mjs', 'start', '-p', '3017'], {
-    env,
-    stdio: 'ignore',
-    windowsHide: true,
-  });
-  for (let i = 0; i < 60; i++) {
-    if (
-      await fetch(origin + '/en/login')
-        .then((r) => r.ok)
-        .catch(() => false)
-    )
-      break;
-    if (i === 59) throw Error('Local server unavailable');
-    await new Promise((r) => setTimeout(r, 1000));
-  }
+  server = await startBrowserServer(env, 3017);
   checkpoint = 'synthetic Auth setup';
   console.log('CHECKPOINT ' + checkpoint);
   for (let i = 1; i <= 6; i++) {
@@ -575,15 +563,7 @@ try {
   process.exitCode = 1;
 } finally {
   await browser?.close();
-  if (server?.pid) {
-    if (process.platform === 'win32') {
-      try {
-        execFileSync('taskkill', ['/PID', String(server.pid), '/T', '/F'], { stdio: 'ignore' });
-      } catch {
-        /* already stopped */
-      }
-    } else server.kill();
-  }
+  await stopBrowserServer(server, 3017);
   if (seeded) {
     const organization = ledger.organization;
     if (

@@ -1,6 +1,7 @@
 import { localSupabase } from './local-supabase.mjs';
 // Local-only real Auth + restricted-role browser regression. No cloud credentials or bypass.
-import { execFileSync, spawn } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
+import { assertBrowserPortFree, startBrowserServer, stopBrowserServer } from './browser-server.mjs';
 import { randomUUID, randomBytes, createHash } from 'node:crypto';
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
@@ -66,6 +67,7 @@ let checkpoint = 'build';
 const evidence = [];
 const financeFixtures = [];
 try {
+  await assertBrowserPortFree(3013);
   // Build before creating any fixture. Child output is withheld, never raw provider logs.
   execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
     env,
@@ -73,21 +75,7 @@ try {
     timeout: 180000,
     maxBuffer: 16 * 1024 * 1024,
   });
-  server = spawn(process.execPath, ['scripts/guarded-next.mjs', 'start', '-p', '3013'], {
-    env,
-    stdio: 'ignore',
-    windowsHide: true,
-  });
-  for (let n = 0; n < 60; n++) {
-    if (
-      await fetch(origin + '/en/login')
-        .then((r) => r.ok)
-        .catch(() => false)
-    )
-      break;
-    if (n === 59) throw Error('LOCAL_START_FAILED');
-    await new Promise((r) => setTimeout(r, 1000));
-  }
+  server = await startBrowserServer(env, 3013);
   sql(
     `insert into public.organizations(id,name) values('${org}','Synthetic staff workspace'); insert into public.markets(organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values('${org}','SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966'),('${org}','EG','مصر','Egypt',true,'EGP','Africa/Cairo','+20');`,
   );
@@ -368,10 +356,6 @@ try {
   if (remaining !== '0') throw Error('LOCAL_IDENTITY_CLEANUP_FAILED');
   ledger.cleanup = true;
   save();
-  if (server?.pid) {
-    if (process.platform === 'win32')
-      execFileSync('taskkill', ['/PID', String(server.pid), '/T', '/F'], { stdio: 'ignore' });
-    else server.kill();
-  }
+  await stopBrowserServer(server, 3013);
   console.log(`Local evidence: ${output}; captures=${evidence.length}; owned fixture cleanup PASS`);
 }
