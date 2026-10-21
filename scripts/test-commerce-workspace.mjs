@@ -253,6 +253,9 @@ try {
   await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
   const rendered = {
     httpStatus: homepage?.status(),
+    routeErrorVisible: await page
+      .getByRole('heading', { name: 'Unable to complete the operation', exact: true })
+      .isVisible(),
     ssrProductCards:
       (await homepage.text()).match(/<article[^>]*class="[^"]*\bstore-product\b/g)?.length ?? 0,
     market: await page.getByLabel('Service country', { exact: true }).inputValue(),

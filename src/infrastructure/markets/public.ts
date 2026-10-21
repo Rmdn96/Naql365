@@ -5,6 +5,8 @@ import { publicCountry, marketCookie } from '@/domain/markets/public-contact';
 import { guestDatabase } from '@/infrastructure/guest/session';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { AppError } from '@/domain/shared/errors';
+import { homeStep, homeSyncStep } from './home-trace';
+import { catalogTrace } from '@/infrastructure/store/catalog-trace';
 export { marketCookie } from '@/domain/markets/public-contact';
 export async function selectedPublicCountry() {
   return publicCountry.catch('EG').parse((await cookies()).get(marketCookie)?.value);
@@ -31,7 +33,15 @@ const catalogue = z
   .array();
 export async function publicCatalogue() {
   if (!getPublicEnv()) return [];
-  const result = await guestDatabase().rpc('public_market_catalogue');
+  const client = homeSyncStep('public-catalogue-client', () => guestDatabase());
+  const result = await homeStep('public-catalogue-rpc', () =>
+    client.rpc('public_market_catalogue'),
+  );
+  catalogTrace({
+    stage: 'public-catalogue-rpc',
+    rpcError: !!result.error,
+    httpStatus: result.status,
+  });
   if (result.error) throw new AppError('internal', 'Service catalogue unavailable');
-  return catalogue.parse(result.data);
+  return homeSyncStep('public-catalogue-parse', () => catalogue.parse(result.data));
 }

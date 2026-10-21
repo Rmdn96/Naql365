@@ -1,3 +1,5 @@
+import { homeStep } from '@/infrastructure/markets/home-trace';
+import { catalogTrace } from '@/infrastructure/store/catalog-trace';
 import { Landing } from '@/components/public/landing';
 import { selectedPublicCountry, publicCatalogue } from '@/infrastructure/markets/public';
 import type { Metadata } from 'next';
@@ -32,34 +34,45 @@ export async function generateMetadata({
   };
 }
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  if (!isLocale(locale)) notFound();
-  const [country, catalogue] = await Promise.all([selectedPublicCountry(), publicCatalogue()]);
-  const services = catalogue.find((m) => m.country === country)?.services ?? [];
-  const cities = catalogue.find((m) => m.country === country)?.cities ?? [];
-  const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'Naql365',
-    alternateName: 'نقل 365',
-    url: appUrl().origin,
-    inLanguage: ['ar', 'en'],
-  };
-  const nonce = (await headers()).get('x-nonce') ?? undefined;
-  return (
-    <>
-      <script
-        nonce={nonce}
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
-      />
-      <Landing
-        locale={locale}
-        country={country}
-        services={services}
-        cities={cities}
-        storeSection={<StoreIntroduction locale={locale} />}
-      />
-    </>
-  );
+  catalogTrace({ stage: 'home-entry', outcome: 'started' });
+  const locale = await homeStep('home-locale', async () => {
+    const { locale } = await params;
+    catalogTrace({ stage: 'home-locale', locale: isLocale(locale) ? locale : 'invalid' });
+    if (!isLocale(locale)) notFound();
+    return locale;
+  });
+  const [country, catalogue] = await Promise.all([
+    homeStep('home-market', selectedPublicCountry),
+    homeStep('home-catalogue', publicCatalogue),
+  ]);
+  catalogTrace({ stage: 'home-market', country });
+  return homeStep('home-compose', async () => {
+    const services = catalogue.find((m) => m.country === country)?.services ?? [];
+    const cities = catalogue.find((m) => m.country === country)?.cities ?? [];
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Naql365',
+      alternateName: 'نقل 365',
+      url: appUrl().origin,
+      inLanguage: ['ar', 'en'],
+    };
+    const nonce = (await headers()).get('x-nonce') ?? undefined;
+    return (
+      <>
+        <script
+          nonce={nonce}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
+        />
+        <Landing
+          locale={locale}
+          country={country}
+          services={services}
+          cities={cities}
+          storeSection={<StoreIntroduction locale={locale} />}
+        />
+      </>
+    );
+  });
 }

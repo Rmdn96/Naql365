@@ -21,3 +21,25 @@ export async function register() {
     catalogTrace({ stage: 'startup', outcome: 'ready' });
   }
 }
+
+// Observe server-render failures without logging request data or changing propagation.
+export const onRequestError: import('next').Instrumentation.onRequestError = async (
+  error,
+  request,
+  context,
+) => {
+  if (
+    process.env.NEXT_RUNTIME !== 'nodejs' ||
+    process.env.APP_ENV !== 'local' ||
+    process.env.NAQL365_CATALOG_DIAGNOSTICS !== '1'
+  )
+    return;
+  if (context.routeType !== 'render' || !/^\/(ar|en)\/?(?:\?|$)/.test(request.path)) return;
+  try {
+    const { catalogTrace } = await import('./infrastructure/store/catalog-trace');
+    const { safeHomeException } = await import('./infrastructure/markets/home-trace');
+    catalogTrace({ stage: 'route-error', outcome: 'threw', ...safeHomeException(error) });
+  } catch {
+    // Diagnostic delivery must never replace the original application failure.
+  }
+};

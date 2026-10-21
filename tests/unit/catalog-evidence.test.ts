@@ -93,3 +93,29 @@ it('writes actual server diagnostics independently of console output and never t
   expect(() => catalogTrace({ stage: 'client', outcome: 'threw' })).not.toThrow();
   expect(channel.snapshot().fileRecords).toHaveLength(1);
 });
+it('retains a real homepage-stage failure in the machine-readable collector', async () => {
+  vi.resetModules();
+  const output = directory();
+  const channel = createCatalogEvidence(output);
+  vi.stubEnv('APP_ENV', 'local');
+  vi.stubEnv('NAQL365_CATALOG_DIAGNOSTICS', '1');
+  vi.stubEnv('NAQL365_CATALOG_PHASE', 'runtime');
+  vi.stubEnv('NAQL365_CATALOG_EVIDENCE_FILE', channel.file);
+  vi.spyOn(console, 'info').mockImplementation(() => {});
+  const { homeStep } = await import('@/infrastructure/markets/home-trace');
+  const error = new TypeError('synthetic-private-do-not-record');
+  await expect(
+    homeStep('home-catalogue', () => {
+      throw error;
+    }),
+  ).rejects.toBe(error);
+  const evidence = channel.snapshot();
+  expect(evidence.rejected).toBe(0);
+  expect(evidence.fileRecords).toHaveLength(2);
+  expect(evidence.fileRecords[1]).toMatchObject({
+    stage: 'home-catalogue',
+    outcome: 'threw',
+    exception: 'TypeError',
+  });
+  expect(readFileSync(output + '/ssr-boundary.json', 'utf8')).not.toContain(error.message);
+});
