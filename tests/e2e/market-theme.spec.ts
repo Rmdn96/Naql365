@@ -1,48 +1,60 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-for (const locale of ['ar', 'en']) {
+for (const locale of ['ar', 'en'] as const) {
   test(`${locale} semantic themes persist and follow system across public/auth widths`, async ({
     page,
   }) => {
     test.setTimeout(120000);
     await page.goto(`/${locale}`);
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'system');
-    for (const mode of ['light', 'dark', 'system']) {
+    for (const mode of ['light', 'dark', 'system'] as const) {
+      await page.goto(`/${locale}`);
       await page.setViewportSize({ width: 1440, height: 900 });
-      await page
-        .getByLabel(locale === 'ar' ? 'المظهر' : 'Theme', { exact: true })
-        .filter({ visible: true })
-        .selectOption(mode);
-      await expect
-        .poll(() =>
-          page
-            .locator('.theme-control select')
-            .evaluateAll((controls) =>
-              controls.map((control) => (control as HTMLSelectElement).value),
-            ),
-        )
-        .toEqual([mode, mode]);
+      const themeName = locale === 'ar' ? 'المظهر' : 'Appearance';
+      const modeName =
+        locale === 'ar'
+          ? { light: 'فاتح', dark: 'داكن', system: 'تلقائي' }[mode]
+          : { light: 'Light', dark: 'Dark', system: 'System' }[mode];
+      const theme = page.getByRole('group', { name: themeName, exact: true });
+      await theme.getByRole('button', { name: modeName, exact: true }).click();
+      await expect(page.locator('html')).toHaveAttribute('data-theme', mode);
+      await expect(theme.getByRole('button', { pressed: true })).toHaveCount(1);
+      await expect(theme.getByRole('button', { name: modeName, exact: true })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
       await page.setViewportSize({ width: 390, height: 900 });
+      await expect(theme.getByRole('button', { name: modeName, exact: true })).toBeVisible();
       const menu = page.getByRole('button', {
         name: locale === 'ar' ? 'القائمة' : 'Menu',
         exact: true,
       });
       await menu.click();
       await expect(page.getByRole('dialog')).toBeVisible();
-      await expect(
-        page
-          .getByLabel(locale === 'ar' ? 'المظهر' : 'Theme', { exact: true })
-          .filter({ visible: true }),
-      ).toHaveValue(mode);
       await page.keyboard.press('Escape');
       await expect(menu).toBeFocused();
+      await expect(theme.getByRole('button', { name: modeName, exact: true })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
       await page.reload();
       await expect(page.locator('html')).toHaveAttribute('data-theme', mode);
       const initialHtml = await (await page.request.get(`/${locale}`)).text();
       expect(initialHtml).toContain(`data-theme="${mode}"`);
       for (const path of ['', '/login', '/register', '/recover', '/password']) {
         await page.goto(`/${locale}${path}`);
+        await expect(page.locator('html')).toHaveAttribute('data-theme', mode);
+        if (path) {
+          const controls = page.getByLabel(locale === 'ar' ? 'المظهر' : 'Theme', { exact: true });
+          await expect
+            .poll(() =>
+              controls.evaluateAll((items) =>
+                items.map((item) => (item as HTMLSelectElement).value),
+              ),
+            )
+            .toEqual([mode, mode]);
+        }
         for (const width of [360, 390, 768, 1280, 1440]) {
           await page.setViewportSize({ width, height: 900 });
           expect(
@@ -72,7 +84,9 @@ for (const locale of ['ar', 'en']) {
         (response) =>
           response.url().endsWith('/api/public/market') && response.request().method() === 'POST',
       );
-      await page.locator('#public-market').selectOption(country);
+      await page
+        .getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true })
+        .selectOption(country);
       const response = await responsePromise;
       expect(response.status()).toBe(200);
       expect((await response.request().allHeaders()).origin).toBe('http://127.0.0.1:3000');
@@ -81,11 +95,17 @@ for (const locale of ['ar', 'en']) {
       expect(/(?:^|;)\s*HttpOnly(?:;|$)/i.test(setCookie)).toBe(true);
       expect(/(?:^|;)\s*SameSite=strict(?:;|$)/i.test(setCookie)).toBe(true);
       expect(/(?:^|;)\s*Path=\/(?:;|$)/i.test(setCookie)).toBe(true);
-      await expect(page.locator('#public-market')).toHaveValue(country);
+      await expect(
+        page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
+      ).toHaveValue(country);
       await page.reload();
-      await expect(page.locator('#public-market')).toHaveValue(country);
+      await expect(
+        page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
+      ).toHaveValue(country);
       await page.goto(`/${locale === 'ar' ? 'en' : 'ar'}/login`);
-      await expect(page.locator('#public-market')).toHaveValue(country);
+      await expect(
+        page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
+      ).toHaveValue(country);
       await page.goto(`/${locale}`);
     }
     const rejected = await page.request.post('/api/public/market', {

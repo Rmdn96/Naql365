@@ -37,23 +37,54 @@ test('telemetry rejects private properties and unavailable legal copy stays unpu
   expect((await request.get('/ar/legal/privacy')).status()).toBe(404);
   expect((await request.get('/en/legal/terms')).status()).toBe(404);
 });
-test('public country switch updates WhatsApp and guest request without a login wall', async ({
-  page,
-}) => {
-  await page.goto('/en');
-  const contact = page.locator('.floating-contact');
-  await expect(page.getByLabel('Service country')).toHaveValue('EG');
-  await expect(contact).toHaveAttribute('href', /^https:\/\/wa\.me\/201009402374\?/);
-  await page.getByLabel('Service country').selectOption('SA');
-  await expect(contact).toHaveAttribute('href', /^https:\/\/wa\.me\/966558985250\?/);
-  await page.getByLabel('Service country').selectOption('EG');
-  await expect(contact).toHaveAttribute('href', /^https:\/\/wa\.me\/201009402374\?/);
-  await page.getByRole('link', { name: 'Request Transport', exact: true }).first().click();
-  await expect(page).toHaveURL(/\/en\/request$/);
-  await expect(page.locator('#guest-country')).toHaveValue('EG');
-  await expect(page.locator('input[type=password]')).toHaveCount(0);
-  expect(await page.locator('body').innerText()).not.toContain('IBAN');
-});
+for (const locale of ['ar', 'en'] as const) {
+  test(`${locale} public country switch retains approved initial WhatsApp contact and guest request without a login wall`, async ({
+    page,
+  }) => {
+    await page.goto('/' + locale);
+    const contact = page.getByRole('link', {
+      name: locale === 'ar' ? 'تواصل واتساب' : 'Contact via WhatsApp',
+      exact: true,
+    });
+    const selector = page.getByRole('combobox', {
+      name: locale === 'ar' ? 'بلد الخدمة' : 'Service country',
+      exact: true,
+    });
+    const message =
+      locale === 'ar'
+        ? 'مرحبًا، أتواصل معكم من موقع Naql365 وأحتاج مساعدة بخصوص خدمة نقل.'
+        : 'Hello, I am contacting you from Naql365 and need help with a transport service.';
+    for (const country of ['EG', 'SA', 'EG']) {
+      if ((await selector.inputValue()) !== country) {
+        const response = page.waitForResponse(
+          (r) =>
+            r.url().endsWith('/api/public/market') &&
+            r.request().method() === 'POST' &&
+            r.status() === 200,
+        );
+        await selector.selectOption(country);
+        await response;
+      }
+      await expect(selector).toHaveValue(country);
+      // This initial enquiry channel is explicitly approved for Egypt. A saved
+      // future SA preference must not expose an unapproved Saudi destination.
+      await expect(contact).toHaveAttribute(
+        'href',
+        'https://wa.me/201009402374?text=' + encodeURIComponent(message),
+      );
+      await expect(contact).toHaveAttribute('rel', /noopener/);
+    }
+    await page
+      .getByRole('link', { name: locale === 'ar' ? 'اطلب نقل' : 'Book Transport', exact: true })
+      .filter({ visible: true })
+      .first()
+      .click();
+    await expect(page).toHaveURL(new RegExp('/' + locale + '/request$'));
+    await expect(page.locator('#guest-country')).toHaveValue('EG');
+    await expect(page.locator('input[type=password]')).toHaveCount(0);
+    expect(await page.locator('body').innerText()).not.toContain('IBAN');
+  });
+}
 
 test('guest exchange rejects predictable references and clears fragment before any request', async ({
   page,

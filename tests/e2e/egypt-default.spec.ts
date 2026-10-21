@@ -5,9 +5,13 @@ for (const locale of ['ar', 'en']) {
     page,
   }) => {
     await page.goto(`/${locale}`);
-    await expect(page.locator('#public-market')).toHaveValue('EG');
+    await expect(
+      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
+    ).toHaveValue('EG');
     await page.reload();
-    await expect(page.locator('#public-market')).toHaveValue('EG');
+    await expect(
+      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
+    ).toHaveValue('EG');
     await Promise.all([
       page.waitForResponse(
         (response) =>
@@ -15,13 +19,21 @@ for (const locale of ['ar', 'en']) {
           response.request().method() === 'POST' &&
           response.status() === 200,
       ),
-      page.locator('#public-market').selectOption('SA'),
+      page
+        .getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true })
+        .selectOption('SA'),
     ]);
-    await expect(page.locator('#public-market')).toHaveValue('SA');
+    await expect(
+      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
+    ).toHaveValue('SA');
     await page.goto(`/${locale === 'ar' ? 'en' : 'ar'}/login`);
-    await expect(page.locator('#public-market')).toHaveValue('SA');
+    await expect(
+      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
+    ).toHaveValue('SA');
     await page.reload();
-    await expect(page.locator('#public-market')).toHaveValue('SA');
+    await expect(
+      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
+    ).toHaveValue('SA');
     await Promise.all([
       page.waitForResponse(
         (response) =>
@@ -29,8 +41,12 @@ for (const locale of ['ar', 'en']) {
           response.request().method() === 'POST' &&
           response.status() === 200,
       ),
-      page.locator('#public-market').selectOption('EG'),
+      page
+        .getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true })
+        .selectOption('EG'),
     ]);
-    await expect(page.locator('#public-market')).toHaveValue('EG');
+    await expect(
+      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
+    ).toHaveValue('EG');
   });
 }

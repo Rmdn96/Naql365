@@ -1,4 +1,5 @@
 'use client';
+import NextLink from 'next/link';
 import { SourceImage } from './source-image';
 import { subscribeTheme, readTheme, chooseTheme } from './theme';
 
@@ -473,6 +474,54 @@ export function SourceCommerce({
             {productCards(reviewCatalog)}
           </section>
           {categorySection}
+          <section
+            className="cm-section"
+            aria-label={locale === 'ar' ? 'الدفع بوضوح' : 'Payment, explained'}
+          >
+            <SectionHeading
+              eyebrow={locale === 'ar' ? 'الدفع بوضوح' : 'Payment, explained'}
+              title={locale === 'ar' ? 'اعرف الخطوات قبل الدفع' : 'Know the steps before paying'}
+            />
+            <div className="cm-records">
+              <article>
+                <div>
+                  <h3>{locale === 'ar' ? 'نقدًا (CASH)' : 'Cash (CASH)'}</h3>
+                  <p>
+                    {locale === 'ar'
+                      ? 'يتولى فريق المالية التحقق من التحصيل وتسجيله. في المتجر، يُقصد أن يُحصّل المورد النقد عند التسليم وفق السياسة المعتمدة؛ تقرير المورد وحده لا يؤكد التحصيل.'
+                      : 'Finance verifies and records collection. For Store orders, the supplier is the intended cash collector on delivery under the approved policy; a supplier report alone does not confirm collection.'}
+                  </p>
+                </div>
+              </article>
+              <article>
+                <div>
+                  <h3>
+                    {locale === 'ar' ? 'فودافون كاش وإنستاباي' : 'Vodafone Cash and InstaPay'}
+                  </h3>
+                  <p>
+                    {locale === 'ar'
+                      ? 'تظهر وسائل التحويل المتاحة والتعليمات المعتمدة في صفحة الدفع الآمنة فقط. رفع إثبات الدفع لا يؤكد استلام الأموال؛ انتظر تأكيد المالية بعد التحقق اليدوي من الاستلام الفعلي.'
+                      : 'Available transfer methods and approved instructions appear only in secure checkout. Uploading payment proof does not confirm receipt of funds; wait for Finance confirmation after manual verification of actual receipt.'}
+                  </p>
+                </div>
+              </article>
+              <article>
+                <div>
+                  <h3>{locale === 'ar' ? 'عرض سعر النقل أولًا' : 'Transport quote first'}</h3>
+                  <p>
+                    {locale === 'ar'
+                      ? 'قدّم طلب النقل ليُراجعه فريق المبيعات ويحدد عرض السعر يدويًا. اقبل العرض النهائي، ثم اختر طريقة الدفع المتاحة من طلبك؛ تقديم الطلب أو الإثبات لا يعني تأكيد الدفع.'
+                      : 'Submit your Transport request for Sales review and a manual quote. Accept the final quote, then choose an available payment method from your order; submitting a request or proof does not confirm payment.'}
+                  </p>
+                  <Button variant="quiet" asChild>
+                    <NextLink href={'/' + locale + '/guest'}>
+                      {locale === 'ar' ? 'متابعة طلب قائم' : 'Track an existing request'}
+                    </NextLink>
+                  </Button>
+                </div>
+              </article>
+            </div>
+          </section>
           <section className="cm-journey cm-section">
             <SectionHeading eyebrow={t.journeySub} title={t.journey} />
             <ol>

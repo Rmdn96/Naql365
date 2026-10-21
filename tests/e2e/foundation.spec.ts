@@ -6,11 +6,16 @@ test('root defaults to Arabic and language switch reaches English', async ({ pag
   await expect(page).toHaveURL(/\/ar$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-  const menu = page.getByRole('button', { name: 'القائمة', exact: true });
-  if (await menu.isVisible()) await menu.click();
-  await page.getByRole('link', { name: 'English', exact: true }).filter({ visible: true }).click();
+  await page.getByRole('button', { name: 'EN', exact: true }).click();
+  await expect(page).toHaveURL(/\/en$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page.getByRole('button', { name: 'عربي', exact: true }).click();
+  await expect(page).toHaveURL(/\/ar$/);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
 });
 for (const locale of ['ar', 'en']) {
   test(`${locale} public page is accessible and has correct SEO`, async ({ page }) => {
