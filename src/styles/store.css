@@ -1,4 +1,4 @@
-.store-experience {
+.store-experience:not(.lovable) {
   max-width: 1160px;
   min-width: 0;
   color: var(--theme-text-primary);
@@ -6,15 +6,15 @@
 .store-experience :is(form, section, article, nav, div) {
   min-width: 0;
 }
-.store-experience :is(h1, h2, h3, p, li, dd, a, address) {
+.store-experience:not(.lovable) :is(h1, h2, h3, p, li, dd, a, address) {
   overflow-wrap: anywhere;
 }
-.store-experience .card {
+.store-experience:not(.lovable) .card {
   background: var(--theme-surface);
   color: var(--theme-text-primary);
   border-color: var(--theme-border);
 }
-.store-experience a:not(.button) {
+.store-experience:not(.lovable) a:not(.button) {
   color: var(--theme-text-primary);
   text-decoration: underline;
   text-underline-offset: 0.2em;
@@ -41,24 +41,24 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.25rem;
 }
-.store-product {
+.store-product:not(.cm-product) {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
-.store-product img {
+.store-product:not(.cm-product) img {
   width: 100%;
   height: auto;
   aspect-ratio: 4/3;
   object-fit: contain;
 }
-.store-form {
+.store-form:not(.cm-checkout) {
   display: grid;
   gap: 1rem;
   max-width: 42rem;
   padding-block: 1rem;
 }
-.store-line {
+.store-line:not(.cm-cart-line) {
   display: flex;
   gap: 1rem;
   justify-content: space-between;
@@ -87,7 +87,7 @@
   width: 1.25rem;
   height: 1.25rem;
 }
-.store-history li {
+.store-history:not(.cm-timeline) li {
   margin-block: 0.75rem;
 }
 .store-history time {
@@ -106,7 +106,7 @@
   .store-detail-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-  .store-experience {
+  .store-experience:not(.lovable) {
     padding-inline: 1rem;
   }
   .store-form .button {
@@ -139,7 +139,7 @@
   margin: 0;
   overflow-wrap: anywhere;
 }
-.store-experience fieldset {
+.store-experience fieldset:not(.cm-payment) {
   min-width: 0;
   padding: 1rem;
   border: 1px solid var(--theme-border);

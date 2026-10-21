@@ -1,9 +1,11 @@
-import { customerExperience } from '@/i18n/customer-experience';
+import { CustomerStoreRecords } from '@/components/lovable/customer-store-records';
+import { CommerceSurface } from '@/components/lovable/surface';
+import { SectionHeading } from '@/components/lovable/commerce';
+import { commerceContent } from '@/components/lovable/commerce-content';
+import { CustomerNavigation, CustomerRecords } from '@/components/lovable/customer-records';
 import Link from 'next/link';
 import { customerRequests } from '@/infrastructure/requests/list';
 import { customerQuotes } from '@/infrastructure/pricing/service';
-import { PageHeader, SummaryCard } from '@/components/ui/presentation';
-import { CustomerWorkspaceNav } from '@/components/ui/customer-workspace';
 import { redirect } from 'next/navigation';
 import type { Locale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
@@ -45,173 +47,81 @@ export async function CustomerAccount({
       .map((v) => ({ id: v.id, reference: q.reference })),
   );
   return (
-    <div className="container page customer-home customer-experience">
-      {permitted && <CustomerWorkspaceNav locale={locale} current="account" />}
-      <PageHeader
-        eyebrow={locale === 'ar' ? 'نقل 365 · مساحة العميل' : 'Naql365 · Your transport workspace'}
-        title={t.account}
-        description={
-          locale === 'ar'
-            ? 'طلباتك وخطوتك التالية، في مكان واحد.'
-            : 'Your requests and next steps, in one place.'
-        }
-      />
-      {permitted && (
-        <section className="customer-next-action" aria-labelledby="customer-next-title">
-          <div>
-            <p className="eyebrow">{locale === 'ar' ? 'خطوتك التالية' : 'Your next step'}</p>
-            <h2 id="customer-next-title">
-              {actionQuotes[0]
-                ? locale === 'ar'
-                  ? 'عرض سعر بانتظار قرارك'
-                  : 'A quote is ready for your decision'
-                : requests[0]
-                  ? locale === 'ar'
-                    ? 'تابع تفاصيل طلبك'
-                    : 'Continue your transport journey'
-                  : locale === 'ar'
-                    ? 'لنبدأ رحلة النقل الأولى'
-                    : 'Start your first transport request'}
-            </h2>
-            <p>
-              {locale === 'ar'
-                ? 'من تفاصيل الطلب إلى عرض السعر النهائي والتسليم، تابع الخطوة المتاحة لك.'
-                : 'From request details to your final quote and delivery, follow the next available action.'}
-            </p>
-          </div>
-          <Link
-            className="button button--primary"
-            href={
-              actionQuotes[0]
-                ? `/${locale}/account/quotes/${actionQuotes[0].id}`
-                : requests[0]
-                  ? `/${locale}/account/requests/${requests[0].id}`
-                  : `/${locale}/request`
-            }
-          >
-            {actionQuotes[0]
-              ? locale === 'ar'
-                ? 'مراجعة العرض'
-                : 'Review quote'
-              : requests[0]
-                ? locale === 'ar'
-                  ? 'متابعة الطلب'
-                  : 'Continue request'
-                : t.start}
-          </Link>
-        </section>
-      )}
-      {permitted && (
-        <div className="summary-grid">
-          <SummaryCard
-            title={locale === 'ar' ? 'رحلتك الحالية' : 'Your latest journey'}
-            actions={
-              <Link
-                className="button button--primary"
-                href={
-                  requests[0]
-                    ? `/${locale}/account/requests/${requests[0].id}`
-                    : `/${locale}/request`
-                }
-              >
-                {requests[0] ? (locale === 'ar' ? 'متابعة الطلب' : 'Continue request') : t.start}
-              </Link>
-            }
-          >
-            <p>
-              {requests[0]?.reference ??
-                (locale === 'ar'
-                  ? 'ابدأ طلب نقل، وسيراجع فريقنا التفاصيل قبل إرسال عرض السعر.'
-                  : 'Start a transport request. Our team reviews the details before sending your quote.')}
-            </p>
-          </SummaryCard>
-          <SummaryCard title={qt.myQuotes}>
-            {actionQuotes.length ? (
-              <ul className="task-links">
-                {actionQuotes.slice(0, 3).map((q) => (
-                  <li key={q.id}>
-                    <Link href={`/${locale}/account/quotes/${q.id}`}>
-                      {q.reference} · {locale === 'ar' ? 'راجع عرض السعر' : 'Review quote'}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>
-                {locale === 'ar'
-                  ? 'لا يوجد عرض سعر بانتظار ردك الآن.'
-                  : 'No quote is waiting for your response.'}
-              </p>
-            )}
-            <Link href={`/${locale}/account/quotes`}>
-              {locale === 'ar'
-                ? 'العروض والدفع ومتابعة التسليم'
-                : 'Quotes, payment and delivery progress'}
-            </Link>
-          </SummaryCard>
-        </div>
-      )}
-      {permitted && requests.length > 0 && (
-        <section className="recent-journeys">
-          <h2>{customerExperience(locale).previousRequests}</h2>
-          <ul className="request-list">
-            {requests.slice(0, 4).map((r) => (
-              <li key={r.id}>
-                <div>
-                  <h3>
-                    <Link href={`/${locale}/account/requests/${r.id}`}>
-                      {r.reference ?? t.request}
-                    </Link>
-                  </h3>
-                  <p>{locale === 'ar' ? r.services?.name_ar : r.services?.name_en}</p>
-                  <p>{r.request_locations.map((l) => l.city).join(' · ')}</p>
-                </div>
-                <Link href={`/${locale}/account/requests/${r.id}`}>
-                  {locale === 'ar' ? 'تفاصيل الطلب' : 'Request details'}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-      <Card>
-        {!permitted && !onboarding && <h2>{t.forbidden}</h2>}
-        {!permitted && !onboarding ? (
-          <Alert tone="error">
-            <p>{t.forbiddenBody}</p>
-          </Alert>
-        ) : (
+    <CommerceSurface locale={locale} view="portal">
+      <div className="cm-container cm-section">
+        <SectionHeading
+          eyebrow={locale === 'ar' ? 'لوحة العميل' : 'Customer dashboard'}
+          title={commerceContent[locale].portal}
+        />
+        {permitted && (
           <>
-            {saved && permitted && <Alert tone="success">{t.profileSaved}</Alert>}
-            {permitted && (
-              <nav className="customer-links" aria-label={t.account}>
-                <Link href={`/${locale}/account/requests`}>{t.myRequests}</Link>
-                <Link href={`/${locale}/account/quotes`}>{qt.myQuotes}</Link>
-                <StartRequest locale={locale} markets={await availableMarkets()} />
-              </nav>
-            )}
-            {onboarding ? (
-              <section className="profile-v2-onboarding">
-                <p>
-                  {locale === 'ar'
-                    ? 'خطوة أخيرة قبل طلبك الأول'
-                    : 'One last step before your first request'}
-                </p>
-                <h2>{t.onboard}</h2>
-                <CustomerProfileForm locale={locale} profile={profile.data} />
+            <CustomerNavigation locale={locale} />
+            {actionQuotes.length > 0 && (
+              <section className="cm-records">
+                {actionQuotes.slice(0, 3).map((q) => (
+                  <article key={q.id}>
+                    <strong>{q.reference}</strong>
+                    <Link href={'/' + locale + '/account/quotes/' + q.id}>
+                      {locale === 'ar' ? 'راجع عرض السعر' : 'Review quote'}
+                    </Link>
+                  </article>
+                ))}
               </section>
-            ) : (
-              <details className="profile-settings">
-                <summary>{t.profile}</summary>
-                <CustomerProfileForm locale={locale} profile={profile.data} />
-              </details>
             )}
+            <h2>{t.myRequests}</h2>
+            <CustomerRecords
+              locale={locale}
+              records={requests.slice(0, 4).map((r) => ({
+                id: r.id,
+                reference: r.reference ?? t.request,
+                summary: (locale === 'ar' ? r.services?.name_ar : r.services?.name_en) ?? '',
+                status: r.request_locations.map((l) => l.city).join(' · '),
+                href: '/' + locale + '/account/requests/' + r.id,
+              }))}
+            />
+            <h2>{locale === 'ar' ? 'طلبات المتجر' : 'Store orders'}</h2>
+            <CustomerStoreRecords locale={locale} />
           </>
         )}
-        <form action={customerLogout.bind(null, locale)}>
-          <Button variant="secondary">{t.logout}</Button>
-        </form>
-      </Card>
-    </div>
+        <Card>
+          {!permitted && !onboarding && <h2>{t.forbidden}</h2>}
+          {!permitted && !onboarding ? (
+            <Alert tone="error">
+              <p>{t.forbiddenBody}</p>
+            </Alert>
+          ) : (
+            <>
+              {saved && permitted && <Alert tone="success">{t.profileSaved}</Alert>}
+              {permitted && (
+                <nav className="customer-links" aria-label={t.account}>
+                  <Link href={`/${locale}/account/requests`}>{t.myRequests}</Link>
+                  <Link href={`/${locale}/account/quotes`}>{qt.myQuotes}</Link>
+                  <StartRequest locale={locale} markets={await availableMarkets()} />
+                </nav>
+              )}
+              {onboarding ? (
+                <section className="profile-v2-onboarding">
+                  <p>
+                    {locale === 'ar'
+                      ? 'خطوة أخيرة قبل طلبك الأول'
+                      : 'One last step before your first request'}
+                  </p>
+                  <h2>{t.onboard}</h2>
+                  <CustomerProfileForm locale={locale} profile={profile.data} />
+                </section>
+              ) : (
+                <details className="profile-settings">
+                  <summary>{t.profile}</summary>
+                  <CustomerProfileForm locale={locale} profile={profile.data} />
+                </details>
+              )}
+            </>
+          )}
+          <form action={customerLogout.bind(null, locale)}>
+            <Button variant="secondary">{t.logout}</Button>
+          </form>
+        </Card>
+      </div>
+    </CommerceSurface>
   );
 }

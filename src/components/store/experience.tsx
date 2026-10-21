@@ -1,3 +1,7 @@
+import { CustomerNavigation, CustomerRecords } from '@/components/lovable/customer-records';
+import { SectionHeading } from '@/components/lovable/commerce';
+import { commerceContent } from '@/components/lovable/commerce-content';
+import { commerceExtra } from '@/components/lovable/commerce-extra-content';
 import Link from 'next/link';
 import { StoreProductImage } from './product-image';
 import { notFound, redirect } from 'next/navigation';
@@ -84,13 +88,37 @@ export async function StoreExperience({
       </Alert>
     );
   return (
-    <div className="container page store-experience stack">
-      <header>
-        <p className="eyebrow">EG · EGP</p>
-        <h1>{t.title}</h1>
-        <p>{t.intro}</p>
-        <StoreNavigation locale={locale} staff={staff} />
-      </header>
+    <div
+      lang={locale}
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+      className={
+        staff
+          ? 'container page store-experience stack'
+          : 'lovable cm-container cm-section store-experience'
+      }
+    >
+      {staff ? (
+        <header>
+          <p className="eyebrow">EG · EGP</p>
+          <h1>{t.title}</h1>
+          <p>{t.intro}</p>
+          <StoreNavigation locale={locale} staff />
+        </header>
+      ) : (
+        <>
+          <SectionHeading
+            eyebrow="EG · EGP"
+            title={
+              segment === 'checkout'
+                ? commerceContent[locale].checkoutTitle
+                : path[1]
+                  ? commerceExtra[locale].orderDetail
+                  : commerceContent[locale].myStore
+            }
+          />
+          {segment === 'orders' && <CustomerNavigation locale={locale} />}
+        </>
+      )}
       {body}
     </div>
   );
@@ -218,7 +246,7 @@ async function renderStoreBody({
     const cart = storeCart.parse(await storeRead('cart'));
     body = (
       <>
-        <h2>{segment === 'cart' ? t.cart : t.checkout}</h2>
+        {segment === 'cart' && <h2>{t.cart}</h2>}
         {cart.checkedOutOrderId && (
           <Alert>
             <Link href={root + '/orders/' + cart.checkedOutOrderId}>{t.orders}</Link>
@@ -243,6 +271,18 @@ async function renderStoreBody({
                 </li>
               ))}
             </ul>
+            <ol className="cm-stepper" aria-label={t.checkout}>
+              {commerceExtra[locale].steps.map((step, index) => (
+                <li
+                  key={step}
+                  aria-current={index === 1 ? 'step' : undefined}
+                  data-done={index < 1 || undefined}
+                >
+                  <span>{index + 1}</span>
+                  {step}
+                </li>
+              ))}
+            </ol>
             <CheckoutForm key={cart.revision} cart={cart} locale={locale} />
           </>
         )}
@@ -252,8 +292,8 @@ async function renderStoreBody({
     if (path.length !== 2) notFound();
     const order = storeOrder.parse(await storeRead('order', path[1]));
     body = (
-      <>
-        <h2>{order.reference}</h2>
+      <section className={staff ? undefined : 'cm-order-detail'}>
+        <h2 dir="ltr">{order.reference}</h2>
         <div className="store-status">
           <Badge>{storeLabel(order.orderState, locale)}</Badge>
           <Badge>{storeLabel(order.fulfillmentState, locale)}</Badge>
@@ -367,10 +407,11 @@ async function renderStoreBody({
         <OrderActions order={order} locale={locale} staff={staff} />
         <Card>
           <h3>{t.history}</h3>
-          <ol className="store-history">
+          <ol className={staff ? 'store-history' : 'store-history cm-timeline'}>
             {order.events.map((event, index) => (
               <li key={index}>
-                {storeLabel(event.action, locale)}{' '}
+                {!staff && <span aria-hidden="true">{index + 1}</span>}
+                <div>{storeLabel(event.action, locale)}</div>
                 <time dateTime={event.at}>
                   {new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {
                     dateStyle: 'medium',
@@ -382,7 +423,7 @@ async function renderStoreBody({
             ))}
           </ol>
         </Card>
-      </>
+      </section>
     );
   } else {
     const kind = staff
@@ -403,6 +444,21 @@ async function renderStoreBody({
         </p>
         {!page.items.length ? (
           <EmptyState title={t.empty}>{t.orders}</EmptyState>
+        ) : !staff ? (
+          <CustomerRecords
+            locale={locale}
+            records={page.items.map((o) => ({
+              id: o.id,
+              reference: o.reference,
+              summary: storeMoney(o.totalMinor, locale),
+              status: [
+                storeLabel(o.orderState, locale),
+                storeLabel(o.fulfillmentState, locale),
+                storeLabel(o.paymentStatus, locale),
+              ].join(' · '),
+              href: root + '/orders/' + o.id,
+            }))}
+          />
         ) : (
           <Table
             caption={t.orders}

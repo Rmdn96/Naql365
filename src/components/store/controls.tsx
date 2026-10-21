@@ -1,4 +1,5 @@
 'use client';
+import { Button as LovableButton } from '@/components/lovable/button';
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Input, Select, Alert } from '@/components/ui/primitives';
@@ -221,7 +222,7 @@ export function CheckoutForm({ cart, locale }: { cart: StoreCart; locale: Locale
     methodAvailable = method === 'CASH' ? contract?.codRelease : destinations.length > 0;
   return (
     <form
-      className="store-form"
+      className="cm-checkout store-form"
       onSubmit={async (e) => {
         e.preventDefault();
         if (!available || !methodAvailable) return;
@@ -245,95 +246,115 @@ export function CheckoutForm({ cart, locale }: { cart: StoreCart; locale: Locale
         if (result?.id) router.push('/' + locale + '/store/orders/' + result.id);
       }}
     >
-      {command.status}
-      <p>{t.review}</p>
-      {!available && <Alert>{t.blocked}</Alert>}
-      <Select
-        id="contract"
-        label={t.contracts}
-        value={contractId}
-        onChange={(e) => setContractId(e.target.value)}
-        required
-      >
-        <option value="">{t.selection}</option>
-        {cart.contracts.map((c) => (
-          <option key={c.id} value={c.id}>
-            {locale === 'ar' ? c.termsAr : c.termsEn}
-          </option>
-        ))}
-      </Select>
-      <Input
-        id="store-name"
-        name="name"
-        label={t.name}
-        autoComplete="name"
-        maxLength={120}
-        required
-      />
-      <Input
-        id="store-phone"
-        name="phone"
-        label={t.phone}
-        type="tel"
-        autoComplete="tel"
-        maxLength={40}
-        required
-      />
-      <Select id="store-region" name="region" label={t.region} required>
-        <option value="">{t.selection}</option>
-        {contract?.regions.map((region) => (
-          <option key={region}>{region}</option>
-        ))}
-      </Select>
-      <Input
-        id="store-address"
-        name="line"
-        label={t.address}
-        autoComplete="street-address"
-        maxLength={500}
-        required
-      />
-      <Select
-        id="store-method"
-        label={t.method}
-        value={method}
-        onChange={(e) => setMethod(e.target.value)}
-      >
-        <option value="CASH" disabled={!contract?.codRelease}>
-          {t.cash}
-        </option>
-        <option value="VODAFONE_CASH">{storeLabel('VODAFONE_CASH', locale)}</option>
-        <option value="INSTAPAY">{storeLabel('INSTAPAY', locale)}</option>
-      </Select>
-      {method !== 'CASH' && (
-        <>
-          <Alert>{t.proofNote}</Alert>
-          <Select id="destination" name="destinationId" label={t.method} required>
+      <section>
+        {command.status}
+        <p>{t.review}</p>
+        {!available && <Alert>{t.blocked}</Alert>}
+        <Select
+          id="contract"
+          label={t.contracts}
+          value={contractId}
+          onChange={(e) => setContractId(e.target.value)}
+          required
+        >
+          <option value="">{t.selection}</option>
+          {cart.contracts.map((c) => (
+            <option key={c.id} value={c.id}>
+              {locale === 'ar' ? c.termsAr : c.termsEn}
+            </option>
+          ))}
+        </Select>
+        <div className="cm-address">
+          <Input
+            id="store-name"
+            name="name"
+            label={t.name}
+            autoComplete="name"
+            maxLength={120}
+            required
+          />
+          <Input
+            id="store-phone"
+            name="phone"
+            label={t.phone}
+            type="tel"
+            autoComplete="tel"
+            maxLength={40}
+            required
+          />
+          <Select id="store-region" name="region" label={t.region} required>
             <option value="">{t.selection}</option>
-            {destinations.map((d) => (
-              <option key={d.id} value={d.id}>
-                {locale === 'ar' ? d.labelAr : d.labelEn}
-              </option>
+            {contract?.regions.map((region) => (
+              <option key={region}>{region}</option>
             ))}
           </Select>
-          {!destinations.length && <p>{t.noTransfer}</p>}
-        </>
-      )}
-      <dl className="store-totals">
-        <dt>{t.price}</dt>
-        <dd>{storeMoney(subtotal, locale)}</dd>
-        <dt>{t.delivery}</dt>
-        <dd>{contract ? storeMoney(contract.deliveryMinor, locale) : '—'}</dd>
-        <dt>{t.tax}</dt>
-        <dd>{contract ? storeMoney(tax, locale) : '—'}</dd>
-        <dt>{t.total}</dt>
-        <dd>{totals ? storeMoney(totals.total, locale) : '—'}</dd>
-      </dl>
-      <p>{contract && (locale === 'ar' ? contract.termsAr : contract.termsEn)}</p>
-      <label className="store-check">
-        <input type="checkbox" required /> {t.terms}
-      </label>
-      <Button disabled={command.busy || !available || !methodAvailable}>{t.place}</Button>
+          <Input
+            id="store-address"
+            name="line"
+            label={t.address}
+            autoComplete="street-address"
+            maxLength={500}
+            required
+          />
+        </div>
+        <fieldset id="store-method" className="cm-payment">
+          <legend>{t.method}</legend>
+          {['CASH', 'VODAFONE_CASH', 'INSTAPAY'].map((choice) => (
+            <label key={choice}>
+              <input
+                type="radio"
+                name="store-method"
+                value={choice}
+                checked={method === choice}
+                disabled={choice === 'CASH' && !contract?.codRelease}
+                onChange={() => setMethod(choice)}
+              />
+              <span>{choice === 'CASH' ? t.cash : storeLabel(choice, locale)}</span>
+            </label>
+          ))}
+        </fieldset>
+        {method !== 'CASH' && (
+          <>
+            <Alert>{t.proofNote}</Alert>
+            <Select id="destination" name="destinationId" label={t.method} required>
+              <option value="">{t.selection}</option>
+              {destinations.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {locale === 'ar' ? d.labelAr : d.labelEn}
+                </option>
+              ))}
+            </Select>
+            {!destinations.length && <p>{t.noTransfer}</p>}
+          </>
+        )}
+      </section>
+      <div className="cm-summary">
+        <dl>
+          {[
+            [t.price, storeMoney(subtotal, locale)],
+            [t.delivery, contract ? storeMoney(contract.deliveryMinor, locale) : '—'],
+            [t.tax, contract ? storeMoney(tax, locale) : '—'],
+            [t.total, totals ? storeMoney(totals.total, locale) : '—'],
+          ].map(([label, value]) => (
+            <div className="st-slot" key={label}>
+              <dt>{label}</dt>
+              <dd>
+                <span dir="ltr">{value}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <p>{contract && (locale === 'ar' ? contract.termsAr : contract.termsEn)}</p>
+        <label className="store-check">
+          <input type="checkbox" required /> {t.terms}
+        </label>
+        <LovableButton
+          variant="transport"
+          disabled={command.busy || !available || !methodAvailable}
+        >
+          {t.place}
+        </LovableButton>
+      </div>
     </form>
   );
 }

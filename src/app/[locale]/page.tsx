@@ -1,6 +1,6 @@
 import { homeStep } from '@/infrastructure/markets/home-trace';
 import { catalogTrace } from '@/infrastructure/store/catalog-trace';
-import { Landing } from '@/components/public/landing';
+import { CommerceSurface } from '@/components/lovable/surface';
 import { selectedPublicCountry, publicCatalogue } from '@/infrastructure/markets/public';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -8,7 +8,7 @@ import { isLocale } from '@/i18n/config';
 import { dictionary } from '@/i18n/dictionaries';
 import { appUrl } from '@/infrastructure/config/server-env';
 import { headers } from 'next/headers';
-import { StoreIntroduction } from '@/components/store/introduction';
+
 export async function generateMetadata({
   params,
 }: {
@@ -41,14 +41,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     if (!isLocale(locale)) notFound();
     return locale;
   });
-  const [country, catalogue] = await Promise.all([
+  const [country] = await Promise.all([
     homeStep('home-market', selectedPublicCountry),
     homeStep('home-catalogue', publicCatalogue),
   ]);
   catalogTrace({ stage: 'home-market', country });
   return homeStep('home-compose', async () => {
-    const services = catalogue.find((m) => m.country === country)?.services ?? [];
-    const cities = catalogue.find((m) => m.country === country)?.cities ?? [];
     const schema = {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
@@ -65,13 +63,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
         />
-        <Landing
-          locale={locale}
-          country={country}
-          services={services}
-          cities={cities}
-          storeSection={<StoreIntroduction locale={locale} />}
-        />
+        <CommerceSurface locale={locale} />
       </>
     );
   });
