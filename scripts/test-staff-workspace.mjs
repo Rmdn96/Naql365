@@ -7,9 +7,29 @@ import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { financeRow } from '../src/domain/payments/model.ts';
 const local = localSupabase();
 if (new URL(local.API_URL).hostname !== '127.0.0.1') throw Error('LOCAL_ONLY');
-const origin = 'http://127.0.0.1:3013';
+const externalServer = process.env.NAQL365_EXISTING_BROWSER_ORIGIN;
+if (externalServer && externalServer !== 'http://127.0.0.1:3000')
+  throw Error('Existing server must be the approved loopback origin');
+const origin = externalServer || 'http://127.0.0.1:3013';
+if (externalServer) {
+  const settings = readFileSync('.env.local', 'utf8');
+  const value = (name) =>
+    settings
+      .split(/\r?\n/)
+      .find((line) => line.startsWith(name + '='))
+      ?.slice(name.length + 1)
+      .trim();
+  if (
+    value('NEXT_PUBLIC_SUPABASE_URL') !== local.API_URL ||
+    value('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY') !== local.PUBLISHABLE_KEY
+  )
+    throw Error('Existing server local backend binding mismatch');
+  if ((await fetch(origin + '/api/store?kind=cart')).status !== 401)
+    throw Error('Existing server anonymous auth check failed');
+}
 const env = {
   ...process.env,
   APP_ENV: 'local',
@@ -67,15 +87,17 @@ let checkpoint = 'build';
 const evidence = [];
 const financeFixtures = [];
 try {
-  await assertBrowserPortFree(3013);
-  // Build before creating any fixture. Child output is withheld, never raw provider logs.
-  execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
-    env,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    timeout: 180000,
-    maxBuffer: 16 * 1024 * 1024,
-  });
-  server = await startBrowserServer(env, 3013);
+  if (!externalServer) {
+    await assertBrowserPortFree(3013);
+    // Build before creating any fixture. Child output is withheld, never raw provider logs.
+    execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
+      env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 180000,
+      maxBuffer: 16 * 1024 * 1024,
+    });
+    server = await startBrowserServer(env, 3013);
+  }
   sql(
     `insert into public.organizations(id,name) values('${org}','Synthetic staff workspace'); insert into public.markets(organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values('${org}','SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966'),('${org}','EG','مصر','Egypt',true,'EGP','Africa/Cairo','+20');`,
   );
@@ -131,13 +153,38 @@ try {
         await page.locator('input[name="email"]').fill(email);
         await page.locator('input[name="password"]').fill(password);
         checkpoint = role + ' ' + locale + ' submit';
+        const submitted = page.waitForResponse(
+          (response) =>
+            response.url() === origin + '/' + locale + '/login' &&
+            response.request().method() === 'POST',
+        );
+        const landing = page.waitForResponse(
+          (response) =>
+            new URL(response.url()).pathname === '/' + locale + '/portal' &&
+            response.request().headers()['rsc'] === '1',
+        );
         await page.locator('.auth-form button:not([type=button])').click();
+        const signedIn = await submitted;
+        if (signedIn.status() !== 200 && signedIn.status() !== 303)
+          throw Error('LOCAL_LOGIN_HTTP_FAILURE');
+        await landing;
+        await page.waitForURL(new RegExp('/' + locale + '/portal$'));
+        await page.waitForFunction(() => {
+          const node = document.querySelector('#staff-market');
+          if (!node) return false;
+          const key = Object.keys(node).find((k) => k.startsWith('__reactProps'));
+          return !!key && typeof Reflect.get(node, key)?.onChange === 'function';
+        });
+        console.log('STAFF_READY ' + role + ' ' + locale);
         checkpoint = role + ' ' + locale + ' destination';
         await expect(page).toHaveURL(new RegExp('/' + locale + '/portal$'), { timeout: 20000 });
         await expect(page.locator('.staff-app')).toBeVisible();
+        checkpoint = role + ' ' + locale + ' refresh';
         await page.reload();
         await expect(page.locator('.staff-app')).toBeVisible();
+        checkpoint = role + ' ' + locale + ' direct login';
         await page.goto(origin + '/' + locale + '/login');
+        await page.waitForURL(new RegExp('/' + locale + '/portal$'));
         await expect(page).toHaveURL(new RegExp('/' + locale + '/portal$'));
         checkpoint = role + ' ' + locale + ' workspaceModule visibility';
         const nav = page.locator('.staff-sidebar nav');
@@ -153,11 +200,18 @@ try {
           const changed = page.waitForResponse(
             (r) => r.url().endsWith('/api/public/market') && r.request().method() === 'POST',
           );
+          const refreshedMarket = page.waitForResponse(
+            (r) =>
+              new URL(r.url()).pathname === new URL(page.url()).pathname &&
+              r.request().headers()['rsc'] === '1',
+          );
           await page.locator('#staff-market').selectOption(country);
           const marketResponse = await changed.catch(() => {
             throw Error('LOCAL_MARKET_REQUEST_TIMEOUT');
           });
           if (marketResponse.status() !== 200) throw Error('LOCAL_MARKET_HTTP_FAILURE');
+          if ((await refreshedMarket).status() !== 200) throw Error('LOCAL_MARKET_REFRESH_FAILED');
+          console.log('STAFF_MARKET_RESPONSE ' + role + ' ' + locale + ' ' + country);
           await expect(page.locator('#staff-market')).toHaveValue(country);
           await expect(page.locator('.staff-organization-context')).toContainText(
             country === 'SA'
@@ -169,9 +223,19 @@ try {
                 : 'Egypt',
           );
           await page.reload();
+          await page.waitForFunction(() => {
+            const node = document.querySelector('#staff-market');
+            const key = node && Object.keys(node).find((k) => k.startsWith('__reactProps'));
+            return !!key && typeof Reflect.get(node, key)?.onChange === 'function';
+          });
           await expect(page.locator('#staff-market')).toHaveValue(country);
           const other = locale === 'ar' ? 'en' : 'ar';
           await page.goto(origin + '/' + other + '/portal');
+          await page.waitForFunction(() => {
+            const node = document.querySelector('#staff-market');
+            const key = node && Object.keys(node).find((k) => k.startsWith('__reactProps'));
+            return !!key && typeof Reflect.get(node, key)?.onChange === 'function';
+          });
           await expect(page.locator('#staff-market')).toHaveValue(country);
           await page.goto(origin + '/' + locale + '/portal');
           await expect(page.locator('.staff-organization-context')).toContainText(
@@ -229,6 +293,7 @@ try {
         }
         for (const workspaceModule of allowed) {
           checkpoint = role + ' ' + locale + ' route ' + workspaceModule;
+          console.log('STAFF_ROUTE ' + role + ' ' + locale + ' ' + workspaceModule);
           await page.goto(origin + '/' + locale + '/portal/' + workspaceModule);
           await expect(page.locator('.staff-app')).toBeVisible();
           await expect(page.locator('.staff-workspace-content h1')).toBeVisible();
@@ -246,6 +311,11 @@ try {
             await page
               .getByRole('button', { name: locale === 'ar' ? 'تطبيق' : 'Apply', exact: true })
               .click();
+            await page.waitForURL(
+              (url) =>
+                url.pathname === '/' + locale + '/portal/finance' &&
+                url.searchParams.get('status') === 'PAID',
+            );
             await expect(page.locator('.staff-workspace-content')).toContainText(
               locale === 'ar' ? 'لا توجد دفعات' : 'No payments match',
             );
@@ -253,11 +323,26 @@ try {
             await page
               .getByRole('button', { name: locale === 'ar' ? 'تطبيق' : 'Apply', exact: true })
               .click();
+            await page.waitForURL(
+              (url) =>
+                url.pathname === '/' + locale + '/portal/finance' &&
+                url.searchParams.get('status') === 'CASH_DUE',
+            );
             const changed = page.waitForResponse(
               (r) => r.url().endsWith('/api/public/market') && r.request().method() === 'POST',
             );
+            const refreshedFinance = page.waitForResponse(
+              (r) =>
+                new URL(r.url()).pathname === '/' + locale + '/portal/finance' &&
+                r.request().headers()['rsc'] === '1',
+            );
             await page.locator('#staff-market').selectOption('EG');
             expect((await changed).status()).toBe(200);
+            if ((await refreshedFinance).status() !== 200)
+              throw Error('LOCAL_FINANCE_REFRESH_FAILED');
+            await expect(page.locator('.staff-organization-context')).toContainText(
+              locale === 'ar' ? 'مصر' : 'Egypt',
+            );
             await expect(page.locator('.staff-workspace-content')).toContainText(
               'SYNTHETIC FINANCE EG',
             );
@@ -298,13 +383,107 @@ try {
         // Explicit logout uses the normal trusted application action.
         checkpoint = role + ' ' + locale + ' logout';
         await page.locator('.staff-topbar form button').click();
+        await page.waitForURL(new RegExp('/' + locale + '/login'));
         await expect(page).toHaveURL(new RegExp('/' + locale + '/login'), { timeout: 20000 });
         await page.goto(origin + '/' + locale + '/portal');
+        await page.waitForURL(new RegExp('/' + locale + '/login'));
         await expect(page).toHaveURL(new RegExp('/' + locale + '/login'));
         console.log(
           `PASS local ${role} ${locale}: normal login, refresh, direct login, granted modules, responsive drawer, axe, logout`,
         );
       } catch (error) {
+        writeFileSync(
+          output + '/assertion-boundary.json',
+          JSON.stringify(
+            {
+              checkpoint,
+              matcher:
+                error?.matcherResult?.name ??
+                (error instanceof Error && error.message.includes('toHaveURL')
+                  ? 'toHaveURL'
+                  : error instanceof Error && error.message.includes('toBeVisible')
+                    ? 'toBeVisible'
+                    : 'OTHER'),
+              shellVisible: await page
+                .locator('.staff-app')
+                .isVisible()
+                .catch(() => false),
+              path: new URL(page.url()).pathname,
+              source:
+                error instanceof Error && error.message.includes('.staff-app')
+                  ? 'staff-shell'
+                  : error instanceof Error && error.message.includes('toHaveURL')
+                    ? 'route'
+                    : 'OTHER',
+            },
+            null,
+            2,
+          ),
+        );
+        {
+          const direct = createClient(local.API_URL, local.PUBLISHABLE_KEY, {
+            auth: { persistSession: false, autoRefreshToken: false },
+          });
+          const signed = await direct.auth.signInWithPassword({ email, password });
+          const market = sql(
+            `select id from public.markets where organization_id='${org}' and country_code='SA'`,
+          );
+          const rpc = signed.error
+            ? null
+            : await direct.rpc('finance_market_queue', { p_org: org, p_market: market });
+          const parsed = Array.isArray(rpc?.data?.items)
+            ? financeRow.array().safeParse(rpc.data.items)
+            : null;
+          const permission = signed.error
+            ? null
+            : await direct.rpc('has_permission', {
+                organization_id: org,
+                permission_code: 'portal.access',
+              });
+          writeFileSync(
+            output + '/finance-boundary.json',
+            JSON.stringify(
+              {
+                checkpoint,
+                auth: !signed.error,
+                portalPermission: permission?.data === true,
+                permissionCode:
+                  permission?.error?.code && /^[A-Z0-9]{5}$/.test(permission.error.code)
+                    ? permission.error.code
+                    : permission?.error
+                      ? 'OTHER'
+                      : null,
+                rpcCode:
+                  rpc?.error && /^[A-Z0-9]{5}$/.test(rpc.error.code)
+                    ? rpc.error.code
+                    : rpc?.error
+                      ? 'OTHER'
+                      : null,
+                items: Array.isArray(rpc?.data?.items) ? rpc.data.items.length : null,
+                validated: parsed?.success ?? false,
+                issues:
+                  parsed && !parsed.success
+                    ? parsed.error.issues.map((i) => ({
+                        path: i.path.map((p) => (typeof p === 'number' ? 'item' : String(p))),
+                        code: i.code,
+                      }))
+                    : [],
+                pageError: await page.locator('.staff-dashboard-panel[role=alert]').count(),
+                staffShells: await page.locator('.staff-app').count(),
+                routeAlerts: await page.getByRole('alert').count(),
+                market: await page
+                  .locator('#staff-market')
+                  .inputValue()
+                  .catch(() => null),
+              },
+              null,
+              2,
+            ),
+          );
+          if (/\/(ar|en)\/portal(?:\/|$)/.test(new URL(page.url()).pathname))
+            await page.screenshot({ path: output + '/synthetic-failure.png', fullPage: true });
+          await direct.auth.signOut();
+        }
         console.error(
           'SAFE_BROWSER_DIAGNOSTIC',
           JSON.stringify({
@@ -356,6 +535,6 @@ try {
   if (remaining !== '0') throw Error('LOCAL_IDENTITY_CLEANUP_FAILED');
   ledger.cleanup = true;
   save();
-  await stopBrowserServer(server, 3013);
+  if (!externalServer) await stopBrowserServer(server, 3013);
   console.log(`Local evidence: ${output}; captures=${evidence.length}; owned fixture cleanup PASS`);
 }

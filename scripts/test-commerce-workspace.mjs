@@ -8,8 +8,27 @@ import { createClient } from '@supabase/supabase-js';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { createCatalogEvidence } from './catalog-evidence.mjs';
-const local = localSupabase(),
-  origin = 'http://127.0.0.1:3017';
+const local = localSupabase();
+const externalServer = process.env.NAQL365_EXISTING_BROWSER_ORIGIN;
+if (externalServer && externalServer !== 'http://127.0.0.1:3000')
+  throw Error('Existing server must be the approved loopback origin');
+const origin = externalServer || 'http://127.0.0.1:3017';
+if (externalServer) {
+  const settings = readFileSync('.env.local', 'utf8');
+  const value = (name) =>
+    settings
+      .split(/\r?\n/)
+      .find((line) => line.startsWith(name + '='))
+      ?.slice(name.length + 1)
+      .trim();
+  if (
+    value('NEXT_PUBLIC_SUPABASE_URL') !== local.API_URL ||
+    value('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY') !== local.PUBLISHABLE_KEY
+  )
+    throw Error('Existing server local backend binding mismatch');
+  const response = await fetch(origin + '/api/store?kind=cart');
+  if (response.status !== 401) throw Error('Existing server anonymous auth check failed');
+}
 const admin = createClient(local.API_URL, local.SERVICE_ROLE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
@@ -96,7 +115,14 @@ async function login(page, identity, locale) {
   await page.goto(origin + '/' + locale + '/login');
   await page.locator('input[name=email]').fill(identity.email);
   await page.locator('input[name=password]').fill(password);
+  const submitted = page.waitForResponse(
+    (response) =>
+      response.url() === origin + '/' + locale + '/login' && response.request().method() === 'POST',
+  );
   await page.locator('.auth-form button:not([type=button])').click();
+  const signedIn = await submitted;
+  if (signedIn.status() !== 200 && signedIn.status() !== 303)
+    throw Error('Local login HTTP failure');
   await expect(page).not.toHaveURL(new RegExp('/' + locale + '/login$'), { timeout: 20000 });
   const r = await page.request.post(origin + '/api/public/market', {
     headers: { Origin: origin },
@@ -111,14 +137,14 @@ async function capture(page, locale, width, theme, state) {
     .addCookies([{ name: 'naql365_theme', value: theme, url: origin, sameSite: 'Lax' }]);
   if (theme === 'system') await page.emulateMedia({ colorScheme: 'dark' });
   await page.reload();
-  await expect(page.locator('.store-experience')).toBeVisible();
+  await expect(page.locator('.store-experience').first()).toBeVisible();
   if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1))
     throw Error('Store page overflow');
   const navigation = page.locator('.commerce-cart');
   await navigation.focus();
   await expect(navigation).toBeFocused();
   await page.keyboard.press('Tab');
-  const a = await new AxeBuilder({ page }).include('main').include('.commerce-header').analyze();
+  const a = await new AxeBuilder({ page }).include('main').include('.cm-header').analyze();
   if (a.violations.length) {
     writeFileSync(
       output + '/axe-failure.json',
@@ -151,31 +177,42 @@ async function capture(page, locale, width, theme, state) {
 try {
   if (sql('select ' + tables.map((t) => `(select count(*) from private.${t})`).join('+')) !== '0')
     throw Error('Local Store baseline not empty; preserving existing records');
-  await assertBrowserPortFree(3017);
-  checkpoint = 'build';
-  console.log('CHECKPOINT ' + checkpoint);
-  execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
-    env: { ...env, NAQL365_CATALOG_PHASE: 'build' },
-    stdio: ['ignore', 'pipe', 'pipe'],
-    timeout: 240000,
-    maxBuffer: 16 * 1024 * 1024,
-  });
-  server = await startBrowserServer(env, 3017, undefined, diagnostics.receive);
-  checkpoint = 'server diagnostic acknowledgement';
-  // Channel health is established before fixture assertions or product rendering.
-  await expect
-    .poll(() =>
-      diagnostics
-        .snapshot()
-        .fileRecords.some(
-          (event) =>
-            event.stage === 'startup' &&
-            event.phase === 'runtime' &&
-            event.outcome === 'ready' &&
-            event.build !== null,
-        ),
-    )
-    .toBe(true);
+  if (!externalServer) {
+    await assertBrowserPortFree(3017);
+    checkpoint = 'build';
+    console.log('CHECKPOINT ' + checkpoint);
+    execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
+      env: { ...env, NAQL365_CATALOG_PHASE: 'build' },
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 240000,
+      maxBuffer: 16 * 1024 * 1024,
+    });
+    server = await startBrowserServer(env, 3017, undefined, diagnostics.receive);
+    checkpoint = 'server diagnostic acknowledgement';
+    // Channel health is established before fixture assertions or product rendering.
+    await expect
+      .poll(() =>
+        diagnostics
+          .snapshot()
+          .fileRecords.some(
+            (event) =>
+              event.stage === 'startup' &&
+              event.phase === 'runtime' &&
+              event.outcome === 'ready' &&
+              event.build !== null,
+          ),
+      )
+      .toBe(true);
+  }
+  if (externalServer) {
+    // next dev compiles routes on first use; warm only read-only public entry routes.
+    for (const locale of ['ar', 'en'])
+      for (const route of ['/login', '/request', '/store', '/store/cart']) {
+        const response = await fetch(origin + '/' + locale + route);
+        if (response.status !== 200) throw Error('Public route preparation failed');
+        await response.arrayBuffer();
+      }
+  }
   checkpoint = 'synthetic Auth setup';
   console.log('CHECKPOINT ' + checkpoint);
   for (let i = 1; i <= 6; i++) {
@@ -263,34 +300,53 @@ try {
   };
   writeFileSync(output + '/homepage-boundary.json', JSON.stringify(rendered, null, 2));
   console.log('HOMEPAGE_BOUNDARY ' + JSON.stringify(rendered));
-  await expect
-    .poll(() =>
-      diagnostics
-        .snapshot()
-        .fileRecords.some(
-          (event) =>
-            event.phase === 'runtime' &&
-            event.stage === 'projection' &&
-            event.valid === true &&
-            event.available === true &&
-            event.items === publicCatalog.data.items.length,
-        ),
-    )
-    .toBe(true);
+  if (!externalServer)
+    await expect
+      .poll(() =>
+        diagnostics
+          .snapshot()
+          .fileRecords.some(
+            (event) =>
+              event.phase === 'runtime' &&
+              event.stage === 'projection' &&
+              event.valid === true &&
+              event.available === true &&
+              event.items === publicCatalog.data.items.length,
+          ),
+      )
+      .toBe(true);
   expect(rendered.ssrProductCards).toBe(1);
   await expect(page.locator('.commerce-products .store-product')).toHaveCount(1);
   // Local-only fault injection tests artifact preservation; never alters application behavior.
   if (process.env.NAQL365_COMMERCE_DIAGNOSTIC_FAILURE === '1')
     throw Error('SIMULATED_DIAGNOSTIC_FAILURE');
+  checkpoint = 'guest add to cart';
   await page
     .locator('.commerce-products')
     .getByRole('button', { name: 'Add to cart', exact: true })
     .click();
+  checkpoint = 'guest login navigation';
   await expect(page).toHaveURL(origin + '/en/login');
   if (sql('select count(*) from private.store_carts') !== '0') throw Error('Guest created cart');
   checks.push('Guest homepage add redirects to canonical login; no phantom cart');
   guestEvidence = false; // Never capture credentials, authenticated HTML or customer state.
   await login(page, users[0], 'en');
+  checkpoint = 'customer dashboard';
+  await page.goto(origin + '/en/account');
+  await expect(page.locator('.cm-portal-nav')).toBeVisible();
+  await expect(page.locator('.cm-portal-nav a[href="/en/store/orders"]')).toBeVisible();
+  const deniedCatalog = await page.request.post(origin + '/api/store/catalog', {
+    headers: { Origin: origin },
+    data: { family: 'draft', operation: 'create_product', mutationId: randomUUID(), payload: {} },
+  });
+  if (deniedCatalog.status() !== 403) throw Error('Customer catalog administration was not denied');
+  const staffContext = await browser.newContext();
+  const staffPage = await staffContext.newPage();
+  await login(staffPage, users[1], 'en');
+  await staffPage.goto(origin + '/en/portal/store/catalog?kind=products');
+  await expect(staffPage.locator('.st-admin-shell')).toBeVisible();
+  await expect(staffPage.locator('#catalog-search')).toBeVisible();
+  await staffContext.close();
   await page.goto(origin + '/en');
   await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
   const add = page
@@ -310,13 +366,13 @@ try {
     throw Error('Duplicate cart entry or lost quantity');
   checks.push('Homepage real cart add and immediate unit badge; double click blocked');
   await capture(page, 'en', 1280, 'light', 'commerce-home-cart');
+  checkpoint = 'cart quantity';
   await page.goto(origin + '/en/store/cart');
-  await page.locator('.store-line input[type=number]').fill('3');
-  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await page.locator('.store-line .cm-quantity button').last().click();
   await expect(page.locator('.commerce-cart-badge')).toHaveText('3');
   await page.reload();
   await expect(page.locator('.commerce-cart-badge')).toHaveText('3');
-  await expect(page.locator('.store-line input[type=number]')).toHaveValue('3');
+  await expect(page.locator('.store-line .cm-quantity output')).toHaveText('3');
   await page.goto(origin + '/en');
   await expect(page.locator('.commerce-cart-badge')).toHaveText('3');
   checks.push('Quantity edit, refresh and navigation retain authoritative cart');
@@ -335,24 +391,43 @@ try {
   if (/supplierEntitlement|unit_cost_minor|productDifferenceMinor/.test(await page.content()))
     throw Error('Private cost in customer HTML');
   checks.push('Search/categories use canonical public projection; private costs absent');
+  checkpoint = 'checkout navigation';
   await page.goto(origin + '/en/store/cart');
-  await page.getByRole('link', { name: 'Continue', exact: true }).click();
+  await page.getByRole('link', { name: 'Checkout', exact: true }).click();
+  await page.waitForURL(origin + '/en/store/checkout');
   await expect(page).toHaveURL(origin + '/en/store/checkout');
   await expect(page.locator('#store-name')).toBeEditable();
   for (const method of ['CASH', 'VODAFONE_CASH', 'INSTAPAY'])
-    await expect(page.locator('#store-method option[value="' + method + '"]').first()).toHaveCount(
+    await expect(page.locator('#store-method input[value="' + method + '"]').first()).toHaveCount(
       1,
     );
   await page.locator('#store-name').fill('SYNTHETIC Customer');
   await page.locator('#store-phone').fill('SYNTHETIC');
   await page.locator('#store-region').selectOption('SYNTHETIC-REGION');
   await page.locator('#store-address').fill('Synthetic address only');
-  await page.locator('#store-method').selectOption('CASH');
+  await page.locator('#store-method input[value="CASH"]').check();
   await page.locator('.store-check input').check();
+  checkpoint = 'checkout command';
+  const placed = page.waitForResponse(
+    (response) =>
+      response.url() === origin + '/api/store' &&
+      response.request().method() === 'POST' &&
+      response.request().postDataJSON()?.action === 'checkout',
+  );
   await page.getByRole('button', { name: 'Place order', exact: true }).click();
+  const placedResponse = await placed;
+  if (placedResponse.status() !== 200) throw Error('Checkout command rejected');
+  await page.waitForURL(/\/en\/store\/orders\/[a-f0-9-]+$/);
   await expect(page).toHaveURL(/\/en\/store\/orders\/[a-f0-9-]+$/);
   await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
   const orderId = new URL(page.url()).pathname.split('/').at(-1);
+  await expect(page.locator('.cm-order-detail')).toBeVisible();
+  await page.goto(origin + '/en/store/orders');
+  await expect(
+    page.locator('.cm-records a[href="/en/store/orders/' + orderId + '"]'),
+  ).toBeVisible();
+  await page.goto(origin + '/en/store/products/' + publicCatalog.data.items[0].slug);
+  await expect(page.locator('.cm-product-detail')).toBeVisible();
   const snapshot = sql(
     "select to_jsonb(i)::text from private.store_order_items i where order_id='" + orderId + "'",
   );
@@ -394,10 +469,14 @@ try {
       await page
         .getByRole('button', { name: locale === 'ar' ? 'القائمة' : 'Menu', exact: true })
         .click();
-      await expect(page.locator('dialog[open] a[href="/' + locale + '/store"]')).toBeVisible();
-      await expect(page.locator('dialog[open] .theme-control select')).toBeEnabled();
+      await expect(
+        page.locator('[role=dialog] a[href="/' + locale + '/store"]').first(),
+      ).toBeVisible();
+      await expect(page.locator('[role=dialog]')).toBeVisible();
       await page.keyboard.press('Escape');
+      await expect(page.locator('.cm-theme button').first()).toBeEnabled();
     }
+    checkpoint = 'transport CTA ' + locale;
     const request = page.locator('.commerce-hero a[href="/' + locale + '/request"]').first();
     await request.click();
     await expect(page).toHaveURL(origin + '/' + locale + '/request');
@@ -459,6 +538,15 @@ try {
         ? 'SIMULATED_DIAGNOSTIC_FAILURE'
         : 'HARNESS_FAILURE',
     screenshotSaved,
+    assertion:
+      error instanceof Error && error.message.includes('toHaveURL')
+        ? 'route'
+        : error instanceof Error && error.message.includes('toHaveText')
+          ? 'text'
+          : error instanceof Error && error.message.includes('toBeVisible')
+            ? 'visibility'
+            : 'other',
+    route: failurePage ? new URL(failurePage.url()).pathname : null,
     // Raw Playwright traces can retain headers, tokens and submitted form values.
     trace: 'structured-boundaries-only',
   };
@@ -468,7 +556,7 @@ try {
 } finally {
   diagnostics.snapshot();
   await browser?.close();
-  await stopBrowserServer(server, 3017);
+  if (!externalServer) await stopBrowserServer(server, 3017);
   diagnostics.snapshot();
   if (seeded) {
     const organization = ledger.organization;

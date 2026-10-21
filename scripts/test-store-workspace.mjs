@@ -8,8 +8,28 @@ import { createClient } from '@supabase/supabase-js';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import sharp from 'sharp';
-const local = localSupabase(),
-  origin = 'http://127.0.0.1:3017';
+import { captureLovableComparisons } from './lovable-visual-evidence.mjs';
+const local = localSupabase();
+const externalServer = process.env.NAQL365_EXISTING_BROWSER_ORIGIN;
+if (externalServer && externalServer !== 'http://127.0.0.1:3000')
+  throw Error('Existing server must be the approved loopback origin');
+const origin = externalServer || 'http://127.0.0.1:3017';
+if (externalServer) {
+  const settings = readFileSync('.env.local', 'utf8');
+  const value = (name) =>
+    settings
+      .split(/\r?\n/)
+      .find((line) => line.startsWith(name + '='))
+      ?.slice(name.length + 1)
+      .trim();
+  if (
+    value('NEXT_PUBLIC_SUPABASE_URL') !== local.API_URL ||
+    value('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY') !== local.PUBLISHABLE_KEY
+  )
+    throw Error('Existing server local backend binding mismatch');
+  if ((await fetch(origin + '/api/store?kind=cart')).status !== 401)
+    throw Error('Existing server anonymous auth check failed');
+}
 const admin = createClient(local.API_URL, local.SERVICE_ROLE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
@@ -44,6 +64,12 @@ const ledger = {
   credentialReuseDenied: false,
 };
 const save = () => writeFileSync(output + '/ledger.json', JSON.stringify(ledger, null, 2));
+const boundaries = [];
+const recordBoundary = (event) => {
+  boundaries.push({ elapsedMs: Date.now() - boundaryStart, checkpoint, ...event });
+  writeFileSync(output + '/flow-boundaries.json', JSON.stringify(boundaries, null, 2));
+};
+const boundaryStart = Date.now();
 const env = {
   ...process.env,
   APP_ENV: 'local',
@@ -82,6 +108,7 @@ const tables = [
 ];
 let server,
   browser,
+  diagnosticPage,
   seeded = false,
   checkpoint = 'preflight';
 console.log('CHECKPOINT ' + checkpoint);
@@ -90,7 +117,14 @@ async function login(page, identity, locale) {
   await page.goto(origin + '/' + locale + '/login');
   await page.locator('input[name=email]').fill(identity.email);
   await page.locator('input[name=password]').fill(password);
+  const submitted = page.waitForResponse(
+    (response) =>
+      response.url() === origin + '/' + locale + '/login' && response.request().method() === 'POST',
+  );
   await page.locator('.auth-form button:not([type=button])').click();
+  const signedIn = await submitted;
+  if (signedIn.status() !== 200 && signedIn.status() !== 303)
+    throw Error('Local login HTTP failure');
   await expect(page).not.toHaveURL(new RegExp('/' + locale + '/login$'), { timeout: 20000 });
   const r = await page.request.post(origin + '/api/public/market', {
     headers: { Origin: origin },
@@ -105,10 +139,10 @@ async function capture(page, locale, width, theme, state) {
     .addCookies([{ name: 'naql365_theme', value: theme, url: origin, sameSite: 'Lax' }]);
   if (theme === 'system') await page.emulateMedia({ colorScheme: 'dark' });
   await page.reload();
-  await expect(page.locator('.store-experience')).toBeVisible();
+  await expect(page.locator('.store-experience').first()).toBeVisible();
   if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1))
     throw Error('Store page overflow');
-  const navigation = page.locator('.store-nav a').first();
+  const navigation = page.locator('.store-nav a, .commerce-cart').first();
   await navigation.focus();
   await expect(navigation).toBeFocused();
   await page.keyboard.press('Tab');
@@ -145,16 +179,18 @@ async function capture(page, locale, width, theme, state) {
 try {
   if (sql('select ' + tables.map((t) => `(select count(*) from private.${t})`).join('+')) !== '0')
     throw Error('Local Store baseline not empty; preserving existing records');
-  await assertBrowserPortFree(3017);
-  checkpoint = 'build';
-  console.log('CHECKPOINT ' + checkpoint);
-  execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
-    env,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    timeout: 240000,
-    maxBuffer: 16 * 1024 * 1024,
-  });
-  server = await startBrowserServer(env, 3017);
+  if (!externalServer) {
+    await assertBrowserPortFree(3017);
+    checkpoint = 'build';
+    console.log('CHECKPOINT ' + checkpoint);
+    execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
+      env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 240000,
+      maxBuffer: 16 * 1024 * 1024,
+    });
+    server = await startBrowserServer(env, 3017);
+  }
   checkpoint = 'synthetic Auth setup';
   console.log('CHECKPOINT ' + checkpoint);
   for (let i = 1; i <= 6; i++) {
@@ -193,6 +229,40 @@ try {
     financeContext = await browser.newContext();
   const page = await customerContext.newPage(),
     finance = await financeContext.newPage();
+  diagnosticPage = finance;
+  for (const observed of [page, finance]) {
+    observed.on('response', (response) => {
+      const url = new URL(response.url());
+      if (url.origin !== origin) return;
+      const path = url.pathname;
+      const kind =
+        path === '/api/store/catalog'
+          ? 'catalog-command'
+          : path === '/api/store'
+            ? 'store-command'
+            : /\/(ar|en)\/login$/.test(path)
+              ? 'login'
+              : /\/(ar|en)\/portal(?:\/|$)/.test(path)
+                ? 'staff-page'
+                : /\/(ar|en)\/store\/checkout$/.test(path)
+                  ? 'checkout-page'
+                  : null;
+      if (
+        kind &&
+        (response.request().resourceType() === 'document' ||
+          response.request().method() === 'POST' ||
+          response.request().headers()['rsc'] === '1')
+      )
+        recordBoundary({
+          layer: 'http',
+          kind,
+          status: response.status(),
+          method: response.request().method(),
+          nativeFormQuery: url.searchParams.has('slug') && url.searchParams.has('sku'),
+          rsc: response.request().headers()['rsc'] === '1',
+        });
+    });
+  }
   checkpoint = 'dynamic catalog management';
   console.log('CHECKPOINT ' + checkpoint);
   await login(finance, users[1], 'en');
@@ -202,6 +272,13 @@ try {
     .filter({ has: finance.locator('summary', { hasText: 'Create draft' }) })
     .first();
   await creator.locator('summary').click();
+  recordBoundary({
+    layer: 'create-ready',
+    hydrated: await creator.locator('form').evaluate((form) => {
+      const key = Object.keys(form).find((name) => name.startsWith('__reactProps'));
+      return !!key && typeof Reflect.get(form, key)?.onSubmit === 'function';
+    }),
+  });
   for (const [name, value] of Object.entries({
     slug: 'new-synthetic-product-31',
     sku: 'NEW-SYNTHETIC-31',
@@ -212,16 +289,44 @@ try {
     description_en: 'Synthetic only',
   }))
     await creator.locator('[name="' + name + '"]').fill(value);
+  const createdResponse = finance.waitForResponse(
+    (response) =>
+      response.url() === origin + '/api/store/catalog' && response.request().method() === 'POST',
+  );
+  const createdRefresh = finance.waitForResponse(
+    (response) =>
+      new URL(response.url()).pathname === '/en/portal/store/catalog' &&
+      response.request().headers()['rsc'] === '1',
+  );
   await creator.getByRole('button', { name: 'Save', exact: true }).click();
+  recordBoundary({
+    layer: 'create-click',
+    invalidFields: await creator.locator(':invalid').count(),
+  });
+  const created = await createdResponse;
+  if (created.status() !== 200) throw Error('Product creation command rejected');
+  // The mutation response and the matching server refresh precede the strict DOM check.
+  if ((await createdRefresh).status() !== 200) throw Error('Product refresh rejected');
   await expect(
     finance.getByRole('heading', { name: 'New synthetic product 31', exact: true }),
   ).toBeVisible();
+  recordBoundary({
+    layer: 'create-rendered',
+    persisted:
+      sql("select count(*) from private.store_products where sku='NEW-SYNTHETIC-31'") === '1',
+  });
   const newCard = finance.locator('section.card').filter({
     has: finance.getByRole('heading', { name: 'New synthetic product 31', exact: true }),
   });
   await newCard.getByText('Edit draft', { exact: true }).click();
   await newCard.locator('[name="title_en"]').fill('Edited synthetic product 31');
+  const editedRefresh = finance.waitForResponse(
+    (response) =>
+      new URL(response.url()).pathname === '/en/portal/store/catalog' &&
+      response.request().headers()['rsc'] === '1',
+  );
   await newCard.getByRole('button', { name: 'Save', exact: true }).first().click();
+  if ((await editedRefresh).status() !== 200) throw Error('Product edit refresh rejected');
   await expect(
     finance.getByRole('heading', { name: 'Edited synthetic product 31', exact: true }),
   ).toBeVisible();
@@ -314,7 +419,13 @@ try {
       .toBuffer(),
   });
   await finance.locator('input[name=rightsReference]').fill('SYNTHETIC generated local test image');
+  const firstUpload = finance.waitForResponse(
+    (response) =>
+      response.url() === origin + '/api/store/media' && response.request().method() === 'POST',
+  );
   await finance.getByRole('button', { name: 'Upload image', exact: true }).click();
+  const firstUploadResponse = await firstUpload;
+  if (!firstUploadResponse.ok()) throw Error('Product upload HTTP ' + firstUploadResponse.status());
   await expect(finance.getByRole('link', { name: 'Preview', exact: true })).toBeVisible();
   await finance.getByLabel('الوصف البديل العربي', { exact: true }).fill('صندوق تجريبي');
   await finance.getByLabel('English alternative text', { exact: true }).fill('Synthetic carton');
@@ -380,20 +491,17 @@ try {
   await expect(page.locator('.store-product img')).toHaveCount(1);
   await expect(page.locator('.store-product img')).toHaveAttribute('alt', 'Second synthetic view');
   await page.goto(origin + '/en/store/products/new-synthetic-product-31');
-  await expect(page.locator('.store-product img')).toHaveCount(2);
+  await expect(page.locator('.cm-gallery .cm-thumbs button')).toHaveCount(2);
   await expect
     .poll(() =>
       page
-        .locator('.store-product img')
+        .locator('.cm-gallery img')
         .evaluateAll((images) => images.every((image) => image.complete && image.naturalWidth > 0)),
     )
     .toBe(true);
   await capture(page, 'en', 1280, 'light', 'product-detail-images');
   await page.goto(origin + '/ar/store/products/new-synthetic-product-31');
-  await expect(page.locator('.store-product img').first()).toHaveAttribute(
-    'alt',
-    'زاوية ثانية تجريبية',
-  );
+  await expect(page.locator('.cm-gallery > img')).toHaveAttribute('alt', 'زاوية ثانية تجريبية');
   await capture(page, 'ar', 390, 'dark', 'product-detail-images');
   await page.goto(origin + '/en/store');
   checks.push(
@@ -403,21 +511,31 @@ try {
   checkpoint = 'cart';
   console.log('CHECKPOINT ' + checkpoint);
   await page.getByRole('button', { name: 'Add to cart', exact: true }).click();
-  await expect(page.getByText('Confirmed result saved.', { exact: true })).toBeVisible();
+  await expect(page.locator('.commerce-cart-badge')).toHaveText('1');
   await page.goto(origin + '/en/store/cart');
   await expect(page.locator('.store-line')).toHaveCount(1);
-  await page.getByRole('link', { name: 'Continue', exact: true }).click();
+  await page.getByRole('link', { name: 'Checkout', exact: true }).click();
   checkpoint = 'checkout navigation';
   console.log('CHECKPOINT ' + checkpoint);
+  await page.waitForURL(origin + '/en/store/checkout');
   await expect(page).toHaveURL(origin + '/en/store/checkout');
   await expect(page.locator('#store-name')).toBeVisible();
   await expect(page.locator('#store-name')).toBeEditable();
   await capture(page, 'en', 390, 'dark', 'checkout');
+  await captureLovableComparisons({
+    phase: 'cart',
+    page,
+    finance,
+    output,
+    productSlug: 'new-synthetic-product-31',
+  });
+  await page.goto(origin + '/en/store/checkout');
+  await expect(page.locator('#store-name')).toBeEditable();
   await page.locator('#store-name').fill('SYNTHETIC Customer');
   await page.locator('#store-phone').fill('SYNTHETIC');
   await page.locator('#store-region').selectOption('SYNTHETIC-REGION');
   await page.locator('#store-address').fill('Synthetic address only');
-  await page.locator('#store-method').selectOption('VODAFONE_CASH');
+  await page.locator('#store-method input[value="VODAFONE_CASH"]').check();
   await page.locator('#destination').selectOption('99000000-0000-4000-8000-000000000002');
   await page.locator('.store-check input').check();
   checkpoint = 'place order';
@@ -425,6 +543,16 @@ try {
   await page.getByRole('button', { name: 'Place order', exact: true }).click();
   await expect(page).toHaveURL(/\/en\/store\/orders\/[a-f0-9-]+$/, { timeout: 20000 });
   const id = new URL(page.url()).pathname.split('/').at(-1);
+  await captureLovableComparisons({
+    phase: 'order',
+    page,
+    finance,
+    output,
+    productSlug: 'new-synthetic-product-31',
+    orderId: id,
+  });
+  await page.goto(origin + '/en/store/orders/' + id);
+  await expect(page.locator('.cm-order-detail')).toBeVisible();
   checkpoint = 'order snapshot preservation';
   console.log('CHECKPOINT ' + checkpoint);
   const oldSnapshot = sql(
@@ -526,9 +654,13 @@ try {
   await capture(finance, 'ar', 390, 'system', 'reconciliation');
   checks.push('AR/EN; Light/Dark/System; 360/390/1280; no page overflow; axe smoke');
   await page.goto(origin + '/en/login');
+  await page.waitForURL(/\/en\/account/);
   await expect(page).toHaveURL(/\/en\/account/);
   checks.push('Customer direct login recognizes session');
   await finance.goto(origin + '/en/login');
+  // The login route can stream a server redirect; await that navigation before
+  // asserting its exact destination, rather than treating the shell as settled.
+  await finance.waitForURL(origin + '/en/portal');
   await expect(finance).toHaveURL(/\/en\/portal$/);
   checks.push('Staff direct login recognizes session');
   await catalogCommand(
@@ -554,6 +686,42 @@ try {
   await customerContext.close();
   await financeContext.close();
 } catch (error) {
+  let freshPageHasCreatedProduct = null;
+  if (seeded && diagnosticPage) {
+    const fresh = await diagnosticPage.request.get(
+      origin + '/en/portal/store/catalog?kind=products',
+    );
+    freshPageHasCreatedProduct =
+      fresh.ok() && (await fresh.text()).includes('New synthetic product 31');
+  }
+  recordBoundary({
+    layer: 'failure',
+    freshPageHasCreatedProduct,
+    nativeFormQuery: diagnosticPage ? new URL(diagnosticPage.url()).searchParams.has('sku') : false,
+    assertion:
+      error instanceof Error && error.message.includes('toHaveURL')
+        ? 'route'
+        : error instanceof Error && error.message.includes('toBeVisible')
+          ? 'visibility'
+          : 'other',
+    createdProductPersisted:
+      seeded &&
+      sql("select count(*) from private.store_products where sku='NEW-SYNTHETIC-31'") === '1',
+    createdHeadingVisible: diagnosticPage
+      ? await diagnosticPage
+          .getByRole('heading', { name: 'New synthetic product 31', exact: true })
+          .isVisible()
+          .catch(() => false)
+      : false,
+    errorFeedbackVisible: diagnosticPage
+      ? await diagnosticPage
+          .getByText('Change unconfirmed. Review the current state before retrying.', {
+            exact: true,
+          })
+          .isVisible()
+          .catch(() => false)
+      : false,
+  });
   console.error(
     'Store local failure at ' +
       checkpoint +
@@ -563,7 +731,7 @@ try {
   process.exitCode = 1;
 } finally {
   await browser?.close();
-  await stopBrowserServer(server, 3017);
+  if (!externalServer) await stopBrowserServer(server, 3017);
   if (seeded) {
     const organization = ledger.organization;
     if (

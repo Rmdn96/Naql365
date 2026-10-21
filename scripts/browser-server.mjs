@@ -48,7 +48,7 @@ export async function stopBrowserServer(server, port) {
 export async function startBrowserServer(
   env,
   port,
-  command = ['scripts/guarded-next.mjs', 'start', '-p', String(port)],
+  command = ['scripts/guarded-next.mjs', 'start', '--hostname', '127.0.0.1', '-p', String(port)],
   onCatalogTrace,
 ) {
   await assertBrowserPortFree(port);

@@ -1,0 +1,68 @@
+{
+  "status": "LOCAL_VERIFICATION_COMPLETE_OWNER_REVIEW_PENDING",
+  "repository": "Rmdn96/naql365-design-lab",
+  "sha": "2997c92bb5b00dfbf15ae0d1ccdb289d47c4d891",
+  "canonicalBaseline": "b33693ef8da42dd216fae6b8bc8a295b0ffe4417",
+  "files": [
+    {
+      "file": "src/components/naql/commerce-preview.tsx",
+      "sha256": "2c6426101a858f508ef44ccccf26dc0353a2a2feafc3a21448ace6bfad30c5fc"
+    },
+    {
+      "file": "src/components/naql/brand.tsx",
+      "sha256": "acd7d18adbc36241528ddcd0d7a85e219bd2f29b0b96dcc724c9f45f0dedf8e2"
+    },
+    {
+      "file": "src/components/ui/button.tsx",
+      "sha256": "ec2efd560865baf6f15b6a5b682dbe34b4fd2308f3c7433bb5dc0c0a9060893f"
+    },
+    {
+      "file": "src/components/ui/sheet.tsx",
+      "sha256": "0b2471af42a561476227dcf3746ab022dbda32e81ee367164b703f565d982012"
+    },
+    {
+      "file": "src/lib/utils.ts",
+      "sha256": "c0adf27efbfa148d5abcf99e860f8e3e6c8fc77a1f99e023c08ef4f12e6ece29"
+    },
+    {
+      "file": "src/lib/naql/commerce-content.ts",
+      "sha256": "a056a986e06a122031245868cd1edfe366aee887431dc20b0a609b33eb637d37"
+    },
+    {
+      "file": "src/lib/naql/commerce-extra-content.ts",
+      "sha256": "863f50955565594191ebf15fd3fc5ab6bc8e2e4a3977eda581cad818053fbe09"
+    },
+    {
+      "file": "src/styles.css",
+      "sha256": "1f75dc29c4defa1f0626a7bdf038fed203ae5fa775b1b6d18e5ffbcdd313f9d6"
+    },
+    {
+      "file": "src/assets/commerce-moving.jpg",
+      "sha256": "5be4e68b981d2e24f59fd11895dd2032c8688dfc269fdaaa83a738be7f026fda"
+    }
+  ],
+  "adaptations": [
+    "TanStack Link replaced by Next.js route adapter",
+    "Demo catalog replaced by canonical public Store projection",
+    "Demo cart/sessionStorage removed; existing revision/idempotency-aware cart writer reused",
+    "Original Button/Sheet primitives retained; Next Image adapter added",
+    "Original theme tokens connected to existing theme cookie",
+    "Generated product photography excluded; original illustrative hero retained",
+    "Original checkout stepper/address/payment presentation, customer record cards and Staff Store shell adapted to canonical services; no prototype orders/payment actions",
+    "Owner-approved primary-button contrast exception; original commerce and staff-nav tokens restored; RTL arrow rule retained",
+    "Canonical checkout/order/customer/Staff service boundaries retained; legacy CSS isolated from original imported styles",
+    "Nested Store locale/direction and actual long references handled without hiding data",
+    "Canonical cards/links inherit original Lovable theme tokens after measured axe failures",
+    "Original category screen connected at /[locale]/store/categories"
+  ],
+  "destinationFiles": {
+    "commerce": "src/components/lovable/commerce.tsx",
+    "customerRecords": "src/components/lovable/customer-records.tsx",
+    "brand": "src/components/lovable/brand.tsx",
+    "button": "src/components/lovable/button.tsx",
+    "sheet": "src/components/lovable/sheet.tsx",
+    "styles": ["src/styles/lovable.css", "src/styles/lovable-store.css"],
+    "hero": "public/lovable/commerce-moving.jpg"
+  },
+  "applicationCommit": "23038be3fc5a21891c1995eaa67820871236b8fc"
+}

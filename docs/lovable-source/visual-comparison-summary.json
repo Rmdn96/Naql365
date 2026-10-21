@@ -1,0 +1,32 @@
+{
+  "source": "2997c92bb5b00dfbf15ae0d1ccdb289d47c4d891",
+  "canonicalBaseline": "b33693ef8da42dd216fae6b8bc8a295b0ffe4417",
+  "uniquePairs": 270,
+  "screenshots": 540,
+  "invalidHashes": 0,
+  "overflows": 0,
+  "homepageHeaderMismatches": 0,
+  "homepageHeroMismatches": 0,
+  "primaryFontMismatches": [],
+  "scenarios": [
+    "homepage",
+    "catalog",
+    "product",
+    "drawer",
+    "checkout",
+    "dashboard",
+    "orders",
+    "order-detail",
+    "staff-catalog"
+  ],
+  "viewports": [1440, 1280, 768, 390, 360],
+  "locales": ["ar", "en"],
+  "themes": ["light", "dark", "system"],
+  "systemScheme": "light",
+  "sourceRuns": ["store-local-1792585319499", "store-local-1792585708989"],
+  "notes": [
+    "180 unchanged cases reused; 90 card-containing cases recaptured after the palette correction.",
+    "The final private-proof-link contrast fix is verified by the real Store browser axe gate; the proof is absent from paired pre-upload order captures.",
+    "Real governed data, canonical Staff chrome, functional profile/payment/approval fields and real immutable history differ from prototype placeholders. No blanket pixel-identical claim."
+  ]
+}

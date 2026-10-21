@@ -1,0 +1,3 @@
+# Preserve generated local captures without adding them to release source.
+*
+!.gitignore
