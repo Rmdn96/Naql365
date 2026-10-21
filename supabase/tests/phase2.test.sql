@@ -1,5 +1,12 @@
 -- Shared Phase 2 executable assertions. Fixtures are rolled back.
 begin;
+-- Deterministic custom UUIDv8 fixture IDs: PostgreSQL accepts raw MD5 casts,
+-- but those arbitrary bits need not satisfy the public z.uuid() contract.
+-- Session-local helper only; never installed by an application migration.
+create or replace function pg_temp.phase2_fixture_uuid(value text) returns uuid
+language sql immutable strict as $$
+ select overlay(overlay(md5(value) placing '8' from 13 for 1) placing '8' from 17 for 1)::uuid
+$$;
 create function public.phase2_assert(condition boolean,label text) returns void language plpgsql as $$
 begin if condition is distinct from true then raise exception 'Phase 2 assertion failed: %',label; end if; end $$;
 
@@ -14,11 +21,11 @@ insert into public.organizations(id,name) values
  ('21000000-0000-4000-8000-000000000002','Phase 2 B');
 -- Explicit synthetic catalogue for this rollback-only fixture; no production coverage.
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code)
- select md5(id::text||'SA')::uuid,id,'SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966' from public.organizations where id::text like '21000000%';
+ select pg_temp.phase2_fixture_uuid(id::text||'SA')::uuid,id,'SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966' from public.organizations where id::text like '21000000%';
 insert into public.market_regions(id,organization_id,market_id,code,name_ar,name_en,administrative_type)
- select md5(id::text||'region')::uuid,organization_id,id,'fixture','منطقة اختبار','Fixture region','region' from (select * from public.markets where organization_id::text like '21000000%') fixture_markets;
+ select pg_temp.phase2_fixture_uuid(id::text||'region')::uuid,organization_id,id,'fixture','منطقة اختبار','Fixture region','region' from (select * from public.markets where organization_id::text like '21000000%') fixture_markets;
 insert into public.market_cities(id,organization_id,market_id,region_id,code,name_ar,name_en)
- select md5(m.id::text||c.code)::uuid,m.organization_id,m.id,r.id,c.code,c.name,c.name from (select * from public.markets where organization_id::text like '21000000%') m join public.market_regions r on r.market_id=m.id cross join (values('Riyadh','Riyadh'),('Jeddah','Jeddah')) c(code,name);
+ select pg_temp.phase2_fixture_uuid(m.id::text||c.code)::uuid,m.organization_id,m.id,r.id,c.code,c.name,c.name from (select * from public.markets where organization_id::text like '21000000%') m join public.market_regions r on r.market_id=m.id cross join (values('Riyadh','Riyadh'),('Jeddah','Jeddah')) c(code,name);
 
 insert into public.organization_memberships(organization_id,profile_id,member_type) values
  ('21000000-0000-4000-8000-000000000001','11000000-0000-4000-8000-000000000001','staff'),
@@ -42,10 +49,10 @@ insert into public.service_areas(organization_id,market_id,service_id,city_id,ac
 
 insert into public.additional_services(id,organization_id,code,name_ar,name_en,active) values
  ('42000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000001','loading','تحميل','Loading',true);
-insert into public.requests(id,organization_id,customer_id,status,revision,service_id,reference,submitted_at,contact_name,contact_phone,contact_email,market_id) values ('51000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000001','31000000-0000-4000-8000-000000000001','SUBMITTED',2,'41000000-0000-4000-8000-000000000001','N365-202609-900001',now(),'Customer A','+966500000001','customer-a@example.invalid',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('51000000-0000-4000-8000-000000000002','21000000-0000-4000-8000-000000000001','31000000-0000-4000-8000-000000000002','SUBMITTED',1,'41000000-0000-4000-8000-000000000001','N365-202609-900002',now(),'Customer B','+966500000002','customer-b@example.invalid',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('51000000-0000-4000-8000-000000000003','21000000-0000-4000-8000-000000000001','31000000-0000-4000-8000-000000000001','SUBMITTED',1,'41000000-0000-4000-8000-000000000001','N365-202609-900003',now(),'Customer A','+966500000001','customer-a@example.invalid',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('51000000-0000-4000-8000-000000000004','21000000-0000-4000-8000-000000000001','31000000-0000-4000-8000-000000000001','SUBMITTED',1,'41000000-0000-4000-8000-000000000001','N365-202609-900004',now(),'Customer A','+966500000001','customer-a@example.invalid',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid);
+insert into public.requests(id,organization_id,customer_id,status,revision,service_id,reference,submitted_at,contact_name,contact_phone,contact_email,market_id) values ('51000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000001','31000000-0000-4000-8000-000000000001','SUBMITTED',2,'41000000-0000-4000-8000-000000000001','N365-202609-900001',now(),'Customer A','+966500000001','customer-a@example.invalid',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('51000000-0000-4000-8000-000000000002','21000000-0000-4000-8000-000000000001','31000000-0000-4000-8000-000000000002','SUBMITTED',1,'41000000-0000-4000-8000-000000000001','N365-202609-900002',now(),'Customer B','+966500000002','customer-b@example.invalid',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('51000000-0000-4000-8000-000000000003','21000000-0000-4000-8000-000000000001','31000000-0000-4000-8000-000000000001','SUBMITTED',1,'41000000-0000-4000-8000-000000000001','N365-202609-900003',now(),'Customer A','+966500000001','customer-a@example.invalid',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('51000000-0000-4000-8000-000000000004','21000000-0000-4000-8000-000000000001','31000000-0000-4000-8000-000000000001','SUBMITTED',1,'41000000-0000-4000-8000-000000000001','N365-202609-900004',now(),'Customer A','+966500000001','customer-a@example.invalid',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid);
 insert into public.request_locations(request_id,organization_id,kind,city,district,address,floor,elevator) values
  ('51000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000001','pickup','Riyadh','A','Pickup',2,false),
  ('51000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000001','delivery','Riyadh','B','Delivery',3,true),
@@ -57,19 +64,19 @@ insert into public.request_locations(request_id,organization_id,kind,city,distri
  ('51000000-0000-4000-8000-000000000004','21000000-0000-4000-8000-000000000001','delivery','Riyadh','H','Delivery',0,true);
 insert into public.request_additional_services(request_id,organization_id,additional_service_id) values
  ('51000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000001','42000000-0000-4000-8000-000000000001');
-insert into public.vehicle_pricing_classes(id,organization_id,code,name_ar,name_en,active,market_id) values ('61000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000001','small','شاحنة صغيرة','Small truck',true,md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('61000000-0000-4000-8000-000000000002','21000000-0000-4000-8000-000000000002','other','أخرى','Other',true,md5(('21000000-0000-4000-8000-000000000002')::text||'SA')::uuid);
-insert into public.pricing_settings(organization_id,market_id,currency) values('21000000-0000-4000-8000-000000000001',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid,'SAR');
-insert into public.market_tax_versions(organization_id,market_id,code,version,rate_bps,label_ar,label_en,active,effective_from,configuration_kind) values('21000000-0000-4000-8000-000000000001',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid,'test-vat',1,1500,'اختبار','Test tax',true,now()-interval '1 day','STAGING_TEST');
-insert into public.pricing_rules(organization_id,code,version,component_code,selector_code,calculation_method,amount_minor,active,label_ar,label_en,market_id) values ('21000000-0000-4000-8000-000000000001','service-furniture',1,'SERVICE','furniture','FIXED',10000,true,'الخدمة الأساسية','Base service',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('21000000-0000-4000-8000-000000000001','distance',1,'DISTANCE',null,'PER_KM',250,true,'المسافة','Distance',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('21000000-0000-4000-8000-000000000001','vehicle-small',1,'VEHICLE','small','FIXED',5000,true,'المركبة','Vehicle',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('21000000-0000-4000-8000-000000000001','workers',1,'WORKERS',null,'PER_UNIT',1000,true,'العمال','Workers',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('21000000-0000-4000-8000-000000000001','loading',1,'LOADING',null,'FIXED',1500,true,'التحميل','Loading',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('21000000-0000-4000-8000-000000000001','floor',1,'FLOOR_ACCESS',null,'PER_UNIT',200,true,'الطوابق','Floor access',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('21000000-0000-4000-8000-000000000001','elevator',1,'ELEVATOR',null,'FIXED',300,true,'المصعد','Elevator',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('21000000-0000-4000-8000-000000000001','within-city',1,'WITHIN_CITY',null,'FIXED',500,true,'داخل المدينة','Within city',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
-('21000000-0000-4000-8000-000000000001','intercity',1,'INTERCITY',null,'FIXED',4000,true,'بين المدن','Intercity',md5(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid);
+insert into public.vehicle_pricing_classes(id,organization_id,code,name_ar,name_en,active,market_id) values ('61000000-0000-4000-8000-000000000001','21000000-0000-4000-8000-000000000001','small','شاحنة صغيرة','Small truck',true,pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('61000000-0000-4000-8000-000000000002','21000000-0000-4000-8000-000000000002','other','أخرى','Other',true,pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000002')::text||'SA')::uuid);
+insert into public.pricing_settings(organization_id,market_id,currency) values('21000000-0000-4000-8000-000000000001',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid,'SAR');
+insert into public.market_tax_versions(organization_id,market_id,code,version,rate_bps,label_ar,label_en,active,effective_from,configuration_kind) values('21000000-0000-4000-8000-000000000001',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid,'test-vat',1,1500,'اختبار','Test tax',true,now()-interval '1 day','STAGING_TEST');
+insert into public.pricing_rules(organization_id,code,version,component_code,selector_code,calculation_method,amount_minor,active,label_ar,label_en,market_id) values ('21000000-0000-4000-8000-000000000001','service-furniture',1,'SERVICE','furniture','FIXED',10000,true,'الخدمة الأساسية','Base service',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('21000000-0000-4000-8000-000000000001','distance',1,'DISTANCE',null,'PER_KM',250,true,'المسافة','Distance',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('21000000-0000-4000-8000-000000000001','vehicle-small',1,'VEHICLE','small','FIXED',5000,true,'المركبة','Vehicle',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('21000000-0000-4000-8000-000000000001','workers',1,'WORKERS',null,'PER_UNIT',1000,true,'العمال','Workers',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('21000000-0000-4000-8000-000000000001','loading',1,'LOADING',null,'FIXED',1500,true,'التحميل','Loading',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('21000000-0000-4000-8000-000000000001','floor',1,'FLOOR_ACCESS',null,'PER_UNIT',200,true,'الطوابق','Floor access',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('21000000-0000-4000-8000-000000000001','elevator',1,'ELEVATOR',null,'FIXED',300,true,'المصعد','Elevator',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('21000000-0000-4000-8000-000000000001','within-city',1,'WITHIN_CITY',null,'FIXED',500,true,'داخل المدينة','Within city',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid),
+('21000000-0000-4000-8000-000000000001','intercity',1,'INTERCITY',null,'FIXED',4000,true,'بين المدن','Intercity',pg_temp.phase2_fixture_uuid(('21000000-0000-4000-8000-000000000001')::text||'SA')::uuid);
 
 -- Explicit legacy AUTOMATED-mode regression, never launch configuration.
 do $launch_fixture$ begin
