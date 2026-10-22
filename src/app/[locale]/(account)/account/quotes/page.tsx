@@ -6,7 +6,6 @@ import { customerQuotes } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
 import { Badge, EmptyState } from '@/components/ui/primitives';
 import { formatMoney } from '@/domain/markets/model';
-import { CustomerWorkspaceNav } from '@/components/ui/customer-workspace';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
@@ -26,7 +25,6 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     .sort((a, b) => (b.v.sent_at ?? '').localeCompare(a.v.sent_at ?? ''));
   return (
     <div className="container page customer-experience">
-      <CustomerWorkspaceNav locale={locale} current="quotes" />
       <h1>{t.myQuotes}</h1>
       {!versions.length ? (
         <EmptyState title={t.myQuotes}>{t.noQuotes}</EmptyState>

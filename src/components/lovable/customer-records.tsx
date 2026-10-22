@@ -1,5 +1,14 @@
 import Link from 'next/link';
-import { ArrowRight, CircleDashed, Package, ShoppingCart, Truck, UserRound } from 'lucide-react';
+import {
+  ArrowRight,
+  CircleDashed,
+  Package,
+  ShoppingCart,
+  Truck,
+  UserRound,
+  Receipt,
+  ShoppingBag,
+} from 'lucide-react';
 import { Button } from './button';
 import { commerceContent } from './commerce-content';
 import { commerceExtra } from './commerce-extra-content';
@@ -11,9 +20,12 @@ export function CustomerNavigation({ locale }: { locale: Locale }) {
     <nav className="cm-portal-nav" aria-label={x.dashboard}>
       {[
         ['/account/requests', Truck, t.myTransport],
+        ['/account/quotes', Receipt, locale === 'ar' ? 'عروض السعر' : 'Quotes'],
         ['/store/orders', Package, t.myStore],
         ['/store/cart', ShoppingCart, t.cart],
         ['/account', UserRound, t.account],
+        ['/account#customer-profile', UserRound, locale === 'ar' ? 'الملف الشخصي' : 'Profile'],
+        ['/store', ShoppingBag, locale === 'ar' ? 'تسوّق مجددًا' : 'Shop again'],
       ].map(([path, Icon, label]) => {
         const Glyph = Icon as typeof Truck;
         return (
@@ -51,7 +63,7 @@ export function CustomerRecords({
               <strong dir="ltr">{r.reference}</strong>
               <span>{r.summary}</span>
             </div>
-            <span className="cm-status">
+            <span className="cm-status cx-status cx-neutral">
               <CircleDashed size={13} />
               {r.status}
             </span>

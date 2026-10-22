@@ -12,6 +12,7 @@ import { ThemeControl } from '@/components/shell/theme-control';
 import { MobileMenu } from '@/components/shell/mobile-menu';
 import { CartLink } from '@/components/store/cart-link';
 import { isTransportPath } from './paths';
+import { isCustomerPath } from '@/components/customer/paths';
 
 /** Lovable Transport header composition; canonical links/preferences, no demo state. */
 export function TransportFrame({
@@ -30,7 +31,7 @@ export function TransportFrame({
   children: ReactNode;
 }) {
   const path = usePathname();
-  if (!isTransportPath(path)) return children;
+  if (!isTransportPath(path) || isCustomerPath(path)) return children;
   const ar = locale === 'ar';
   const links = (
     <>

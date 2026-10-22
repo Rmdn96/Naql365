@@ -98,7 +98,7 @@ export function CustomerProfileForm({
   const [phone, setPhone] = useState(profile.phone ?? '');
   const [preferredLocale, setPreferredLocale] = useState(profile.locale);
   return (
-    <form action={action} className="stack profile-form profile-v2" aria-busy={pending}>
+    <form action={action} className="stack profile-form profile-v2 cx-form" aria-busy={pending}>
       <p className="profile-v2-intro">{customerExperience(locale).profileHelp}</p>
       <Input
         id="name"

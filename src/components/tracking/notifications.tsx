@@ -104,7 +104,7 @@ export function InAppNotifications({ locale }: { locale: Locale }) {
     }
   }
   return (
-    <section>
+    <section className="customer-notifications cx-panel">
       <h2>{t.notifications}</h2>
       {error && <p role="alert">{t.ERROR}</p>}
       <ul>

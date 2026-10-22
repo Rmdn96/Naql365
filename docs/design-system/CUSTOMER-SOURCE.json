@@ -1,0 +1,28 @@
+{
+  "repository": "Rmdn96/naql365-design-lab",
+  "sha": "2997c92bb5b00dfbf15ae0d1ccdb289d47c4d891",
+  "files": [
+    {
+      "file": "src/components/naql/customer-preview.tsx",
+      "sha256": "15256241ce7e36434a7fa33ea1eba1c9e91170814e82a02d022c7c7ae71e3ace"
+    },
+    {
+      "file": "src/components/naql/commerce-preview.tsx",
+      "sha256": "2c6426101a858f508ef44ccccf26dc0353a2a2feafc3a21448ace6bfad30c5fc"
+    },
+    {
+      "file": "src/lib/naql/customer-content.ts",
+      "sha256": "9ebe9163f59c29417eb19ce30566cf182259e5d9f80d5cc41a3f29b641892142"
+    },
+    {
+      "file": "src/styles.css",
+      "sha256": "1f75dc29c4defa1f0626a7bdf038fed203ae5fa775b1b6d18e5ffbcdd313f9d6"
+    }
+  ],
+  "excluded": [
+    "synthetic records",
+    "demo profile actions",
+    "demo payment state",
+    "preview controls"
+  ]
+}

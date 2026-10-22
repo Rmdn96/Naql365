@@ -1,0 +1,544 @@
+/* Original CustomerPreview shell/panels/form CSS, scoped to the Customer workspace.
+   Source SHA 2997c92; source palette roles resolve through Phase 1 tokens. */
+.customer-workspace {
+  --link: var(--naql-color-focus);
+  --background: var(--naql-color-background);
+  --foreground: var(--naql-color-text);
+  --card: var(--naql-color-surface);
+  --secondary: var(--naql-color-secondary);
+  --muted: var(--naql-color-muted-surface);
+  --muted-foreground: var(--naql-color-muted-text);
+  --accent: var(--naql-color-secondary);
+  --border: var(--naql-color-border);
+  --primary: var(--naql-color-action);
+  --cyan: var(--naql-color-focus);
+  --st-info: var(--naql-color-focus);
+  --st-warn: var(--naql-color-warning);
+  --st-ok: var(--naql-color-success);
+  --st-bad: var(--naql-color-error);
+  --st-wash: 12%;
+  --cx-shadow: var(--naql-color-shadow);
+}
+html[data-theme] .customer-workspace .alert {
+  --customer-alert-tone: var(--naql-color-info);
+  color: var(--naql-color-text);
+  background: color-mix(in oklch, var(--customer-alert-tone) 10%, var(--naql-color-surface));
+  border-color: color-mix(in oklch, var(--customer-alert-tone) 40%, var(--naql-color-border));
+}
+html[data-theme] .customer-workspace .alert--error {
+  --customer-alert-tone: var(--naql-color-error);
+}
+html[data-theme] .customer-workspace .alert--success {
+  --customer-alert-tone: var(--naql-color-success);
+}
+.customer-workspace {
+  min-height: 100svh;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 13px;
+}
+.customer-workspace * {
+  border-color: var(--border);
+}
+.customer-workspace :focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.customer-workspace .brand-sub {
+  display: none;
+}
+.customer-workspace .cx-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 8px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.customer-workspace .cx-top-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.customer-workspace .cx-form input,
+.customer-workspace .cx-form select,
+.customer-workspace .cx-form textarea {
+  min-height: 42px;
+  padding: 8px 10px;
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 12px;
+  max-width: 100%;
+}
+.customer-workspace .cx-shell {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  max-width: 1280px;
+  margin-inline: auto;
+}
+.customer-workspace .cx-nav {
+  padding: 20px 16px;
+  border-inline-end: 1px solid var(--border);
+  min-width: 0;
+}
+.customer-workspace .cx-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0 0;
+  display: grid;
+  gap: 2px;
+}
+.customer-workspace .cx-nav a {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: inherit;
+  font-size: 12px;
+  text-align: start;
+  cursor: pointer;
+}
+.customer-workspace .cx-nav a:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.customer-workspace .cx-nav a[aria-current='page'] {
+  background: var(--accent);
+  color: var(--foreground);
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+[dir='rtl'] .customer-workspace .cx-nav a[aria-current='page'] {
+  box-shadow: inset -3px 0 0 var(--primary);
+}
+.customer-workspace .cx-main {
+  padding: 24px 28px 48px;
+  min-width: 0;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+.customer-workspace .cx-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.customer-workspace .cx-head h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.customer-workspace .cx-head h2:focus {
+  outline: none;
+}
+.customer-workspace .cx-muted {
+  color: var(--muted-foreground);
+  margin: 0;
+  line-height: 1.9;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.customer-workspace .cx-stack {
+  display: grid;
+  gap: 16px;
+}
+.customer-workspace .cx-grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.customer-workspace .cx-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  min-width: 0;
+}
+.customer-workspace .cx-panel > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.customer-workspace .cx-panel h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.customer-workspace .cx-panel small,
+.customer-workspace .cx-kicker {
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+.customer-workspace .cx-next {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px 20px;
+  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--primary);
+  box-shadow: var(--cx-shadow);
+}
+.customer-workspace .cx-next h3 {
+  margin: 6px 0;
+  font-size: 17px;
+}
+.customer-workspace .cx-next p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.9;
+}
+.customer-workspace .cx-kicker {
+  color: var(--cyan);
+  font-weight: 600;
+}
+.customer-workspace .cx-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.customer-workspace .cx-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.customer-workspace .cx-info {
+  --tone: var(--st-info);
+}
+.customer-workspace .cx-warn {
+  --tone: var(--st-warn);
+}
+.customer-workspace .cx-ok {
+  --tone: var(--st-ok);
+}
+.customer-workspace .cx-bad {
+  --tone: var(--st-bad);
+}
+.customer-workspace .cx-neutral {
+  --tone: var(--muted-foreground);
+}
+.customer-workspace .cx-status {
+  color: var(--tone);
+  background: color-mix(in oklch, var(--tone) var(--st-wash), transparent);
+}
+.customer-workspace .empty-state {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 36px 20px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+.customer-workspace .empty-state > svg {
+  color: var(--muted-foreground);
+  width: 28px;
+  height: 28px;
+}
+.customer-workspace .empty-state h3 {
+  margin: 4px 0 0;
+  font-size: 15px;
+}
+.customer-workspace .empty-state p {
+  margin: 0 0 6px;
+  color: var(--muted-foreground);
+  max-width: 380px;
+  line-height: 1.9;
+}
+.customer-workspace .skeleton-line {
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--muted), var(--accent), var(--muted));
+  background-size: 200% 100%;
+  animation: cx-shimmer 1.4s linear infinite;
+}
+@keyframes cx-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+.customer-workspace .cx-form {
+  display: grid;
+  gap: 14px;
+  max-width: 560px;
+}
+.customer-workspace .cx-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.customer-workspace .cx-form input[type='radio'],
+.customer-workspace .cx-form input[type='checkbox'] {
+  min-height: 0;
+  accent-color: var(--primary);
+}
+@media (max-width: 900px) {
+  .customer-workspace .cx-shell {
+    grid-template-columns: 1fr;
+  }
+  .customer-workspace .cx-nav {
+    border-inline-end: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+  }
+  .customer-workspace .cx-nav .brand {
+    display: none;
+  }
+  .customer-workspace .cx-nav ul {
+    margin: 0;
+    display: flex;
+    overflow-x: auto;
+    gap: 4px;
+  }
+  .customer-workspace .cx-nav a {
+    white-space: nowrap;
+    width: auto;
+  }
+  .customer-workspace .cx-nav a[aria-current='page'],
+  [dir='rtl'] .customer-workspace .cx-nav a[aria-current='page'] {
+    box-shadow: inset 0 -2px 0 var(--primary);
+  }
+  .customer-workspace .cx-grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .customer-workspace .cx-top {
+    padding-inline: 14px;
+  }
+  .customer-workspace .cx-main {
+    padding: 16px 14px 40px;
+  }
+  .customer-workspace .cx-next button {
+    width: 100%;
+  }
+  .customer-workspace .cx-head h2 {
+    font-size: 19px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .customer-workspace .skeleton-line {
+    animation: none;
+  }
+}
+
+/* Next.js semantic controls and retained canonical data views. */
+.customer-workspace .cx-nav .customer-workspace-nav {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  margin: 0;
+}
+.customer-workspace .cx-nav a {
+  text-decoration: none;
+  min-height: 44px;
+}
+.customer-workspace .cx-main > .container.page {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+}
+.customer-workspace .cx-head h1 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.5;
+  font-weight: 650;
+}
+.customer-workspace .cx-top-controls {
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.customer-workspace .cx-top :is(select, button, a) {
+  min-height: 44px;
+}
+.customer-workspace .customer-dashboard {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+.customer-workspace .cx-panel h2 {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+.customer-workspace .cm-portal-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.customer-workspace .cm-portal-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 12px;
+  text-decoration: none;
+}
+.customer-workspace .cm-records {
+  display: grid;
+  gap: 0;
+}
+.customer-workspace .cm-records article {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+.customer-workspace .cm-records article > div {
+  display: grid;
+  gap: 6px;
+}
+.customer-workspace .cm-records article > span {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  white-space: normal;
+}
+.customer-workspace .cm-records article > a {
+  grid-column: 1/-1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: start;
+  min-height: 44px;
+}
+.customer-workspace .cm-records svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+.customer-workspace .cx-next article {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.customer-workspace .cx-next a {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.customer-workspace .profile-settings {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.customer-workspace .profile-settings summary {
+  font-size: 15px;
+  font-weight: 600;
+  min-height: 44px;
+  cursor: pointer;
+}
+.customer-workspace .profile-form {
+  margin-top: 16px;
+}
+.customer-workspace .profile-form :is(input, select) {
+  width: 100%;
+  min-height: 44px;
+  font-size: 14px;
+}
+.customer-workspace .profile-form .field {
+  display: grid;
+  gap: 6px;
+}
+.customer-workspace .customer-notifications ul {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+.customer-workspace .customer-notifications li {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+.customer-workspace .customer-notifications button {
+  min-height: 44px;
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+@media (max-width: 900px) {
+  .customer-workspace .cx-nav .naql-brand {
+    display: inline-flex;
+    margin-bottom: 12px;
+  }
+  .customer-workspace .cx-nav ul {
+    padding-bottom: 4px;
+  }
+  .customer-workspace .cx-nav li {
+    flex-shrink: 0;
+  }
+}
+@media (max-width: 600px) {
+  .customer-workspace .cx-top {
+    align-items: start;
+  }
+  .customer-workspace .cx-top-controls {
+    gap: 6px;
+  }
+  .customer-workspace .cm-records article {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .customer-workspace .cx-head h1 {
+    font-size: 19px;
+  }
+}
+
+html[data-theme] .customer-workspace .cm-portal-nav a {
+  color: var(--naql-color-text);
+}
+.customer-workspace .cx-top .commerce-cart {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  position: relative;
+  min-width: 44px;
+  justify-content: center;
+  color: var(--naql-color-text);
+}
+.customer-workspace .cx-top .commerce-cart-badge {
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--naql-color-secondary);
+  color: var(--naql-color-text);
+}

@@ -1,5 +1,14 @@
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
+import {
+  LayoutDashboard,
+  ListOrdered,
+  Receipt,
+  Package,
+  ShoppingBag,
+  ShoppingCart,
+  UserRound,
+} from 'lucide-react';
 
 /** Navigation only; destination loaders retain Customer/session authorization. */
 export function CustomerWorkspaceNav({
@@ -7,30 +16,34 @@ export function CustomerWorkspaceNav({
   current,
 }: {
   locale: Locale;
-  current: 'account' | 'requests' | 'quotes';
+  current?: 'account' | 'requests' | 'quotes';
 }) {
   const ar = locale === 'ar';
   return (
     <nav className="customer-workspace-nav" aria-label={ar ? 'مساحة العميل' : 'Customer workspace'}>
-      {(
-        [
-          ['account', ar ? 'نظرة عامة' : 'Overview', '◈'],
-          ['requests', ar ? 'طلبات النقل' : 'Transport requests', '↗'],
-          ['quotes', ar ? 'عروض السعر' : 'Quotes', '▤'],
-        ] as const
-      ).map(([key, label, symbol]) => (
-        <Link
-          key={key}
-          href={`/${locale}/account${key === 'account' ? '' : '/' + key}`}
-          aria-current={current === key ? 'page' : undefined}
-        >
-          <span aria-hidden="true">{symbol}</span>
-          {label}
-        </Link>
-      ))}
-      <Link href={`/${locale}/store/orders`}>{ar ? 'طلبات المتجر' : 'Store orders'}</Link>
-      <Link href={`/${locale}/store`}>{ar ? 'تسوّق مجددًا' : 'Shop again'}</Link>
-      <Link href={`/${locale}/store/cart`}>{ar ? 'السلة' : 'Cart'}</Link>
+      <ul>
+        {(
+          [
+            ['account', '', ar ? 'نظرة عامة' : 'Overview', LayoutDashboard],
+            ['requests', '/requests', ar ? 'طلبات النقل' : 'Transport requests', ListOrdered],
+            ['quotes', '/quotes', ar ? 'عروض السعر' : 'Quotes', Receipt],
+            ['store', '/store/orders', ar ? 'طلبات المتجر' : 'Store orders', Package],
+            ['profile', '#customer-profile', ar ? 'الملف الشخصي' : 'Profile', UserRound],
+            ['shop', '/store', ar ? 'تسوّق مجددًا' : 'Shop again', ShoppingBag],
+            ['cart', '/store/cart', ar ? 'السلة' : 'Cart', ShoppingCart],
+          ] as const
+        ).map(([key, path, label, Icon]) => (
+          <li key={key}>
+            <Link
+              href={`/${locale}${path.startsWith('/store') ? path : '/account' + path}`}
+              aria-current={current === key ? 'page' : undefined}
+            >
+              <Icon aria-hidden="true" size={16} />
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 }
