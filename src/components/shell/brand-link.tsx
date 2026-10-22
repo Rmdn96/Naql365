@@ -1,16 +1,23 @@
-import Link from 'next/link';
+import { Brand } from '@/components/design-system/brand';
+import type { Locale } from '@/i18n/config';
 
-export function BrandLink({ href, label }: { href: string; label: string }) {
+export function BrandLink({
+  href,
+  label,
+  locale,
+  size = 'public',
+}: {
+  href: string;
+  label: string;
+  locale?: Locale;
+  size?: 'public' | 'auth' | 'customer' | 'driver' | 'mobile';
+}) {
   return (
-    <Link href={href} className="brand" aria-label={label}>
-      <span className="brand-symbol" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
-      <span dir="ltr">
-        Naql<span>365</span>
-      </span>
-    </Link>
+    <Brand
+      href={href}
+      label={label}
+      locale={locale ?? (href.startsWith('/en') ? 'en' : 'ar')}
+      size={size}
+    />
   );
 }

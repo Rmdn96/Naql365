@@ -1,5 +1,7 @@
 'use client';
 import Link from 'next/link';
+import { Brand } from '@/components/design-system/brand';
+import { DesignFoundation } from '@/components/design-system/foundation';
 import { usePathname } from 'next/navigation';
 import { useRef, useState } from 'react';
 import type { Locale } from '@/i18n/config';
@@ -63,14 +65,21 @@ export function StaffShell({
     </nav>
   );
   return (
-    <div className={'staff-app' + (collapsed ? ' staff-app--collapsed' : '')}>
+    <DesignFoundation
+      family="staff"
+      className={'staff-app' + (collapsed ? ' staff-app--collapsed' : '')}
+    >
       <a className="skip-link" href="#staff-content">
         {ar ? 'انتقل إلى مساحة العمل' : 'Skip to workspace'}
       </a>
       <aside className="staff-sidebar">
-        <Link className="staff-brand" href={'/' + locale + '/portal'}>
-          N<span className="staff-nav-label">aql365</span>
-        </Link>
+        <Brand
+          locale={locale}
+          href={'/' + locale + '/portal'}
+          className="staff-brand"
+          size="staff"
+          wordmarkClassName="staff-nav-label"
+        />
         <p className="staff-nav-label staff-sidebar-caption">{ar ? 'مساحة العمل' : 'Workspace'}</p>
         {nav()}
         <button
@@ -130,7 +139,7 @@ export function StaffShell({
         onCancel={close}
       >
         <div className="staff-drawer-heading">
-          <strong>Naql365</strong>
+          <Brand locale={locale} size="mobile" />
           <button className="button button--secondary" onClick={close}>
             {ar ? 'إغلاق' : 'Close'}
           </button>
@@ -140,6 +149,6 @@ export function StaffShell({
           {ar ? 'الموقع العام' : 'Public website'}
         </Link>
       </dialog>
-    </div>
+    </DesignFoundation>
   );
 }

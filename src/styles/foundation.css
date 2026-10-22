@@ -1,0 +1,84 @@
+/* Exact approved Lovable palette, centralized without remapping legacy DS V2. */
+:root {
+  --naql-color-background: oklch(0.165 0.027 259);
+  --naql-color-text: oklch(0.97 0.006 250);
+  --naql-color-surface: oklch(0.21 0.03 258);
+  --naql-color-secondary: oklch(0.25 0.03 257);
+  --naql-color-muted-surface: oklch(0.19 0.026 257);
+  --naql-color-muted-text: oklch(0.74 0.023 252);
+  --naql-color-accent-surface: oklch(0.29 0.045 257);
+  --naql-color-border: oklch(0.32 0.03 257);
+  --naql-color-brand: oklch(0.63 0.21 261);
+  --naql-color-focus: oklch(0.79 0.12 206);
+  --naql-color-info: oklch(0.78 0.11 240);
+  --naql-color-warning: oklch(0.82 0.13 80);
+  --naql-color-success: oklch(0.78 0.13 160);
+  --naql-color-error: oklch(0.74 0.15 25);
+  --naql-color-status-wash: 18%;
+  --naql-color-shadow: 0 6px 18px oklch(0.08 0.02 260 / 35%);
+}
+html[data-theme='light'] {
+  --naql-color-background: oklch(0.975 0.004 250);
+  --naql-color-text: oklch(0.22 0.035 259);
+  --naql-color-surface: oklch(1 0 0);
+  --naql-color-secondary: oklch(0.94 0.008 250);
+  --naql-color-muted-surface: oklch(0.955 0.006 250);
+  --naql-color-muted-text: oklch(0.47 0.025 257);
+  --naql-color-accent-surface: oklch(0.92 0.012 255);
+  --naql-color-border: oklch(0.88 0.012 250);
+  --naql-color-brand: oklch(0.52 0.21 262);
+  --naql-color-focus: oklch(0.52 0.1 215);
+  --naql-color-info: oklch(0.47 0.15 255);
+  --naql-color-warning: oklch(0.5 0.12 65);
+  --naql-color-success: oklch(0.45 0.11 160);
+  --naql-color-error: oklch(0.5 0.18 25);
+  --naql-color-status-wash: 12%;
+  --naql-color-shadow: 0 4px 14px oklch(0.3 0.03 260 / 8%);
+}
+@media (prefers-color-scheme: light) {
+  html[data-theme='system'] {
+    --naql-color-background: oklch(0.975 0.004 250);
+    --naql-color-text: oklch(0.22 0.035 259);
+    --naql-color-surface: oklch(1 0 0);
+    --naql-color-secondary: oklch(0.94 0.008 250);
+    --naql-color-muted-surface: oklch(0.955 0.006 250);
+    --naql-color-muted-text: oklch(0.47 0.025 257);
+    --naql-color-accent-surface: oklch(0.92 0.012 255);
+    --naql-color-border: oklch(0.88 0.012 250);
+    --naql-color-brand: oklch(0.52 0.21 262);
+    --naql-color-focus: oklch(0.52 0.1 215);
+    --naql-color-info: oklch(0.47 0.15 255);
+    --naql-color-warning: oklch(0.5 0.12 65);
+    --naql-color-success: oklch(0.45 0.11 160);
+    --naql-color-error: oklch(0.5 0.18 25);
+    --naql-color-status-wash: 12%;
+    --naql-color-shadow: 0 4px 14px oklch(0.3 0.03 260 / 8%);
+  }
+}
+
+:root {
+  --naql-color-action: oklch(0.52 0.21 262);
+  --naql-color-on-action: white;
+  --naql-color-sidebar-brand: oklch(0.73 0.15 253);
+  --naql-font-arabic: var(--font-arabic), sans-serif;
+  --naql-font-english: var(--font-english), sans-serif;
+  --naql-space-1: 4px;
+  --naql-space-2: 8px;
+  --naql-space-3: 12px;
+  --naql-space-4: 16px;
+  --naql-space-6: 24px;
+  --naql-space-brand: 10px;
+  --naql-radius-control: 6px;
+  --naql-radius-card: 8px;
+  --naql-focus-width: 2px;
+  --naql-focus-offset: 2px;
+}
+/* Opt-in visual contract for later layout migrations, with no domain authority. */
+[data-design-family] {
+  --foundation-background: var(--naql-color-background);
+  --foundation-surface: var(--naql-color-surface);
+  --foundation-text: var(--naql-color-text);
+  --foundation-border: var(--naql-color-border);
+  --foundation-action: var(--naql-color-action);
+  --foundation-on-action: var(--naql-color-on-action);
+}

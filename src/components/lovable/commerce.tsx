@@ -1,4 +1,5 @@
 'use client';
+import { DesignFoundation } from '@/components/design-system/foundation';
 import NextLink from 'next/link';
 import { SourceImage } from './source-image';
 import { subscribeTheme, readTheme, chooseTheme } from './theme';
@@ -659,7 +660,8 @@ export function SourceCommerce({
     );
   else body = null;
   return (
-    <div
+    <DesignFoundation
+      family={view === 'portal' ? 'customer' : 'public'}
       className="lovable cx cm store-experience"
       lang={locale}
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
@@ -909,7 +911,7 @@ export function SourceCommerce({
           </Link>
         ))}
       </nav>
-    </div>
+    </DesignFoundation>
   );
 }
 type Copy = (typeof commerceContent)['ar'];

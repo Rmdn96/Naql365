@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { DesignFoundation } from '@/components/design-system/foundation';
 import type { Locale } from '@/i18n/config';
 import { BrandLink } from '@/components/shell/brand-link';
 
@@ -15,10 +16,15 @@ export function AuthExperience({
 }) {
   const ar = locale === 'ar';
   return (
-    <div className="auth-v2">
+    <DesignFoundation family="auth" className="auth-v2">
       <div className="container auth-v2-layout">
         <aside className="auth-v2-story" aria-label={ar ? 'نقل 365' : 'Naql365'}>
-          <BrandLink href={`/${locale}`} label={ar ? 'نقل 365 — الرئيسية' : 'Naql365 — Home'} />
+          <BrandLink
+            locale={locale}
+            size="auth"
+            href={`/${locale}`}
+            label={ar ? 'نقل 365 — الرئيسية' : 'Naql365 — Home'}
+          />
           <div className="auth-v2-story-copy">
             <p className="auth-v2-eyebrow">
               {ar ? 'رحلة نقل أوضح' : 'A clearer transport journey'}
@@ -60,6 +66,6 @@ export function AuthExperience({
           </div>
         </section>
       </div>
-    </div>
+    </DesignFoundation>
   );
 }

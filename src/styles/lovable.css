@@ -42,61 +42,61 @@
 }
 
 .cx {
-  --background: oklch(0.165 0.027 259);
-  --foreground: oklch(0.97 0.006 250);
-  --card: oklch(0.21 0.03 258);
-  --secondary: oklch(0.25 0.03 257);
-  --muted: oklch(0.19 0.026 257);
-  --muted-foreground: oklch(0.74 0.023 252);
-  --accent: oklch(0.29 0.045 257);
-  --border: oklch(0.32 0.03 257);
-  --primary: oklch(0.63 0.21 261);
-  --cyan: oklch(0.79 0.12 206);
-  --st-info: oklch(0.78 0.11 240);
-  --st-warn: oklch(0.82 0.13 80);
-  --st-ok: oklch(0.78 0.13 160);
-  --st-bad: oklch(0.74 0.15 25);
-  --st-wash: 18%;
-  --cx-shadow: 0 6px 18px oklch(0.08 0.02 260 / 35%);
+  --background: var(--naql-color-background);
+  --foreground: var(--naql-color-text);
+  --card: var(--naql-color-surface);
+  --secondary: var(--naql-color-secondary);
+  --muted: var(--naql-color-muted-surface);
+  --muted-foreground: var(--naql-color-muted-text);
+  --accent: var(--naql-color-accent-surface);
+  --border: var(--naql-color-border);
+  --primary: var(--naql-color-brand);
+  --cyan: var(--naql-color-focus);
+  --st-info: var(--naql-color-info);
+  --st-warn: var(--naql-color-warning);
+  --st-ok: var(--naql-color-success);
+  --st-bad: var(--naql-color-error);
+  --st-wash: var(--naql-color-status-wash);
+  --cx-shadow: var(--naql-color-shadow);
   color-scheme: dark;
 }
 html[data-theme='light'] .cx {
-  --background: oklch(0.975 0.004 250);
-  --foreground: oklch(0.22 0.035 259);
-  --card: oklch(1 0 0);
-  --secondary: oklch(0.94 0.008 250);
-  --muted: oklch(0.955 0.006 250);
-  --muted-foreground: oklch(0.47 0.025 257);
-  --accent: oklch(0.92 0.012 255);
-  --border: oklch(0.88 0.012 250);
-  --primary: oklch(0.52 0.21 262);
-  --cyan: oklch(0.52 0.1 215);
-  --st-info: oklch(0.47 0.15 255);
-  --st-warn: oklch(0.5 0.12 65);
-  --st-ok: oklch(0.45 0.11 160);
-  --st-bad: oklch(0.5 0.18 25);
-  --st-wash: 12%;
-  --cx-shadow: 0 4px 14px oklch(0.3 0.03 260 / 8%);
+  --background: var(--naql-color-background);
+  --foreground: var(--naql-color-text);
+  --card: var(--naql-color-surface);
+  --secondary: var(--naql-color-secondary);
+  --muted: var(--naql-color-muted-surface);
+  --muted-foreground: var(--naql-color-muted-text);
+  --accent: var(--naql-color-accent-surface);
+  --border: var(--naql-color-border);
+  --primary: var(--naql-color-brand);
+  --cyan: var(--naql-color-focus);
+  --st-info: var(--naql-color-info);
+  --st-warn: var(--naql-color-warning);
+  --st-ok: var(--naql-color-success);
+  --st-bad: var(--naql-color-error);
+  --st-wash: var(--naql-color-status-wash);
+  --cx-shadow: var(--naql-color-shadow);
   color-scheme: light;
 }
 @media (prefers-color-scheme: light) {
   html[data-theme='system'] .cx {
-    --background: oklch(0.975 0.004 250);
-    --foreground: oklch(0.22 0.035 259);
-    --card: oklch(1 0 0);
-    --secondary: oklch(0.94 0.008 250);
-    --muted: oklch(0.955 0.006 250);
-    --muted-foreground: oklch(0.47 0.025 257);
-    --accent: oklch(0.92 0.012 255);
-    --border: oklch(0.88 0.012 250);
-    --primary: oklch(0.52 0.21 262);
-    --cyan: oklch(0.52 0.1 215);
-    --st-info: oklch(0.47 0.15 255);
-    --st-warn: oklch(0.5 0.12 65);
-    --st-ok: oklch(0.45 0.11 160);
-    --st-bad: oklch(0.5 0.18 25);
-    --st-wash: 12%;
-    --cx-shadow: 0 4px 14px oklch(0.3 0.03 260 / 8%);
+    --background: var(--naql-color-background);
+    --foreground: var(--naql-color-text);
+    --card: var(--naql-color-surface);
+    --secondary: var(--naql-color-secondary);
+    --muted: var(--naql-color-muted-surface);
+    --muted-foreground: var(--naql-color-muted-text);
+    --accent: var(--naql-color-accent-surface);
+    --border: var(--naql-color-border);
+    --primary: var(--naql-color-brand);
+    --cyan: var(--naql-color-focus);
+    --st-info: var(--naql-color-info);
+    --st-warn: var(--naql-color-warning);
+    --st-ok: var(--naql-color-success);
+    --st-bad: var(--naql-color-error);
+    --st-wash: var(--naql-color-status-wash);
+    --cx-shadow: var(--naql-color-shadow);
     color-scheme: light;
   }
 }
@@ -1807,7 +1807,7 @@ html[data-theme='light'] .cx {
 }
 
 .lovable {
-  --primary-foreground: white;
+  --primary-foreground: var(--naql-color-on-action);
   --overlay: oklch(0.1 0.024 259 / 85%);
   --font-sans: var(--font-english);
   font-family: var(--font-english), sans-serif;
@@ -1824,7 +1824,7 @@ html[data-theme='light'] .cx {
 /* Owner-approved accessibility exception: retain the source light-theme blue
    for white-label primary actions in every theme (dark source was 3.65:1). */
 .lovable :is(a, button).bg-primary {
-  --primary: oklch(0.52 0.21 262);
+  --primary: var(--naql-color-action);
 }
 .lovable :where(h1, h2, h3, p, ol, dl, dt, dd) {
   margin: 0;

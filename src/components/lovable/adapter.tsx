@@ -99,10 +99,7 @@ export function Link({
           : '/' + locale;
   return <NextLink {...props} href={href} />;
 }
-export const themeModes = ['system', 'light', 'dark'] as const;
-export type ThemeMode = (typeof themeModes)[number];
-export const parseThemeMode = (v: unknown): ThemeMode =>
-  v === 'light' || v === 'dark' ? v : 'system';
+export { themeModes, parseThemeMode, type ThemeMode } from '@/components/design-system/theme';
 export function useCommerce(locale: Locale) {
   const router = useRouter(),
     pathname = usePathname(),
