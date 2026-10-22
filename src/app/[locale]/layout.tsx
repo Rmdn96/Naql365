@@ -6,8 +6,10 @@ import { dictionary } from '@/i18n/dictionaries';
 import { PublicChrome, AuthChrome } from '@/components/shell/public-chrome';
 import { AuthToolbar } from '@/components/auth/auth-toolbar';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
+import { TransportFrame } from '@/components/transport/frame';
 import { HistoryRefresh } from '@/components/shell/history-refresh';
-import { Header, Footer } from '@/components/shell/public-shell';
+import { Header, Footer, IdentityLink } from '@/components/shell/public-shell';
+import { TransportFooterLinks } from '@/components/transport/footer-links';
 import { appUrl } from '@/infrastructure/config/server-env';
 import { cookies, headers } from 'next/headers';
 import { preventIndexing } from '@/infrastructure/config/deployment-env';
@@ -19,6 +21,7 @@ import '../../styles/customer-v2.css';
 import '../../styles/staff-v2.css';
 import '../../styles/driver-v2.css';
 import '../../styles/commerce.css';
+import '../../styles/transport.css';
 const arabic = Alexandria({ subsets: ['arabic'], display: 'swap', variable: '--font-arabic' });
 const english = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-english' });
 
@@ -72,7 +75,15 @@ export default async function LocaleLayout({
           <Header locale={locale} themeMode={themeMode} />
         </PublicChrome>
         <main id="main" tabIndex={-1}>
-          {children}
+          <TransportFrame
+            locale={locale}
+            country={await selectedPublicCountry()}
+            themeMode={themeMode}
+            identity={<IdentityLink locale={locale} />}
+            footerLinks={<TransportFooterLinks locale={locale} />}
+          >
+            {children}
+          </TransportFrame>
         </main>
         <PublicChrome>
           <Footer locale={locale} />

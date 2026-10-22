@@ -497,7 +497,7 @@ export function RequestWizard({
   );
   const service = details.services.find((s) => s.id === draft.service_id);
   return (
-    <div className="wizard customer-experience">
+    <div className="wizard customer-experience transport-wizard">
       <p>
         {mt.market}: {locale === 'ar' ? details.market.name_ar : details.market.name_en} ·{' '}
         <bdi>{details.market.currency}</bdi>

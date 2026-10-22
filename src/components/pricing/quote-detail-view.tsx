@@ -21,7 +21,7 @@ export function QuoteDetailView({
   const t = quotesDictionary(locale);
   const request = quote.quotes?.requests;
   return (
-    <div className="container page customer-experience quote-page">
+    <div className="container page customer-experience quote-page transport-quote">
       <MvpView
         event="final_quote_viewed"
         market={request?.markets?.country_code ?? ''}

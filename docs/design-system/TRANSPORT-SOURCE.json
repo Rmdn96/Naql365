@@ -1,0 +1,38 @@
+{
+  "repository": "Rmdn96/naql365-design-lab",
+  "sha": "2997c92bb5b00dfbf15ae0d1ccdb289d47c4d891",
+  "files": [
+    {
+      "file": "src/routes/transport-home-preview.tsx",
+      "sha256": "dcbab942f0654fc2974b1518ee14f452ac024ce1d0b45370a0518aeffbd33bb7"
+    },
+    {
+      "file": "src/components/naql/route-scene.tsx",
+      "sha256": "aa4d56759ffb668ba513a448f88b8795267a22611dcdb4aac33892a72976a3bb"
+    },
+    {
+      "file": "src/components/naql/customer-preview.tsx",
+      "sha256": "15256241ce7e36434a7fa33ea1eba1c9e91170814e82a02d022c7c7ae71e3ace"
+    },
+    {
+      "file": "src/lib/naql/content.ts",
+      "sha256": "3c969f9f16ac029518a21a231a1977b73860200f6bfd2d2e06892becf3f546e4"
+    },
+    {
+      "file": "src/styles.css",
+      "sha256": "1f75dc29c4defa1f0626a7bdf038fed203ae5fa775b1b6d18e5ffbcdd313f9d6"
+    },
+    {
+      "file": "src/assets/route-map.jpg",
+      "sha256": "c2c2fec641b7d3568794188414523c506a5ec0a8371062debbe86eb1e6928194"
+    }
+  ],
+  "importedAsset": "public/lovable/transport-route-map.jpg",
+  "excluded": [
+    "demo handlers",
+    "synthetic booking records",
+    "mock prices",
+    "preview state selectors",
+    "future commercial coverage claims"
+  ]
+}

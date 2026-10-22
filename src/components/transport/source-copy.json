@@ -1,0 +1,142 @@
+{
+  "ar": {
+    "eyebrow": "نقل منظّم. رحلة أوضح.",
+    "headline": "من الطلب إلى التسليم...",
+    "headlineAccent": "كل شيء تحت السيطرة.",
+    "intro": "نقل 365 يجمع خطوات النقل في رحلة واحدة واضحة. طلبك يُراجع، عرضك يُعتمد، ونقلك يُدار بعناية — من البداية حتى التسليم.",
+    "request": "اطلب النقل",
+    "track": "تتبّع طلبك",
+    "heroNote": "تسعير بعد مراجعة المبيعات · دون مبالغ تقديرية",
+    "routeTitle": "رحلة النقل",
+    "illustrative": "مسار توضيحي",
+    "nodes": ["الاستلام", "التخطيط", "السائق", "قيد النقل", "التسليم"],
+    "nodeNotes": ["نقطة البداية", "تنظيم الرحلة", "مرحلة الإسناد", "مرحلة التنفيذ", "نقطة الوصول"],
+    "routeNote": "رسم توضيحي فقط — لا يعرض مواقع أو حالات نقل فعلية",
+    "assurances": [
+      ["عرض نهائي واضح", "بعد مراجعة تفاصيل الطلب"],
+      ["خطوات محددة من البداية", "من الطلب إلى التسليم"],
+      ["تتبّع بوصول آمن", "المرجع وحده لا يمنح الوصول"]
+    ],
+    "servicesEyebrow": "لكل احتياج، رحلة منظّمة",
+    "servicesTitle": "حلول نقل تناسب أعمالك",
+    "servicesIntro": "من النقل المحلي إلى احتياجات الأعمال، يبدأ الاختيار بتفاصيل طلبك ومراجعة فريق المبيعات.",
+    "processEyebrow": "من البداية، تعرف الخطوة التالية",
+    "processTitle": "رحلتك، خطوة بخطوة",
+    "processIntro": "لا أسعار أولية. تُراجع التفاصيل أولًا، ثم يصدر عرض السعر النهائي.",
+    "steps": [
+      ["طلب النقل", "تحديد احتياج النقل ونقاط الاستلام والتسليم."],
+      ["مراجعة المبيعات", "مراجعة التفاصيل والنطاق ومتطلبات التنفيذ."],
+      ["عرض السعر النهائي", "إصدار العرض النهائي للمراجعة قبل المتابعة."],
+      ["تنفيذ النقل", "تنسيق النقل بعد استكمال المتطلبات."],
+      ["التسليم", "استكمال رحلة النقل وخطوات التسليم."]
+    ],
+    "clarityEyebrow": "وضوح في كل قرار",
+    "clarityTitle": "الثقة تبدأ من التفاصيل",
+    "clarity": [
+      [
+        "التسعير بعد المراجعة",
+        "لا يظهر مبلغ أولي أو تقديري. يراجع فريق المبيعات طلبك، ثم يصدر عرض السعر النهائي."
+      ],
+      [
+        "إثبات التحويل ليس تأكيدًا",
+        "رفع إثبات التحويل لا يعني تأكيد الدفع. يخضع الإثبات للمراجعة قبل تأكيد حالة الدفع."
+      ],
+      [
+        "مرجع الطلب ليس تصريحًا",
+        "رقم المرجع وحده لا يتيح التتبّع. متابعة الطلب تتطلب استكمالًا آمنًا للتحقق من صلاحية الوصول."
+      ]
+    ],
+    "faqEyebrow": "نحن معك في كل خطوة",
+    "faqTitle": "أسئلتك، بإجابات واضحة",
+    "faqIntro": "تفاصيل بسيطة تجعل قرار النقل أوضح. تحتاج إلى مساعدة؟",
+    "finalTitle": "رحلتك القادمة تبدأ بطلب واضح.",
+    "finalIntro": "من التفاصيل الأولى إلى التسليم، كل خطوة لها مكانها.",
+    "faqs": [
+      [
+        "كيف يتم تحديد سعر النقل؟",
+        "يراجع فريق المبيعات تفاصيل الطلب أولًا. لا يُعرض مبلغ تقديري، ويصدر عرض السعر النهائي بعد المراجعة."
+      ],
+      [
+        "هل رفع إثبات التحويل يؤكد الدفع؟",
+        "لا. إثبات التحويل يحتاج إلى مراجعة، ولا يمثل تأكيدًا تلقائيًا للدفع."
+      ],
+      [
+        "هل يكفي رقم المرجع لتتبّع الطلب؟",
+        "لا. رقم المرجع ليس تصريح وصول. التتبّع يتطلب استكمالًا آمنًا للتحقق من صلاحية الوصول."
+      ]
+    ]
+  },
+  "en": {
+    "eyebrow": "Organized transport. A clearer journey.",
+    "headline": "From request to delivery.",
+    "headlineAccent": "Everything under control.",
+    "intro": "Naql365 brings every transport step into one clear journey. Your request is reviewed, your quote is agreed, and your transport is coordinated with care — all the way to delivery.",
+    "request": "Request transport",
+    "track": "Track request",
+    "heroNote": "Sales-reviewed pricing · No preliminary amounts",
+    "routeTitle": "The transport journey",
+    "illustrative": "Illustrative route",
+    "nodes": ["Pickup", "Planning", "Driver", "Transit", "Delivery"],
+    "nodeNotes": [
+      "Starting point",
+      "Journey planning",
+      "Assignment stage",
+      "Execution stage",
+      "Destination"
+    ],
+    "routeNote": "Illustration only — no live transport locations or statuses",
+    "assurances": [
+      ["A clear final quote", "After your request is reviewed"],
+      ["A defined process", "From request through delivery"],
+      ["Secure tracking access", "A reference is not authorization"]
+    ],
+    "servicesEyebrow": "A considered journey for every need",
+    "servicesTitle": "Transport for your business",
+    "servicesIntro": "From local transport to business needs, every option starts with your details and a sales review.",
+    "processEyebrow": "Know what comes next",
+    "processTitle": "Your journey, step by step",
+    "processIntro": "No preliminary prices. Details are reviewed first, then a final quote is issued.",
+    "steps": [
+      ["Request", "Define your transport needs, pickup, and delivery points."],
+      ["Sales review", "Review the details, scope, and execution requirements."],
+      ["Final quote", "A final quote is issued for review before continuing."],
+      ["Transport", "Coordinate transport after requirements are completed."],
+      ["Delivery", "Complete the transport journey and delivery steps."]
+    ],
+    "clarityEyebrow": "Clarity in every decision",
+    "clarityTitle": "Trust starts with the details",
+    "clarity": [
+      [
+        "Pricing after review",
+        "No preliminary or estimated amount is shown. Sales reviews your request, then issues a final quote."
+      ],
+      [
+        "Transfer proof is not confirmation",
+        "Uploading transfer proof does not confirm payment. The proof must be reviewed before payment status is confirmed."
+      ],
+      [
+        "A reference is not authorization",
+        "A reference number alone does not grant tracking access. Tracking requires secure continuation to verify access authorization."
+      ]
+    ],
+    "faqEyebrow": "With you at every step",
+    "faqTitle": "Clear answers to your questions",
+    "faqIntro": "The details that make transport decisions clearer. Need assistance?",
+    "finalTitle": "Your next journey starts with clarity.",
+    "finalIntro": "From the first details to delivery, every step has its place.",
+    "faqs": [
+      [
+        "How is transport priced?",
+        "Sales reviews the request details first. No preliminary amount is displayed; a final quote is issued after review."
+      ],
+      [
+        "Does transfer proof confirm payment?",
+        "No. Transfer proof requires review and is not automatic payment confirmation."
+      ],
+      [
+        "Is a reference enough to track a request?",
+        "No. A reference is not access authorization. Tracking requires secure continuation to verify access rights."
+      ]
+    ]
+  }
+}

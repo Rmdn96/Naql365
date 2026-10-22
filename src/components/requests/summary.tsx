@@ -21,7 +21,7 @@ export function RequestSummary({
   const service = services.find((s) => s.id === payload.service_id);
   const value = (s: string | null | undefined) => s || t.noValue;
   return (
-    <div className="request-summary">
+    <div className="request-summary transport-summary">
       <section>
         <h2>{t.service}</h2>
         <p>{value(locale === 'ar' ? service?.name_ar : service?.name_en)}</p>
