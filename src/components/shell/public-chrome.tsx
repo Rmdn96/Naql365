@@ -1,7 +1,16 @@
 'use client';
 import { usePathname } from 'next/navigation';
+export function isAuthPath(pathname: string) {
+  return /^\/(ar|en)\/(login|register|recover|password|auth-complete|driver\/login)\/?$/.test(
+    pathname,
+  );
+}
+export function AuthChrome({ children }: { children: React.ReactNode }) {
+  return isAuthPath(usePathname()) ? children : null;
+}
 export function PublicChrome({ children }: { children: React.ReactNode }) {
-  return /^\/(ar|en)(?:$|\/(?:portal|store|account$)(?:\/|$))/.test(usePathname())
+  const path = usePathname();
+  return isAuthPath(path) || /^\/(ar|en)(?:$|\/(?:portal|store|account$)(?:\/|$))/.test(path)
     ? null
     : children;
 }

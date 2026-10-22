@@ -3,7 +3,9 @@ import { Alexandria, Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { isLocale, direction, locales } from '@/i18n/config';
 import { dictionary } from '@/i18n/dictionaries';
-import { PublicChrome } from '@/components/shell/public-chrome';
+import { PublicChrome, AuthChrome } from '@/components/shell/public-chrome';
+import { AuthToolbar } from '@/components/auth/auth-toolbar';
+import { selectedPublicCountry } from '@/infrastructure/markets/public';
 import { HistoryRefresh } from '@/components/shell/history-refresh';
 import { Header, Footer } from '@/components/shell/public-shell';
 import { appUrl } from '@/infrastructure/config/server-env';
@@ -59,6 +61,13 @@ export default async function LocaleLayout({
     >
       <body>
         <HistoryRefresh />
+        <AuthChrome>
+          <AuthToolbar
+            locale={locale}
+            themeMode={themeMode}
+            country={await selectedPublicCountry()}
+          />
+        </AuthChrome>
         <PublicChrome>
           <Header locale={locale} themeMode={themeMode} />
         </PublicChrome>

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { DesignFoundation } from '@/components/design-system/foundation';
 import type { Locale } from '@/i18n/config';
 import { BrandLink } from '@/components/shell/brand-link';
+import { LockKeyhole, ShieldCheck } from 'lucide-react';
 
 export function AuthExperience({
   locale,
@@ -38,6 +39,14 @@ export function AuthExperience({
                 : 'From request to delivery — stay in control.'}
             </p>
           </div>
+          <div className="auth-v2-route-art" aria-hidden="true">
+            <svg viewBox="0 0 420 160" fill="none">
+              <path d="M18 126H100V38H222V100H400" />
+              <circle cx="18" cy="126" r="6" />
+              <circle cx="222" cy="38" r="6" />
+              <circle cx="400" cy="100" r="6" />
+            </svg>
+          </div>
           <ol className="auth-v2-route" aria-label={ar ? 'كيف تعمل الخدمة' : 'How it works'}>
             {(ar
               ? ['أرسل طلبك', 'راجع عرض السعر النهائي', 'تابع رحلة النقل']
@@ -50,6 +59,7 @@ export function AuthExperience({
             ))}
           </ol>
           <p className="auth-v2-trust">
+            <ShieldCheck size={19} aria-hidden="true" />
             {ar
               ? 'حافظ على خصوصية كلمة المرور وروابط التأكيد.'
               : 'Keep your password and confirmation links private.'}
@@ -58,7 +68,8 @@ export function AuthExperience({
         <section className="auth-v2-surface" aria-labelledby="auth-v2-title">
           <div className="auth-v2-form-inner">
             <p className="auth-v2-kicker">
-              {ar ? 'مساحة النقل الخاصة بك' : 'Your transport workspace'}
+              <LockKeyhole size={16} aria-hidden="true" />
+              {ar ? 'حسابك في نقل 365' : 'Your Naql365 account'}
             </p>
             <h1 id="auth-v2-title">{title}</h1>
             <p className="auth-intro">{intro}</p>

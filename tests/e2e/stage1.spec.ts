@@ -28,7 +28,10 @@ for (const locale of ['ar', 'en']) {
       }
     }
     await page.goto(`/${locale}/recover#private-fragment-must-not-propagate`);
-    const link = page.locator('.desktop-header-nav .language-link');
+    const link = page.getByRole('link', {
+      name: locale === 'ar' ? 'English' : 'العربية',
+      exact: true,
+    });
     await expect(link).toHaveAttribute('href', `/${locale === 'ar' ? 'en' : 'ar'}/recover`);
     await link.click();
     await expect(page).not.toHaveURL(/private-fragment/);

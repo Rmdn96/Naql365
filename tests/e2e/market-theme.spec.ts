@@ -42,7 +42,7 @@ for (const locale of ['ar', 'en'] as const) {
       await expect(page.locator('html')).toHaveAttribute('data-theme', mode);
       const initialHtml = await (await page.request.get(`/${locale}`)).text();
       expect(initialHtml).toContain(`data-theme="${mode}"`);
-      for (const path of ['', '/login', '/register', '/recover', '/password']) {
+      for (const path of ['', '/login', '/register', '/recover', '/password', '/driver/login']) {
         await page.goto(`/${locale}${path}`);
         await expect(page.locator('html')).toHaveAttribute('data-theme', mode);
         if (path) {
@@ -53,7 +53,7 @@ for (const locale of ['ar', 'en'] as const) {
                 items.map((item) => (item as HTMLSelectElement).value),
               ),
             )
-            .toEqual([mode, mode]);
+            .toEqual([mode]);
         }
         for (const width of [360, 390, 768, 1280, 1440]) {
           await page.setViewportSize({ width, height: 900 });

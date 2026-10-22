@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { driverDictionary } from '@/i18n/driver';
 import { DriverLogin } from '@/components/driver/login';
+import { AuthExperience } from '@/components/auth/auth-experience';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
@@ -9,10 +10,8 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   if (!isLocale(locale)) notFound();
   const t = driverDictionary(locale);
   return (
-    <div className="container page narrow">
-      <h1>{t.login}</h1>
-      <p>{t.loginHelp}</p>
+    <AuthExperience locale={locale} title={t.login} intro={t.loginHelp}>
       <DriverLogin locale={locale} />
-    </div>
+    </AuthExperience>
   );
 }
