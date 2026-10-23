@@ -1,0 +1,28 @@
+{
+  "repository": "Rmdn96/naql365-design-lab",
+  "sha": "2997c92bb5b00dfbf15ae0d1ccdb289d47c4d891",
+  "baseline": "3df7069445a2b84677c0d81e8dbc5005a3ba1fe5",
+  "files": [
+    {
+      "file": "src/components/naql/staff-preview.tsx",
+      "sha256": "3f7309a8ab03458fe7318103d006d20a4eefcc582b0a8100f0a019a68ffad484"
+    },
+    {
+      "file": "src/components/naql/staff-primitives.tsx",
+      "sha256": "6cf014c813df03b176d145956746d41f9e4f5b54c29d01124f0ad2fa06b351ce"
+    },
+    {
+      "file": "src/components/naql/store-admin-preview.tsx",
+      "sha256": "138882169a7d325759ed697ce3306e96eefed0aaaca369d8359cf1de4e377009"
+    },
+    {
+      "file": "src/components/naql/store-primitives.tsx",
+      "sha256": "13e4d3ed218571200c6332f53a5b1d6efad9738ac4c615534f2dd53535066e7f"
+    },
+    {
+      "file": "src/styles.css",
+      "sha256": "1f75dc29c4defa1f0626a7bdf038fed203ae5fa775b1b6d18e5ffbcdd313f9d6"
+    }
+  ],
+  "adaptation": "Original Staff shell/queue/detail/state CSS and Lucide icons; existing permission-filtered links, real forms, services and actions retained. No preview data, role switchers, finance simulation or command handlers imported."
+}

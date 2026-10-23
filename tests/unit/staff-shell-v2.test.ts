@@ -29,6 +29,8 @@ it.each(['ar', 'en'] as const)(
         ],
         children: createElement('h1', null, 'Authorized workspace'),
       });
+    expect(markup).toContain(`lang="${locale}"`);
+    expect(markup).toContain(`dir="${locale === 'ar' ? 'rtl' : 'ltr'}"`);
     expect(markup).not.toContain('/portal/quotes');
     expect(markup).not.toContain('/portal/operations');
     expect(markup).not.toContain('/portal/support');

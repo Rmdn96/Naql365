@@ -7,8 +7,10 @@ import { storeStaffModules } from '@/infrastructure/store/access';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
 import { staffDisplayContext } from '@/infrastructure/identity/staff-market';
 import { StaffShell, type StaffLink } from '@/components/shell/staff-shell';
+import { Brand } from '@/components/design-system/brand';
+import { StaffState } from '@/components/staff/presentation';
 import { customerLogout } from '@/app/auth/customer-actions';
-import { Alert, Button } from '@/components/ui/primitives';
+import { Button } from '@/components/ui/primitives';
 export default async function Layout({
   children,
   params,
@@ -23,21 +25,28 @@ export default async function Layout({
   if (m.context.status === 'unauthenticated') redirect('/' + locale + '/login');
   if (m.context.status !== 'authorized')
     return (
-      <div className="container page narrow">
-        <Alert tone="error">
-          <h1>
-            {m.context.status === 'unconfigured'
+      <div
+        className="lovable cx sx staff-access container page narrow"
+        lang={locale}
+        dir={ar ? 'rtl' : 'ltr'}
+      >
+        <Brand locale={locale} href={'/' + locale} size="staff" />
+        <StaffState
+          state="unavailable"
+          title={
+            m.context.status === 'unconfigured'
               ? dictionary(locale).unavailable
               : ar
                 ? 'مساحة العمل غير متاحة'
-                : 'Workspace unavailable'}
-          </h1>
+                : 'Workspace unavailable'
+          }
+        >
           <p>
             {ar
               ? 'تعذر تحديد عضوية موظف واحدة مخوّلة. تواصل مع مسؤول المؤسسة.'
               : 'A single authorized staff membership could not be established. Contact your organization administrator.'}
           </p>
-        </Alert>
+        </StaffState>
       </div>
     );
   const root = '/' + locale + '/portal';

@@ -1,5 +1,23 @@
 'use client';
 import Link from 'next/link';
+import {
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  Headphones,
+  Landmark,
+  LayoutDashboard,
+  Menu,
+  Package,
+  Route,
+  ShieldCheck,
+  X,
+  CircleDashed,
+} from 'lucide-react';
+import '@/styles/lovable.css';
+import '@/styles/lovable-store.css';
+import '@/styles/staff-source.css';
+import '@/styles/staff-admin.css';
 import { Brand } from '@/components/design-system/brand';
 import { DesignFoundation } from '@/components/design-system/foundation';
 import { usePathname } from 'next/navigation';
@@ -45,65 +63,93 @@ export function StaffShell({
     drawer.current?.close();
     trigger.current?.focus();
   };
+  const icons: Record<string, typeof FileText> = {
+    '◈': LayoutDashboard,
+    '▤': FileText,
+    '⇄': Route,
+    '▣': FileText,
+    '▦': Package,
+    '↗': Route,
+    '◇': Route,
+    '▥': ShieldCheck,
+    '⚙': Landmark,
+    '◎': Headphones,
+  };
   const nav = (mobile = false) => (
-    <nav aria-label={ar ? 'وحدات العمل' : 'Workspace modules'}>
-      {links.map((l) => (
-        <Link
-          key={l.href}
-          href={l.href}
-          className={l.href.includes('#') ? 'staff-nav-child' : undefined}
-          aria-current={active?.href === l.href ? 'page' : undefined}
-          title={l.label}
-          {...(mobile ? { onClick: close } : {})}
-        >
-          <span aria-hidden="true" className="staff-nav-symbol">
-            {l.symbol}
-          </span>
-          <span className="staff-nav-label">{l.label}</span>
-        </Link>
-      ))}
+    <nav className="sx-nav" aria-label={ar ? 'وحدات العمل' : 'Workspace modules'}>
+      {links.map((l) => {
+        const Icon = icons[l.symbol] ?? CircleDashed;
+        return (
+          <Link
+            key={l.href}
+            href={l.href}
+            className={l.href.includes('#') ? 'staff-nav-child' : undefined}
+            aria-current={active?.href === l.href ? 'page' : undefined}
+            title={l.label}
+            {...(mobile ? { onClick: close } : {})}
+          >
+            <span aria-hidden="true" className="staff-nav-symbol">
+              <Icon size={18} aria-hidden="true" />
+            </span>
+            <span className="staff-nav-label">{l.label}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
   return (
     <DesignFoundation
       family="staff"
-      className={'staff-app' + (collapsed ? ' staff-app--collapsed' : '')}
+      lang={locale}
+      dir={ar ? 'rtl' : 'ltr'}
+      className={'lovable cx sx staff-app' + (collapsed ? ' staff-app--collapsed sx-mini' : '')}
     >
       <a className="skip-link" href="#staff-content">
         {ar ? 'انتقل إلى مساحة العمل' : 'Skip to workspace'}
       </a>
-      <aside className="staff-sidebar">
+      <aside className="staff-sidebar sx-sidebar">
         <Brand
           locale={locale}
           href={'/' + locale + '/portal'}
-          className="staff-brand"
+          className="staff-brand sx-brand"
           size="staff"
           wordmarkClassName="staff-nav-label"
         />
-        <p className="staff-nav-label staff-sidebar-caption">{ar ? 'مساحة العمل' : 'Workspace'}</p>
+        <p className="staff-nav-label staff-sidebar-caption sx-workspace">
+          {ar ? 'مساحة العمل' : 'Workspace'}
+        </p>
         {nav()}
         <button
           className="staff-collapse"
+          aria-label={collapsed ? (ar ? 'توسيع' : 'Expand') : ar ? 'طي القائمة' : 'Collapse'}
           aria-expanded={!collapsed}
           onClick={() => setCollapsed(!collapsed)}
         >
-          {collapsed ? (ar ? 'توسيع' : 'Expand') : ar ? 'طي القائمة' : 'Collapse'}
+          {collapsed ? (
+            <ChevronRight size={18} aria-hidden="true" />
+          ) : (
+            <ChevronLeft size={18} aria-hidden="true" />
+          )}
+          <span className={collapsed ? 'sr-only' : undefined}>
+            {collapsed ? (ar ? 'توسيع' : 'Expand') : ar ? 'طي القائمة' : 'Collapse'}
+          </span>
         </button>
         <Link href={'/' + locale} className="staff-nav-label">
           {ar ? 'الموقع العام' : 'Public website'}
         </Link>
       </aside>
-      <div className="staff-app-main">
-        <header className="staff-topbar">
+      <div className="staff-app-main sx-work">
+        <header className="staff-topbar sx-topbar">
           <button
             ref={trigger}
             className="staff-drawer-trigger button button--secondary"
             aria-haspopup="dialog"
             onClick={() => drawer.current?.showModal()}
           >
-            {ar ? 'القائمة' : 'Menu'}
+            <Menu size={18} aria-hidden="true" />
+            <span>{ar ? 'القائمة' : 'Menu'}</span>
           </button>
-          <div className="staff-context">
+          <div className="staff-context sx-breadcrumb">
             <span>{ar ? 'مساحة الموظفين' : 'Staff workspace'}</span>
             <strong>{active?.label ?? (ar ? 'تفاصيل العمل' : 'Work details')}</strong>
             {organizationName && marketName && (
@@ -112,7 +158,7 @@ export function StaffShell({
               </span>
             )}
           </div>
-          <div className="staff-topbar-actions">
+          <div className="staff-topbar-actions sx-top-controls">
             <MarketSelector country={country} locale={locale} id="staff-market" />
             <LocaleLink locale={locale} label={ar ? 'English' : 'العربية'} />
             <ThemeControl locale={locale} initialMode={themeMode} />
@@ -134,13 +180,14 @@ export function StaffShell({
       </div>
       <dialog
         ref={drawer}
-        className="staff-drawer"
+        className="staff-drawer sx-drawer"
         aria-label={ar ? 'قائمة مساحة العمل' : 'Workspace menu'}
         onCancel={close}
       >
         <div className="staff-drawer-heading">
           <Brand locale={locale} size="mobile" />
           <button className="button button--secondary" onClick={close}>
+            <X size={18} aria-hidden="true" />
             {ar ? 'إغلاق' : 'Close'}
           </button>
         </div>

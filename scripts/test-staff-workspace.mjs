@@ -369,7 +369,17 @@ try {
           checkpoint = role + ' ' + locale + ' denied route ' + denied;
           await page.goto(origin + '/' + locale + '/portal/' + denied);
           if (denied === 'support') {
-            await expect(page.locator('.staff-dashboard-panel[role="alert"]')).toBeVisible();
+            const denial = page
+              .locator('.staff-workspace-content')
+              .getByRole('alert')
+              .filter({
+                has: page.getByRole('heading', {
+                  name:
+                    locale === 'ar' ? 'تعذر تحميل مساحة العمل' : 'Workspace could not be loaded',
+                  exact: true,
+                }),
+              });
+            await expect(denial).toBeVisible();
             await expect(page.locator('.staff-support-card')).toHaveCount(0);
           } else if (denied === 'finance/banks') {
             await expect(
@@ -489,7 +499,17 @@ try {
           JSON.stringify({
             checkpoint,
             path: new URL(page.url()).pathname,
-            workspaceErrors: await page.locator('.staff-dashboard-panel[role="alert"]').count(),
+            workspaceErrors: await page
+              .locator('.staff-workspace-content')
+              .getByRole('alert')
+              .filter({
+                has: page.getByRole('heading', {
+                  name:
+                    locale === 'ar' ? 'تعذر تحميل مساحة العمل' : 'Workspace could not be loaded',
+                  exact: true,
+                }),
+              })
+              .count(),
             alerts: await page.getByRole('alert').count(),
             supportCards: await page.locator('.staff-support-card').count(),
             category:

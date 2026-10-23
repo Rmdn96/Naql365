@@ -2,6 +2,7 @@ import '@/styles/lovable.css';
 import '@/styles/lovable-store.css';
 import { Button as SourceButton } from '@/components/lovable/button';
 import Link from 'next/link';
+import { StaffNote } from '@/components/staff/presentation';
 import { Badge, Card, EmptyState, Input } from '@/components/ui/primitives';
 import { catalogKind, storeCatalogAdmin } from '@/infrastructure/store/catalog';
 import { storeMoney, storeText } from '@/i18n/store';
@@ -69,11 +70,11 @@ export async function CatalogAdmin({
               <Link href={'/' + locale + '/store'}>{t.catalog}</Link>
             </SourceButton>
           </div>
-          <p>
+          <StaffNote>
             {ar
               ? 'الأسعار مستقلة: A مرجع المورد، B استحقاقه المتعاقد عليه، C سعر العميل. لا توجد زيادة تلقائية. الفرق الأولي بين C وB قبل تخصيص الرسوم والضرائب ليس ربحًا صافيًا.'
               : 'Prices are independent: A supplier reference, B contractual entitlement, C customer retail. No automatic markup. The provisional C minus B difference before fee/tax allocations is not net profit.'}
-          </p>
+          </StaffNote>
           <form className="store-search" method="get">
             <input type="hidden" name="kind" value={k} />
             <Input

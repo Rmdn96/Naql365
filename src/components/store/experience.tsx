@@ -93,7 +93,7 @@ export async function StoreExperience({
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
       className={
         staff
-          ? 'container page store-experience stack'
+          ? 'lovable cx st container page store-experience stack'
           : 'lovable cm-container cm-section store-experience'
       }
     >

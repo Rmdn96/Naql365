@@ -1,0 +1,37 @@
+# Phase 5 route/design mapping
+
+Baseline: `3df7069445a2b84677c0d81e8dbc5005a3ba1fe5`. Original source: `Rmdn96/naql365-design-lab@2997c92bb5b00dfbf15ae0d1ccdb289d47c4d891`.
+
+Inventory was reviewed before adapting the shell. The source Staff and Store Admin pages are visual previews, not production authorization or command implementations. Their demo role controls, synthetic records, mutable payment states and disabled preview commands are excluded.
+
+| Existing route (both locales)                               | Baseline classification | Original source presentation                                                                       | Canonical functionality retained                                                                                   |
+| ----------------------------------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `/[locale]/portal`                                          | Partial                 | `staff-preview`: shell, queue/dashboard panels                                                     | Permission-derived modules, bounded Sales/Operations queues, selected Market                                       |
+| `/[locale]/portal/quotes`                                   | Legacy/mixed            | Staff request queue, filters, status and route presentation                                        | Sales queue, existing navigation and request ownership                                                             |
+| `/[locale]/portal/quotes/[id]`                              | Mixed                   | Staff detail/quote fields, timeline, authority notes                                               | Manual pricing, revision/send rules, Sales permissions, guest capability controls                                  |
+| `/[locale]/portal/operations`                               | Mixed                   | Staff Operations tables, resources and planning controls                                           | Existing work orders, jobs, dispatch, tracking, notification and resource services                                 |
+| `/[locale]/portal/operations/jobs/[id]`                     | Mixed                   | Staff detail and form presentation                                                                 | Job lifecycle, assignment/resource rules and audit                                                                 |
+| `/[locale]/portal/operations/trips/[id]`                    | Mixed                   | Staff route, proof and exception detail                                                            | Trip/Stop/POD review, Driver coordination and existing guards                                                      |
+| `/[locale]/portal/finance`                                  | Mixed                   | Staff Finance queue, status and filters                                                            | Verified-receipt authority, Market filtering and pagination                                                        |
+| `/[locale]/portal/finance/[id]`                             | Mixed                   | Staff private-proof and Finance detail presentation                                                | Protected proof access, confirmation/rejection, refunds/reversals                                                  |
+| `/[locale]/portal/finance/banks`                            | Mixed                   | Staff bank settings presentation                                                                   | Explicit bank-management permission; no SUPER_ADMIN wildcard                                                       |
+| `/[locale]/portal/support`                                  | Mixed                   | Staff read-only support cards/status                                                               | Bounded read-only customer support projection                                                                      |
+| `/[locale]/portal/store/catalog?kind=...`                   | Already partly Lovable  | `store-admin-preview`, `store-primitives`: original category nav, draft/price/source review, forms | Existing products, categories, publication/media, A/B/C, suppliers, agreements and policies; permission-based tabs |
+| `/[locale]/portal/store/orders` and `/orders/[id]`          | Mixed                   | Store Admin queue, state/detail panels, timeline                                                   | Independent Store order/fulfillment lifecycle and immutable snapshots                                              |
+| `/[locale]/portal/store/finance`                            | Mixed                   | Store Admin proof/COD review                                                                       | Existing Store payment authority; proof is not receipt                                                             |
+| `/[locale]/portal/store/reconciliation`                     | Mixed                   | Store Admin settlement presentation                                                                | Existing manual supplier reconciliation and sourcing confidentiality                                               |
+| Portal `loading.tsx`, `error.tsx`, layout unavailable state | Mixed                   | `StaffSurface`/`sx-state`                                                                          | Existing propagation/reset behavior, localized safe messages, no authority fallback                                |
+
+## Scope and deliberate differences
+
+One shared Staff shell styles all these actual routes. Customer, Auth, Transport and Driver layouts are not migrated in Phase 5. The original SVG logo is reused through the centralized Brand component. Native dialog, real locale/Market/theme preferences, real logout and server-filtered links are retained instead of demo handlers.
+
+Existing Store catalog already has functional create/edit/version/pause/media controls and original `st-admin-shell` structure. This phase aligns its embedding and operational Store views with Staff tokens; it does not create a second catalog or change controls.
+
+There are no standalone user/role administration, reports, warehouse inventory, supplier portal or unrestricted settings routes in the accepted source. No links or features are invented. Availability/publication uses the existing catalog listing/draft/approval operations.
+
+Canonical forms contain necessary business fields, private-reference disclosures and guarded actions absent from the preview. Those differences are preserved and must be recorded separately from visual defects. The design-lab review banner and demo-state/role selectors do not belong in the live interface. Full desktop/mobile header controls may wrap to retain organization, Market, theme, language and logout accessibility.
+
+## Validation contract
+
+Protected visual captures use synthetic component fixtures only; they do not prove Auth/RLS. Real local Staff/Store/Commerce harnesses independently validate authorization and mutation boundaries. No fixtures or writes may target cloud projects. All migrations, generated types, APIs, services and domain contracts must match the baseline. Concurrency evidence may be reused from exact baseline hosted CI because these contracts are unchanged.

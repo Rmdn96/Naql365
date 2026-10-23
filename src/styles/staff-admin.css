@@ -1,0 +1,353 @@
+/* Canonical adapter for the original sx/st presentation. Every rule is Staff-scoped.
+   Existing forms, data projections and permission-filtered navigation stay authoritative. */
+html[data-theme] .staff-app.sx {
+  --theme-background: var(--naql-color-background);
+  --muted: var(--naql-color-muted-surface);
+  --theme-surface: var(--naql-color-surface);
+  --theme-surface-elevated: var(--naql-color-surface);
+  --theme-surface-muted: var(--naql-color-muted-surface);
+  --theme-text-primary: var(--naql-color-text);
+  --theme-text-secondary: var(--naql-color-muted-text);
+  --theme-border: var(--naql-color-border);
+  --theme-brand-hover: var(--naql-color-brand);
+  --link: var(--naql-color-brand);
+  --action: var(--naql-color-action);
+  --theme-on-brand: var(--naql-color-on-action);
+  --theme-accent: var(--naql-color-focus);
+  --theme-focus: var(--naql-color-focus);
+  --theme-success: var(--naql-color-success);
+  --theme-warning: var(--naql-color-warning);
+  --theme-destructive: var(--naql-color-error);
+  --navy: var(--naql-color-text);
+  --white: var(--naql-color-surface);
+  --staff-nav: oklch(0.18 0.03 259);
+  --staff-nav-ink: oklch(0.96 0.006 250);
+  --staff-nav-muted: oklch(0.75 0.025 253);
+  --staff-nav-active: oklch(0.29 0.055 258);
+  --staff-nav-border: oklch(0.34 0.035 258);
+  --staff-nav-brand: var(--naql-color-sidebar-brand);
+  --staff-overlay: oklch(0.1 0.025 259 / 78%);
+  grid-template-columns: 208px minmax(0, 1fr);
+  font-size: 12px;
+  line-height: 1.9;
+  min-height: 100svh;
+}
+html[data-theme] .staff-app.sx.staff-app--collapsed {
+  grid-template-columns: 76px minmax(0, 1fr);
+}
+.staff-app.sx .staff-sidebar {
+  padding: 26px 12px 16px;
+  gap: 0;
+  height: 100svh;
+}
+.staff-app.sx .staff-brand {
+  padding-inline: 8px;
+}
+.staff-app.sx .staff-sidebar-caption {
+  padding: 14px 8px 24px;
+  font-size: 10px;
+}
+.staff-app.sx :is(.staff-sidebar, .staff-drawer) nav a {
+  font-size: 12px;
+  border-radius: 4px;
+}
+.staff-app.sx :is(.staff-sidebar, .staff-drawer) nav a[aria-current] {
+  border: 0;
+  padding-inline-start: 10px;
+}
+.staff-app.sx .staff-nav-symbol {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+.staff-app.sx .staff-nav-symbol svg {
+  flex-shrink: 0;
+}
+.staff-app.sx .staff-collapse {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+}
+.staff-app.sx .staff-sidebar > a:last-child {
+  margin-block-start: 12px;
+}
+.staff-app.sx .staff-topbar {
+  min-height: 70px;
+  padding: 8px 22px;
+  gap: 12px;
+}
+.staff-app.sx .staff-topbar-actions {
+  margin-inline-start: auto;
+}
+.staff-app.sx .staff-context strong {
+  font-size: 12px;
+}
+.staff-app.sx .staff-context > span {
+  font-size: 10px;
+}
+.staff-app.sx .staff-workspace-content {
+  max-width: 1440px;
+  padding: 28px;
+  margin-inline: auto;
+}
+.staff-app.sx .staff-workspace-content > .container {
+  padding: 0;
+  max-width: none;
+  margin: 0;
+}
+.staff-app.sx .staff-workspace-content > .page {
+  padding-block: 0;
+}
+.staff-app.sx .staff-breadcrumb {
+  font-size: 11px;
+  margin-block-end: 20px;
+}
+.staff-app.sx .page-heading {
+  width: 100%;
+  margin-block-end: 20px;
+}
+.staff-app.sx :is(.page-heading h1, .staff-workspace-content h1) {
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.6;
+  margin-block: 6px;
+}
+.staff-app.sx :is(.page-description, .staff-window-note) {
+  font-size: 11px;
+  line-height: 1.9;
+}
+.staff-app.sx :is(.eyebrow, .staff-label) {
+  font-size: 10px;
+}
+.staff-app.sx
+  :is(
+    .staff-dashboard-panel,
+    .staff-support-card,
+    .workspace-panel,
+    .staff-panel,
+    .card,
+    .summary-card
+  ) {
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: none;
+}
+.staff-app.sx
+  :is(
+    .staff-dashboard-panel,
+    .staff-support-card,
+    .workspace-panel,
+    .staff-panel,
+    .card,
+    .summary-card
+  )
+  h2 {
+  font-size: 16px;
+  line-height: 1.8;
+}
+.staff-app.sx :is(.staff-dashboard-panel, .staff-panel, .card) h3 {
+  font-size: 14px;
+}
+.staff-app.sx .staff-dashboard-grid {
+  gap: 24px;
+}
+.staff-app.sx :is(.table-scroll, .st-table-scroll) {
+  max-width: 100%;
+  overflow: auto;
+  border-radius: 4px;
+}
+.staff-app.sx table {
+  width: 100%;
+  font-size: 12px;
+  text-align: start;
+}
+.staff-app.sx th {
+  font-size: 11px;
+  font-weight: 500;
+}
+.staff-app.sx :is(td, th) {
+  padding: 12px;
+}
+.staff-app.sx :is(.button, button, input, select, textarea) {
+  font: inherit;
+}
+.staff-app.sx .button {
+  font-size: 12px;
+  border-radius: 4px;
+}
+.staff-app.sx :is(.button--primary, button[type='submit']):not(:disabled) {
+  background: var(--naql-color-action);
+  color: var(--naql-color-on-action);
+  border-color: var(--naql-color-action);
+}
+.staff-app.sx :is(input, select, textarea) {
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  max-width: 100%;
+}
+.staff-app.sx .field label {
+  font-size: 11px;
+  font-weight: 500;
+}
+.staff-app.sx :is(.badge, .status-badge) {
+  font-size: 11px;
+  border-radius: 4px;
+}
+.staff-app.sx :is(.empty-state, .sx-state) {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted-foreground);
+  padding: 36px 16px;
+}
+.staff-app.sx .empty-state h2 {
+  color: var(--foreground);
+}
+.staff-app.sx .store-experience {
+  min-height: 0;
+  font-size: 12px;
+}
+.staff-app.sx .st-admin-shell {
+  grid-template-columns: 180px minmax(0, 1fr);
+}
+.staff-app.sx .st-admin-nav {
+  padding: 20px 10px;
+}
+.staff-app.sx .st-main {
+  padding: 24px;
+  min-width: 0;
+}
+.staff-app.sx .st-main .store-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+}
+.staff-app.sx .st-main .store-search .field {
+  flex: 1 1 180px;
+}
+.staff-app.sx .st-main .store-search select {
+  width: auto;
+  max-width: 100%;
+}
+.staff-app.sx .store-products {
+  grid-template-columns: minmax(0, 1fr);
+}
+.staff-app.sx .store-products .card {
+  display: grid;
+  gap: 12px;
+}
+.staff-app.sx .store-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-block-end: 1px solid var(--border);
+  padding-block: 12px;
+}
+.staff-app.sx .store-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 4px;
+}
+.staff-app.sx :focus-visible {
+  outline: 2px solid var(--naql-color-focus);
+  outline-offset: 3px;
+}
+.staff-app.sx .staff-drawer {
+  padding: 20px;
+}
+.staff-app.sx .staff-drawer-trigger {
+  gap: 8px;
+  align-items: center;
+}
+.staff-app.sx .staff-drawer::backdrop {
+  background: var(--staff-overlay);
+}
+@media (min-width: 901px) {
+  .staff-app.sx .staff-sidebar {
+    display: flex;
+  }
+  .staff-app.sx .staff-drawer-trigger {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  html[data-theme] .staff-app.sx,
+  html[data-theme] .staff-app.sx.staff-app--collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .staff-app.sx .staff-sidebar {
+    display: none;
+  }
+  .staff-app.sx .staff-drawer-trigger {
+    display: inline-flex;
+  }
+  .staff-app.sx .staff-workspace-content {
+    padding: 22px;
+  }
+  .staff-app.sx .staff-topbar {
+    padding-inline: 16px;
+  }
+  .staff-app.sx .st-admin-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .staff-app.sx .st-admin-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 12px;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--border);
+  }
+}
+@media (max-width: 600px) {
+  .staff-app.sx .staff-topbar {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  .staff-app.sx .staff-workspace-content {
+    padding: 20px 12px;
+  }
+  .staff-app.sx .staff-topbar-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .staff-app.sx :is(.page-heading h1, .staff-workspace-content h1) {
+    font-size: 21px;
+  }
+  .staff-app.sx
+    :is(
+      .staff-dashboard-panel,
+      .staff-support-card,
+      .workspace-panel,
+      .staff-panel,
+      .card,
+      .summary-card
+    ) {
+    padding: 16px;
+  }
+  .staff-app.sx .st-main {
+    padding: 16px 12px;
+  }
+  .staff-app.sx .table-scroll table {
+    min-width: 560px;
+  }
+}
+/* Legacy text used --muted as ink; Lovable uses it as a surface. Keep both meanings scoped. */
+.staff-app.sx :is(.staff-queue-customer, .staff-proof-note, .staff-label, .help, .muted) {
+  color: var(--muted-foreground);
+}
+
+.staff-app.sx .st-admin-nav [aria-current='page'] {
+  color: var(--naql-color-info);
+}
+/* The source topbar's 62px select is Market-only; canonical theme names need their full width. */
+.staff-app.sx .staff-topbar .theme-control select {
+  width: auto;
+  min-width: 100px;
+  max-width: 120px;
+}

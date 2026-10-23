@@ -8,7 +8,7 @@ import { operationsWorkspace } from '@/infrastructure/operations/service';
 import { StaffFinanceUnavailable } from '@/components/payments/staff-market-unavailable';
 import { quoteStatusLabel } from '@/i18n/quotes';
 import { operationalStatus } from '@/i18n/operations';
-import { PageHeader } from '@/components/ui/presentation';
+import { StaffPageHeader as PageHeader } from '@/components/staff/presentation';
 import { Badge, EmptyState } from '@/components/ui/primitives';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };

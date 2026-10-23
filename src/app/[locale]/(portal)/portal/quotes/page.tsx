@@ -5,7 +5,7 @@ import { quotesDictionary, quoteStatusLabel } from '@/i18n/quotes';
 import { salesQueue } from '@/infrastructure/pricing/service';
 import { AppError } from '@/domain/shared/errors';
 import { Badge, EmptyState } from '@/components/ui/primitives';
-import { PageHeader } from '@/components/ui/presentation';
+import { StaffPageHeader as PageHeader, StaffTable } from '@/components/staff/presentation';
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };
 export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
@@ -44,43 +44,35 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         {!data.length ? (
           <EmptyState title={t.awaiting}>{t.noRequests}</EmptyState>
         ) : (
-          <ul className="request-list staff-queue">
-            {data.map((r) => (
-              <li key={r.id}>
-                <div className="staff-queue-main">
-                  <div className="staff-queue-meta">
-                    <span className="staff-label">{t.request}</span>
-                    <Badge>
-                      {quoteStatusLabel(
-                        r.quotes
-                          .flatMap((q) => q.quote_versions)
-                          .sort((a, b) => b.version - a.version)[0]?.status ?? r.status,
-                        locale,
-                      )}
-                    </Badge>
-                  </div>
-                  <h2>
-                    <bdi>{r.reference}</bdi>
-                  </h2>
-                  <p className="staff-queue-customer">{r.contact_name}</p>
-                  <p className="staff-route">
-                    {r.request_locations.map((l) => l.city).join(' → ')}
-                  </p>
-                </div>
-                <div className="staff-queue-action">
-                  <span className="staff-label">
-                    {locale === 'ar' ? 'الإجراء التالي' : 'Next action'}
-                  </span>
-                  <Link
-                    className="button button--primary"
-                    href={`/${locale}/portal/quotes/${r.id}`}
-                  >
-                    {t.open}
-                  </Link>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <StaffTable
+            caption={t.awaiting}
+            columns={[
+              t.request,
+              locale === 'ar' ? 'العميل' : 'Customer',
+              locale === 'ar' ? 'المسار' : 'Route',
+              locale === 'ar' ? 'الحالة' : 'Status',
+              locale === 'ar' ? 'الإجراء التالي' : 'Next action',
+            ]}
+            rows={data.map((r) => [
+              <bdi key="reference">{r.reference}</bdi>,
+              r.contact_name,
+              r.request_locations.map((l) => l.city).join(' → '),
+              <Badge key="status">
+                {quoteStatusLabel(
+                  r.quotes.flatMap((q) => q.quote_versions).sort((a, b) => b.version - a.version)[0]
+                    ?.status ?? r.status,
+                  locale,
+                )}
+              </Badge>,
+              <Link
+                key="open"
+                className="button button--primary"
+                href={`/${locale}/portal/quotes/${r.id}`}
+              >
+                {t.open}
+              </Link>,
+            ])}
+          />
         )}
       </section>
     </div>

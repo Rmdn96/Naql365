@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { supportQueue } from '@/infrastructure/support/service';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
-import { PageHeader } from '@/components/ui/presentation';
+import { StaffPageHeader as PageHeader } from '@/components/staff/presentation';
 import { Badge, EmptyState } from '@/components/ui/primitives';
 import { quoteStatusLabel } from '@/i18n/quotes';
 import { operationalStatus } from '@/i18n/operations';

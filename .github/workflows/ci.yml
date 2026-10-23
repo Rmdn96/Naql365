@@ -38,6 +38,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: node scripts/test-transport-presentation.mjs
       - run: node scripts/test-customer-presentation.mjs
+      - run: node scripts/test-staff-presentation.mjs
       - run: npm run test:e2e
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: failure()
@@ -47,6 +48,7 @@ jobs:
             playwright-report/
             test-results/transport-components/
             test-results/customer-components/
+            test-results/staff-components/
           retention-days: 7
   database:
     name: Supabase migrations and RLS

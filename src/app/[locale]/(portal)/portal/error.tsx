@@ -1,10 +1,13 @@
 'use client';
+import { StaffState } from '@/components/staff/presentation';
 import { usePathname } from 'next/navigation';
 export default function ErrorState({ reset }: { reset: () => void }) {
   const ar = usePathname().startsWith('/ar');
   return (
-    <section role="alert" className="staff-dashboard-panel">
-      <h1>{ar ? 'تعذر تحميل مساحة العمل' : 'Workspace could not be loaded'}</h1>
+    <StaffState
+      state="error"
+      title={ar ? 'تعذر تحميل مساحة العمل' : 'Workspace could not be loaded'}
+    >
       <p>
         {ar
           ? 'لم نتمكن من تأكيد البيانات. حاول مجددًا دون تكرار أي إجراء تجاري.'
@@ -13,6 +16,6 @@ export default function ErrorState({ reset }: { reset: () => void }) {
       <button className="button button--primary" onClick={reset}>
         {ar ? 'حاول مجددًا' : 'Try again'}
       </button>
-    </section>
+    </StaffState>
   );
 }

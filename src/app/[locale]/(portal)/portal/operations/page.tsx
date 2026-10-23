@@ -5,7 +5,7 @@ import { isLocale } from '@/i18n/config';
 import { operationsDictionary } from '@/i18n/operations';
 import { operationsWorkspace } from '@/infrastructure/operations/service';
 import { AppError } from '@/domain/shared/errors';
-import { PageHeader } from '@/components/ui/presentation';
+import { StaffPageHeader as PageHeader } from '@/components/staff/presentation';
 import Link from 'next/link';
 import { Workspace } from '@/components/operations/workspace';
 export const dynamic = 'force-dynamic';
