@@ -1,0 +1,24 @@
+{
+  "repository": "Rmdn96/naql365-design-lab",
+  "sha": "2997c92bb5b00dfbf15ae0d1ccdb289d47c4d891",
+  "baseline": "b5c9614bcddb0ca06eceeee978384ece1300b75d",
+  "files": [
+    {
+      "file": "src/components/naql/driver-preview.tsx",
+      "sha256": "fd77b36e8a652024f999b4e4ccef0d29676e8bca6501628e221e7b733cd77b70"
+    },
+    {
+      "file": "src/lib/naql/driver-content.ts",
+      "sha256": "7a8b54ef3151c441482f4185362fb67ad42af3f4ecc6f15a9424df55fa1e03ea"
+    },
+    {
+      "file": "src/lib/naql/driver-concept.ts",
+      "sha256": "ad376a347845c4d08e2ca22b2fb239d9fcc2dfa5e62dea9ba2c7e752a1833da1"
+    },
+    {
+      "file": "src/styles.css",
+      "sha256": "1f75dc29c4defa1f0626a7bdf038fed203ae5fa775b1b6d18e5ffbcdd313f9d6"
+    }
+  ],
+  "adaptation": "Original dx shell, card, timeline, state and form CSS; original Lucide icons. Existing canonical data, actions, Auth, tracking and POD controls retained; no lab models or records imported."
+}

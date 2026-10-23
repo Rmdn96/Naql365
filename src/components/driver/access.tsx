@@ -10,7 +10,7 @@ export function DriverAccessError({ error, locale }: { error: unknown; locale: L
     redirect(`/${locale}/driver/login`);
   const denied = error instanceof AppError && error.code === 'forbidden';
   return (
-    <div className="container page narrow">
+    <div className="container page narrow driver-shell driver-access">
       <Alert tone="error">
         <h1>{denied ? t.unauthorized : t.unavailable}</h1>
         <p>{denied ? t.unauthorizedBody : t.unavailableBody}</p>

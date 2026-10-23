@@ -1,0 +1,274 @@
+/* Original dx presentation, bridged only inside the canonical Driver family. */
+html[data-theme] .driver-workspace.dx {
+  --theme-background: var(--naql-color-background);
+  --theme-surface: var(--naql-color-surface);
+  --theme-surface-muted: var(--naql-color-muted-surface);
+  --theme-text-primary: var(--naql-color-text);
+  --theme-text-secondary: var(--naql-color-muted-text);
+  --theme-border: var(--naql-color-border);
+  --theme-brand: var(--naql-color-brand);
+  --theme-brand-hover: var(--naql-color-action);
+  --theme-on-brand: var(--naql-color-on-action);
+  --theme-focus: var(--naql-color-focus);
+  --theme-success: var(--naql-color-success);
+  --theme-warning: var(--naql-color-warning);
+  --theme-destructive: var(--naql-color-error);
+  --navy: var(--naql-color-text);
+  --white: var(--naql-color-surface);
+  --muted: var(--naql-color-muted-surface);
+  min-height: 100svh;
+  background: var(--background);
+  color: var(--foreground);
+  line-height: 1.8;
+}
+.driver-workspace *,
+.driver-workspace *::before,
+.driver-workspace *::after {
+  box-sizing: border-box;
+}
+.driver-workspace .dx-top {
+  min-height: 72px;
+}
+.driver-workspace-title {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.driver-preferences {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.driver-preferences a {
+  color: var(--foreground);
+  text-underline-offset: 4px;
+}
+.driver-workspace .dx-main {
+  width: 100%;
+}
+html[data-theme] .driver-workspace .driver-shell {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  gap: 14px;
+}
+.driver-workspace .driver-toolbar {
+  gap: 8px;
+  padding-block-end: 8px;
+}
+.driver-workspace .driver-toolbar form {
+  margin: 0;
+}
+.driver-workspace .driver-nav {
+  border: 0;
+  overflow: visible;
+}
+.driver-workspace .driver-nav a {
+  min-height: 48px;
+  padding: 8px 12px;
+  border-radius: 0;
+  color: var(--muted-foreground);
+}
+.driver-workspace .driver-nav a[aria-current] {
+  box-shadow: none;
+  border: 0;
+  border-block-end: 2px solid var(--primary);
+  background: transparent;
+  color: var(--foreground);
+}
+.driver-workspace .driver-page-heading {
+  display: grid;
+  gap: 6px;
+}
+.driver-workspace .driver-page-heading h1 {
+  font-size: 22px;
+  font-weight: 650;
+}
+.driver-workspace .driver-page-heading h2 {
+  font-size: 18px;
+}
+.driver-workspace .driver-page-heading > p {
+  color: var(--muted-foreground);
+}
+.driver-workspace .driver-safety {
+  margin: 0;
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 10px 12px;
+  border-color: color-mix(in oklch, var(--theme-warning) 40%, transparent);
+  background: color-mix(in oklch, var(--theme-warning) calc(var(--st-wash) * 0.6), transparent);
+}
+.driver-workspace .driver-safety > svg {
+  flex-shrink: 0;
+  color: var(--theme-warning);
+}
+.driver-workspace .driver-trip-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 12px;
+}
+.driver-workspace .driver-trip-card {
+  gap: 10px;
+  padding: 14px;
+  box-shadow: var(--cx-shadow);
+}
+.driver-workspace .driver-trip-heading {
+  gap: 8px;
+}
+.driver-workspace .driver-trip-heading > svg {
+  color: var(--cyan);
+  flex-shrink: 0;
+}
+.driver-workspace .driver-trip-heading h2 {
+  margin-inline-end: auto;
+  font-size: 15px;
+}
+.driver-workspace .driver-facts {
+  gap: 8px 12px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
+}
+.driver-workspace .driver-facts dt {
+  font-size: 11px;
+}
+.driver-workspace .driver-facts dd {
+  font-size: 13px;
+}
+.driver-workspace .driver-next-stop {
+  border-color: var(--cyan);
+  padding: 10px;
+}
+.driver-workspace .driver-focus {
+  padding: 14px;
+  gap: 10px;
+  border: 1px solid var(--border);
+}
+.driver-workspace .eyebrow::before {
+  content: none;
+}
+.driver-workspace .driver-focus h2 {
+  font-size: 18px;
+}
+.driver-workspace .button {
+  min-height: 48px;
+  font-size: 14px;
+}
+.driver-workspace .driver-command > .button--primary,
+.driver-workspace .driver-form > .button--primary {
+  min-height: 52px;
+}
+.driver-workspace .driver-shell .badge {
+  font-size: 12px;
+  padding: 3px 8px;
+  justify-self: start;
+  width: fit-content;
+}
+.driver-workspace .status-badge {
+  justify-self: start;
+  width: fit-content;
+}
+.driver-workspace .driver-stops {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.driver-workspace .driver-stops > li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 10px;
+  margin: 0;
+  padding: 0 0 16px;
+  border: 0;
+  background: transparent;
+}
+.driver-workspace .driver-stops > li > div {
+  min-width: 0;
+  margin: 0;
+}
+.driver-workspace .driver-stops > li > .dx-node {
+  margin-block-start: 12px;
+}
+.driver-workspace .driver-stops > li[data-current='true'] {
+  border: 0;
+}
+.driver-workspace .driver-stops > li > div :is(h3, p) {
+  margin: 0;
+}
+.driver-workspace .driver-form {
+  max-width: 560px;
+  gap: 12px;
+}
+.driver-workspace .driver-pod,
+.driver-workspace .driver-issue-form {
+  padding: 16px;
+}
+.driver-workspace .driver-form .field {
+  display: grid;
+  gap: 5px;
+}
+.driver-workspace label {
+  font-size: 13px;
+}
+.driver-workspace :is(input, select, textarea, button, a) {
+  max-width: 100%;
+}
+.driver-workspace .driver-signature {
+  background: #fff;
+  touch-action: none;
+}
+.driver-workspace .driver-shell input[type='file'] {
+  overflow: hidden;
+}
+.driver-workspace .driver-state {
+  margin: 0;
+}
+.driver-workspace .driver-state svg {
+  color: var(--cyan);
+}
+.driver-workspace .driver-state h1 {
+  font-size: 22px;
+}
+.driver-workspace :is(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--naql-color-focus);
+  outline-offset: 3px;
+}
+.driver-workspace :is(p, h1, h2, h3, dd, a) {
+  overflow-wrap: anywhere;
+}
+.driver-workspace .skip-link {
+  z-index: 100;
+}
+@media (max-width: 600px) {
+  .driver-workspace .dx-top {
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .driver-workspace-title {
+    display: none;
+  }
+  .driver-preferences {
+    gap: 8px;
+  }
+  .driver-preferences label {
+    font-size: 11px;
+  }
+  .driver-preferences select {
+    width: auto;
+  }
+  .driver-workspace .driver-page-heading h1 {
+    font-size: 19px;
+  }
+  .driver-workspace .driver-nav a {
+    font-size: 12px;
+    padding-inline: 8px;
+  }
+}
+
+.driver-workspace .driver-nav a {
+  color: var(--muted-foreground);
+  background: transparent;
+}
+.driver-workspace .theme-control select {
+  color: var(--foreground);
+  background: var(--card);
+}

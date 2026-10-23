@@ -15,7 +15,7 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
   return isAuthPath(path) ||
     isCustomerPath(path) ||
     isTransportPath(path) ||
-    /^\/(ar|en)(?:$|\/(?:portal|store|account$)(?:\/|$))/.test(path)
+    /^\/(ar|en)(?:$|\/(?:portal|store|driver|account$)(?:\/|$))/.test(path)
     ? null
     : children;
 }

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Hand, Truck } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 import { dictionary } from '@/i18n/dictionaries';
 import { driverDictionary } from '@/i18n/driver';
@@ -18,7 +19,7 @@ export function DriverNavigation({
   const t = driverDictionary(locale);
   return (
     <div className="driver-toolbar">
-      <nav className="driver-nav" aria-label={t.title}>
+      <nav className="driver-nav dx-tabs" aria-label={t.title}>
         {driverViews.map((v) => (
           <Link
             key={v}
@@ -55,8 +56,9 @@ export function DriverTripCard({ trip, locale }: { trip: DriverTrip; locale: Loc
     ot = operationsDictionary(locale),
     next = trip.stops.find((s) => s.status !== 'COMPLETED');
   return (
-    <Card className="driver-trip-card">
+    <Card className="driver-trip-card dx-card">
       <header className="driver-trip-heading">
+        <Truck size={18} aria-hidden="true" />
         <h2>
           <Link href={`/${locale}/driver/trips/${trip.id}`}>
             <bdi>{trip.reference}</bdi>
@@ -64,7 +66,7 @@ export function DriverTripCard({ trip, locale }: { trip: DriverTrip; locale: Loc
         </h2>
         <Badge>{operationalStatus(trip.status, locale)}</Badge>
       </header>
-      <dl className="driver-facts">
+      <dl className="driver-facts dx-grid">
         <div>
           <dt>{t.market}</dt>
           <dd>{locale === 'ar' ? trip.market.nameAr : trip.market.nameEn}</dd>
@@ -106,7 +108,7 @@ export function DriverTripCard({ trip, locale }: { trip: DriverTrip; locale: Loc
 export function DriverSafety({ locale }: { locale: Locale }) {
   return (
     <p className="driver-safety" role="note">
-      <span aria-hidden="true">!</span>
+      <Hand size={16} aria-hidden="true" />
       {driverDictionary(locale).safety}
     </p>
   );

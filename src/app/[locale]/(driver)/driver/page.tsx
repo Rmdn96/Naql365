@@ -32,17 +32,17 @@ export default async function Page({
     <div className="container page driver-shell">
       <DriverNavigation locale={locale} view={view} />
       <DriverSafety locale={locale} />
-      <header className="driver-page-heading">
+      <header className="driver-page-heading dx-head">
         <p className="eyebrow">{t.title}</p>
         <h1>{t[view]}</h1>
         <p>{t.online}</p>
       </header>
       {trips.length === 0 && (
-        <div className="driver-empty" role="status">
+        <div className="driver-empty dx-state" role="status">
           <p>{t.empty}</p>
         </div>
       )}
-      <div className="driver-trip-grid">
+      <div className="driver-trip-grid dx-cards">
         {trips.map((trip) => (
           <DriverTripCard key={trip.id} trip={trip} locale={locale} />
         ))}

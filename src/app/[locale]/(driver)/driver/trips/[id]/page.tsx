@@ -41,7 +41,7 @@ export default async function Page({
     <div className="container page driver-shell">
       <DriverNavigation locale={locale} tripId={trip.id} />
       <DriverSafety locale={locale} />
-      <header className="driver-page-heading">
+      <header className="driver-page-heading dx-head">
         <div className="driver-trip-heading">
           <h1>
             <bdi>{trip.reference}</bdi>
@@ -56,109 +56,120 @@ export default async function Page({
           {t.vehicle}: <bdi>{trip.vehicle.identifier}</bdi>
         </p>
       </header>
-      {!completed && (
-        <section className="driver-focus">
-          <p className="eyebrow">{locale === 'ar' ? 'خطوتك التالية' : 'Your next step'}</p>
-          <h2>
-            {next
-              ? next.kind === 'PICKUP'
-                ? ot.pickup
-                : ot.delivery
-              : locale === 'ar'
-                ? 'إتمام التسليم'
-                : 'Finish delivery'}
-          </h2>
-          {next && (
-            <>
-              <StatusBadge>{operationalStatus(next.status, locale)}</StatusBadge>
-              <p>{next.address}</p>
-              {next.instructions && <p>{next.instructions}</p>}
-            </>
-          )}
+      <div className="dx-detail">
+        <div className="driver-detail-route">
           {trip.contact && (
-            <p>
-              {trip.contact.name} · <bdi>{trip.contact.phone}</bdi>
-            </p>
+            <section>
+              <h2>{t.contact}</h2>
+              <p>{trip.contact.name}</p>
+              <bdi>{trip.contact.phone}</bdi>
+            </section>
           )}
-          <DriverExecution
-            key={`execution-${trip.revision}`}
-            trip={trip}
-            locale={locale}
-            executionAllowed={clearance.executionAllowed}
-          />
-          {!clearance.executionAllowed && (
-            <Alert>{paymentDictionary(locale).executionBlocked}</Alert>
-          )}
-        </section>
-      )}
-      <DriverTracking
-        tripId={trip.id}
-        eligible={
-          !['PLANNED', 'ASSIGNED', 'READY', 'COMPLETED', 'CANCELLED', 'FAILED'].includes(
-            trip.status,
-          )
-        }
-        locale={locale}
-      />
-      {completed && <Alert>{t.history}</Alert>}
-      {trip.contact && (
-        <section>
-          <h2>{t.contact}</h2>
-          <p>{trip.contact.name}</p>
-          <bdi>{trip.contact.phone}</bdi>
-        </section>
-      )}
-      <h2>{t.stops}</h2>
-      <ol className="driver-stops">
-        {trip.stops.map((stop) => (
-          <li
-            key={stop.id}
-            className="card"
-            data-current={!completed && next?.id === stop.id ? 'true' : undefined}
-          >
-            <h3>
-              {stop.kind === 'PICKUP' ? ot.pickup : ot.delivery} {stop.position}
-            </h3>
-            <Badge>{operationalStatus(stop.status, locale)}</Badge>
-            {stop.address && <p>{stop.address}</p>}
-            {stop.instructions && (
-              <p>
-                {t.instructions}: {stop.instructions}
-              </p>
-            )}
-            {stop.completedAt && (
-              <time dateTime={stop.completedAt}>{driverTime(stop.completedAt, trip, locale)}</time>
-            )}
-          </li>
-        ))}
-      </ol>
-      <section className="driver-issues">
-        <h2>{t.issues}</h2>
-        {trip.issues.length === 0 ? (
-          <p>{t.empty}</p>
-        ) : (
-          trip.issues.map((issue) => (
-            <article key={issue.id}>
-              <h3>{t.categories[issue.category]}</h3>
-              <p>{issue.reason}</p>
-              <Badge>{issue.status === 'OPEN' ? t.pending : t.resolved}</Badge>
-              {issue.photoState === 'FINAL' && (
-                <PrivateEvidence kind="issue" id={issue.id} locale={locale} />
+          <h2>{t.stops}</h2>
+          <ol className="driver-stops dx-stops">
+            {trip.stops.map((stop) => (
+              <li
+                key={stop.id}
+                className="card"
+                data-current={!completed && next?.id === stop.id ? 'true' : undefined}
+              >
+                <span className="dx-node" aria-hidden="true" />
+                <div>
+                  <h3>
+                    {stop.kind === 'PICKUP' ? ot.pickup : ot.delivery} {stop.position}
+                  </h3>
+                  <Badge>{operationalStatus(stop.status, locale)}</Badge>
+                  {stop.address && <p>{stop.address}</p>}
+                  {stop.instructions && (
+                    <p>
+                      {t.instructions}: {stop.instructions}
+                    </p>
+                  )}
+                  {stop.completedAt && (
+                    <time dateTime={stop.completedAt}>
+                      {driverTime(stop.completedAt, trip, locale)}
+                    </time>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <aside className="driver-detail-actions">
+          {!completed && (
+            <section className="driver-focus dx-action">
+              <p className="eyebrow">{locale === 'ar' ? 'خطوتك التالية' : 'Your next step'}</p>
+              <h2>
+                {next
+                  ? next.kind === 'PICKUP'
+                    ? ot.pickup
+                    : ot.delivery
+                  : locale === 'ar'
+                    ? 'إتمام التسليم'
+                    : 'Finish delivery'}
+              </h2>
+              {next && (
+                <>
+                  <StatusBadge>{operationalStatus(next.status, locale)}</StatusBadge>
+                  <p>{next.address}</p>
+                  {next.instructions && <p>{next.instructions}</p>}
+                </>
               )}
-            </article>
-          ))
-        )}
-      </section>
-      {!completed && trip.stops.some((s) => s.status !== 'COMPLETED') && (
-        <DriverIssueForm key={`issues-${trip.revision}`} trip={trip} locale={locale} />
-      )}{' '}
-      {trip.pod?.state === 'FINAL' ? (
-        <Alert tone="success">{t.podDone}</Alert>
-      ) : (
-        !completed &&
-        trip.status === 'DELIVERED' &&
-        !trip.attention && <DriverPodForm trip={trip} locale={locale} />
-      )}
+              {trip.contact && (
+                <p>
+                  {trip.contact.name} · <bdi>{trip.contact.phone}</bdi>
+                </p>
+              )}
+              <DriverExecution
+                key={`execution-${trip.revision}`}
+                trip={trip}
+                locale={locale}
+                executionAllowed={clearance.executionAllowed}
+              />
+              {!clearance.executionAllowed && (
+                <Alert>{paymentDictionary(locale).executionBlocked}</Alert>
+              )}
+            </section>
+          )}
+          <DriverTracking
+            tripId={trip.id}
+            eligible={
+              !['PLANNED', 'ASSIGNED', 'READY', 'COMPLETED', 'CANCELLED', 'FAILED'].includes(
+                trip.status,
+              )
+            }
+            locale={locale}
+          />
+          {completed && <Alert>{t.history}</Alert>}
+          <section className="driver-issues">
+            <h2>{t.issues}</h2>
+            {trip.issues.length === 0 ? (
+              <p>{t.empty}</p>
+            ) : (
+              trip.issues.map((issue) => (
+                <article key={issue.id}>
+                  <h3>{t.categories[issue.category]}</h3>
+                  <p>{issue.reason}</p>
+                  <Badge>{issue.status === 'OPEN' ? t.pending : t.resolved}</Badge>
+                  {issue.photoState === 'FINAL' && (
+                    <PrivateEvidence kind="issue" id={issue.id} locale={locale} />
+                  )}
+                </article>
+              ))
+            )}
+          </section>
+          {!completed && trip.stops.some((s) => s.status !== 'COMPLETED') && (
+            <DriverIssueForm key={`issues-${trip.revision}`} trip={trip} locale={locale} />
+          )}{' '}
+          {trip.pod?.state === 'FINAL' ? (
+            <Alert tone="success">{t.podDone}</Alert>
+          ) : (
+            !completed &&
+            trip.status === 'DELIVERED' &&
+            !trip.attention && <DriverPodForm trip={trip} locale={locale} />
+          )}
+        </aside>
+      </div>
     </div>
   );
 }

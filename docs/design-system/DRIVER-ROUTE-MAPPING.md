@@ -1,0 +1,18 @@
+# Driver source mapping — Phase 6
+
+Baseline b5c9614bcddb0ca06eceeee978384ece1300b75d; approved Lovable 2997c92bb5b00dfbf15ae0d1ccdb289d47c4d891.
+
+| Actual route/component                         | Baseline                                 | Original DriverPreview equivalent                               | Adaptation / preserved behavior                                                                                          |
+| ---------------------------------------------- | ---------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| /[locale]/driver/login                         | Already compliant Phase 2                | Auth preview, not the operational Driver lab                    | Independent AuthExperience, real DriverLogin and driverLogin action unchanged                                            |
+| /[locale]/driver?view=today,upcoming,completed | Mixed (old public chrome + themed cards) | trips / today, upcoming, completed tabs; dx-top/main/cards/grid | Real query parsing, bounded offset pagination, DriverNavigation, DriverTripCard and Safety preserved                     |
+| /[locale]/driver/trips/[id]                    | Legacy presentation                      | detail, stopHierarchy, dx-summary/action; history               | Real trip and payment-clearance reads, redacted history, statuses/contact projection unchanged                           |
+| DriverExecution                                | Legacy controls                          | next-action panel, pending/disabled/unconfirmed states          | Existing idempotent command, revision, hydration lock and Finance execution gate untouched; CSS only                     |
+| DriverTracking                                 | Legacy controls                          | location banner                                                 | Real permission state, opt-in, foreground lease and authorized events retained; no GPS simulation                        |
+| DriverIssueForm / PrivateEvidence              | Legacy controls                          | issue, dx-form                                                  | Existing validation, upload/finalization, private URL and ownership retained; CSS only                                   |
+| DriverPodForm                                  | Legacy controls                          | pod, dx-sign/canvas                                             | Existing signature, file validation, event-location opt-in, pending/final states and immutable upload retained; CSS only |
+| access/loading/error                           | Partial / inherited                      | dx-state / loading/error                                        | Guard redirect and logout preserved; safe localized presentation and existing retry/reset semantics                      |
+
+There are no separate Driver dashboard, tracking, POD or issue routes. These are real sections on the list/detail routes. Lab view/state/market switches, dummy slots and fictitious actions are not imported. No map, live GPS feed, ETA, earnings, Driver registration or finance approval feature is invented. Completed history continues to display only the server's authorized projection.
+
+The original dx CSS block is copied with provenance. The workspace adapter is Driver-scoped and bridges Phase 1 tokens. Customer, Transport, Auth and Staff components/styles stay unchanged. PublicChrome adds only Driver path suppression so operational pages do not inherit public navigation. Driver login keeps its Phase 2 chrome.
