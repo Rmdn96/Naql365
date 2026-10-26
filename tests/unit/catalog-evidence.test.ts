@@ -1,8 +1,44 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { appendFileSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
-import { relative, resolve } from 'node:path';
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+} from 'node:fs';
+import { relative, resolve, join, parse } from 'node:path';
+import { tmpdir } from 'node:os';
+import { execFileSync } from 'node:child_process';
 import { createCatalogEvidence } from '../../scripts/catalog-evidence.mjs';
 const directories: string[] = [];
+const temporaryDirectories = new Set<string>();
+const temporaryRoot = realpathSync(tmpdir());
+function temporaryDirectory() {
+  if (process.platform === 'win32') {
+    const drive = parse(temporaryRoot).root;
+    if (!/^[A-Za-z]:\\$/.test(drive)) throw Error('TEST_TEMP_VOLUME_INVALID');
+    const volume = JSON.parse(
+      execFileSync(
+        'powershell.exe',
+        [
+          '-NoProfile',
+          '-NonInteractive',
+          '-Command',
+          `Get-Volume -DriveLetter '${drive[0]}' | Select-Object FileSystem,DriveType | ConvertTo-Json -Compress`,
+        ],
+        { encoding: 'utf8' },
+      ),
+    );
+    if (volume.FileSystem !== 'NTFS' || volume.DriveType !== 'Fixed')
+      throw Error('TEST_TEMP_VOLUME_INVALID');
+  }
+  const output = mkdtempSync(join(temporaryRoot, 'naql365-catalog-'));
+  temporaryDirectories.add(output);
+  directories.push(output);
+  return output;
+}
 function directory() {
   const output = resolve('test-results', 'store-local-' + Date.now());
   mkdirSync(output, { recursive: true });
@@ -13,9 +49,14 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllEnvs();
   for (const output of directories.splice(0)) {
-    if (!/^store-local-[0-9]+$/.test(relative(resolve('test-results'), resolve(output))))
+    const temporary = temporaryDirectories.has(output);
+    const root = temporary ? temporaryRoot : resolve('test-results');
+    const pattern = temporary ? /^naql365-catalog-[A-Za-z0-9]{6}$/ : /^store-local-[0-9]+$/;
+    if (!pattern.test(relative(root, resolve(output))) || realpathSync(output) !== resolve(output))
       throw Error('TEST_CLEANUP_PATH_INVALID');
     rmSync(output, { recursive: true });
+    temporaryDirectories.delete(output);
+    expect(existsSync(output)).toBe(false);
   }
 });
 const record = {
@@ -59,7 +100,7 @@ it('creates a machine-readable artifact before the server starts and retains it 
   ]);
 });
 it('rejects private payloads, incomplete lines, arbitrary identifiers and oversized output', () => {
-  const channel = createCatalogEvidence(directory());
+  const channel = createCatalogEvidence(temporaryDirectory());
   appendFileSync(channel.file, JSON.stringify({ ...record, token: 'synthetic-private' }) + '\n');
   appendFileSync(channel.file, JSON.stringify({ ...record, outcome: 'unbounded-private' }) + '\n');
   appendFileSync(channel.file, JSON.stringify(record)); // not yet a complete record
