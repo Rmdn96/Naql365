@@ -1,0 +1,127 @@
+name: Phase 6 exact-SHA dependency security
+run-name: Audit a4569e3f7aad95f7449a1adea814a004524ca1f7
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: phase6-security-a4569e3f7aad95f7449a1adea814a004524ca1f7
+  cancel-in-progress: false
+jobs:
+  dependency-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: 'true'
+      NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+      TARGET_SHA: a4569e3f7aad95f7449a1adea814a004524ca1f7
+      CONTROL_SHA: ${{ github.workflow_sha }}
+      CONTROL_REF: ${{ github.workflow_ref }}
+      EVENT_SHA: ${{ github.sha }}
+    steps:
+      - name: Checkout immutable repair
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: Rmdn96/Naql365
+          ref: a4569e3f7aad95f7449a1adea814a004524ca1f7
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Node 24
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '24'
+      - name: Verify target and record provenance
+        env:
+          EVIDENCE: ${{ runner.temp }}/phase6-security-evidence
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
+          test -z "$(git status --porcelain)"
+          node <<'NODE'
+          const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+          fs.mkdirSync(process.env.EVIDENCE,{recursive:true});
+          const hash=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+          fs.writeFileSync(process.env.EVIDENCE+'/provenance.json',JSON.stringify({
+            repository:'Rmdn96/Naql365',targetSha:process.env.TARGET_SHA,
+            controlSha:process.env.CONTROL_SHA,controlRef:process.env.CONTROL_REF,
+            eventSha:process.env.EVENT_SHA,runId:process.env.GITHUB_RUN_ID,
+            runAttempt:process.env.GITHUB_RUN_ATTEMPT,node:process.version,
+            npm:cp.execFileSync('npm',['--version'],{encoding:'utf8'}).trim(),
+            at:new Date().toISOString(),packageHash:hash('package.json'),
+            lockHash:hash('package-lock.json')
+          },null,2));
+          NODE
+      - name: Deterministic locked install
+        run: npm ci --include=dev --audit=false --fund=false
+      - name: Enforce runtime and full audits
+        env:
+          EVIDENCE: ${{ runner.temp }}/phase6-security-evidence
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),cp=require('child_process');
+          let failed=false;
+          for(const [scope,args] of [
+            ['runtime',['audit','--omit=dev','--json']],
+            ['full',['audit','--include=dev','--json']]
+          ]) {
+            const p=cp.spawnSync('npm',args,{encoding:'utf8',timeout:120000,maxBuffer:16*1024*1024});
+            let a;
+            try { a=JSON.parse(p.stdout); } catch {}
+            const counts=a?.metadata?.vulnerabilities;
+            const valid=counts && ['info','low','moderate','high','critical','total'].every(k=>Number.isInteger(counts[k]) && counts[k]>=0);
+            const clean=valid && Object.values(counts).every(v=>v===0);
+            const ok=!p.error && !p.signal && p.status===0 && !a?.error && clean && a?.vulnerabilities && Object.keys(a.vulnerabilities).length===0;
+            const findings=Object.entries(a?.vulnerabilities||{}).map(([name,v])=>({
+              name,severity:v.severity,direct:v.isDirect,
+              advisories:(v.via||[]).filter(x=>x && typeof x==='object').map(x=>({
+                severity:x.severity,url:/^https:\/\/github\.com\/advisories\/GHSA-[a-z0-9-]+$/.test(x.url||'')?x.url:undefined
+              }))
+            }));
+            fs.writeFileSync(process.env.EVIDENCE+'/'+scope+'-audit.json',JSON.stringify({
+              targetSha:process.env.TARGET_SHA,at:new Date().toISOString(),
+              status:ok?'PASS':'FAIL',exitCode:p.status,signal:p.signal,
+              auditError:!!p.error||!!a?.error||!valid,
+              counts:valid?counts:null,findings
+            },null,2));
+            if(!ok)failed=true;
+          }
+          process.exitCode=failed?1:0;
+          NODE
+      - name: Check installation integrity and package versions
+        env:
+          EVIDENCE: ${{ runner.temp }}/phase6-security-evidence
+        if: always()
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),cp=require('child_process'),crypto=require('crypto');
+          const e=process.env.EVIDENCE;
+          const before=JSON.parse(fs.readFileSync(e+'/provenance.json','utf8'));
+          const hash=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+          const lock=JSON.parse(fs.readFileSync('package-lock.json','utf8'));
+          const names=['zod','vitest','vite','@vitest/mocker'];
+          const expected={zod:'4.6.6',vitest:'5.0.3',vite:'8.2.4','@vitest/mocker':'5.0.3'};
+          const entries=[];
+          for(const name of names){
+            for(const [p,v] of Object.entries(lock.packages||{})) {
+              if(p==='node_modules/'+name || p.endsWith('/node_modules/'+name)) {
+                const installed=JSON.parse(fs.readFileSync(p+'/package.json','utf8')).version;
+                entries.push({name,path:p,locked:v.version,installed});
+                if(installed!==expected[name]||v.version!==installed)throw Error('Unexpected dependency version');
+              }
+            }
+            if(entries.filter(x=>x.name===name).length!==1)throw Error('Missing or duplicate reviewed package');
+          }
+          if(before.packageHash!==hash('package.json')||before.lockHash!==hash('package-lock.json'))throw Error('Manifest drift');
+          cp.execFileSync('git',['diff','--exit-code','--','package.json','package-lock.json']);
+          fs.writeFileSync(e+'/installation.json',JSON.stringify({targetSha:process.env.TARGET_SHA,entries,manifestUnchanged:true},null,2));
+          NODE
+      - name: Retain sanitized evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: phase6-security-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/phase6-security-evidence/*.json
+          if-no-files-found: error
+          retention-days: 7
