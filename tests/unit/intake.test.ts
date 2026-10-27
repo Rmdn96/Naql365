@@ -48,6 +48,23 @@ it.each([0, -1, 1.5, 10001])('rejects invalid item quantity %s', (quantity) =>
       .success,
   ).toBe(false),
 );
+it('accepts bounded collections and rejects oversized or invalid collections', () => {
+  const item = { description: 'Box', quantity: 1, notes: '' };
+  const draft = {
+    ...blankDraft(),
+    items: Array.from({ length: 50 }, () => ({ ...item })),
+    additional_service_ids: Array.from({ length: 10 }, () => crypto.randomUUID()),
+  };
+  expect(draftInput.parse(draft)).toEqual(draft);
+  expect(draftInput.safeParse({ ...draft, items: [...draft.items, item] }).success).toBe(false);
+  expect(
+    draftInput.safeParse({
+      ...draft,
+      additional_service_ids: [...draft.additional_service_ids, crypto.randomUUID()],
+    }).success,
+  ).toBe(false);
+  expect(draftInput.safeParse({ ...draft, items: [null, false, {}] }).success).toBe(false);
+});
 it('uses Riyadh date at UTC midnight boundary', () =>
   expect(marketDate(new Date('2026-09-09T21:30:00Z'), 'Asia/Riyadh')).toBe('2026-09-10'));
 it('requires the persisted business payload to be complete before submission UX', () =>
