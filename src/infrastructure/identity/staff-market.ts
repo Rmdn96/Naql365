@@ -1,7 +1,7 @@
 import 'server-only';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
-import { marketCookie, publicCountry } from '@/domain/markets/public-contact';
+import { marketCookie, resolveActiveCountry } from '@/domain/markets/public-contact';
 import { staffAccess } from './staff-context';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { AppError } from '@/domain/shared/errors';
@@ -14,15 +14,19 @@ export async function staffMarket(permission: string) {
       access.status === 'unauthenticated' ? 'unauthenticated' : 'forbidden',
       'Workspace unavailable',
     );
-  const selection = publicCountry.safeParse((await cookies()).get(marketCookie)?.value ?? 'SA');
-  if (!selection.success) throw new AppError('forbidden', 'Market unavailable');
+  let country: 'EG';
+  try {
+    country = resolveActiveCountry((await cookies()).get(marketCookie)?.value);
+  } catch {
+    throw new AppError('forbidden', 'Market unavailable');
+  }
   const client = await createSupabaseServerClient();
   const organizationId = access.principal.organizationId;
   const result = await client
     .from('markets')
     .select('id,organization_id,country_code,name_ar,name_en,currency')
     .eq('organization_id', organizationId)
-    .eq('country_code', selection.data)
+    .eq('country_code', country)
     .eq('active', true)
     .maybeSingle();
   if (result.error) throw new AppError('internal', 'Market unavailable');
@@ -30,10 +34,10 @@ export async function staffMarket(permission: string) {
     .object({
       id: z.uuid(),
       organization_id: z.literal(organizationId),
-      country_code: z.literal(selection.data),
+      country_code: z.literal(country),
       name_ar: z.string(),
       name_en: z.string(),
-      currency: z.enum(['SAR', 'EGP']),
+      currency: z.literal('EGP'),
     })
     .safeParse(result.data);
   if (!market.success) throw new AppError('forbidden', 'Market unavailable');

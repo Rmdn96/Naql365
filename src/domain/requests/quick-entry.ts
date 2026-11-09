@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import type { RequestDraft } from './intake';
-import { publicCountry } from '@/domain/markets/public-contact';
+import { activeCountry } from '@/domain/markets/public-contact';
 
 export const quickEntry = z.object({
-  country: publicCountry,
+  country: activeCountry,
   service: z.uuid(),
   pickupCity: z.uuid(),
   deliveryCity: z.uuid(),

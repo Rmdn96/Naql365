@@ -35,7 +35,11 @@ assert.deepEqual(
   readdirSync(folder)
     .filter((n) => n.endsWith('.sql'))
     .sort(),
-  [...old.map((n) => n.slice(folder.length)), '20261019000200_store_catalog_management.sql'].sort(),
+  [
+    ...old.map((n) => n.slice(folder.length)),
+    '20261019000200_store_catalog_management.sql',
+    '20261107000100_egypt_only_v1.sql',
+  ].sort(),
 );
 const source = readFileSync(folder + added, 'utf8');
 assert.equal(hash(source), '0816abc8bf7ef64258adfddc7f92633786b8d30bff9c00453caecfbb37459ebd');
@@ -50,7 +54,7 @@ const result = {
   baseline,
   originalMigrationCount: old.length,
   originalMigrationGitBlobsByteIdentical: true,
-  migrationCount: 51,
+  migrationCount: 52,
   added: folder + added,
   sha256: hash(source),
   financeAddition: {

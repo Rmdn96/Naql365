@@ -99,7 +99,7 @@ try {
     server = await startBrowserServer(env, 3013);
   }
   sql(
-    `insert into public.organizations(id,name) values('${org}','Synthetic staff workspace'); insert into public.markets(organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values('${org}','SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966'),('${org}','EG','مصر','Egypt',true,'EGP','Africa/Cairo','+20');`,
+    `insert into public.organizations(id,name) values('${org}','Synthetic staff workspace'); insert into public.markets(organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values('${org}','EG','مصر','Egypt',true,'EGP','Africa/Cairo','+20');`,
   );
   save();
   const customerUser = await admin.auth.admin.createUser({
@@ -114,7 +114,7 @@ try {
   sql(
     `insert into public.organization_memberships(organization_id,profile_id,member_type) values('${org}','${customerUser.data.user.id}','customer');insert into public.customers(id,organization_id,profile_id) values('${customerId}','${org}','${customerUser.data.user.id}');`,
   );
-  for (const country of ['SA', 'EG']) {
+  for (const country of ['EG']) {
     const request = randomUUID(),
       quote = randomUUID(),
       version = randomUUID(),
@@ -122,8 +122,8 @@ try {
     const market = sql(
         `select id from public.markets where organization_id='${org}' and country_code='${country}'`,
       ),
-      currency = country === 'SA' ? 'SAR' : 'EGP';
-    const reference = 'O-N365-202610-' + (country === 'SA' ? '980001' : '980002');
+      currency = 'EGP';
+    const reference = 'O-N365-202610-' + '980002';
     sql(`begin;
     insert into public.requests(id,organization_id,customer_id,market_id,contact_name) values('${request}','${org}','${customerId}','${market}','SYNTHETIC FINANCE ${country}');
     insert into public.quotes(id,organization_id,request_id) values('${quote}','${org}','${request}');
@@ -169,12 +169,7 @@ try {
           throw Error('LOCAL_LOGIN_HTTP_FAILURE');
         await landing;
         await page.waitForURL(new RegExp('/' + locale + '/portal$'));
-        await page.waitForFunction(() => {
-          const node = document.querySelector('#staff-market');
-          if (!node) return false;
-          const key = Object.keys(node).find((k) => k.startsWith('__reactProps'));
-          return !!key && typeof Reflect.get(node, key)?.onChange === 'function';
-        });
+        await expect(page.locator('#staff-market')).toContainText('🇪🇬');
         console.log('STAFF_READY ' + role + ' ' + locale);
         checkpoint = role + ' ' + locale + ' destination';
         await expect(page).toHaveURL(new RegExp('/' + locale + '/portal$'), { timeout: 20000 });
@@ -188,60 +183,21 @@ try {
         await expect(page).toHaveURL(new RegExp('/' + locale + '/portal$'));
         checkpoint = role + ' ' + locale + ' workspaceModule visibility';
         const nav = page.locator('.staff-sidebar nav');
-        for (const country of ['EG', 'SA']) {
-          checkpoint = role + ' ' + locale + ' Market navigation ' + country;
-          // Wait for the real controlled input handler, not just server-rendered HTML.
-          await page.waitForFunction(() => {
-            const node = document.querySelector('#staff-market');
-            if (!node) return false;
-            const props = Object.keys(node).find((k) => k.startsWith('__reactProps'));
-            return props && typeof Reflect.get(node, props)?.onChange === 'function';
-          });
-          const changed = page.waitForResponse(
-            (r) => r.url().endsWith('/api/public/market') && r.request().method() === 'POST',
-          );
-          const refreshedMarket = page.waitForResponse(
-            (r) =>
-              new URL(r.url()).pathname === new URL(page.url()).pathname &&
-              r.request().headers()['rsc'] === '1',
-          );
-          await page.locator('#staff-market').selectOption(country);
-          const marketResponse = await changed.catch(() => {
-            throw Error('LOCAL_MARKET_REQUEST_TIMEOUT');
-          });
-          if (marketResponse.status() !== 200) throw Error('LOCAL_MARKET_HTTP_FAILURE');
-          if ((await refreshedMarket).status() !== 200) throw Error('LOCAL_MARKET_REFRESH_FAILED');
-          console.log('STAFF_MARKET_RESPONSE ' + role + ' ' + locale + ' ' + country);
-          await expect(page.locator('#staff-market')).toHaveValue(country);
-          await expect(page.locator('.staff-organization-context')).toContainText(
-            country === 'SA'
-              ? locale === 'ar'
-                ? 'السعودية'
-                : 'Saudi Arabia'
-              : locale === 'ar'
-                ? 'مصر'
-                : 'Egypt',
-          );
-          await page.reload();
-          await page.waitForFunction(() => {
-            const node = document.querySelector('#staff-market');
-            const key = node && Object.keys(node).find((k) => k.startsWith('__reactProps'));
-            return !!key && typeof Reflect.get(node, key)?.onChange === 'function';
-          });
-          await expect(page.locator('#staff-market')).toHaveValue(country);
-          const other = locale === 'ar' ? 'en' : 'ar';
-          await page.goto(origin + '/' + other + '/portal');
-          await page.waitForFunction(() => {
-            const node = document.querySelector('#staff-market');
-            const key = node && Object.keys(node).find((k) => k.startsWith('__reactProps'));
-            return !!key && typeof Reflect.get(node, key)?.onChange === 'function';
-          });
-          await expect(page.locator('#staff-market')).toHaveValue(country);
-          await page.goto(origin + '/' + locale + '/portal');
-          await expect(page.locator('.staff-organization-context')).toContainText(
-            'Synthetic staff workspace',
-          );
-        }
+        await expect(page.locator('#staff-market')).toContainText('🇪🇬');
+        await expect(page.locator('option[value="SA"]')).toHaveCount(0);
+        const deniedMarket = await page.request.post(origin + '/api/public/market', {
+          headers: { Origin: origin },
+          data: { country: 'SA' },
+        });
+        expect(deniedMarket.status()).toBe(400);
+        await page.reload();
+        await expect(page.locator('#staff-market')).toContainText('🇪🇬');
+        await expect(page.locator('.staff-organization-context')).toContainText(
+          'Synthetic staff workspace',
+        );
+        await page.goto(origin + '/' + (locale === 'ar' ? 'en' : 'ar') + '/portal');
+        await expect(page.locator('#staff-market')).toContainText('🇪🇬');
+        await page.goto(origin + '/' + locale + '/portal');
         for (const workspaceModule of [
           'quotes',
           'operations',
@@ -328,18 +284,7 @@ try {
                 url.pathname === '/' + locale + '/portal/finance' &&
                 url.searchParams.get('status') === 'CASH_DUE',
             );
-            const changed = page.waitForResponse(
-              (r) => r.url().endsWith('/api/public/market') && r.request().method() === 'POST',
-            );
-            const refreshedFinance = page.waitForResponse(
-              (r) =>
-                new URL(r.url()).pathname === '/' + locale + '/portal/finance' &&
-                r.request().headers()['rsc'] === '1',
-            );
-            await page.locator('#staff-market').selectOption('EG');
-            expect((await changed).status()).toBe(200);
-            if ((await refreshedFinance).status() !== 200)
-              throw Error('LOCAL_FINANCE_REFRESH_FAILED');
+            await page.reload();
             await expect(page.locator('.staff-organization-context')).toContainText(
               locale === 'ar' ? 'مصر' : 'Egypt',
             );
@@ -355,8 +300,8 @@ try {
               'SYNTHETIC FINANCE EG',
             );
             const eg = financeFixtures.find((f) => f.country === 'EG'),
-              sa = financeFixtures.find((f) => f.country === 'SA');
-            await page.goto(origin + '/' + locale + '/portal/finance/' + sa.order);
+              unowned = { order: randomUUID() };
+            await page.goto(origin + '/' + locale + '/portal/finance/' + unowned.order);
             await expect(page.locator('#payment-reference')).toHaveCount(0);
             await page.goto(origin + '/' + locale + '/portal/finance/' + eg.order);
             await expect(page.locator('#payment-reference')).toBeVisible();
@@ -436,7 +381,7 @@ try {
           });
           const signed = await direct.auth.signInWithPassword({ email, password });
           const market = sql(
-            `select id from public.markets where organization_id='${org}' and country_code='SA'`,
+            `select id from public.markets where organization_id='${org}' and country_code='EG'`,
           );
           const rpc = signed.error
             ? null

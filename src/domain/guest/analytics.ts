@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { publicCountry } from '@/domain/markets/public-contact';
+import { activeCountry } from '@/domain/markets/public-contact';
 
 // Finite event/context vocabulary: no arbitrary properties, identities, URLs or GPS.
 export const mvpAnalyticsEvent = z
@@ -17,7 +17,7 @@ export const mvpAnalyticsEvent = z
       'tracking_viewed',
       'whatsapp_clicked',
     ]),
-    market: publicCountry,
+    market: activeCountry,
     context: z.enum(['home', 'request', 'quote', 'checkout', 'tracking']),
   })
   .strict();

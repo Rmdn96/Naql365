@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { guestSecret, guestContinuationPath, secretFromFragment } from '@/domain/guest/capability';
-import { publicCountry, type PublicCountry } from '@/domain/markets/public-contact';
+import { activeCountry, type PublicCountry } from '@/domain/markets/public-contact';
 import { guestDictionary } from '@/i18n/guest';
 import type { Locale } from '@/i18n/config';
 import { customerExperience } from '@/i18n/customer-experience';
@@ -14,7 +14,7 @@ import { useHydrated } from '@/components/ui/use-hydrated';
 
 export function GuestStart({
   locale,
-  initialCountry = 'SA',
+  initialCountry = 'EG',
   preselection,
 }: {
   locale: Locale;
@@ -24,7 +24,9 @@ export function GuestStart({
   const hydrated = useHydrated();
   const t = guestDictionary(locale),
     router = useRouter();
-  const [country, setCountry] = useState(initialCountry),
+  const [country, setCountry] = useState<PublicCountry>(
+      initialCountry === 'EG' ? initialCountry : 'EG',
+    ),
     [pending, setPending] = useState(false),
     [error, setError] = useState(false);
   const [journey, setJourney] = useState<{ token: string; request: { id: string } } | null>(null),
@@ -48,7 +50,7 @@ export function GuestStart({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          country: publicCountry.parse(country),
+          country: activeCountry.parse(country),
           creationToken: creation.current.token,
         }),
       });
@@ -100,11 +102,10 @@ export function GuestStart({
           <Select
             id="guest-country"
             label={t.country}
-            value={country}
-            onChange={(e) => setCountry(publicCountry.parse(e.target.value))}
+            value="EG"
+            onChange={(e) => setCountry(activeCountry.parse(e.target.value))}
             disabled={!hydrated || pending}
           >
-            <option value="SA">{t.sa}</option>
             <option value="EG">{t.eg}</option>
           </Select>
           <Button onClick={start} disabled={!hydrated || pending}>

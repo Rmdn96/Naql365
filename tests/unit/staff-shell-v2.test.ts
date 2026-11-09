@@ -62,5 +62,5 @@ it('does not invent additional staff modules from a sparse permitted link set', 
   });
   expect(markup).not.toMatch(/\/portal\/(finance|quotes|operations)/);
   expect(markup).toContain('value="system" selected=""');
-  expect(markup).toContain('value="EG" selected=""');
+  expect(markup).toContain('🇪🇬');
 });

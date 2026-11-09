@@ -5,7 +5,7 @@ begin if ok is distinct from true then raise exception 'Phase 3 assertion: %',la
 insert into public.organizations(id,name) values('23000000-0000-4000-8000-000000000001','Phase 3 A'),('23000000-0000-4000-8000-000000000002','Phase 3 B');
 -- Explicit synthetic catalogue for this rollback-only fixture; no production coverage.
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code)
- select md5(id::text||'SA')::uuid,id,'SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966' from public.organizations where id::text like '23000000%';
+ select md5(id::text||'EG')::uuid,id,'EG','مصر','Egypt',true,'EGP','Africa/Cairo','+20' from public.organizations where id::text like '23000000%';
 insert into public.market_regions(id,organization_id,market_id,code,name_ar,name_en,administrative_type)
  select md5(id::text||'region')::uuid,organization_id,id,'fixture','منطقة اختبار','Fixture region','region' from (select * from public.markets where organization_id::text like '23000000%') fixture_markets;
 insert into public.market_cities(id,organization_id,market_id,region_id,code,name_ar,name_en)
@@ -26,10 +26,10 @@ insert into public.user_roles(organization_id,profile_id,role_id)
  when m.member_type='customer' then 'CUSTOMER' when m.profile_id='13000000-0000-4000-8000-000000000003' then 'SALES' else 'DISPATCHER' end
  where m.profile_id::text like '13000000%';
 insert into public.customers(id,organization_id,profile_id) values('33000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','13000000-0000-4000-8000-000000000002');
-insert into public.requests(id,organization_id,customer_id,market_id) values ('53000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','33000000-0000-4000-8000-000000000001',md5(('23000000-0000-4000-8000-000000000001')::text||'SA')::uuid);
+insert into public.requests(id,organization_id,customer_id,market_id) values ('53000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','33000000-0000-4000-8000-000000000001',md5(('23000000-0000-4000-8000-000000000001')::text||'EG')::uuid);
 insert into public.quotes(id,organization_id,request_id) values('63000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','53000000-0000-4000-8000-000000000001');
-insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,distance_km,distance_source,distance_verified_at,currency) values ('73000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','63000000-0000-4000-8000-000000000001',1,'ACCEPTED',now(),now()+interval '2 days',10,'MANUAL_VERIFIED',now(),'SAR');
-insert into public.orders(id,organization_id,quote_id,accepted_quote_version_id,idempotency_key,reference,request_id,customer_id,distance_km,distance_source,accepted_at,currency) values ('83000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','63000000-0000-4000-8000-000000000001','73000000-0000-4000-8000-000000000001','phase3','O-N365-202609-930001','53000000-0000-4000-8000-000000000001','33000000-0000-4000-8000-000000000001',10,'MANUAL_VERIFIED',now(),'SAR');
+insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,distance_km,distance_source,distance_verified_at,currency) values ('73000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','63000000-0000-4000-8000-000000000001',1,'ACCEPTED',now(),now()+interval '2 days',10,'MANUAL_VERIFIED',now(),'EGP');
+insert into public.orders(id,organization_id,quote_id,accepted_quote_version_id,idempotency_key,reference,request_id,customer_id,distance_km,distance_source,accepted_at,currency) values ('83000000-0000-4000-8000-000000000001','23000000-0000-4000-8000-000000000001','63000000-0000-4000-8000-000000000001','73000000-0000-4000-8000-000000000001','phase3','O-N365-202609-930001','53000000-0000-4000-8000-000000000001','33000000-0000-4000-8000-000000000001',10,'MANUAL_VERIFIED',now(),'EGP');
 -- Phase 6 explicit checkout for operational regression fixtures. Older-schema
 -- upgrade tests run this journey before the payment command exists.
 do $$ begin
@@ -58,7 +58,7 @@ select set_config('request.jwt.claim.sub','13000000-0000-4000-8000-000000000001'
 do $$
 declare j uuid; t1 uuid; t2 uuid; d1 uuid; d2 uuid; v1 uuid; v2 uuid; stop public.trip_stops; trip uuid; f uuid; pod jsonb; command jsonb; prior jsonb; mutation uuid=gen_random_uuid(); expected_revision integer; snapshot jsonb;
  plan jsonb=jsonb_build_object('plannedStart',now()+interval '1 hour','plannedEnd',now()+interval '5 hours','stops',
- '[{"cityId":"d5534eab-5f7a-a121-5151-805dc6b23edb","kind":"PICKUP","address":"Synthetic pickup A","pickups":[]},{"cityId":"d5534eab-5f7a-a121-5151-805dc6b23edb","kind":"PICKUP","address":"Synthetic pickup B","pickups":[]},{"cityId":"d5534eab-5f7a-a121-5151-805dc6b23edb","kind":"DELIVERY","address":"Synthetic delivery A","pickups":[0,1]},{"cityId":"d5534eab-5f7a-a121-5151-805dc6b23edb","kind":"DELIVERY","address":"Synthetic delivery B","pickups":[1]}]'::jsonb);
+ '[{"cityId":"66008992-f45c-a8b8-4a09-2b5128910eaf","kind":"PICKUP","address":"Synthetic pickup A","pickups":[]},{"cityId":"66008992-f45c-a8b8-4a09-2b5128910eaf","kind":"PICKUP","address":"Synthetic pickup B","pickups":[]},{"cityId":"66008992-f45c-a8b8-4a09-2b5128910eaf","kind":"DELIVERY","address":"Synthetic delivery A","pickups":[0,1]},{"cityId":"66008992-f45c-a8b8-4a09-2b5128910eaf","kind":"DELIVERY","address":"Synthetic delivery B","pickups":[1]}]'::jsonb);
 begin
  select to_jsonb(o)-array['updated_at','operational_status','operational_completed_at'] into snapshot from public.orders o where id='83000000-0000-4000-8000-000000000001';
  command=public.operations_command('23000000-0000-4000-8000-000000000001','create_job','83000000-0000-4000-8000-000000000001',0,mutation);
@@ -68,11 +68,11 @@ begin
  t1=(public.phase3_command('create_trip',j)->>'id')::uuid;
  t2=(public.phase3_command('create_trip',j)->>'id')::uuid;
  perform public.phase3_assert((select count(distinct reference)=2 from public.trips where job_id=j),'Unique references');
- d1=(public.phase3_command('create_driver',j,'{"marketId":"5a2de9ad-d807-497a-be94-49760622db7f","type":"INTERNAL","name":"Internal fixture"}')->>'id')::uuid;
- d2=(public.phase3_command('create_driver',j,'{"marketId":"5a2de9ad-d807-497a-be94-49760622db7f","type":"EXTERNAL","name":"External fixture"}')->>'id')::uuid;
+ d1=(public.phase3_command('create_driver',j,'{"marketId":"cd15c677-b9d5-951e-8c7c-25efa3965871","type":"INTERNAL","name":"Internal fixture"}')->>'id')::uuid;
+ d2=(public.phase3_command('create_driver',j,'{"marketId":"cd15c677-b9d5-951e-8c7c-25efa3965871","type":"EXTERNAL","name":"External fixture"}')->>'id')::uuid;
  perform public.phase3_assert((select profile_id is null from public.drivers where id=d2),'External no Auth link');
- v1=(public.phase3_command('create_vehicle',j,'{"marketId":"5a2de9ad-d807-497a-be94-49760622db7f","type":"Truck","identifier":"FIXTURE-A"}')->>'id')::uuid;
- v2=(public.phase3_command('create_vehicle',j,'{"marketId":"5a2de9ad-d807-497a-be94-49760622db7f","type":"Truck","identifier":"FIXTURE-B"}')->>'id')::uuid;
+ v1=(public.phase3_command('create_vehicle',j,'{"marketId":"cd15c677-b9d5-951e-8c7c-25efa3965871","type":"Truck","identifier":"FIXTURE-A"}')->>'id')::uuid;
+ v2=(public.phase3_command('create_vehicle',j,'{"marketId":"cd15c677-b9d5-951e-8c7c-25efa3965871","type":"Truck","identifier":"FIXTURE-B"}')->>'id')::uuid;
  foreach trip in array array[t1,t2] loop
   perform public.phase3_command('plan',trip,plan);
   perform public.phase3_command('assign',trip,jsonb_build_object('driverId',d1,'vehicleId',v1));

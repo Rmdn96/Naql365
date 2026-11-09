@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { publicCountry } from '@/domain/markets/public-contact';
+import { activeCountry } from '@/domain/markets/public-contact';
 import { guestSecret } from '@/domain/guest/capability';
 import { commandResult } from '@/domain/requests/intake';
 import { apiResult, checkOrigin, readJson } from '@/infrastructure/requests/http';
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   return apiResult(async () => {
     checkOrigin(request);
     const input = z
-      .object({ country: publicCountry, creationToken: guestSecret })
+      .object({ country: activeCountry, creationToken: guestSecret })
       .strict()
       .parse(await readJson(request));
     const { data, error } = await guestDatabase().rpc('start_guest_request', {

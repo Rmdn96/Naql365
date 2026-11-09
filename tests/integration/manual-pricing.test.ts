@@ -1,3 +1,4 @@
+// Historical multi-market compatibility / upgrade contract; Egypt-only writes are tested separately.
 import { beforeAll, afterAll, expect, test } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { foundationDatabase } from '../helpers/database.mjs';
@@ -8,7 +9,7 @@ const command = (amount = 12345, revision = 2, id = mutation) =>
   `select public.create_manual_quote_draft('${request}',${revision},${amount},12.5,'Verified road',172800,'${id}') result`;
 beforeAll(async () => {
   db = await foundationDatabase(45);
-  const fixture = readFileSync('supabase/tests/phase2.test.sql', 'utf8').split(
+  const fixture = readFileSync('tests/fixtures/schema51-phase2.sql', 'utf8').split(
     'set local role authenticated;',
   )[0]!;
   await db.exec(fixture + 'commit;');

@@ -44,7 +44,7 @@ vi.mock('@/infrastructure/supabase/server', () => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
-  m.country = 'SA';
+  m.country = 'EG';
   m.queries = [];
   m.access.mockResolvedValue({ status: 'authorized', principal: { organizationId: org } });
   m.rows = {
@@ -83,7 +83,7 @@ beforeEach(() => {
 });
 
 it.each([
-  ['SA', sa, 100],
+  ['SA', eg, 1],
   ['EG', eg, 1],
 ] as const)(
   '%s filters tenant and Market before the bounded Sales window',
@@ -98,14 +98,15 @@ it.each([
     expect(m.access).toHaveBeenCalledWith('pricing.calculate');
   },
 );
-it('switching Market changes the server dataset rather than reusing the previous window', async () => {
-  expect(await salesQueue()).toHaveLength(100);
+it('legacy Saudi cookie resolves to the authorized Egypt dataset', async () => {
+  m.country = 'SA';
+  expect(await salesQueue()).toHaveLength(1);
   m.country = 'EG';
   expect(await salesQueue()).toHaveLength(1);
   expect(await salesQueue()).toHaveLength(1); // subsequent navigation retains the preference
 });
 it('denies a direct Sales detail for a different Market', async () => {
-  await expect(salesRequestDetails(eg)).rejects.toMatchObject({ code: 'not_found' });
+  await expect(salesRequestDetails(sa)).rejects.toMatchObject({ code: 'not_found' });
 });
 it('denies invalid Market instead of silently displaying SA', async () => {
   m.country = 'XX';
@@ -136,12 +137,12 @@ it.each(['suspended', 'revoked', 'missing Sales permission'])(
 it('returns safe server-approved display names without private organization identifiers', async () => {
   const display = await staffDisplayContext();
   expect(display.organizationName).toBe('Synthetic organization');
-  expect(display.market.name_en).toBe('Saudi Arabia');
+  expect(display.market.name_en).toBe('Egypt');
   expect(m.queries.find((q) => q.table === 'organizations')?.filters).toEqual([['id', org]]);
 });
 
 it.each([
-  ['SA', sa],
+  ['SA', eg],
   ['EG', eg],
 ] as const)('scopes bank configuration on the server to %s', async (country, marketId) => {
   m.country = country;
@@ -159,7 +160,7 @@ it.each([
   expect(q.calls.indexOf('eq:market_id')).toBeLessThan(q.calls.indexOf('limit'));
 });
 it('denies a foreign Market payment before reading payment details', async () => {
-  m.rows.payments = [{ order_id: eg, organization_id: org, market_id: eg }];
+  m.rows.payments = [{ order_id: eg, organization_id: org, market_id: sa }];
   await expect(staffPayment(eg)).rejects.toMatchObject({ code: 'not_found' });
   expect(m.payment).not.toHaveBeenCalled();
 });
@@ -169,7 +170,7 @@ it('denies a foreign organization payment before reading payment details', async
   expect(m.payment).not.toHaveBeenCalled();
 });
 it('reads an authorized payment only after the scoped RLS lookup', async () => {
-  m.rows.payments = [{ order_id: eg, organization_id: org, market_id: sa }];
+  m.rows.payments = [{ order_id: eg, organization_id: org, market_id: eg }];
   m.payment.mockResolvedValue({ reference: 'Synthetic payment' });
   expect(await staffPayment(eg)).toEqual({ reference: 'Synthetic payment' });
   expect(m.access).toHaveBeenCalledWith('finance.read');

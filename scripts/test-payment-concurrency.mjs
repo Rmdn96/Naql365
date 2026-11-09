@@ -172,14 +172,14 @@ try {
       command(
         'confirm_cash',
         1,
-        { amountMinor: 0, currency: 'SAR', reference: 'LOCAL-RECEIPT-0001' },
+        { amountMinor: 0, currency: 'EGP', reference: 'LOCAL-RECEIPT-0001' },
         finance,
         mutation,
       ),
       command(
         'confirm_cash',
         1,
-        { amountMinor: 0, currency: 'SAR', reference: 'LOCAL-RECEIPT-0001' },
+        { amountMinor: 0, currency: 'EGP', reference: 'LOCAL-RECEIPT-0001' },
         finance,
         mutation,
       ),
@@ -199,7 +199,7 @@ try {
       command(
         'confirm_transfer',
         4,
-        { attemptId: attempt, amountMinor: 0, currency: 'SAR', reference: 'LOCAL-RECEIPT-0001' },
+        { attemptId: attempt, amountMinor: 0, currency: 'EGP', reference: 'LOCAL-RECEIPT-0001' },
         finance,
       ),
       command('reject_transfer', 4, { attemptId: attempt, reason: 'TEST ONLY rejection' }, finance),
@@ -222,7 +222,7 @@ try {
       command(
         'confirm_transfer',
         4,
-        { attemptId: proof, amountMinor: 0, currency: 'SAR', reference: 'LOCAL-RECEIPT-0001' },
+        { attemptId: proof, amountMinor: 0, currency: 'EGP', reference: 'LOCAL-RECEIPT-0001' },
         finance,
       ),
       op('dispatch', trip),
@@ -248,9 +248,9 @@ try {
   const secondOrder = '83000000-0000-4000-8000-000000000002';
   await sql(`insert into public.requests(id,organization_id,customer_id,market_id) select '53000000-0000-4000-8000-000000000002',organization_id,customer_id,market_id from public.orders where id='${order}';
  insert into public.quotes(id,organization_id,request_id) values('63000000-0000-4000-8000-000000000002','${org}','53000000-0000-4000-8000-000000000002');
- insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,distance_km,distance_source,distance_verified_at,currency) values('73000000-0000-4000-8000-000000000002','${org}','63000000-0000-4000-8000-000000000002',1,'ACCEPTED',now(),now()+interval '2 days',10,'MANUAL_VERIFIED',now(),'SAR');
+ insert into public.quote_versions(id,organization_id,quote_id,version,status,sent_at,expires_at,distance_km,distance_source,distance_verified_at,currency) values('73000000-0000-4000-8000-000000000002','${org}','63000000-0000-4000-8000-000000000002',1,'ACCEPTED',now(),now()+interval '2 days',10,'MANUAL_VERIFIED',now(),'EGP');
  insert into public.orders(id,organization_id,quote_id,accepted_quote_version_id,idempotency_key,reference,request_id,customer_id,distance_km,distance_source,accepted_at,currency)
- select '${secondOrder}',organization_id,'63000000-0000-4000-8000-000000000002','73000000-0000-4000-8000-000000000002','receipt-race-2','O-N365-202609-930002','53000000-0000-4000-8000-000000000002',customer_id,10,'MANUAL_VERIFIED',now(),'SAR' from public.orders where id='${order}';`);
+ select '${secondOrder}',organization_id,'63000000-0000-4000-8000-000000000002','73000000-0000-4000-8000-000000000002','receipt-race-2','O-N365-202609-930002','53000000-0000-4000-8000-000000000002',customer_id,10,'MANUAL_VERIFIED',now(),'EGP' from public.orders where id='${order}';`);
   await commandFor(secondOrder, 'choose', 0, { method: 'CASH' });
   const firstProof = await transfer(),
     secondProof = await transfer(secondOrder);
@@ -259,14 +259,14 @@ try {
       command(
         'confirm_transfer',
         4,
-        { attemptId: firstProof, amountMinor: 0, currency: 'SAR', reference: 'UNIQUE-RACE-001' },
+        { attemptId: firstProof, amountMinor: 0, currency: 'EGP', reference: 'UNIQUE-RACE-001' },
         finance,
       ),
       commandFor(
         secondOrder,
         'confirm_transfer',
         4,
-        { attemptId: secondProof, amountMinor: 0, currency: 'SAR', reference: 'unique race 001' },
+        { attemptId: secondProof, amountMinor: 0, currency: 'EGP', reference: 'unique race 001' },
         finance,
       ),
     ],

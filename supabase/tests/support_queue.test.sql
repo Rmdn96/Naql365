@@ -10,8 +10,8 @@ insert into public.role_permissions(role_id,permission_id) select 'a3000000-0000
 update public.user_roles set role_id='a3000000-0000-4000-8000-000000000001' where profile_id='a2000000-0000-4000-8000-000000000003';
 update public.organization_memberships set status='suspended' where profile_id='a2000000-0000-4000-8000-000000000007';
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values
-('a4000000-0000-4000-8000-000000000001','a1000000-0000-4000-8000-000000000001','SA','اختبار','Test',true,'SAR','Asia/Riyadh','+966'),
-('a4000000-0000-4000-8000-000000000002','a1000000-0000-4000-8000-000000000002','SA','آخر','Other',true,'SAR','Asia/Riyadh','+966');
+('a4000000-0000-4000-8000-000000000001','a1000000-0000-4000-8000-000000000001','EG','اختبار','Test',true,'EGP','Asia/Riyadh','+966'),
+('a4000000-0000-4000-8000-000000000002','a1000000-0000-4000-8000-000000000002','EG','آخر','Other',true,'EGP','Asia/Riyadh','+966');
 insert into public.customers(id,organization_id,profile_id) values('a5000000-0000-4000-8000-000000000001','a1000000-0000-4000-8000-000000000001','a2000000-0000-4000-8000-000000000005');
 insert into public.requests(id,organization_id,customer_id,market_id,status,reference,submitted_at,contact_name,contact_email,created_at) select ('a6000000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,'a1000000-0000-4000-8000-000000000001','a5000000-0000-4000-8000-000000000001','a4000000-0000-4000-8000-000000000001','SUBMITTED','N365-202610-'||lpad(n::text,6,'0'),now(),'Synthetic support customer','support@example.invalid','2026-10-12T00:00:00Z' from generate_series(1,3) n;
 select public.support_assert(not has_function_privilege('anon','public.support_request_queue(uuid,uuid,timestamptz,uuid,integer)','EXECUTE'),'anon denied');

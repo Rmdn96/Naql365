@@ -1,3 +1,4 @@
+// Historical multi-market compatibility / upgrade contract; Egypt-only writes are tested separately.
 import { expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { foundationDatabase } from '../helpers/database.mjs';
@@ -8,7 +9,7 @@ it('upgrades populated migration 48 without rewriting a historical confirmed pay
   const finance = '13000000-0000-4000-8000-000000000006';
   try {
     await db.exec(
-      readFileSync('supabase/tests/phase3.test.sql', 'utf8').split(
+      readFileSync('tests/fixtures/schema51-phase3.sql', 'utf8').split(
         '-- Phase 6 explicit checkout',
       )[0]! + 'commit;',
     );

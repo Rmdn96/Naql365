@@ -24,8 +24,7 @@ insert into public.role_permissions(role_id,permission_id) select '94000000-0000
 insert into public.user_roles(organization_id,profile_id,role_id)
  select m.organization_id,m.profile_id,r.id from public.organization_memberships m join public.roles r on r.code=case when m.member_type='customer' then 'CUSTOMER' when m.member_type='driver' then 'DRIVER' else 'SYNTHETIC_STORE_PURCHASE' end where m.profile_id::text like '92000000%';
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values
- ('95000000-0000-4000-8000-000000000001','91000000-0000-4000-8000-000000000001','EG','اختبار','Synthetic',true,'EGP','Africa/Cairo','+20'),
- ('95000000-0000-4000-8000-000000000002','91000000-0000-4000-8000-000000000001','SA','اختبار','Synthetic SA',true,'SAR','Asia/Riyadh','+966');
+ ('95000000-0000-4000-8000-000000000001','91000000-0000-4000-8000-000000000001','EG','اختبار','Synthetic',true,'EGP','Africa/Cairo','+20');
 insert into private.store_policy_versions(id,organization_id,market_id,currency,kind,policy_code,version,content,evidence_ref,status,effective_from,approved_by,approved_at)
  select ('96000000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,'91000000-0000-4000-8000-000000000001','95000000-0000-4000-8000-000000000001','EGP',
  (array['STOREFRONT_SCOPE','PUBLICATION_IDENTITY','RETAIL_PRESENTATION','DELIVERY_PRESENTATION','RETURNS_PRESENTATION'])[n],'synthetic',1,

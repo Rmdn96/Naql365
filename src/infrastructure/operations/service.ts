@@ -64,7 +64,10 @@ export async function operationsWorkspace() {
     .select('*')
     .eq('organization_id', organizationId);
   if (marketResult.error) dbError(marketResult.error.code);
-  const markets = marketSchema.array().parse(marketResult.data);
+  const markets = marketSchema
+    .array()
+    .parse(marketResult.data)
+    .filter((market) => market.country_code === 'EG' && market.currency === 'EGP');
   const [orders, jobs, trips, drivers, vehicles, assignments] = await Promise.all([
     client
       .from('orders')

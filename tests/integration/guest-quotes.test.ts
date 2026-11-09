@@ -29,7 +29,7 @@ test('initial creation replay retains one journey and cannot resurrect a revoked
     (
       await db.query<{ r: { request: { id: string }; token: string } }>(
         'select public.start_guest_request($1,$2) r',
-        ['SA', secret],
+        ['EG', secret],
       )
     ).rows[0]!.r;
   const a = await create(),
@@ -103,7 +103,7 @@ async function newJourney() {
   await guest();
   const journey = (
     await db.query<{ r: { token: string; request: { id: string } } }>(
-      "select public.start_guest_request('SA') r",
+      "select public.start_guest_request('EG') r",
     )
   ).rows[0]!.r;
   await guest(journey.token);
@@ -328,7 +328,7 @@ test('guest transfer proof stays private and only Finance can reject or confirm 
   expect(chosen.status).toBe('AWAITING_TRANSFER_PROOF');
   expect(await command('choose', 0, { method: 'BANK_TRANSFER' }, mutation)).toEqual(chosen);
   expect((await details()).bank).not.toBeNull();
-  await expect(command('confirm_cash', 1, { amountMinor: 0, currency: 'SAR' })).rejects.toThrow();
+  await expect(command('confirm_cash', 1, { amountMinor: 0, currency: 'EGP' })).rejects.toThrow();
   let reserve = await command('reserve', 1, { fileId: randomUUID(), mime: 'image/png', size: 100 });
   await db.exec("select set_config('storage.operation','object.upload',false)");
   const upload = async (size = 100) =>
@@ -349,7 +349,7 @@ test('guest transfer proof stays private and only Finance can reject or confirm 
     command('confirm_transfer', 3, {
       attemptId: reserve.attemptId,
       amountMinor: 0,
-      currency: 'SAR',
+      currency: 'EGP',
     }),
   ).rejects.toThrow();
   expect(
@@ -389,7 +389,7 @@ test('guest transfer proof stays private and only Finance can reject or confirm 
     reference: 'SYNTHETIC-GUEST-RECEIPT-001',
     attemptId: reserve.attemptId,
     amountMinor: total,
-    currency: 'SAR',
+    currency: 'EGP',
   });
   await guest(journey.token);
   expect((await details()).status).toBe('PAID');

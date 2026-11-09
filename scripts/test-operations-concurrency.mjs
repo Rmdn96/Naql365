@@ -83,7 +83,7 @@ try {
   await sql(fixture);
   setup = true;
   const marketId = await sql(
-    `select id from public.markets where organization_id='${org}' and country_code='SA'`,
+    `select id from public.markets where organization_id='${org}' and country_code='EG'`,
   );
   const cityId = await sql(
     `select id from public.market_cities where market_id='${marketId}' and code='Riyadh'`,

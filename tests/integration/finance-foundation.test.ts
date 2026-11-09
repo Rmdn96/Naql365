@@ -1,3 +1,4 @@
+// Historical multi-market compatibility / upgrade contract; Egypt-only writes are tested separately.
 import { expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
@@ -7,9 +8,9 @@ const finance = '13000000-0000-4000-8000-000000000006';
 const customer = '13000000-0000-4000-8000-000000000002';
 const order = '83000000-0000-4000-8000-000000000001';
 it('scopes Finance before keyset pagination, rejects unauthorized/ambiguous membership and keeps receipt claims atomic/private', async () => {
-  const db = await foundationDatabase();
+  const db = await foundationDatabase(51);
   try {
-    const base = readFileSync('supabase/tests/phase3.test.sql', 'utf8').split(
+    const base = readFileSync('tests/fixtures/schema51-phase3.sql', 'utf8').split(
       '-- Phase 6 explicit checkout',
     )[0]!;
     await db.exec(base + 'commit;');

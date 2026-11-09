@@ -1,7 +1,7 @@
 import 'server-only';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
-import { publicCountry, marketCookie } from '@/domain/markets/public-contact';
+import { publicCountry, activeCountry, marketCookie } from '@/domain/markets/public-contact';
 import { guestDatabase } from '@/infrastructure/guest/session';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { AppError } from '@/domain/shared/errors';
@@ -9,7 +9,7 @@ import { homeStep, homeSyncStep } from './home-trace';
 import { catalogTrace } from '@/infrastructure/store/catalog-trace';
 export { marketCookie } from '@/domain/markets/public-contact';
 export async function selectedPublicCountry() {
-  return publicCountry.catch('EG').parse((await cookies()).get(marketCookie)?.value);
+  return activeCountry.catch('EG').parse((await cookies()).get(marketCookie)?.value);
 }
 const catalogue = z
   .object({
@@ -43,5 +43,9 @@ export async function publicCatalogue() {
     httpStatus: result.status,
   });
   if (result.error) throw new AppError('internal', 'Service catalogue unavailable');
-  return homeSyncStep('public-catalogue-parse', () => catalogue.parse(result.data));
+  return homeSyncStep('public-catalogue-parse', () =>
+    catalogue
+      .parse(result.data)
+      .filter((market) => market.country === 'EG' && market.currency === 'EGP'),
+  );
 }

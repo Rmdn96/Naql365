@@ -69,7 +69,7 @@ export function StartRequest({
   const [pending, setPending] = useState(false),
     [error, setError] = useState(false);
   const [marketId, setMarketId] = useState(
-    markets.find((m) => m.country_code === preselection?.country)?.id ?? '',
+    markets.find((m) => m.country_code === 'EG' && m.currency === 'EGP')?.id ?? '',
   );
   const mt = marketDictionary(locale);
   async function start() {
@@ -115,11 +115,13 @@ export function StartRequest({
         }}
       >
         <option value="">{mt.choose}</option>
-        {markets.map((m) => (
-          <option key={m.id} value={m.id}>
-            {locale === 'ar' ? m.name_ar : m.name_en} — {m.currency}
-          </option>
-        ))}
+        {markets
+          .filter((m) => m.country_code === 'EG' && m.currency === 'EGP')
+          .map((m) => (
+            <option key={m.id} value={m.id}>
+              {locale === 'ar' ? m.name_ar : m.name_en} — {m.currency}
+            </option>
+          ))}
       </Select>
       <p id="request-country-hint">{t.requestCountryHint}</p>
       <Button onClick={start} disabled={!hydrated || pending || !marketId}>

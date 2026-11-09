@@ -1,3 +1,4 @@
+// Historical multi-market compatibility / upgrade contract; Egypt-only writes are tested separately.
 import { beforeEach, afterEach, expect, it } from 'vitest';
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -35,8 +36,8 @@ async function details() {
   ).rows[0]!.r;
 }
 beforeEach(async () => {
-  db = await foundationDatabase();
-  const base = readFileSync('supabase/tests/phase3.test.sql', 'utf8').split(
+  db = await foundationDatabase(51);
+  const base = readFileSync('tests/fixtures/schema51-phase3.sql', 'utf8').split(
     '-- Phase 6 explicit checkout',
   )[0]!;
   await db.exec(base + 'commit;');

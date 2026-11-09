@@ -81,7 +81,7 @@ export default async function Page({
                   <time dateTime={r.createdAt}>
                     {new Intl.DateTimeFormat(locale, {
                       dateStyle: 'medium',
-                      timeZone: country === 'SA' ? 'Asia/Riyadh' : 'Africa/Cairo',
+                      timeZone: 'Africa/Cairo',
                     }).format(new Date(r.createdAt))}
                   </time>
                 </dd>
