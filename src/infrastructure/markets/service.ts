@@ -9,6 +9,8 @@ export async function availableMarkets() {
     .from('markets')
     .select('*')
     .eq('active', true)
+    .eq('country_code', 'EG')
+    .eq('currency', 'EGP')
     .order('country_code');
   if (error) throw new AppError('internal', 'Market catalogue unavailable');
   return marketSchema.array().parse(data);

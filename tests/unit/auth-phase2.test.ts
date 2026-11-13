@@ -48,7 +48,7 @@ describe('independent Auth presentation without authorization changes', () => {
       );
       expect(html).toContain(`href="/${locale === 'ar' ? 'en' : 'ar'}/recover"`);
       expect(html).toContain('value="dark" selected=""');
-      expect(html).toContain('value="EG" selected=""');
+      expect(html).toContain('🇪🇬');
       expect(html).toContain('id="auth-market"');
       expect(html).not.toMatch(/role-switch|SUPER_ADMIN|<form|token=/);
     });

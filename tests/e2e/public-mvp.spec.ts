@@ -46,34 +46,22 @@ for (const locale of ['ar', 'en'] as const) {
       name: locale === 'ar' ? 'تواصل واتساب' : 'Contact via WhatsApp',
       exact: true,
     });
-    const selector = page.getByRole('combobox', {
-      name: locale === 'ar' ? 'بلد الخدمة' : 'Service country',
-      exact: true,
-    });
+    const selector = page
+      .locator(
+        '.market-control, select[aria-label="Service country"], select[aria-label="بلد الخدمة"]',
+      )
+      .first();
     const message =
       locale === 'ar'
         ? 'مرحبًا، أتواصل معكم من موقع Naql365 وأحتاج مساعدة بخصوص خدمة نقل.'
         : 'Hello, I am contacting you from Naql365 and need help with a transport service.';
-    for (const country of ['EG', 'SA', 'EG']) {
-      if ((await selector.inputValue()) !== country) {
-        const response = page.waitForResponse(
-          (r) =>
-            r.url().endsWith('/api/public/market') &&
-            r.request().method() === 'POST' &&
-            r.status() === 200,
-        );
-        await selector.selectOption(country);
-        await response;
-      }
-      await expect(selector).toHaveValue(country);
-      // This initial enquiry channel is explicitly approved for Egypt. A saved
-      // future SA preference must not expose an unapproved Saudi destination.
-      await expect(contact).toHaveAttribute(
-        'href',
-        'https://wa.me/201009402374?text=' + encodeURIComponent(message),
-      );
-      await expect(contact).toHaveAttribute('rel', /noopener/);
-    }
+    await expect(selector).toContainText(/EG|🇪🇬/);
+    await expect(page.locator('option[value="SA"]')).toHaveCount(0);
+    await expect(contact).toHaveAttribute(
+      'href',
+      'https://wa.me/201009402374?text=' + encodeURIComponent(message),
+    );
+    await expect(contact).toHaveAttribute('rel', /noopener/);
     await page
       .getByRole('link', { name: locale === 'ar' ? 'اطلب نقل' : 'Book Transport', exact: true })
       .filter({ visible: true })

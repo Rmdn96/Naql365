@@ -44,7 +44,6 @@ insert into public.user_roles(organization_id,profile_id,role_id)
  where m.profile_id::text like '62000000%';
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code) values
  ('64000000-0000-4000-8000-000000000001','61000000-0000-4000-8000-000000000001','EG','مصر اختبار','Egypt test',true,'EGP','Africa/Cairo','+20'),
- ('64000000-0000-4000-8000-000000000002','61000000-0000-4000-8000-000000000001','SA','اختبار','SA test',true,'SAR','Asia/Riyadh','+966'),
  ('64000000-0000-4000-8000-000000000003','61000000-0000-4000-8000-000000000002','EG','آخر','Other test',true,'EGP','Africa/Cairo','+20');
 -- Privileged fixture provisioning is NOT a production scope/configuration API.
 insert into private.store_policy_versions(id,organization_id,market_id,currency,kind,policy_code,version,content,evidence_ref,status,effective_from,approved_by,approved_at)

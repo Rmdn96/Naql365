@@ -13,7 +13,7 @@ end $$;
 insert into public.organizations(id,name) values('a0000000-0000-4000-8000-000000000001','Intake fixture A'),('a0000000-0000-4000-8000-000000000002','Intake fixture B');
 -- Explicit synthetic catalogue for this rollback-only fixture; no production coverage.
 insert into public.markets(id,organization_id,country_code,name_ar,name_en,active,currency,timezone,phone_country_code)
- select md5(id::text||'SA')::uuid,id,'SA','السعودية','Saudi Arabia',true,'SAR','Asia/Riyadh','+966' from public.organizations where id::text like 'a0000000%';
+ select md5(id::text||'EG')::uuid,id,'EG','مصر','Egypt',true,'EGP','Africa/Cairo','+20' from public.organizations where id::text like 'a0000000%';
 insert into public.market_regions(id,organization_id,market_id,code,name_ar,name_en,administrative_type)
  select md5(id::text||'region')::uuid,organization_id,id,'fixture','منطقة اختبار','Fixture region','region' from (select * from public.markets where organization_id::text like 'a0000000%') fixture_markets;
 insert into public.market_cities(id,organization_id,market_id,region_id,code,name_ar,name_en)
@@ -37,7 +37,7 @@ create temporary table intake_state(key text primary key,value jsonb);
 grant all on intake_state to authenticated;
 set local role anon;
 select public.intake_reject($q$select public.onboard_customer('Fixture','+966500000001','ar')$q$,'42501');
-select public.intake_reject($q$select public.request_command('create',null,0,gen_random_uuid(),jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001SA')::uuid))$q$,'42501');
+select public.intake_reject($q$select public.request_command('create',null,0,gen_random_uuid(),jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001EG')::uuid))$q$,'42501');
 select public.intake_assert((select count(*)=0 from public.requests),'anonymous without grant reads no Requests');
 reset role;
 select set_config('request.jwt.claim.sub','b0000000-0000-4000-8000-000000000004',true);
@@ -63,12 +63,12 @@ select public.intake_assert(not public.has_permission('a0000000-0000-4000-8000-0
 select public.intake_reject('update public.organization_memberships set member_type=''staff''','42501');
 select public.intake_reject('insert into public.user_roles select organization_id,profile_id,role_id from public.user_roles','42501');
 select public.intake_assert((select count(*)=1 from public.services),'customer sees only own active catalogue');
-insert into intake_state values('draft',public.request_command('create',null,0,'d0000000-0000-4000-8000-000000000001',jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001SA')::uuid)));
-select public.intake_assert(public.request_command('create',null,0,'d0000000-0000-4000-8000-000000000001',jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001SA')::uuid))=(select value from intake_state where key='draft'),'create retry one draft');
+insert into intake_state values('draft',public.request_command('create',null,0,'d0000000-0000-4000-8000-000000000001',jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001EG')::uuid)));
+select public.intake_assert(public.request_command('create',null,0,'d0000000-0000-4000-8000-000000000001',jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001EG')::uuid))=(select value from intake_state where key='draft'),'create retry one draft');
 insert into intake_state values('payload',jsonb_build_object(
  'service_id','c0000000-0000-4000-8000-000000000001','description','Fixture shipment','notes','',
- 'pickup',jsonb_build_object('city_id',md5(md5('a0000000-0000-4000-8000-000000000001SA')::uuid::text||'Riyadh')::uuid,'city','Riyadh','district','Fixture','address','Fixture pickup','notes','','floor',2,'elevator',true,'access_notes',''),
- 'delivery',jsonb_build_object('city_id',md5(md5('a0000000-0000-4000-8000-000000000001SA')::uuid::text||'Jeddah')::uuid,'city','Jeddah','district','Fixture','address','Fixture delivery','notes','','floor',1,'elevator',false,'access_notes',''),
+ 'pickup',jsonb_build_object('city_id',md5(md5('a0000000-0000-4000-8000-000000000001EG')::uuid::text||'Riyadh')::uuid,'city','Riyadh','district','Fixture','address','Fixture pickup','notes','','floor',2,'elevator',true,'access_notes',''),
+ 'delivery',jsonb_build_object('city_id',md5(md5('a0000000-0000-4000-8000-000000000001EG')::uuid::text||'Jeddah')::uuid,'city','Jeddah','district','Fixture','address','Fixture delivery','notes','','floor',1,'elevator',false,'access_notes',''),
  'items','[{"description":"Box","quantity":2,"notes":""},{"description":"Desk","quantity":1,"notes":""}]'::jsonb,
  'additional_service_ids','["c0000000-0000-4000-8000-000000000003"]'::jsonb,
  'preferred_date',((now() at time zone 'Asia/Riyadh')::date+1)::text,'time_window','morning',
@@ -113,7 +113,7 @@ select public.intake_assert((select count(*)=0 from public.requests),'customer i
 select public.intake_assert((select count(*)=0 from public.request_attachments),'attachment isolation');
 select public.intake_assert((select count(*)=0 from storage.objects),'file isolation');
 select public.intake_reject(format('select public.request_command(''save'',%L,4,gen_random_uuid(),%L)',(select value->>'id' from intake_state where key='draft'),(select value from intake_state where key='payload')),'42501');
-insert into intake_state values('draft_b',public.request_command('create',null,0,gen_random_uuid(),jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001SA')::uuid)));
+insert into intake_state values('draft_b',public.request_command('create',null,0,gen_random_uuid(),jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001EG')::uuid)));
 select public.intake_reject(format('select public.request_file_command(''finalize'',%L,''e0000000-0000-4000-8000-000000000001'')',(select value->>'id' from intake_state where key='draft_b')),'42501');
 select public.request_command('cancel',(select (value->>'id')::uuid from intake_state where key='draft_b'),0,gen_random_uuid());
 select public.intake_reject(format('select public.request_command(''save'',%L,1,gen_random_uuid(),%L)',(select value->>'id' from intake_state where key='draft_b'),(select value from intake_state where key='payload')),'55000');
@@ -132,7 +132,7 @@ set local role authenticated;
 select public.intake_assert((select count(*)=0 from public.requests),'suspended reads denied');
 select public.intake_assert((select count(*)=0 from storage.objects),'suspended file denied');
 select public.intake_reject($q$select public.onboard_customer('Fixture A','+966500000001','ar')$q$,'42501');
-select public.intake_reject($q$select public.request_command('create',null,0,gen_random_uuid(),jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001SA')::uuid))$q$,'42501');
+select public.intake_reject($q$select public.request_command('create',null,0,gen_random_uuid(),jsonb_build_object('market_id',md5('a0000000-0000-4000-8000-000000000001EG')::uuid))$q$,'42501');
 reset role;
 rollback;
 -- Supabase TAP report

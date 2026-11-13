@@ -10,14 +10,14 @@ test('anonymous metrics are finite, private, rate bounded and contain no journey
       'TEST analytics',
     ]);
     await db.query(
-      "insert into public.markets(organization_id,country_code,name_ar,name_en,currency,timezone,phone_country_code,active) values($1,'SA','اختبار','TEST','SAR','Asia/Riyadh','+966',true)",
+      "insert into public.markets(organization_id,country_code,name_ar,name_en,currency,timezone,phone_country_code,active) values($1,'EG','اختبار','TEST','EGP','Asia/Riyadh','+966',true)",
       [org],
     );
     await db.query('insert into private.customer_enrollment(organization_id) values($1)', [org]);
     await db.exec('set role anon');
-    await db.query("select public.record_mvp_event('homepage_viewed','SA','home')");
+    await db.query("select public.record_mvp_event('homepage_viewed','EG','home')");
     await expect(
-      db.query("select public.record_mvp_event('secret-token','SA','home')"),
+      db.query("select public.record_mvp_event('secret-token','EG','home')"),
     ).rejects.toThrow('Unsupported metric');
     await expect(db.query('select * from private.mvp_funnel_counts')).rejects.toThrow();
     await db.exec('reset role');
@@ -34,7 +34,7 @@ test('anonymous metrics are finite, private, rate bounded and contain no journey
     );
     await db.exec('set role anon');
     await expect(
-      db.query("select public.record_mvp_event('homepage_viewed','SA','home')"),
+      db.query("select public.record_mvp_event('homepage_viewed','EG','home')"),
     ).rejects.toThrow('retry');
   } finally {
     await db.close();

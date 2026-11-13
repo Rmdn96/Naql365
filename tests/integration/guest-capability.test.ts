@@ -17,7 +17,7 @@ beforeAll(async () => {
   await db.query('insert into public.organizations(id,name) values($1,$2)', [org, 'TEST ONLY']);
   await db.query(
     `insert into public.markets(id,organization_id,country_code,name_ar,name_en,currency,timezone,phone_country_code)
-    values($1,$2,'SA','اختبار','TEST','SAR','Asia/Riyadh','+966')`,
+    values($1,$2,'EG','اختبار','TEST','EGP','Asia/Riyadh','+966')`,
     [market, org],
   );
   await db.query(
@@ -148,7 +148,7 @@ test('expired replacement is denied without modifying commercial journey', async
 
 test('anonymous creation is opt-in, globally bounded and uses the shared scoped Request command', async () => {
   await db.exec('set role anon');
-  await expect(db.query("select public.start_guest_request('SA')")).rejects.toThrow(
+  await expect(db.query("select public.start_guest_request('EG')")).rejects.toThrow(
     'Guest requests unavailable',
   );
   await db.exec('reset role');
@@ -163,7 +163,7 @@ test('anonymous creation is opt-in, globally bounded and uses the shared scoped 
     const start = async () =>
       (
         await db.query<{ r: { token: string; request: { id: string; revision: number } } }>(
-          "select public.start_guest_request('SA') r",
+          "select public.start_guest_request('EG') r",
         )
       ).rows[0]!.r;
     const first = await start(),
@@ -217,7 +217,7 @@ test('guest request files enforce reservations, private storage, owner isolation
     const start = async () =>
       (
         await db.query<{ r: { token: string; request: { id: string } } }>(
-          "select public.start_guest_request('SA') r",
+          "select public.start_guest_request('EG') r",
         )
       ).rows[0]!.r;
     const a = await start(),

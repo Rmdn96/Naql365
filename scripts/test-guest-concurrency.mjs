@@ -105,7 +105,7 @@ for (const table of ['customers', 'organization_memberships', 'user_roles']) {
 console.log('PASS: independent-connection customer onboarding and retry');
 async function journey() {
   const token = `g1_${randomBytes(32).toString('hex')}`;
-  const result = await rpc(`public.start_guest_request('SA',${q(token)})`, { token: '' });
+  const result = await rpc(`public.start_guest_request('EG',${q(token)})`, { token: '' });
   return { ...result, token };
 }
 async function quote(j) {
@@ -167,8 +167,8 @@ const manage = (j, action) =>
 const replay = await journey();
 await race(
   [
-    rpc(`public.start_guest_request('SA',${q(replay.token)})`, { token: '' }),
-    rpc(`public.start_guest_request('SA',${q(replay.token)})`, { token: '' }),
+    rpc(`public.start_guest_request('EG',${q(replay.token)})`, { token: '' }),
+    rpc(`public.start_guest_request('EG',${q(replay.token)})`, { token: '' }),
   ],
   'initial creation replay',
   2,

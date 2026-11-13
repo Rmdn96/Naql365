@@ -1,52 +1,29 @@
 import { expect, test } from '@playwright/test';
-
-for (const locale of ['ar', 'en']) {
-  test(`${locale} fresh public visitor defaults to Egypt and retains an explicit preference`, async ({
+for (const locale of ['ar', 'en'])
+  test(`${locale} legacy Saudi preference resolves to Egypt across navigation`, async ({
     page,
+    context,
   }) => {
-    await page.goto(`/${locale}`);
-    await expect(
-      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
-    ).toHaveValue('EG');
-    await page.reload();
-    await expect(
-      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
-    ).toHaveValue('EG');
-    await Promise.all([
-      page.waitForResponse(
-        (response) =>
-          response.url().endsWith('/api/public/market') &&
-          response.request().method() === 'POST' &&
-          response.status() === 200,
-      ),
-      page
-        .getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true })
-        .selectOption('SA'),
+    await context.addCookies([
+      { name: 'naql365_market', value: 'SA', url: 'http://127.0.0.1:3000' },
     ]);
-    await expect(
-      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
-    ).toHaveValue('SA');
-    await page.goto(`/${locale === 'ar' ? 'en' : 'ar'}/login`);
-    await expect(
-      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
-    ).toHaveValue('SA');
-    await page.reload();
-    await expect(
-      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
-    ).toHaveValue('SA');
-    await Promise.all([
-      page.waitForResponse(
-        (response) =>
-          response.url().endsWith('/api/public/market') &&
-          response.request().method() === 'POST' &&
-          response.status() === 200,
-      ),
-      page
-        .getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true })
-        .selectOption('EG'),
-    ]);
-    await expect(
-      page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
-    ).toHaveValue('EG');
+    for (const path of [`/${locale}`, `/${locale === 'ar' ? 'en' : 'ar'}/login`]) {
+      await page.goto(path);
+      await expect(
+        page
+          .locator(
+            '.market-control, select[aria-label="Service country"], select[aria-label="بلد الخدمة"]',
+          )
+          .first(),
+      ).toContainText(/EG|🇪🇬/);
+      await expect(page.locator('option[value="SA"]')).toHaveCount(0);
+      await page.reload();
+      await expect(
+        page
+          .locator(
+            '.market-control, select[aria-label="Service country"], select[aria-label="بلد الخدمة"]',
+          )
+          .first(),
+      ).toContainText(/EG|🇪🇬/);
+    }
   });
-}

@@ -28,8 +28,8 @@ export async function generateMetadata({
       title: t.brand,
       description: t.description,
       url: `/${locale}`,
-      locale: locale === 'ar' ? 'ar_SA' : 'en_US',
-      alternateLocale: locale === 'ar' ? 'en_US' : 'ar_SA',
+      locale: locale === 'ar' ? 'ar_EG' : 'en_US',
+      alternateLocale: locale === 'ar' ? 'en_US' : 'ar_EG',
     },
   };
 }

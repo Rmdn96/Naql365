@@ -13,9 +13,9 @@ it('defaults a fresh visitor to Egypt without writing a preference or granting a
   expect(preference.get).toHaveBeenCalledExactlyOnceWith('naql365_market');
 });
 
-it.each(['EG', 'SA'])('preserves an explicit valid %s preference', async (value) => {
+it.each(['EG', 'SA'])('resolves an explicit %s preference to Egypt', async (value) => {
   preference.get.mockReturnValue({ value });
-  expect(await selectedPublicCountry()).toBe(value);
+  expect(await selectedPublicCountry()).toBe('EG');
 });
 
 it.each(['', 'ZZ', 'eg', '../SA'])('uses Egypt for invalid preference %j', async (value) => {
@@ -23,9 +23,9 @@ it.each(['', 'ZZ', 'eg', '../SA'])('uses Egypt for invalid preference %j', async
   expect(await selectedPublicCountry()).toBe('EG');
 });
 
-it('retains an explicit market switch across successive server reads', async () => {
+it('normalizes an old Saudi cookie across successive server reads', async () => {
   preference.get.mockReturnValue({ value: 'SA' });
-  expect(await selectedPublicCountry()).toBe('SA');
+  expect(await selectedPublicCountry()).toBe('EG');
   preference.get.mockReturnValue({ value: 'EG' });
   expect(await selectedPublicCountry()).toBe('EG');
   expect(await selectedPublicCountry()).toBe('EG');

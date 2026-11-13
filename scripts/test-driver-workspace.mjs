@@ -119,9 +119,9 @@ async function capture(label, locale) {
 try {
   if (
     !sql('show server_version;').startsWith('17.') ||
-    sql('select count(*) from supabase_migrations.schema_migrations;') !== '51'
+    sql('select count(*) from supabase_migrations.schema_migrations;') !== '52'
   )
-    throw Error('LOCAL_SCHEMA_51_REQUIRED');
+    throw Error('LOCAL_SCHEMA_52_REQUIRED');
   checkpoint = 'build';
   execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
     env,

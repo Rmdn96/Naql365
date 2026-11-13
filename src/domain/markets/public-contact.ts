@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+// Historical country values remain readable; new V1 activity is Egypt only.
+export const activeCountry = z.literal('EG');
+export function resolveActiveCountry(value: unknown): 'EG' {
+  if (value === undefined || value === 'SA') return 'EG';
+  return activeCountry.parse(value);
+}
 export const publicCountry = z.enum(['SA', 'EG']);
 export const marketCookie = 'naql365_market';
 export type PublicCountry = z.infer<typeof publicCountry>;

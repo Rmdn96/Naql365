@@ -34,5 +34,5 @@ test('retained Guest concurrency fixture satisfies the actual anonymous Transpor
   expect(catalogue).toHaveLength(1);
   expect(catalogue[0]?.services).toHaveLength(1);
   expect(catalogue[0]?.cities).toHaveLength(2);
-  expect(catalogue[0]?.country).toBe('SA');
+  expect(catalogue[0]?.country).toBe('EG');
 });

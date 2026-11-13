@@ -51,7 +51,6 @@ import type { Locale, Market } from './types';
 
 export function SourceCommerce({
   initialLocale,
-  initialMarket,
   view,
   productId = '',
   products,
@@ -75,7 +74,7 @@ export function SourceCommerce({
   children?: ReactNode;
 }) {
   const locale = initialLocale,
-    market = initialMarket,
+    market = 'EG' as const,
     router = useRouter(),
     pathname = usePathname();
   const theme = useSyncExternalStore(subscribeTheme, readTheme, () => 'system');
@@ -765,11 +764,11 @@ export function SourceCommerce({
               <span className="sr-only">{t.market}</span>
               <select
                 aria-label={locale === 'ar' ? 'بلد الخدمة' : 'Service country'}
-                value={market}
-                onChange={(e) => setMarket(e.target.value === 'SA' ? 'SA' : 'EG')}
+                value="EG"
+                onChange={() => setMarket('EG')}
+                disabled
               >
                 <option value="EG">EG</option>
-                <option value="SA">SA</option>
               </select>
             </label>
             <Button variant="toolbar" onClick={() => setLocale(locale === 'ar' ? 'en' : 'ar')}>

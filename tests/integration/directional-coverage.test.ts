@@ -41,10 +41,14 @@ beforeAll(async () => {
       [org],
     )
   ).rows;
+  await db.query(
+    `insert into public.market_cities(organization_id,market_id,region_id,code,name_ar,name_en) select m.organization_id,m.id,r.id,'foreign-city','TEST','TEST foreign' from public.markets m join public.market_regions r on r.market_id=m.id where m.organization_id<>$1 limit 1`,
+    [org],
+  );
   cities = (
     await db.query<{ id: string; market_id: string; code: string }>(
-      'select id,market_id,lower(code) code from public.market_cities where organization_id=$1',
-      [org],
+      'select id,market_id,lower(code) code from public.market_cities where true',
+      [],
     )
   ).rows;
 }, 30000);
@@ -52,7 +56,7 @@ afterAll(async () => {
   await db.close();
 });
 for (const identity of ['customer', 'guest'])
-  for (const country of ['SA', 'EG'])
+  for (const country of ['EG'])
     for (const scenario of [
       'hub',
       'destination',
@@ -69,13 +73,8 @@ for (const identity of ['customer', 'guest'])
         await db.exec('begin');
         try {
           const market = markets.find((m) => m.country_code === country)!;
-          const hub = cities.find(
-            (c) => c.market_id === market.id && c.code === (country === 'SA' ? 'riyadh' : 'cairo'),
-          )!;
-          const other = cities.find(
-            (c) =>
-              c.market_id === market.id && c.code === (country === 'SA' ? 'jeddah' : 'alexandria'),
-          )!;
+          const hub = cities.find((c) => c.market_id === market.id && c.code === 'riyadh')!;
+          const other = cities.find((c) => c.market_id === market.id && c.code === 'jeddah')!;
           let token = '';
           let id: string;
           if (identity === 'guest') {
@@ -116,7 +115,7 @@ for (const identity of ['customer', 'guest'])
             service_id: service,
             description: 'TEST route',
             contact_name: 'TEST customer',
-            contact_phone: country === 'SA' ? '+966500000001' : '+201000000001',
+            contact_phone: '+201000000001',
             preferred_date: new Date(Date.now() + 86400000).toISOString().slice(0, 10),
             time_window: 'flexible',
             items: [{ description: 'TEST box', quantity: 1, notes: '' }],

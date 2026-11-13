@@ -23,7 +23,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     m.operations ? operationsWorkspace() : null,
   ]);
   const country = await selectedPublicCountry();
-  const currency = country === 'SA' ? 'SAR' : 'EGP';
+  const currency = 'EGP';
   const marketIds = new Set(
     ops?.markets.filter((market) => market.country_code === country).map((market) => market.id),
   );

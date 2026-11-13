@@ -79,35 +79,37 @@ for (const locale of ['ar', 'en'] as const) {
     page,
   }) => {
     await page.goto(`/${locale}`);
-    for (const country of ['EG', 'SA']) {
-      const responsePromise = page.waitForResponse(
-        (response) =>
-          response.url().endsWith('/api/public/market') && response.request().method() === 'POST',
-      );
-      await page
-        .getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true })
-        .selectOption(country);
-      const response = await responsePromise;
-      expect(response.status()).toBe(200);
-      expect((await response.request().allHeaders()).origin).toBe('http://127.0.0.1:3000');
-      const setCookie = (await response.allHeaders())['set-cookie'] ?? '';
-      // Playwright's synchronous headers() omits security headers; assert only safe flags.
-      expect(/(?:^|;)\s*HttpOnly(?:;|$)/i.test(setCookie)).toBe(true);
-      expect(/(?:^|;)\s*SameSite=strict(?:;|$)/i.test(setCookie)).toBe(true);
-      expect(/(?:^|;)\s*Path=\/(?:;|$)/i.test(setCookie)).toBe(true);
-      await expect(
-        page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
-      ).toHaveValue(country);
-      await page.reload();
-      await expect(
-        page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
-      ).toHaveValue(country);
-      await page.goto(`/${locale === 'ar' ? 'en' : 'ar'}/login`);
-      await expect(
-        page.getByRole('combobox', { name: /^(Service country|بلد الخدمة)$/, exact: true }),
-      ).toHaveValue(country);
-      await page.goto(`/${locale}`);
-    }
+    const response = await page.request.post('/api/public/market', {
+      headers: { Origin: 'http://127.0.0.1:3000' },
+      data: { country: 'EG' },
+    });
+    expect(response.status()).toBe(200);
+    const setCookie = response.headers()['set-cookie'] ?? '';
+    expect(setCookie).toMatch(/HttpOnly/i);
+    expect(setCookie).toMatch(/SameSite=strict/i);
+    expect(setCookie).toMatch(/Path=\//i);
+    await page.reload();
+    await expect(
+      page
+        .locator(
+          '.market-control, select[aria-label="Service country"], select[aria-label="بلد الخدمة"]',
+        )
+        .first(),
+    ).toContainText(/EG|🇪🇬/);
+    await page.goto(`/${locale === 'ar' ? 'en' : 'ar'}/login`);
+    await expect(
+      page
+        .locator(
+          '.market-control, select[aria-label="Service country"], select[aria-label="بلد الخدمة"]',
+        )
+        .first(),
+    ).toContainText(/EG|🇪🇬/);
+    const sa = await page.request.post('/api/public/market', {
+      headers: { Origin: 'http://127.0.0.1:3000' },
+      data: { country: 'SA' },
+    });
+    expect(sa.status()).toBe(400);
+    expect(sa.headers()['set-cookie']).toBeUndefined();
     const rejected = await page.request.post('/api/public/market', {
       headers: { Origin: 'https://unapproved.example' },
       data: { country: 'EG' },

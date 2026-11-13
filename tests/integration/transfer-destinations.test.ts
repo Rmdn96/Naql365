@@ -1,3 +1,4 @@
+// Historical multi-market compatibility / upgrade contract; Egypt-only writes are tested separately.
 import { expect, test } from 'vitest';
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -5,10 +6,10 @@ import { foundationDatabase } from '../helpers/database.mjs';
 import { paymentDetails } from '@/domain/payments/model';
 
 test('Egypt destinations are privileged, Market-scoped, selectable and frozen in proof history', async () => {
-  const db = await foundationDatabase();
+  const db = await foundationDatabase(51);
   try {
     await db.exec(
-      readFileSync('supabase/tests/market.test.sql', 'utf8')
+      readFileSync('tests/fixtures/schema51-market.sql', 'utf8')
         .split('-- Supabase TAP report')[0]!
         .replace('rollback;', 'commit;'),
     );

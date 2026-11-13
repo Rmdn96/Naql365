@@ -92,7 +92,7 @@ try {
     `insert into auth.users(id,email) values('${a}','driver-a@example.invalid'),('${b}','driver-b@example.invalid');insert into public.organization_memberships(organization_id,profile_id,member_type) values('${org}','${a}','driver'),('${org}','${b}','driver');insert into public.user_roles(organization_id,profile_id,role_id) select '${org}',u.id,r.id from auth.users u cross join public.roles r where u.id in ('${a}','${b}') and r.code='DRIVER'`,
   );
   const marketId = await sql(
-      `select id from public.markets where organization_id='${org}' and country_code='SA'`,
+      `select id from public.markets where organization_id='${org}' and country_code='EG'`,
     ),
     cityId = await sql(`select id from public.market_cities where market_id='${marketId}' limit 1`);
   const da = (
