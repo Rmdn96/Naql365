@@ -258,10 +258,10 @@ try {
               locale === 'ar' ? 'العناصر المعروضة' : 'Displayed items',
             );
             await expect(page.locator('.staff-workspace-content')).toContainText(
-              'SYNTHETIC FINANCE SA',
+              'SYNTHETIC FINANCE EG',
             );
             await expect(page.locator('.staff-workspace-content')).not.toContainText(
-              'SYNTHETIC FINANCE EG',
+              'SYNTHETIC FINANCE SA',
             );
             await page.locator('#finance-status').selectOption('PAID');
             await page
