@@ -73,3 +73,29 @@ it('retains non-purchasable empty state and guest cart access', () => {
   expect(html).toContain('Purchasing is currently unavailable');
   expect(html).toContain('/en/store');
 });
+it.each(['ar', 'en'] as const)(
+  'keeps %s home, catalog and product presentation under Naql365 responsibility',
+  (locale) => {
+    for (const view of ['home', 'catalog', 'product']) {
+      const html = renderToStaticMarkup(
+        createElement(SourceCommerce, {
+          initialLocale: locale,
+          initialMarket: 'EG',
+          view,
+          productId: product.slug,
+          products: [product],
+          categories: [],
+          available: true,
+        }),
+      );
+      expect(html).toContain('Naql365');
+      expect(html).not.toMatch(/supplier|المورد/i);
+      if (view === 'product')
+        expect(html).toContain(
+          locale === 'ar'
+            ? 'تأكيد التوفر من Naql365 مطلوب'
+            : 'Availability confirmation by Naql365 required',
+        );
+    }
+  },
+);

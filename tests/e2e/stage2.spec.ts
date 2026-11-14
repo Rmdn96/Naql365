@@ -31,10 +31,20 @@ for (const locale of ['ar', 'en'] as const) {
     await expect(payment).toContainText(
       locale === 'ar' ? 'اقبل العرض النهائي' : 'Accept the final quote',
     );
-    await expect(payment).toContainText(
+    // Cash requires Finance verification of actual collection, not a fulfiller's report.
+    const cash = payment.getByRole('article').filter({
+      has: page.getByRole('heading', {
+        name: locale === 'ar' ? 'نقدًا (CASH)' : 'Cash (CASH)',
+        exact: true,
+      }),
+    });
+    await expect(cash).toContainText(
       locale === 'ar'
-        ? 'تقرير المورد وحده لا يؤكد التحصيل'
-        : 'a supplier report alone does not confirm collection',
+        ? 'Naql365 مسؤول عن طلب المتجر. يُدفع النقد لمندوب التوصيل المعتمد عند التسليم وفق الشروط المعتمدة، ويتحقق فريق المالية من التحصيل الفعلي ويسجله.'
+        : 'Naql365 is responsible for your Store order. Pay cash to the authorized delivery representative on delivery under the approved terms; Finance verifies and records actual collection.',
+    );
+    await expect(payment).not.toContainText(
+      /supplier|المورد|مستحقات المورد|تكاليف المورد|تسويات المورد|supplierEntitlementMinor|moneyOperations/i,
     );
     for (const width of [360, 390, 768, 1280, 1440]) {
       await page.setViewportSize({ width, height: 900 });

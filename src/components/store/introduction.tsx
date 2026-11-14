@@ -37,8 +37,8 @@ export async function StoreIntroduction({ locale }: { locale: Locale }) {
       </h2>
       <p>
         {ar
-          ? 'اختر مستلزمات تجهيز أغراضك للنقل: الصناديق ومواد الحماية والشرائط وأدوات التغليف. طلبات المتجر وتوصيل المورد مستقلة عن طلب النقل.'
-          : 'Find boxes, protective materials, tape and packing tools. Store purchases and supplier delivery remain separate from your Transport request.'}
+          ? 'اختر مستلزمات تجهيز أغراضك للنقل: الصناديق ومواد الحماية والشرائط وأدوات التغليف. Naql365 هو البائع والمسؤول عن طلب المتجر وتوصيله، وهما مستقلان عن طلب النقل.'
+          : 'Find boxes, protective materials, tape and packing tools. Naql365 is your seller and is responsible for Store orders and delivery, separately from your Transport request.'}
       </p>
       <div className="actions">
         <Link className="button button--primary" href={root}>

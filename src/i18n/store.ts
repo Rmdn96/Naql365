@@ -32,7 +32,8 @@ export const storeText = {
     payment: 'الدفع',
     fulfillment: 'التوصيل',
     status: 'حالة الطلب',
-    cash: 'نقدًا عند التسليم — التحصيل لدى المورد',
+    cash: 'نقدًا عند التسليم لمندوب التوصيل المعتمد — Naql365 مسؤول عن طلبك.',
+    staffCash: 'نقدًا عند التسليم — التحصيل لدى المورد',
     proofNote:
       'رفع الإثبات لا يعني تأكيد استلام الأموال. تتحقق الإدارة المالية من الاستلام الفعلي.',
     proof: 'إثبات التحويل',
@@ -94,7 +95,8 @@ export const storeText = {
     payment: 'Payment',
     fulfillment: 'Delivery',
     status: 'Order status',
-    cash: 'Cash on delivery — collected by supplier',
+    cash: 'Cash on delivery to the authorized delivery representative — Naql365 is responsible for your order.',
+    staffCash: 'Cash on delivery — collected by supplier',
     proofNote: 'Proof submission does not confirm funds received. Finance verifies actual receipt.',
     proof: 'Transfer proof',
     reference: 'Transaction reference',
@@ -185,11 +187,25 @@ const actions: Record<string, [string, string]> = {
   money_failed: ['تأكيد عدم التنفيذ', 'Confirm not executed'],
   money_verify: ['تأكيد نتيجة مالية متحققة', 'Confirm verified money outcome'],
 };
-export function storeLabel(code: string, locale: 'ar' | 'en') {
-  return (
-    (states[code] ?? actions[code])?.[locale === 'ar' ? 0 : 1] ??
-    (locale === 'ar' ? 'تحديث مسجل' : 'Recorded update')
-  );
+// Presentation only: database states, events and transitions remain unchanged.
+const customerLabels: Record<string, [string, string]> = {
+  SENT_TO_SUPPLIER: ['جارٍ تجهيز الطلب', 'Your order is being prepared'],
+  send: ['جارٍ تجهيز الطلب', 'Your order is being prepared'],
+  recover: ['استئناف تجهيز الطلب', 'Order preparation resumed'],
+  report_cash: ['سُجل تحصيل النقد للمراجعة', 'Cash collection recorded for review'],
+  money_request: ['تحديث مالي قيد المراجعة', 'Payment update under review'],
+  money_unknown: ['نتيجة مالية قيد التحقق', 'Payment outcome being checked'],
+  money_failed: ['ثبت عدم تنفيذ العملية المالية', 'Payment operation confirmed not executed'],
+  money_verify: ['تم التحقق من التحديث المالي', 'Payment update verified'],
+};
+export function storeLabel(
+  code: string,
+  locale: 'ar' | 'en',
+  audience: 'customer' | 'staff' = 'customer',
+) {
+  const label =
+    (audience === 'customer' ? customerLabels[code] : undefined) ?? states[code] ?? actions[code];
+  return label?.[locale === 'ar' ? 0 : 1] ?? (locale === 'ar' ? 'تحديث مسجل' : 'Recorded update');
 }
 export function storeMoney(amount: number, locale: 'ar' | 'en') {
   return new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {

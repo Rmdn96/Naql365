@@ -488,8 +488,8 @@ export function SourceCommerce({
                   <h3>{locale === 'ar' ? 'نقدًا (CASH)' : 'Cash (CASH)'}</h3>
                   <p>
                     {locale === 'ar'
-                      ? 'يتولى فريق المالية التحقق من التحصيل وتسجيله. في المتجر، يُقصد أن يُحصّل المورد النقد عند التسليم وفق السياسة المعتمدة؛ تقرير المورد وحده لا يؤكد التحصيل.'
-                      : 'Finance verifies and records collection. For Store orders, the supplier is the intended cash collector on delivery under the approved policy; a supplier report alone does not confirm collection.'}
+                      ? 'Naql365 مسؤول عن طلب المتجر. يُدفع النقد لمندوب التوصيل المعتمد عند التسليم وفق الشروط المعتمدة، ويتحقق فريق المالية من التحصيل الفعلي ويسجله.'
+                      : 'Naql365 is responsible for your Store order. Pay cash to the authorized delivery representative on delivery under the approved terms; Finance verifies and records actual collection.'}
                   </p>
                 </div>
               </article>
@@ -597,8 +597,8 @@ export function SourceCommerce({
               <CircleDashed size={15} />
               {x.availability}:{' '}
               {locale === 'ar'
-                ? 'تأكيد التوفر لدى المورد مطلوب'
-                : 'Supplier availability confirmation required'}
+                ? 'تأكيد التوفر من Naql365 مطلوب'
+                : 'Availability confirmation by Naql365 required'}
             </p>
             <dl className="cm-spec-grid">
               {p.specifications.map((spec, index) => (
