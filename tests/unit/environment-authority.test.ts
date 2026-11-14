@@ -4,12 +4,15 @@ import {
   digest,
   validateEnvironment,
   verifyArtifact,
+  verifyProductionSource,
   type Manifest,
 } from '../../src/infrastructure/config/environment-authority';
 import { acceptanceTarget, protectionHeaders } from '../../scripts/staging/target.mjs';
+import { assertSameOrigin } from '../../src/application/identity/smoke-auth';
 const key = 'sb_publishable_synthetic_configuration_only_123';
 const manifest: Manifest = {
   version: 1,
+  productionOrigins: ['https://launch.naql365.com', 'https://naql365.com'],
   staging: {
     projectRef: 'stagingfixture',
     origins: ['https://approved.vercel.app'],
@@ -22,6 +25,8 @@ const manifest: Manifest = {
     },
   },
   production: {
+    origin: 'https://naql365.com',
+    sourceCommit: '1'.repeat(40),
     projectRef: 'productionfixture',
     publicKeyDigest: digest(key),
     identity: 'identity',
@@ -35,6 +40,72 @@ const safe = {
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key,
 };
 describe('independently approved deployment authority', () => {
+  it.each(['https://launch.naql365.com', 'https://naql365.com'])(
+    'keeps CSRF exact-origin enforcement for %s',
+    (origin) => {
+      expect(() => assertSameOrigin(origin, origin)).not.toThrow();
+      for (const other of [
+        null,
+        'https://approved.vercel.app',
+        'https://evil.example',
+        origin === 'https://naql365.com' ? 'https://launch.naql365.com' : 'https://naql365.com',
+      ])
+        expect(() => assertSameOrigin(other, origin)).toThrow();
+    },
+  );
+  it('requires separate manifest approval for the temporary or final origin', () => {
+    const temporary = {
+      ...manifest,
+      production: { ...manifest.production!, origin: 'https://launch.naql365.com' },
+    };
+    expect(
+      validateEnvironment({ ...safe, APP_URL: temporary.production.origin }, temporary).origin,
+    ).toBe(temporary.production.origin);
+    expect(validateEnvironment(safe, manifest).origin).toBe(safe.APP_URL);
+    expect(() =>
+      validateEnvironment({ ...safe, APP_URL: temporary.production.origin }, manifest),
+    ).toThrow('ENV_CANONICAL_ORIGIN_MISMATCH');
+    expect(() => validateEnvironment(safe, temporary)).toThrow('ENV_CANONICAL_ORIGIN_MISMATCH');
+    for (const origin of [
+      'https://approved.vercel.app',
+      'https://evil.example',
+      'https://launch.naql365.com.evil.example',
+    ]) {
+      expect(() =>
+        validateEnvironment(
+          { ...safe, APP_URL: origin },
+          { ...temporary, production: { ...temporary.production, origin } },
+        ),
+      ).toThrow('ENV_CANONICAL_ORIGIN_MISMATCH');
+    }
+  });
+  it('binds approval and the runtime artifact to the actual release commit', () => {
+    expect(() => verifyProductionSource(manifest, '1'.repeat(40))).not.toThrow();
+    for (const commit of ['', '2'.repeat(40), 'not-a-commit'])
+      expect(() => verifyProductionSource(manifest, commit)).toThrow('ENV_SOURCE_NOT_APPROVED');
+    expect(() =>
+      validateEnvironment(safe, {
+        ...manifest,
+        production: { ...manifest.production!, sourceCommit: '' },
+      }),
+    ).toThrow('ENV_SOURCE_NOT_APPROVED');
+    const build = validateEnvironment(safe, manifest);
+    expect(() => verifyArtifact(build, { ...build, sourceCommit: '2'.repeat(40) })).toThrow(
+      'ENV_BUILD_RUNTIME_MISMATCH',
+    );
+    expect(() =>
+      verifyArtifact(
+        build,
+        validateEnvironment(
+          { ...safe, APP_URL: 'https://launch.naql365.com' },
+          {
+            ...manifest,
+            production: { ...manifest.production!, origin: 'https://launch.naql365.com' },
+          },
+        ),
+      ),
+    ).toThrow('ENV_BUILD_RUNTIME_MISMATCH');
+  });
   it('does not let public targets use the local environment exception', () => {
     expect(() => validateEnvironment({ APP_URL: 'https://naql365.com' }, manifest)).toThrow(
       'ENV_CANONICAL_ORIGIN_MISMATCH',

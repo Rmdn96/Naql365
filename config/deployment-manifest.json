@@ -16,5 +16,6 @@
     "hostingerOrigins": [],
     "hostingerProtection": {}
   },
+  "productionOrigins": ["https://launch.naql365.com", "https://naql365.com"],
   "production": null
 }
