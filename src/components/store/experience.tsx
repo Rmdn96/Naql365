@@ -133,6 +133,7 @@ async function renderStoreBody({
   const t = storeText[locale],
     root = '/' + locale + (staff ? '/portal/store' : '/store'),
     segment = path[0] ?? '';
+  const label = (code: string) => storeLabel(code, locale, staff ? 'staff' : 'customer');
   let body: React.ReactNode;
   if (!staff && (segment === '' || segment === 'products')) {
     if (segment === 'products' && (!path[1] || path.length !== 2)) notFound();
@@ -295,9 +296,9 @@ async function renderStoreBody({
       <section className={staff ? undefined : 'cm-order-detail'}>
         <h2 dir="ltr">{order.reference}</h2>
         <div className="store-status">
-          <Badge>{storeLabel(order.orderState, locale)}</Badge>
-          <Badge>{storeLabel(order.fulfillmentState, locale)}</Badge>
-          <Badge>{storeLabel(order.payment.status, locale)}</Badge>
+          <Badge>{label(order.orderState)}</Badge>
+          <Badge>{label(order.fulfillmentState)}</Badge>
+          <Badge>{label(order.payment.status)}</Badge>
         </div>
         <div className="store-detail-grid">
           <Card>
@@ -338,10 +339,10 @@ async function renderStoreBody({
         <Card>
           <h3>{t.payment}</h3>
           <p>
-            {storeLabel(order.payment.method, locale)} · {storeLabel(order.payment.status, locale)}
+            {label(order.payment.method)} · {label(order.payment.status)}
           </p>
           {order.payment.method === 'CASH' ? (
-            <p>{t.cash}</p>
+            <p>{staff ? t.staffCash : t.cash}</p>
           ) : (
             <>
               <p>{t.proofNote}</p>
@@ -361,7 +362,7 @@ async function renderStoreBody({
           )}
           {order.proofs.map((p) => (
             <p key={p.id}>
-              <Badge>{storeLabel(p.status, locale)}</Badge> {p.customerReference}{' '}
+              <Badge>{label(p.status)}</Badge> {p.customerReference}{' '}
               {!['RESERVED', 'ABANDONED'].includes(p.status) && (
                 <a href={'/api/store/proof?id=' + p.id} target="_blank" rel="noopener noreferrer">
                   {t.proof}
@@ -380,7 +381,7 @@ async function renderStoreBody({
               <ProofForm order={order} locale={locale} />
             )}
         </Card>
-        {order.supplierEntitlementMinor !== undefined && (
+        {staff && order.supplierEntitlementMinor !== undefined && (
           <Card>
             <h3>{t.reconciliation}</h3>
             <p>
@@ -389,16 +390,14 @@ async function renderStoreBody({
             <ul>
               {order.entries.map((e) => (
                 <li key={e.id}>
-                  {storeLabel(e.kind, locale)} · {storeLabel(e.holder, locale)} ·{' '}
-                  {storeMoney(e.amountMinor, locale)}
+                  {label(e.kind)} · {label(e.holder)} · {storeMoney(e.amountMinor, locale)}
                 </li>
               ))}
             </ul>
             <ul>
               {order.moneyOperations.map((o) => (
                 <li key={o.id}>
-                  {o.reference} · {storeLabel(o.kind, locale)} ·{' '}
-                  <Badge>{storeLabel(o.state, locale)}</Badge>
+                  {o.reference} · {label(o.kind)} · <Badge>{label(o.state)}</Badge>
                 </li>
               ))}
             </ul>
@@ -411,7 +410,7 @@ async function renderStoreBody({
             {order.events.map((event, index) => (
               <li key={index}>
                 {!staff && <span aria-hidden="true">{index + 1}</span>}
-                <div>{storeLabel(event.action, locale)}</div>
+                <div>{label(event.action)}</div>
                 <time dateTime={event.at}>
                   {new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {
                     dateStyle: 'medium',
@@ -451,11 +450,9 @@ async function renderStoreBody({
               id: o.id,
               reference: o.reference,
               summary: storeMoney(o.totalMinor, locale),
-              status: [
-                storeLabel(o.orderState, locale),
-                storeLabel(o.fulfillmentState, locale),
-                storeLabel(o.paymentStatus, locale),
-              ].join(' · '),
+              status: [label(o.orderState), label(o.fulfillmentState), label(o.paymentStatus)].join(
+                ' · ',
+              ),
               href: root + '/orders/' + o.id,
             }))}
           />
@@ -467,9 +464,9 @@ async function renderStoreBody({
               <Link key={o.id} href={root + '/orders/' + o.id}>
                 {o.reference}
               </Link>,
-              storeLabel(o.orderState, locale),
-              storeLabel(o.fulfillmentState, locale),
-              storeLabel(o.paymentStatus, locale),
+              label(o.orderState),
+              label(o.fulfillmentState),
+              label(o.paymentStatus),
               storeMoney(o.totalMinor, locale),
             ])}
           />

@@ -464,6 +464,7 @@ export function OrderActions({
   const t = storeText[locale],
     command = useStoreCommand(locale),
     [action, setAction] = useState('');
+  const label = (code: string) => storeLabel(code, locale, staff ? 'staff' : 'customer');
   const allowed: StoreCommand['action'][] = [];
   if (!staff) {
     if (
@@ -556,7 +557,7 @@ export function OrderActions({
         <option value="">{t.selection}</option>
         {allowed.map((a) => (
           <option key={a} value={a}>
-            {storeLabel(a, locale)}
+            {label(a)}
           </option>
         ))}
       </Select>
@@ -608,9 +609,9 @@ export function OrderActions({
       {selected === 'money_request' && (
         <>
           <Select id="store-money-kind" name="kind" label={t.action}>
-            <option value="SETTLEMENT">{storeLabel('SETTLEMENT', locale)}</option>
-            <option value="REFUND">{storeLabel('REFUND', locale)}</option>
-            <option value="REVERSAL">{storeLabel('REVERSAL', locale)}</option>
+            <option value="SETTLEMENT">{label('SETTLEMENT')}</option>
+            <option value="REFUND">{label('REFUND')}</option>
+            <option value="REVERSAL">{label('REVERSAL')}</option>
           </Select>
           <Input
             id="store-money-amount"
@@ -628,13 +629,13 @@ export function OrderActions({
             maxLength={120}
             required
           />
-          <Select id="store-reversal" name="reversesId" label={storeLabel('REVERSAL', locale)}>
+          <Select id="store-reversal" name="reversesId" label={label('REVERSAL')}>
             <option value="">—</option>
             {order.entries
               .filter((x) => ['SETTLEMENT', 'REFUND'].includes(x.kind))
               .map((x) => (
                 <option key={x.id} value={x.id}>
-                  {storeLabel(x.kind, locale)} · {storeMoney(x.amountMinor, locale)}
+                  {label(x.kind)} · {storeMoney(x.amountMinor, locale)}
                 </option>
               ))}
           </Select>
@@ -647,7 +648,7 @@ export function OrderActions({
             .filter((o) => ['PENDING', 'UNKNOWN'].includes(o.state))
             .map((o) => (
               <option key={o.id} value={o.id}>
-                {o.reference} · {storeLabel(o.state, locale)} · {storeMoney(o.amountMinor, locale)}
+                {o.reference} · {label(o.state)} · {storeMoney(o.amountMinor, locale)}
               </option>
             ))}
         </Select>

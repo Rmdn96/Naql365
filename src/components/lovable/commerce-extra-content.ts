@@ -16,7 +16,7 @@ export const commerceExtra = {
     shipping: 'الشحن والتوصيل',
     shippingArea: 'منطقة التوصيل',
     deliveryWindow: 'مدة التوصيل',
-    shippingNote: 'المورد يتولى التجهيز والتسليم؛ لا نَعِد بموعد قبل الاعتماد.',
+    shippingNote: 'Naql365 مسؤول عن تجهيز طلبك وتوصيله؛ لا نَعِد بموعد قبل الاعتماد.',
     related: 'منتجات ذات صلة',
     price: 'السعر المعتمد للعميل',
     steps: ['السلة', 'العنوان', 'الدفع', 'المراجعة'],
@@ -63,7 +63,7 @@ export const commerceExtra = {
     shippingArea: 'Delivery area',
     deliveryWindow: 'Delivery time',
     shippingNote:
-      'The supplier prepares and delivers; no delivery date is promised before approval.',
+      'Naql365 is responsible for preparing and delivering your order; no delivery date is promised before approval.',
     related: 'Related products',
     price: 'Approved customer price',
     steps: ['Cart', 'Address', 'Payment', 'Review'],
