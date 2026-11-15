@@ -72,7 +72,7 @@ export function validateEnvironment(env: Inputs, manifest: Manifest): ArtifactId
   }
   if (manifest.version !== 1) fail('ENV_MANIFEST_INVALID');
   if (environment === 'production') {
-    if (!['https://launch.naql365.com', 'https://naql365.com'].includes(origin))
+    if (!['https://naql365-launch.vercel.app', 'https://naql365.com'].includes(origin))
       fail('ENV_CANONICAL_ORIGIN_MISMATCH');
     if (env.STAGING_AUTH_SMOKE_ENABLED && env.STAGING_AUTH_SMOKE_ENABLED !== 'false')
       fail('ENV_STAGING_SMOKE_IN_PRODUCTION');

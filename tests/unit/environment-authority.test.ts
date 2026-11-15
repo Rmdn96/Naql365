@@ -12,7 +12,7 @@ import { assertSameOrigin } from '../../src/application/identity/smoke-auth';
 const key = 'sb_publishable_synthetic_configuration_only_123';
 const manifest: Manifest = {
   version: 1,
-  productionOrigins: ['https://launch.naql365.com', 'https://naql365.com'],
+  productionOrigins: ['https://naql365-launch.vercel.app', 'https://naql365.com'],
   staging: {
     projectRef: 'stagingfixture',
     origins: ['https://approved.vercel.app'],
@@ -40,7 +40,7 @@ const safe = {
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key,
 };
 describe('independently approved deployment authority', () => {
-  it.each(['https://launch.naql365.com', 'https://naql365.com'])(
+  it.each(['https://naql365-launch.vercel.app', 'https://naql365.com'])(
     'keeps CSRF exact-origin enforcement for %s',
     (origin) => {
       expect(() => assertSameOrigin(origin, origin)).not.toThrow();
@@ -48,7 +48,10 @@ describe('independently approved deployment authority', () => {
         null,
         'https://approved.vercel.app',
         'https://evil.example',
-        origin === 'https://naql365.com' ? 'https://launch.naql365.com' : 'https://naql365.com',
+        'https://launch.naql365.com',
+        origin === 'https://naql365.com'
+          ? 'https://naql365-launch.vercel.app'
+          : 'https://naql365.com',
       ])
         expect(() => assertSameOrigin(other, origin)).toThrow();
     },
@@ -56,7 +59,7 @@ describe('independently approved deployment authority', () => {
   it('requires separate manifest approval for the temporary or final origin', () => {
     const temporary = {
       ...manifest,
-      production: { ...manifest.production!, origin: 'https://launch.naql365.com' },
+      production: { ...manifest.production!, origin: 'https://naql365-launch.vercel.app' },
     };
     expect(
       validateEnvironment({ ...safe, APP_URL: temporary.production.origin }, temporary).origin,
@@ -69,7 +72,8 @@ describe('independently approved deployment authority', () => {
     for (const origin of [
       'https://approved.vercel.app',
       'https://evil.example',
-      'https://launch.naql365.com.evil.example',
+      'https://launch.naql365.com',
+      'https://naql365-launch.vercel.app.evil.example',
     ]) {
       expect(() =>
         validateEnvironment(
@@ -97,10 +101,10 @@ describe('independently approved deployment authority', () => {
       verifyArtifact(
         build,
         validateEnvironment(
-          { ...safe, APP_URL: 'https://launch.naql365.com' },
+          { ...safe, APP_URL: 'https://naql365-launch.vercel.app' },
           {
             ...manifest,
-            production: { ...manifest.production!, origin: 'https://launch.naql365.com' },
+            production: { ...manifest.production!, origin: 'https://naql365-launch.vercel.app' },
           },
         ),
       ),
