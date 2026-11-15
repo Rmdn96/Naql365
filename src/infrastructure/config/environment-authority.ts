@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 
 export type Manifest = {
   version: number;
+  productionOrigins: string[];
   staging: {
     projectRef: string;
     origins: string[];
@@ -9,6 +10,8 @@ export type Manifest = {
     hostingerProtection?: Record<string, { mode: string; approval: string }>;
   };
   production: null | {
+    origin: string;
+    sourceCommit: string;
     projectRef: string;
     publicKeyDigest: string;
     identity: string;
@@ -22,6 +25,7 @@ export type ArtifactIdentity = {
   backend: string;
   publicKeyDigest: string;
   manifestDigest: string;
+  sourceCommit: string;
 };
 function fail(code: string): never {
   throw new Error(code);
@@ -44,6 +48,7 @@ export function validateEnvironment(env: Inputs, manifest: Manifest): ArtifactId
     backend,
     publicKeyDigest: digest(key),
     manifestDigest: digest(JSON.stringify(manifest)),
+    sourceCommit: environment === 'production' ? manifest.production?.sourceCommit || '' : '',
   };
   if (environment === 'local') {
     // Omitting APP_ENV must not turn a public deployment into a local exception.
@@ -67,12 +72,16 @@ export function validateEnvironment(env: Inputs, manifest: Manifest): ArtifactId
   }
   if (manifest.version !== 1) fail('ENV_MANIFEST_INVALID');
   if (environment === 'production') {
-    if (origin !== 'https://naql365.com') fail('ENV_CANONICAL_ORIGIN_MISMATCH');
+    if (!['https://naql365-launch.vercel.app', 'https://naql365.com'].includes(origin))
+      fail('ENV_CANONICAL_ORIGIN_MISMATCH');
     if (env.STAGING_AUTH_SMOKE_ENABLED && env.STAGING_AUTH_SMOKE_ENABLED !== 'false')
       fail('ENV_STAGING_SMOKE_IN_PRODUCTION');
     if (backend === `https://${manifest.staging.projectRef}.supabase.co`)
       fail('ENV_STAGING_BACKEND_IN_PRODUCTION');
     if (!manifest.production) fail('ENV_PRODUCTION_NOT_APPROVED');
+    if (origin !== manifest.production.origin || !manifest.productionOrigins.includes(origin))
+      fail('ENV_CANONICAL_ORIGIN_MISMATCH');
+    if (!/^[a-f0-9]{40}$/.test(manifest.production.sourceCommit)) fail('ENV_SOURCE_NOT_APPROVED');
     if (
       backend !== `https://${manifest.production.projectRef}.supabase.co` ||
       digest(key) !== manifest.production.publicKeyDigest
@@ -102,9 +111,18 @@ export function verifyArtifact(build: ArtifactIdentity, runtime: ArtifactIdentit
     'backend',
     'publicKeyDigest',
     'manifestDigest',
+    'sourceCommit',
   ] as const) {
     if (build[field] !== runtime[field]) fail('ENV_BUILD_RUNTIME_MISMATCH');
   }
+}
+export function verifyProductionSource(manifest: Manifest, actualCommit: string) {
+  if (
+    !manifest.production ||
+    !/^[a-f0-9]{40}$/.test(actualCommit) ||
+    actualCommit !== manifest.production.sourceCommit
+  )
+    fail('ENV_SOURCE_NOT_APPROVED');
 }
 export async function attestBackend(
   env: Inputs,

@@ -16,5 +16,6 @@
     "hostingerOrigins": [],
     "hostingerProtection": {}
   },
+  "productionOrigins": ["https://naql365-launch.vercel.app", "https://naql365.com"],
   "production": null
 }
