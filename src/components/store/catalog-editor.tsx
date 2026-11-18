@@ -3,9 +3,15 @@ import { useRef, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, Button, Input } from '@/components/ui/primitives';
 import { storeText } from '@/i18n/store';
+import { optionalDescriptions } from '@/domain/store/draft-content';
 
 type Locale = 'ar' | 'en';
-type Spec = { label_ar: string; label_en: string; value_ar: string; value_en: string };
+type Spec = {
+  label_ar: string;
+  label_en: string;
+  value_ar: string;
+  value_en: string;
+};
 type Content = {
   title_ar: string;
   title_en: string;
@@ -57,10 +63,12 @@ function useCatalogCommand(locale: Locale) {
 export function CatalogDraftEditor({
   locale,
   kind,
+  categories,
   row,
 }: {
   locale: Locale;
   kind: 'products' | 'categories';
+  categories: { id: string; title: string }[];
   row?: {
     id: string;
     revision: number;
@@ -91,8 +99,14 @@ export function CatalogDraftEditor({
             title_en: String(f.get('title_en')),
           };
           if (kind === 'products') {
-            value.description_ar = String(f.get('description_ar'));
-            value.description_en = String(f.get('description_en'));
+            Object.assign(
+              value,
+              optionalDescriptions(
+                String(f.get('description_ar') ?? ''),
+                String(f.get('description_en') ?? ''),
+              ),
+            );
+
             value.specifications = specs;
           }
           const payload: Record<string, unknown> = { content: value };
@@ -145,21 +159,45 @@ export function CatalogDraftEditor({
           maxLength={200}
           required
         />
-        <Input
+        <label htmlFor={prefix + 'category'}>
+          {kind === 'products'
+            ? ar
+              ? 'الفئة'
+              : 'Category'
+            : ar
+              ? 'الفئة الأصل (اختياري)'
+              : 'Parent category (optional)'}
+        </label>
+        <select
           id={prefix + 'category'}
           name={kind === 'products' ? 'category_id' : 'parent_id'}
-          label={
-            kind === 'products'
-              ? ar
-                ? 'مرجع الفئة'
-                : 'Category reference'
-              : ar
-                ? 'مرجع الفئة الأصل (اختياري)'
-                : 'Parent category reference (optional)'
-          }
           defaultValue={row?.categoryId ?? row?.parentId ?? ''}
           required={kind === 'products'}
-        />
+        >
+          <option value="">
+            {kind === 'products'
+              ? ar
+                ? 'اختر الفئة'
+                : 'Choose category'
+              : ar
+                ? 'فئة رئيسية'
+                : 'Top-level category'}
+          </option>
+          {categories
+            .filter((category) => kind === 'products' || category.id !== row?.id)
+            .map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.title}
+              </option>
+            ))}
+        </select>
+        {kind === 'products' && categories.length === 0 && (
+          <p>
+            {ar
+              ? 'أضف فئة أولًا من تبويب الفئات، ثم عُد لإضافة المنتج.'
+              : 'Create a category in the Categories tab first, then return to add the product.'}
+          </p>
+        )}
         {kind === 'products' && (
           <>
             <label htmlFor={prefix + 'description-ar'}>الوصف العربي</label>
@@ -410,7 +448,11 @@ export function CatalogMedia({
     [media, setMedia] = useState(initial),
     [uploading, setUploading] = useState(false),
     [error, setError] = useState(false),
-    uploadIds = useRef<{ assetId: string; reserveId: string; finalizeId: string } | null>(null);
+    uploadIds = useRef<{
+      assetId: string;
+      reserveId: string;
+      finalizeId: string;
+    } | null>(null);
   return (
     <details>
       <summary>{ar ? 'صور المنتج وترتيبها' : 'Product images and order'}</summary>
@@ -466,7 +508,10 @@ export function CatalogMedia({
           }))
             f.set(key, value);
           try {
-            const response = await fetch('/api/store/media', { method: 'POST', body: f });
+            const response = await fetch('/api/store/media', {
+              method: 'POST',
+              body: f,
+            });
             if (!response.ok) throw Error('Upload unconfirmed');
             const body = await response.json();
             const value = body.data ?? body;

@@ -32,6 +32,21 @@ export async function CatalogAdmin({
     t = storeText[locale],
     ar = locale === 'ar',
     root = '/' + locale + '/portal/store/catalog';
+  // Reuse the permission-scoped catalogue projection; never query private tables.
+  const categories = [] as { id: string; title: string }[];
+  if (r.manage && (k === 'products' || k === 'categories')) {
+    let cursor: string | undefined;
+    do {
+      const page = (await storeCatalogAdmin('categories', cursor)).page;
+      categories.push(
+        ...page.items.map((item) => ({
+          id: item.id,
+          title: (ar ? item.content?.title_ar : item.content?.title_en) ?? item.slug ?? item.id,
+        })),
+      );
+      cursor = page.nextCursor ?? undefined;
+    } while (cursor);
+  }
   const labels = {
     products: ar ? 'المنتجات' : 'Products',
     categories: ar ? 'الفئات' : 'Categories',
@@ -95,7 +110,7 @@ export async function CatalogAdmin({
             <button className="button button--secondary">{t.search}</button>
           </form>
           {r.manage && (k === 'products' || k === 'categories') && (
-            <CatalogDraftEditor locale={locale} kind={k} />
+            <CatalogDraftEditor locale={locale} kind={k} categories={categories} />
           )}
           {r.manage && (k === 'prices' || k === 'listings') && (
             <CatalogCreate locale={locale} kind={k} />
@@ -107,7 +122,11 @@ export async function CatalogAdmin({
               title={ar ? 'مسودة مورد جديد' : 'Create supplier draft'}
               intent={{ family: 'sourcing', operation: 'create_supplier' }}
               fields={[
-                { key: 'reference', ar: 'مرجع المورد', en: 'Supplier reference' },
+                {
+                  key: 'reference',
+                  ar: 'مرجع المورد',
+                  en: 'Supplier reference',
+                },
                 { key: 'name', ar: 'اسم المورد', en: 'Supplier name' },
               ]}
             />
@@ -118,9 +137,21 @@ export async function CatalogAdmin({
               title={ar ? 'نسخة استحقاق متعاقد عليه' : 'Create contractual entitlement version'}
               intent={{ family: 'sourcing', operation: 'create_offer' }}
               fields={[
-                { key: 'product_id', ar: 'مرجع المنتج', en: 'Product reference' },
-                { key: 'supplier_id', ar: 'مرجع المورد', en: 'Supplier reference' },
-                { key: 'agreement_id', ar: 'مرجع الاتفاقية', en: 'Agreement reference' },
+                {
+                  key: 'product_id',
+                  ar: 'مرجع المنتج',
+                  en: 'Product reference',
+                },
+                {
+                  key: 'supplier_id',
+                  ar: 'مرجع المورد',
+                  en: 'Supplier reference',
+                },
+                {
+                  key: 'agreement_id',
+                  ar: 'مرجع الاتفاقية',
+                  en: 'Agreement reference',
+                },
                 { key: 'offer_key', ar: 'رمز العرض', en: 'Offer key' },
                 { key: 'version', ar: 'النسخة', en: 'Version', type: 'number' },
                 {
@@ -226,6 +257,7 @@ export async function CatalogAdmin({
                     locale={locale}
                     kind={k}
                     row={row}
+                    categories={categories}
                   />
                 )}
                 {r.manage && k === 'prices' && row.state === 'DRAFT' && (
@@ -317,13 +349,21 @@ export async function CatalogAdmin({
                           row.state === 'SUSPENDED'
                             ? 'resume_product'
                             : 'suspend_' +
-                              { products: 'product', categories: 'category', listings: 'listing' }[
-                                k
-                              ],
+                              {
+                                products: 'product',
+                                categories: 'category',
+                                listings: 'listing',
+                              }[k],
                         target: row.id,
                         revision: row.revision,
                       }}
-                      fields={[{ key: 'reason', ar: 'سبب التغيير', en: 'Reason for change' }]}
+                      fields={[
+                        {
+                          key: 'reason',
+                          ar: 'سبب التغيير',
+                          en: 'Reason for change',
+                        },
+                      ]}
                     />
                   )}
                 {r.sourcing && k === 'offers' && row.state === 'DRAFT' && (
@@ -349,7 +389,12 @@ export async function CatalogAdmin({
               href={
                 root +
                 '?' +
-                new URLSearchParams({ kind: k, search, state, after: r.page.nextCursor }).toString()
+                new URLSearchParams({
+                  kind: k,
+                  search,
+                  state,
+                  after: r.page.nextCursor,
+                }).toString()
               }
             >
               {t.next}

@@ -284,11 +284,15 @@ try {
     sku: 'NEW-SYNTHETIC-31',
     title_ar: 'منتج جديد للاختبار',
     title_en: 'New synthetic product 31',
-    category_id: '98000000-0000-4000-8000-000000000001',
     description_ar: 'اختبار فقط',
     description_en: 'Synthetic only',
   }))
     await creator.locator('[name="' + name + '"]').fill(value);
+  const categoryId = '98000000-0000-4000-8000-000000000001';
+  const categorySelect = creator.locator('select[name="category_id"]');
+  await expect(categorySelect.locator(`option[value="${categoryId}"]`)).toHaveCount(1);
+  await categorySelect.selectOption(categoryId);
+  await expect(categorySelect).toHaveValue(categoryId);
   const createdResponse = finance.waitForResponse(
     (response) =>
       response.url() === origin + '/api/store/catalog' && response.request().method() === 'POST',
@@ -319,6 +323,7 @@ try {
     has: finance.getByRole('heading', { name: 'New synthetic product 31', exact: true }),
   });
   await newCard.getByText('Edit draft', { exact: true }).click();
+  await expect(newCard.locator('select[name="category_id"]')).toHaveValue(categoryId);
   await newCard.locator('[name="title_en"]').fill('Edited synthetic product 31');
   const editedRefresh = finance.waitForResponse(
     (response) =>
@@ -330,7 +335,17 @@ try {
   await expect(
     finance.getByRole('heading', { name: 'Edited synthetic product 31', exact: true }),
   ).toBeVisible();
-  checks.push('Staff creates and edits a product outside the initial 30 through the website');
+  await finance.reload();
+  const savedCard = finance.locator('section.card').filter({
+    has: finance.getByRole('heading', { name: 'Edited synthetic product 31', exact: true }),
+  });
+  await expect(savedCard).toBeVisible();
+  await savedCard.getByText('Edit draft', { exact: true }).click();
+  await expect(savedCard.locator('[name="title_en"]')).toHaveValue('Edited synthetic product 31');
+  await expect(savedCard.locator('select[name="category_id"]')).toHaveValue(categoryId);
+  checks.push(
+    'Staff creates, edits and reloads a product with its selected category outside the initial 30',
+  );
   const catalogCommand = async (operation, payload, target, revision, family = 'draft') => {
     const response = await finance.request.post(origin + '/api/store/catalog', {
       headers: { Origin: origin },

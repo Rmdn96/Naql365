@@ -62,3 +62,34 @@ it('labels approved product difference as provisional and keeps private manageme
   expect(publicStaff).not.toContain('?kind=offers');
   expect(publicStaff).not.toContain('400');
 });
+it('offers named categories and retains required product fields in both languages', async () => {
+  mock.read.mockImplementation(async (kind: string) => ({
+    page: {
+      items:
+        kind === 'categories'
+          ? [
+              {
+                id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+                revision: 1,
+                state: 'DRAFT',
+                content: { title_ar: 'صناديق', title_en: 'Boxes' },
+              },
+            ]
+          : [],
+      nextCursor: null,
+    },
+    manage: true,
+    publish: false,
+    sourcing: false,
+    policies: false,
+  }));
+  for (const locale of ['ar', 'en'] as const) {
+    const html = renderToStaticMarkup(await CatalogAdmin({ locale, kind: 'products' }));
+    expect(html).toContain('<select');
+    expect(html).toContain('name="category_id"');
+    expect(html).toContain(locale === 'ar' ? 'صناديق' : 'Boxes');
+    expect(html).toContain('name="sku"');
+    expect(html).toContain('name="slug"');
+    expect(html).not.toContain('name="supplier_id"');
+  }
+});
