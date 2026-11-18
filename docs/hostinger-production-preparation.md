@@ -44,3 +44,13 @@ Do not change SMTP, templates, users or invite anyone. Existing RedirectTo invit
 ## Focused security verification
 
 27 guard tests passed, including independent Manifest approval, exact origin, Production/Staging separation, public-key digest, CSRF, build/runtime mismatch, positive/missing/mismatched attestation. No business authorization or database policy changed. A local-configuration optimized build is a compilation regression check, not an issued Production release or a hosted login test.
+
+## Native npm run build manifest preparation
+
+Hostinger should select the standard npm run build entry. scripts/guarded-next.mjs invokes scripts/prepare-release-manifest.mjs before loading the manifest during build only. No framework change or custom platform build command is required.
+
+Provide NAQL365_RELEASE_MANIFEST_BASE64 and NAQL365_RELEASE_MANIFEST_SHA256 as build environment values from the same independently reviewed release. They contain no secrets. The helper checks exact encoded bytes and SHA-256, actual Git HEAD, Production environment/origin/backend/public-key digest and UUID designations before writing the manifest. No input values are logged. Invalid, incomplete, stale or environment-mismatched input fails closed. Source-integrity checks, Build Identity and runtime attestation remain in guarded-next; runtime never installs a manifest from environment variables.
+
+Local/Staging builds and previously issued Vercel release manifests remain supported when both transport variables are absent. Absence of transport does not authorize Production: production:null is still rejected by the existing guard. Do not carry stale transport values into local or Staging builds.
+
+Any new source commit needs a newly issued manifest sourceCommit and a new byte digest. Do not reuse the a285ee3 manifest or its SHA-256 for this change. Issue the final manifest outside Git after the actual new commit exists; retain the current independently verified backend tuple to avoid disrupting Vercel. No database writes or identity rotation are part of this preparation.

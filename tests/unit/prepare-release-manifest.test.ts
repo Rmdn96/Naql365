@@ -1,0 +1,90 @@
+import { afterAll, beforeAll, beforeEach, expect, it } from 'vitest';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { prepareReleaseManifest } from '../../scripts/prepare-release-manifest.mjs';
+import approved from '../../config/deployment-manifest.json';
+let root: string;
+let source: string;
+const original = JSON.stringify(approved);
+const key = 'sb_publishable_synthetic_configuration_only_123';
+const digest = (value: string) => createHash('sha256').update(value).digest('hex');
+const env = {
+  APP_ENV: 'production',
+  APP_URL: 'https://purple-skunk-677919.hostingersite.com',
+  NEXT_PUBLIC_SUPABASE_URL: 'https://suozeqelwmhjlptzaqsk.supabase.co',
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key,
+};
+const target = () => join(root, 'config/deployment-manifest.json');
+beforeAll(() => {
+  root = mkdtempSync(join(tmpdir(), 'naql365-manifest-'));
+  mkdirSync(join(root, 'config'));
+  writeFileSync(target(), original);
+  const git = (...args: string[]) =>
+    execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  git('init');
+  git('add', '.');
+  git(
+    '-c',
+    'user.name=Local fixture',
+    '-c',
+    'user.email=fixture@example.invalid',
+    'commit',
+    '-m',
+    'local fixture',
+  );
+  source = git('rev-parse', 'HEAD').trim();
+});
+beforeEach(() => writeFileSync(target(), original));
+afterAll(() => rmSync(root, { recursive: true, force: true }));
+function inputs(changes = {}) {
+  const manifest = {
+    ...approved,
+    production: {
+      origin: env.APP_URL,
+      sourceCommit: source,
+      projectRef: 'suozeqelwmhjlptzaqsk',
+      publicKeyDigest: digest(key),
+      identity: 'b726ed83-87c9-4875-a646-cc8f90980cc3',
+      revision: '6a325ae6-a223-4ba7-930b-1442b0a04802',
+      ...changes,
+    },
+  };
+  const text = JSON.stringify(manifest);
+  return {
+    ...env,
+    NAQL365_RELEASE_MANIFEST_BASE64: Buffer.from(text).toString('base64'),
+    NAQL365_RELEASE_MANIFEST_SHA256: digest(text),
+  };
+}
+it('installs reviewed bytes only after digest, actual HEAD and environment match', () => {
+  const input = inputs();
+  prepareReleaseManifest(input, root);
+  expect(readFileSync(target(), 'utf8')).toBe(
+    Buffer.from(input.NAQL365_RELEASE_MANIFEST_BASE64, 'base64').toString(),
+  );
+});
+it.each([
+  () => ({ ...inputs(), NAQL365_RELEASE_MANIFEST_SHA256: '0'.repeat(64) }),
+  () => ({ ...inputs(), NAQL365_RELEASE_MANIFEST_SHA256: undefined }),
+  () => ({ ...inputs(), NAQL365_RELEASE_MANIFEST_BASE64: undefined }),
+  () => ({ ...inputs(), NAQL365_RELEASE_MANIFEST_BASE64: 'not base64' }),
+  () => ({ ...inputs(), APP_ENV: 'staging' }),
+  () => ({ ...inputs(), APP_URL: 'https://naql365-launch.vercel.app' }),
+  () => ({ ...inputs(), NEXT_PUBLIC_SUPABASE_URL: 'https://zuvyfeflkzlciuaauxba.supabase.co' }),
+  () => inputs({ sourceCommit: '0'.repeat(40) }),
+  () => inputs({ identity: '' }),
+])(
+  'rejects invalid transport, stale releases or environment without overwriting the manifest (%#)',
+  (make) => {
+    expect(() => prepareReleaseManifest(make(), root)).toThrow();
+    expect(readFileSync(target(), 'utf8')).toBe(original);
+  },
+);
+it('preserves local, staging and pre-issued Vercel manifest workflows with no transport input', () => {
+  for (const APP_ENV of ['local', 'staging', 'production'])
+    prepareReleaseManifest({ APP_ENV }, root);
+  expect(readFileSync(target(), 'utf8')).toBe(original);
+});

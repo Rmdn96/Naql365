@@ -3,18 +3,20 @@ const { loadEnvConfig } = createRequire(import.meta.url)('@next/env');
 loadEnvConfig(process.cwd());
 import { readFileSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import { prepareReleaseManifest } from './prepare-release-manifest.mjs';
 import {
   validateEnvironment,
   verifyArtifact,
   attestBackend,
   verifyProductionSource,
 } from '../src/infrastructure/config/environment-authority.ts';
-const manifest = JSON.parse(
-  readFileSync(new URL('../config/deployment-manifest.json', import.meta.url)),
-);
 const command = process.argv[2];
 if (!['build', 'start'].includes(command)) throw Error('ENV_COMMAND_INVALID');
 try {
+  if (command === 'build') prepareReleaseManifest();
+  const manifest = JSON.parse(
+    readFileSync(new URL('../config/deployment-manifest.json', import.meta.url)),
+  );
   const current = validateEnvironment(process.env, manifest);
   if (command === 'build' && current.environment === 'production') {
     const head = spawnSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' });
