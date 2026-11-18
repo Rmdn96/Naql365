@@ -88,3 +88,32 @@ it('preserves local, staging and pre-issued Vercel manifest workflows with no tr
     prepareReleaseManifest({ APP_ENV }, root);
   expect(readFileSync(target(), 'utf8')).toBe(original);
 });
+
+it('verifies an exported checkout against the approved Git commit before installing the manifest', () => {
+  const archive = mkdtempSync(join(tmpdir(), 'naql365-export-'));
+  const gitCommitObject = execFileSync('git', ['cat-file', 'commit', source], {
+    cwd: root,
+  }).toString('base64');
+  const input = inputs({ gitCommitObject });
+  try {
+    mkdirSync(join(archive, 'config'));
+    const path = join(archive, 'config/deployment-manifest.json');
+    writeFileSync(path, original);
+    expect(() => prepareReleaseManifest(inputs(), archive)).toThrow('ENV_SOURCE_PROOF_MISSING');
+    expect(() =>
+      prepareReleaseManifest(inputs({ gitCommitObject, sourceCommit: '0'.repeat(40) }), archive),
+    ).toThrow('ENV_SOURCE_NOT_APPROVED');
+    writeFileSync(join(archive, 'extra'), 'unexpected');
+    expect(() => prepareReleaseManifest(input, archive)).toThrow('ENV_SOURCE_TREE_MISMATCH');
+    rmSync(join(archive, 'extra'));
+    writeFileSync(path, original + ' ');
+    expect(() => prepareReleaseManifest(input, archive)).toThrow('ENV_SOURCE_TREE_MISMATCH');
+    writeFileSync(path, original);
+    prepareReleaseManifest(input, archive);
+    expect(readFileSync(path, 'utf8')).toBe(
+      Buffer.from(input.NAQL365_RELEASE_MANIFEST_BASE64, 'base64').toString(),
+    );
+  } finally {
+    rmSync(archive, { recursive: true, force: true });
+  }
+});

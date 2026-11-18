@@ -1,11 +1,8 @@
 import { createHash } from 'node:crypto';
-import { spawnSync } from 'node:child_process';
+import { verifyBuildSource } from './verify-build-source.mjs';
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import {
-  validateEnvironment,
-  verifyProductionSource,
-} from '../src/infrastructure/config/environment-authority.ts';
+import { validateEnvironment } from '../src/infrastructure/config/environment-authority.ts';
 
 // Build-only transport for an independently issued, reviewed manifest. Never logs its input.
 export function prepareReleaseManifest(env = process.env, root = process.cwd()) {
@@ -38,16 +35,11 @@ export function prepareReleaseManifest(env = process.env, root = process.cwd()) 
   } catch {
     fail();
   }
-  const head = spawnSync('git', ['rev-parse', 'HEAD'], {
-    cwd: root,
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
-  if (head.status !== 0) throw new Error('ENV_SOURCE_NOT_APPROVED');
-  verifyProductionSource(manifest, head.stdout.trim());
+  verifyBuildSource(manifest, root, true);
   validateEnvironment(env, manifest);
   const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
   if (!uuid.test(manifest.production.identity) || !uuid.test(manifest.production.revision)) fail();
   // No filesystem mutation until digest, source and environment all pass.
   writeFileSync(resolve(root, 'config/deployment-manifest.json'), bytes);
+  return true;
 }
