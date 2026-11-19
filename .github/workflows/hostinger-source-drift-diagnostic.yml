@@ -19,7 +19,7 @@ jobs:
           node-version: '24'
           cache: npm
       - name: Reproduce Hostinger npm install
-        run: npm install --no-audit --no-fund
+        run: npm install
       - name: Classify tracked differences without revealing paths
         shell: bash
         run: |
