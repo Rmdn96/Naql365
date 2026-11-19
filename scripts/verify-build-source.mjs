@@ -50,7 +50,18 @@ export function verifyBuildSource(manifest, root, transported = false) {
       ':!config/deployment-manifest.json',
     ]);
     if (changed.status !== 0) throw Error('ENV_SOURCE_DIFF_UNAVAILABLE');
-    if (changed.stdout.trim()) throw Error('ENV_SOURCE_TRACKED_CHANGED');
+    if (changed.stdout.trim()) {
+      // Never expose filenames or file contents from a hosted build log.
+      // Report only a controlled classification to diagnose package-manager rewrites.
+      const paths = changed.stdout.trimEnd().split('\n');
+      const lockfileOnly = paths.length === 1 && paths[0] === 'package-lock.json';
+      console.error(
+        lockfileOnly
+          ? 'ENV_SOURCE_CHANGED_CLASS=PACKAGE_LOCK_ONLY'
+          : 'ENV_SOURCE_CHANGED_CLASS=OTHER_TRACKED_FILES',
+      );
+      throw Error('ENV_SOURCE_TRACKED_CHANGED');
+    }
     const others = git(['ls-files', '--others', '--exclude-standard']);
     if (others.status !== 0) throw Error('ENV_SOURCE_STATUS_UNAVAILABLE');
     if (others.stdout.trim()) throw Error('ENV_SOURCE_UNTRACKED_FILES');
