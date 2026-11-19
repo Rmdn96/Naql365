@@ -1,0 +1,40 @@
+name: Hostinger npm tracked-file diagnosis
+on:
+  push:
+    branches:
+      - codex/hostinger-tracked-changes-diagnostics
+permissions:
+  contents: read
+jobs:
+  npm-install-source-drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Reproduce Hostinger npm install
+        run: npm install --no-audit --no-fund
+      - name: Classify tracked differences without revealing paths
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { spawnSync } from 'node:child_process';
+          const run = (args) => {
+            const p = spawnSync('git', args, { encoding: 'utf8' });
+            if (p.status !== 0) throw Error('GIT_STATUS_UNAVAILABLE');
+            return p.stdout.trim();
+          };
+          const changed = run(['diff','--name-only','HEAD','--','.',':!config/deployment-manifest.json']);
+          const paths = changed ? changed.split('\n') : [];
+          const result = paths.length === 0 ? 'NO_TRACKED_CHANGES' :
+            paths.length === 1 && paths[0] === 'package-lock.json'
+              ? 'PACKAGE_LOCK_ONLY' : 'OTHER_TRACKED_FILES';
+          console.log('ENV_SOURCE_CHANGED_CLASS=' + result);
+          if (result !== 'NO_TRACKED_CHANGES') process.exitCode = 1;
+          NODE
