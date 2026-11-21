@@ -25,7 +25,8 @@ it('view renders existing server errors, non-enumerating sent feedback and busy 
     for (const mode of ['register', 'recover'] as const) {
       presentation.state = { status: 'sent' };
       const html = renderToStaticMarkup(createElement(CustomerAuthForm, { locale, mode }));
-      expect(html).toContain(customerDictionary(locale).sent);
+      const t = customerDictionary(locale);
+      expect(html).toContain(mode === 'recover' ? t.recoveryRequested : t.sent);
       expect(html).toContain('role="status"');
     }
     presentation.state = { status: 'idle' };

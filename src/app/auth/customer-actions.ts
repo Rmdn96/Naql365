@@ -26,10 +26,31 @@ export async function customerAuth(
     const client = await createSupabaseServerClient(true);
     if (mode === 'recover') {
       const email = z.email().max(254).parse(form.get('email'));
-      await client.auth.resetPasswordForEmail(email, {
-        redirectTo: new URL(`/auth/callback?locale=${locale}&next=/${locale}/password`, appUrl())
-          .href,
-      });
+      const redirectTo = new URL(
+        `/auth/callback?locale=${locale}&next=/${locale}/password`,
+        appUrl(),
+      );
+      try {
+        const { error } = await client.auth.resetPasswordForEmail(email, {
+          redirectTo: redirectTo.href,
+        });
+        if (error) {
+          // Delivery failures can depend on whether an account exists. Keep the
+          // public response identical and log only known operational codes.
+          const knownCodes = [
+            'unexpected_failure',
+            'over_email_send_rate_limit',
+            'over_request_rate_limit',
+            'request_timeout',
+          ];
+          console.warn(
+            'AUTH_RECOVERY_REQUEST_FAILED',
+            knownCodes.includes(error.code ?? '') ? error.code : 'provider_error',
+          );
+        }
+      } catch {
+        console.warn('AUTH_RECOVERY_REQUEST_FAILED', 'request_failed');
+      }
       return { status: 'sent' };
     }
     if (mode === 'password') {

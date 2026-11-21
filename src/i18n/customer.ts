@@ -9,6 +9,7 @@ const ar = {
   passwordHint: '12 حرفًا على الأقل',
   send: 'إرسال',
   authError: 'تعذر إكمال العملية. تحقق من البيانات وحاول مجددًا.',
+  recoveryRequested: 'إذا وصلتك رسالة الاستعادة، فافتح أحدث رابط في المتصفح الذي طلبتها منه.',
   sent: 'إذا كان البريد مؤهلًا، ستصلك رسالة. افتح الرابط في المتصفح نفسه. للحساب الموجود استخدم تسجيل الدخول أو استعادة كلمة المرور.',
   logout: 'تسجيل الخروج',
   name: 'الاسم الكامل',
@@ -130,6 +131,8 @@ const en: CustomerDictionary = {
   passwordHint: 'At least 12 characters',
   send: 'Send',
   authError: 'Unable to complete the operation. Check your details and try again.',
+  recoveryRequested:
+    'If you receive a recovery email, open the latest link in the browser where you requested it.',
   sent: 'If eligible, this address will receive an email. Open its link in the same browser. For an existing account, sign in or recover your password.',
   logout: 'Sign out',
   name: 'Full name',

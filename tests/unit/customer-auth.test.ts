@@ -90,6 +90,29 @@ it('constructs a locale-safe recovery callback', async () => {
     redirectTo: 'https://staging.example/auth/callback?locale=en&next=/en/password',
   });
 });
+it('keeps recovery responses uniform and logs only bounded diagnostics', async () => {
+  const log = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  try {
+    const form = new FormData();
+    form.set('email', 'fixture@example.test');
+    mocks.resetPasswordForEmail
+      .mockResolvedValueOnce({ error: null })
+      .mockResolvedValueOnce({ error: { code: 'over_email_send_rate_limit', message: 'private' } })
+      .mockResolvedValueOnce({ error: { code: 'private' } })
+      .mockRejectedValueOnce(new Error('private'));
+    for (let i = 0; i < 4; i++)
+      expect(await customerAuth('ar', 'recover', { status: 'idle' }, form)).toEqual({
+        status: 'sent',
+      });
+    expect(log.mock.calls).toEqual([
+      ['AUTH_RECOVERY_REQUEST_FAILED', 'over_email_send_rate_limit'],
+      ['AUTH_RECOVERY_REQUEST_FAILED', 'provider_error'],
+      ['AUTH_RECOVERY_REQUEST_FAILED', 'request_failed'],
+    ]);
+  } finally {
+    log.mockRestore();
+  }
+});
 it('successful password reset keeps the existing global sign-out and login redirect contract', async () => {
   mocks.getUser.mockResolvedValue({ data: { user: { id: 'synthetic' } }, error: null });
   mocks.updateUser.mockResolvedValue({ error: null });
