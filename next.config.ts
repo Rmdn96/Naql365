@@ -10,7 +10,7 @@ const noIndex = preventIndexing();
 const nextConfig: NextConfig = {
   ...(deployment.environment === 'production' &&
   deployment.origin === 'https://purple-skunk-677919.hostingersite.com'
-    ? { output: 'standalone' as const }
+    ? { output: 'standalone' as const, experimental: { cpus: 2 } }
     : {}),
   poweredByHeader: false,
   outputFileTracingIncludes: {
