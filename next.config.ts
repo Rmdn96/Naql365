@@ -4,10 +4,14 @@ import type { NextConfig } from 'next';
 import { preventIndexing } from './src/infrastructure/config/deployment-env';
 
 // Validate before compilation so a platform target mismatch cannot serve the app.
-validateEnvironment(process.env, manifest);
+const deployment = validateEnvironment(process.env, manifest);
 const noIndex = preventIndexing();
 
 const nextConfig: NextConfig = {
+  ...(deployment.environment === 'production' &&
+  deployment.origin === 'https://purple-skunk-677919.hostingersite.com'
+    ? { output: 'standalone' as const }
+    : {}),
   poweredByHeader: false,
   outputFileTracingIncludes: {
     '/**': ['./.naql365-build-identity.json', './config/deployment-manifest.json'],

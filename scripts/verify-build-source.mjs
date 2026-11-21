@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { lstatSync, readFileSync, readdirSync } from 'node:fs';
+import { lstatSync, readFileSync, readdirSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
 import { verifyProductionSource } from '../src/infrastructure/config/environment-authority.ts';
 
@@ -34,6 +34,32 @@ function checkoutTree(dir, root) {
     : null;
 }
 
+// Hostinger moves the original config aside and generates a standalone wrapper.
+function restoreHostingerConfig(root) {
+  const path = join(root, 'next.config.ts');
+  if (!lstatSync(path, { throwIfNoEntry: false })?.isFile()) return;
+  const wrapper = readFileSync(path, 'utf8');
+  const prefix = /import baseConfig from "\.\/([a-f0-9]{13})\.next\.config";/.exec(wrapper)?.[1];
+  if (!prefix) return;
+  const expected = [
+    'import type { NextConfig } from "next";',
+    `import baseConfig from "./${prefix}.next.config";`,
+    '',
+    'const config: NextConfig = {',
+    '  ...baseConfig,',
+    '  output: "standalone",',
+    '};',
+    '',
+    'export default config;',
+  ].join('\n');
+  if (wrapper !== expected) return;
+  const backup = join(root, `${prefix}.next.config.ts`);
+  if (!lstatSync(backup, { throwIfNoEntry: false })?.isFile()) return;
+  const approved = spawnSync('git', ['cat-file', 'blob', 'HEAD:next.config.ts'], { cwd: root });
+  if (approved.status !== 0 || !readFileSync(backup).equals(approved.stdout)) return;
+  renameSync(backup, path);
+}
+
 export function verifyBuildSource(manifest, root, transported = false) {
   const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
   const head = git(['rev-parse', 'HEAD']);
@@ -41,6 +67,11 @@ export function verifyBuildSource(manifest, root, transported = false) {
     const prefix = git(['rev-parse', '--show-prefix']);
     if (prefix.status !== 0 || prefix.stdout.trim()) throw Error('ENV_SOURCE_ROOT_MISMATCH');
     verifyProductionSource(manifest, head.stdout.trim());
+    if (
+      transported &&
+      manifest.production?.origin === 'https://purple-skunk-677919.hostingersite.com'
+    )
+      restoreHostingerConfig(root);
     const changed = git([
       'diff',
       '--name-status',

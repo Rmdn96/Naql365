@@ -35,11 +35,11 @@ export function prepareReleaseManifest(env = process.env, root = process.cwd()) 
   } catch {
     fail();
   }
-  verifyBuildSource(manifest, root, true);
   validateEnvironment(env, manifest);
   const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
   if (!uuid.test(manifest.production.identity) || !uuid.test(manifest.production.revision)) fail();
-  // No filesystem mutation until digest, source and environment all pass.
+  verifyBuildSource(manifest, root, true);
+  // Install the manifest only after digest, environment and source verification.
   writeFileSync(resolve(root, 'config/deployment-manifest.json'), bytes);
   return true;
 }
