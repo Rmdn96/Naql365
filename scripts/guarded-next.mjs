@@ -25,12 +25,25 @@ try {
     await attestBackend(process.env, manifest);
   }
   if (command === 'build') writeFileSync('.naql365-build-identity.json', JSON.stringify(current));
+  const args = process.argv.slice(3);
+  // Hostinger build servers cannot run Turbopack for the pinned Next.js version.
+  if (
+    command === 'build' &&
+    current.environment === 'production' &&
+    current.origin === 'https://purple-skunk-677919.hostingersite.com' &&
+    !args.includes('--webpack')
+  )
+    args.unshift('--webpack');
   const result = spawnSync(
     process.execPath,
-    ['node_modules/next/dist/bin/next', command, ...process.argv.slice(3)],
+    ['node_modules/next/dist/bin/next', command, ...args],
     { stdio: 'inherit', env: process.env },
   );
-  if (result.status !== 0) process.exit(result.status || 1);
+  if (result.status !== 0) {
+    if (command === 'build')
+      console.error('NEXT_BUILD_EXIT=' + (result.signal ?? result.status ?? 'unavailable'));
+    process.exit(result.status || 1);
+  }
   if (command === 'build') writeFileSync('.naql365-build-identity.json', JSON.stringify(current));
 } catch (error) {
   console.error(
