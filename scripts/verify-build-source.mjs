@@ -43,14 +43,25 @@ export function verifyBuildSource(manifest, root, transported = false) {
     verifyProductionSource(manifest, head.stdout.trim());
     const changed = git([
       'diff',
-      '--name-only',
+      '--name-status',
+      '--no-renames',
+      '-z',
       'HEAD',
       '--',
       '.',
       ':!config/deployment-manifest.json',
     ]);
     if (changed.status !== 0) throw Error('ENV_SOURCE_DIFF_UNAVAILABLE');
-    if (changed.stdout.trim()) throw Error('ENV_SOURCE_TRACKED_CHANGED');
+    if (changed.stdout) {
+      const fields = changed.stdout.split('\0');
+      const paths = [];
+      for (let index = 0; index + 1 < fields.length; index += 2) {
+        // A staged addition may introduce a private filename absent from the approved tree.
+        if (fields[index] !== 'A') paths.push(fields[index + 1]);
+      }
+      console.error('ENV_SOURCE_CHANGED_PATHS=' + JSON.stringify(paths));
+      throw Error('ENV_SOURCE_TRACKED_CHANGED');
+    }
     const others = git(['ls-files', '--others', '--exclude-standard']);
     if (others.status !== 0) throw Error('ENV_SOURCE_STATUS_UNAVAILABLE');
     if (others.stdout.trim()) throw Error('ENV_SOURCE_UNTRACKED_FILES');

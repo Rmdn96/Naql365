@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -22,6 +22,7 @@ beforeAll(() => {
   root = mkdtempSync(join(tmpdir(), 'naql365-manifest-'));
   mkdirSync(join(root, 'config'));
   writeFileSync(target(), original);
+  writeFileSync(join(root, 'package-lock.json'), '{}');
   const git = (...args: string[]) =>
     execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
   git('init');
@@ -97,6 +98,7 @@ it('verifies an exported checkout against the approved Git commit before install
   const input = inputs({ gitCommitObject });
   try {
     mkdirSync(join(archive, 'config'));
+    writeFileSync(join(archive, 'package-lock.json'), '{}');
     const path = join(archive, 'config/deployment-manifest.json');
     writeFileSync(path, original);
     expect(() => prepareReleaseManifest(inputs(), archive)).toThrow('ENV_SOURCE_PROOF_MISSING');
@@ -115,5 +117,24 @@ it('verifies an exported checkout against the approved Git commit before install
     );
   } finally {
     rmSync(archive, { recursive: true, force: true });
+  }
+});
+
+it('reports approved paths only and rejects changed tracked source before installing the manifest', () => {
+  const file = join(root, 'config');
+  const git = (...args: string[]) => execFileSync('git', args, { cwd: root });
+  const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+  try {
+    writeFileSync(join(root, 'package-lock.json'), '{"synthetic":true}');
+    writeFileSync(join(file, 'private filename'), 'private content');
+    git('add', 'config/private filename');
+    expect(() => prepareReleaseManifest(inputs(), root)).toThrow('ENV_SOURCE_TRACKED_CHANGED');
+    expect(log).toHaveBeenCalledWith('ENV_SOURCE_CHANGED_PATHS=["package-lock.json"]');
+    expect(readFileSync(target(), 'utf8')).toBe(original);
+  } finally {
+    writeFileSync(join(root, 'package-lock.json'), '{}');
+    git('rm', '--cached', 'config/private filename');
+    rmSync(join(file, 'private filename'));
+    log.mockRestore();
   }
 });
