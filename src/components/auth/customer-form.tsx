@@ -50,7 +50,7 @@ export function CustomerAuthForm({
             <span className="auth-v2-mail-symbol" aria-hidden="true">
               ✉
             </span>
-            <strong>{t.sent}</strong>
+            <strong>{mode === 'recover' ? t.recoveryRequested : t.sent}</strong>
             <p>
               {locale === 'ar'
                 ? 'افتح بريدك واتبع الرابط لإكمال الخطوة. تحقق من البريد غير المرغوب فيه، ثم عُد لتسجيل الدخول. لا تشارك رابط التأكيد.'
