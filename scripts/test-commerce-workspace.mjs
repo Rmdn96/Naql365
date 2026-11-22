@@ -333,8 +333,12 @@ try {
   await login(page, users[0], 'en');
   checkpoint = 'customer dashboard';
   await page.goto(origin + '/en/account');
-  await expect(page.locator('.cm-portal-nav')).toBeVisible();
-  await expect(page.locator('.cm-portal-nav a[href="/en/store/orders"]')).toBeVisible();
+  const customerNav = page.locator('.customer-workspace-nav a');
+  await expect(customerNav).toHaveCount(4);
+  await customerNav.getByRole('link', { name: 'My account', exact: true }).count().then(() => {});
+  await customerNav.filter({ hasText: 'My account' }).click();
+  await expect(page).toHaveURL(origin + '/en/account/profile');
+  await expect(page.locator('a[href="/en/store/orders"]')).toBeVisible();
   const deniedCatalog = await page.request.post(origin + '/api/store/catalog', {
     headers: { Origin: origin },
     data: { family: 'draft', operation: 'create_product', mutationId: randomUUID(), payload: {} },
