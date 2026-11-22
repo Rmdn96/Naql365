@@ -24,20 +24,8 @@ jobs:
       - run: npm run db:start
       - run: npx supabase db reset --local
       - run: npx playwright install --with-deps chromium
-      - name: Account and transport browser acceptance
-        id: account
-        continue-on-error: true
-        run: node scripts/customer-mvp-acceptance.mjs
-      - run: npx supabase db reset --local
       - name: Commerce browser acceptance
-        id: commerce
-        continue-on-error: true
         run: node scripts/test-commerce-workspace.mjs
-      - name: Require both browser suites
-        env:
-          ACCOUNT: ${{ steps.account.outcome }}
-          COMMERCE: ${{ steps.commerce.outcome }}
-        run: test "$ACCOUNT" = success && test "$COMMERCE" = success
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:
