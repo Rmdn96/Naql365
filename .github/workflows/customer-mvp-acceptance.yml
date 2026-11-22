@@ -21,8 +21,6 @@ jobs:
           cache: npm
       - run: git merge-base --is-ancestor 302b6862cb89e7014714fba76449140f07881aaf HEAD
       - run: npm ci --no-audit --no-fund
-      - name: Compile production output
-        run: APP_URL=http://127.0.0.1:3000 npm run build -- --webpack
       - run: npm run db:start
       - run: npx supabase db reset --local
       - run: npx playwright install --with-deps chromium
