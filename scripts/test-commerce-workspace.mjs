@@ -335,8 +335,10 @@ try {
   await page.goto(origin + '/en/account');
   const customerNav = page.locator('.customer-workspace-nav a');
   await expect(customerNav).toHaveCount(4);
-  await customerNav.getByRole('link', { name: 'My account', exact: true }).count().then(() => {});
-  await customerNav.filter({ hasText: 'My account' }).click();
+  await page
+    .getByRole('navigation', { name: 'Customer workspace' })
+    .getByRole('link', { name: 'My account', exact: true })
+    .click();
   await expect(page).toHaveURL(origin + '/en/account/profile');
   await expect(page.locator('a[href="/en/store/orders"]')).toBeVisible();
   const deniedCatalog = await page.request.post(origin + '/api/store/catalog', {
@@ -377,6 +379,10 @@ try {
   await page.reload();
   await expect(page.locator('.commerce-cart-badge')).toHaveText('3');
   await expect(page.locator('.store-line .cm-quantity output')).toHaveText('3');
+  const formatEgp = new Intl.NumberFormat('en-EG', { style: 'currency', currency: 'EGP' });
+  const cartAmounts = page.locator('.cm-summary dl dd');
+  for (const [index, pounds] of [30, 2, 32].entries())
+    await expect(cartAmounts.nth(index)).toHaveText(formatEgp.format(pounds));
   await page.goto(origin + '/en');
   await expect(page.locator('.commerce-cart-badge')).toHaveText('3');
   checks.push('Quantity edit, refresh and navigation retain authoritative cart');
@@ -425,6 +431,13 @@ try {
   await expect(page).toHaveURL(/\/en\/store\/orders\/[a-f0-9-]+$/);
   await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
   const orderId = new URL(page.url()).pathname.split('/').at(-1);
+  expect(
+    sql(
+      "select subtotal_minor||':'||delivery_minor||':'||total_minor||':'||currency from private.store_orders where id='" +
+        orderId +
+        "'",
+    ),
+  ).toBe('3000:200:3200:EGP');
   await expect(page.locator('.cm-order-detail')).toBeVisible();
   await page.goto(origin + '/en/store/orders');
   await expect(
