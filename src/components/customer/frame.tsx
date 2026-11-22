@@ -1,5 +1,4 @@
 'use client';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 import type { Locale } from '@/i18n/config';
@@ -28,21 +27,14 @@ export function CustomerFrame({
   const path = usePathname();
   if (!isCustomerPath(path)) return children;
   const ar = locale === 'ar';
-  const current = path.includes('/requests')
-    ? 'requests'
-    : path.includes('/quotes')
-      ? 'quotes'
-      : path.replace(/\/$/, '') === `/${locale}/account`
-        ? 'account'
-        : undefined;
+  const section = path.split('/')[3];
+  const current = !section ? 'home' : section === 'profile' ? 'account' : 'transport';
   return (
     <DesignFoundation family="customer" className="cx customer-workspace transport-experience">
       <a className="skip-link" href="#customer-content">
         {ar ? 'انتقل إلى المحتوى' : 'Skip to content'}
       </a>
       <header className="cx-top">
-        <Link href={`/${locale}`}>{ar ? 'الصفحة الرئيسية' : 'Homepage'}</Link>
-        <Link href={`/${locale}/request`}>{ar ? 'طلب نقل جديد' : 'New transport request'}</Link>
         <div className="cx-top-controls">
           <MarketSelector country={country} locale={locale} id="customer-market" />
           <ThemeControl locale={locale} initialMode={themeMode} />
@@ -58,7 +50,7 @@ export function CustomerFrame({
             label={ar ? 'نقل 365 — حسابي' : 'Naql365 — My account'}
             size="customer"
           />
-          <CustomerWorkspaceNav locale={locale} {...(current ? { current } : {})} />
+          <CustomerWorkspaceNav locale={locale} current={current} />
         </aside>
         <div className="cx-main" id="customer-content" tabIndex={-1}>
           {children}

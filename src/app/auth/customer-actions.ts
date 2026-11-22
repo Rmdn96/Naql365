@@ -121,18 +121,22 @@ export async function customerProfile(
     const profile = parsed.data;
     const client = await createSupabaseServerClient(true);
     const { data, error } = await client.auth.getUser();
-    if (error || !data.user) return { status: 'error' };
+    if (error || !data.user) return { status: 'error', code: 'session' };
     const result = await client.rpc('onboard_customer', {
       p_name: profile.name,
       p_phone: profile.phone,
       p_locale: profile.locale,
     });
-    if (result.error) return { status: 'error' };
+    if (result.error) {
+      if (result.error.code === '55000') return { status: 'error', code: 'enrollment' };
+      if (result.error.code === '42501') return { status: 'error', code: 'profile_forbidden' };
+      return { status: 'error' };
+    }
   } catch {
     return { status: 'error' };
   }
   revalidatePath(`/${locale}/account`);
-  redirect(`/${locale}/account?profile=saved`);
+  redirect(`/${locale}/account/profile?profile=saved`);
 }
 export async function customerLogout(locale: string) {
   if (!isLocale(locale)) throw new Error('Invalid locale');

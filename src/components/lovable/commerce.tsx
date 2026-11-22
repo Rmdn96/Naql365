@@ -140,33 +140,28 @@ export function SourceCommerce({
           .includes(query.toLocaleLowerCase()),
     )
     .sort((a, b) => (sort === 'name' ? a.name[locale].localeCompare(b.name[locale]) : 0));
-  const nav = (
-    <>
-      <Button variant="toolbar" asChild>
-        <Link to="/" search={to('transport')} onClick={() => setMenu(false)}>
-          <Truck />
-          {t.transport}
-        </Link>
-      </Button>
-      <Button variant="toolbar" asChild>
-        <Link to="/" search={to('catalog')} onClick={() => setMenu(false)}>
-          <ShoppingBag />
-          {t.store}
-        </Link>
-      </Button>
-      <Button variant="toolbar" asChild>
-        <Link to="/" search={to('categories')} onClick={() => setMenu(false)}>
-          {t.categories}
-        </Link>
-      </Button>
-      <Button variant="toolbar" asChild>
-        <Link to="/" search={to('portal')} onClick={() => setMenu(false)}>
-          <UserRound />
-          {t.account}
-        </Link>
-      </Button>
-    </>
+  const sections = [
+    [view === 'home' ? 'home' : 'portal', Home, x.bottomHome],
+    [view === 'home' ? 'transport' : 'requests', Truck, t.transport],
+    ['catalog', ShoppingBag, t.store],
+    ['settings', UserRound, t.account],
+  ] as const;
+  const storeView = ['catalog', 'categories', 'product', 'cart', 'orders', 'checkout'].includes(
+    view,
   );
+  const nav = sections.map(([key, Icon, label]) => (
+    <Button key={key} variant="toolbar" asChild>
+      <Link
+        to="/"
+        search={to(key)}
+        aria-current={key === 'catalog' && storeView ? 'page' : undefined}
+        onClick={() => setMenu(false)}
+      >
+        <Icon aria-hidden="true" />
+        {label}
+      </Link>
+    </Button>
+  ));
   const cartTotals =
     cart?.contracts.length === 1 ? storeTotals(activeCartItems(cart), cart.contracts[0]!) : null;
   const summary = (
@@ -557,6 +552,11 @@ export function SourceCommerce({
               <LockKeyhole size={16} />
               {available ? t.supplierNote : t.paused}
             </p>
+            <Button variant="link" asChild>
+              <Link to="/" search={to('categories')}>
+                {t.categories}
+              </Link>
+            </Button>
             {catalogControls}
             {productCards(filtered)}
             {nextCursor && (
@@ -886,25 +886,15 @@ export function SourceCommerce({
         </Button>
       </footer>
       <nav className="cm-bottom-nav" aria-label={t.menu}>
-        {(
-          [
-            ['home', Home, x.bottomHome],
-            ['catalog', ShoppingBag, t.store],
-            ['transport', Truck, t.transport],
-            ['cart', ShoppingCart, t.cart],
-            ['portal', UserRound, t.account],
-          ] as const
-        ).map(([v, Icon, label]) => (
+        {sections.map(([key, Icon, label]) => (
           <Link
-            key={v}
+            key={key}
             to="/"
-            search={to(v)}
-            aria-current={view === v ? 'page' : undefined}
-            aria-label={v === 'cart' ? `${label} (${count})` : undefined}
+            search={to(key)}
+            aria-current={key === 'catalog' && storeView ? 'page' : undefined}
           >
             <span>
-              <Icon size={20} />
-              {v === 'cart' && count > 0 && <b aria-hidden="true">{count}</b>}
+              <Icon aria-hidden="true" size={20} />
             </span>
             {label}
           </Link>

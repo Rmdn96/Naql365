@@ -34,6 +34,7 @@ test('admin-generated activation customer gets profile feedback, persists after 
   await page.locator('#password').fill(fixture.password);
   await page.getByRole('button', { name: t.login, exact: true }).click();
   await expect(page).toHaveURL(`${baseURL}/${locale}/account`);
+  await page.goto(`/${locale}/account/profile/edit`);
   await page.locator('#name').fill('Synthetic activated customer');
   await page.locator('#phone').fill('invalid');
   await page.getByRole('button', { name: t.saveProfile, exact: true }).click();
@@ -49,9 +50,15 @@ test('admin-generated activation customer gets profile feedback, persists after 
   await page.locator('#phone').fill('+966500000001');
   await page.getByRole('button', { name: t.saveProfile, exact: true }).click();
   await expect(page.getByRole('status')).toContainText(t.profileSaved);
-  await expect(page.getByRole('button', { name: t.start, exact: true })).toBeDisabled();
-  await expect(page.locator('#request-country-hint')).toHaveText(t.requestCountryHint);
   await page.reload();
+  await expect(page.getByText('Synthetic activated customer', { exact: true })).toBeVisible();
+  await expect(page.getByText('+966500000001', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: t.logout, exact: true }).click();
+  await page.locator('#email').fill(fixture.email);
+  await page.locator('#password').fill(fixture.password);
+  await page.getByRole('button', { name: t.login, exact: true }).click();
+  await expect(page).toHaveURL(`${baseURL}/${locale}/account`);
+  await page.goto(`/${locale}/account/profile/edit`);
   await expect(page.locator('#name')).toHaveValue('Synthetic activated customer');
   await expect(page.locator('#phone')).toHaveValue('+966500000001');
   const profile = await admin
@@ -67,6 +74,9 @@ test('admin-generated activation customer gets profile feedback, persists after 
   const customers = await admin.from('customers').select('id').eq('profile_id', fixture.id);
   expect(customers.error).toBeNull();
   expect(customers.data).toHaveLength(1);
+  await page.goto(`/${locale}/account/requests`);
+  await expect(page.getByRole('button', { name: t.start, exact: true })).toBeDisabled();
+  await expect(page.locator('#request-country-hint')).toHaveText(t.requestCountryHint);
   await page
     .locator('#request-market')
     .selectOption({ label: locale === 'ar' ? 'السعودية — SAR' : 'Saudi Arabia — SAR' });

@@ -69,16 +69,17 @@ for (const locale of ['en', 'ar'] as const) {
         expect(html).not.toContain(reviewText);
         expect(html).not.toContain('TEST-Q');
       }
-      // The imported dashboard keeps booking available, including when there is
-      // no actionable quote. Select its semantic nav, not the removed CSS panel.
-      const label = locale === 'ar' ? 'لوحة العميل' : 'Customer dashboard';
-      const navigation = html.match(
-        new RegExp(`<nav\\b[^>]*aria-label="${label}"[^>]*>([\\s\\S]*?)<\\/nav>`),
-      )?.[1];
-      expect(navigation).toBeDefined();
-      expect(links(navigation!).filter(({ href }) => href.endsWith('/request'))).toEqual([
-        { href: `/${locale}/request`, text: locale === 'ar' ? 'اطلب نقل' : 'Book Transport' },
-      ]);
+      expect(links(html)).toContainEqual({
+        href: `/${locale}/request`,
+        text: locale === 'ar' ? 'اطلب نقل' : 'Book transport',
+      });
+      expect(html).not.toContain('<form');
     });
   }
+
+  test(`shows persisted contact details on the separate account page (${locale})`, async () => {
+    const html = renderToStaticMarkup(await CustomerAccount({ locale, view: 'profile' }));
+    expect(html).toContain('TEST Customer');
+    expect(html).toContain(`/${locale}/account/profile/edit`);
+  });
 }

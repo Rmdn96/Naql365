@@ -1,6 +1,7 @@
 import { availableMarkets } from '@/infrastructure/markets/service';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { quotesDictionary } from '@/i18n/quotes';
 import { isLocale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
 import { customerRequests } from '@/infrastructure/requests/list';
@@ -24,6 +25,7 @@ export default async function Page({
     <div className="container page customer-experience">
       <div className="wizard-top">
         <h1>{t.myRequests}</h1>
+        <Link href={`/${locale}/account/quotes`}>{quotesDictionary(locale).myQuotes}</Link>
         <StartRequest locale={locale} markets={await availableMarkets()} />
       </div>
       {!data.length ? (

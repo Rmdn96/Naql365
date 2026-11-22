@@ -42,14 +42,8 @@ for (const locale of ['ar', 'en'] as const) {
     expect(html).toContain('data-design-family="customer"');
     expect(html.match(/class="brand-mark"/g)).toHaveLength(1);
     const current = html.match(/<a\b[^>]*aria-current="page"[^>]*>/)?.[0];
-    expect(current).toContain(`href="/${locale}/account/quotes"`);
-    for (const route of [
-      'account/requests',
-      'store/orders',
-      'store/cart',
-      'request',
-      'account#customer-profile',
-    ])
+    expect(current).toContain(`href="/${locale}/account/requests"`);
+    for (const route of ['account/requests', 'store/cart', 'account/profile'])
       expect(html).toContain(`href="/${locale}/${route}"`);
     expect(html).toContain('Authorized child');
     expect(html).not.toMatch(/\/portal|\/driver|role=SUPER_ADMIN|token=/);
@@ -98,7 +92,8 @@ test('Tracking detail has no invented history route or misleading current Overvi
       'Authorized tracking',
     ),
   );
-  expect(html).not.toContain('aria-current="page"');
+  const current = html.match(/<a\b[^>]*aria-current="page"[^>]*>/)?.[0];
+  expect(current).toContain('href="/en/account/requests"');
   expect(html).not.toContain('href="/en/account/orders"');
   expect(html).toContain('Authorized tracking');
 });

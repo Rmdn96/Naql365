@@ -19,7 +19,6 @@ insert into public.market_regions(id,organization_id,market_id,code,name_ar,name
 insert into public.market_cities(id,organization_id,market_id,region_id,code,name_ar,name_en)
  select md5(m.id::text||c.code)::uuid,m.organization_id,m.id,r.id,c.code,c.name,c.name from (select * from public.markets where organization_id::text like 'a0000000%') m join public.market_regions r on r.market_id=m.id cross join (values('Riyadh','Riyadh'),('Jeddah','Jeddah')) c(code,name);
 
-insert into private.customer_enrollment values(true,'a0000000-0000-4000-8000-000000000001') on conflict(singleton) do update set organization_id=excluded.organization_id;
 insert into auth.users(id,email,email_confirmed_at,raw_user_meta_data) values
  ('b0000000-0000-4000-8000-000000000001','intake-a@example.test',now(),'{"role":"SUPER_ADMIN"}'),
  ('b0000000-0000-4000-8000-000000000002','intake-b@example.test',now(),'{}'),
@@ -56,6 +55,11 @@ set local role authenticated;
 select public.intake_reject($q$select public.onboard_customer('Fixture','+966500000001','ar')$q$,'42501');
 reset role;
 select set_config('request.jwt.claim.sub','b0000000-0000-4000-8000-000000000001',true);
+set local role authenticated;
+select public.intake_reject($q$select public.onboard_customer('Fixture A','+201000000001','ar')$q$,'55000');
+select public.intake_reject('select * from private.customer_enrollment','42501');
+reset role;
+insert into private.customer_enrollment values(true,'a0000000-0000-4000-8000-000000000001') on conflict(singleton) do update set organization_id=excluded.organization_id;
 set local role authenticated;
 insert into intake_state values('customer',to_jsonb(public.onboard_customer('Fixture A','+966500000001','ar')));
 select public.intake_assert(public.onboard_customer('Fixture A','+966500000001','ar')=(select (value#>>'{}')::uuid from intake_state where key='customer'),'onboarding retry');

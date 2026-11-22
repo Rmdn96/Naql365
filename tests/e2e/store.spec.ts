@@ -54,20 +54,36 @@ for (const locale of ['ar', 'en'])
   });
 
 for (const locale of ['ar', 'en'])
-  test('Original category navigation uses the canonical screen ' + locale, async ({ page }) => {
-    await page.goto('/' + locale + '/store/categories');
-    await expect(page.locator('.cm-section-heading h2').first()).toHaveText(
-      locale === 'ar' ? 'الفئات' : 'Categories',
-    );
-    await expect(page.locator('.cm-section-heading h2').first()).toBeVisible();
-    // A paused catalog has no approved categories; its empty grid has no visual area.
-    await expect(page.locator('.cm-categories')).toHaveCount(1);
-    await expect(page.locator('.cm-categories a')).toHaveCount(0);
-    await expect(page.locator('.cm-product.store-product')).toHaveCount(0);
-    await expect(page.locator('.cm-lab')).toContainText(
-      locale === 'ar' ? 'البيع غير متاح' : 'Purchasing is currently unavailable',
-    );
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
-      true,
-    );
-  });
+  test(
+    'Original category navigation uses the canonical screen ' + locale,
+    async ({ page, isMobile }) => {
+      await page.goto('/' + locale + '/store');
+      const sections = page.locator(isMobile ? '.cm-bottom-nav a' : '.cm-navigation nav a');
+      await expect(sections).toHaveCount(4);
+      for (const [index, path] of [
+        'account',
+        'account/requests',
+        'store',
+        'account/profile',
+      ].entries())
+        await expect(sections.nth(index)).toHaveAttribute('href', '/' + locale + '/' + path);
+      await page
+        .locator('main a[href="/' + locale + '/store/categories"]')
+        .first()
+        .click();
+      await expect(page.locator('.cm-section-heading h2').first()).toHaveText(
+        locale === 'ar' ? 'الفئات' : 'Categories',
+      );
+      await expect(page.locator('.cm-section-heading h2').first()).toBeVisible();
+      // A paused catalog has no approved categories; its empty grid has no visual area.
+      await expect(page.locator('.cm-categories')).toHaveCount(1);
+      await expect(page.locator('.cm-categories a')).toHaveCount(0);
+      await expect(page.locator('.cm-product.store-product')).toHaveCount(0);
+      await expect(page.locator('.cm-lab')).toContainText(
+        locale === 'ar' ? 'البيع غير متاح' : 'Purchasing is currently unavailable',
+      );
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+      ).toBe(true);
+    },
+  );

@@ -58,7 +58,7 @@ export function destination(
     requests: '/account/requests',
     transportRequests: '/account/requests',
     transport: '/request',
-    settings: '/account',
+    settings: '/account/profile',
     confirmation: '/store/orders',
   };
   const params = new URLSearchParams();

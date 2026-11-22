@@ -1684,7 +1684,7 @@ html[data-theme='light'] .cx {
   }
   .cm-bottom-nav {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     position: fixed;
     inset-inline: 0;
     bottom: 0;

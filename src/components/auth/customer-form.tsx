@@ -93,6 +93,16 @@ export function CustomerProfileForm({
   profile: { display_name: string | null; phone: string | null; locale: string };
 }) {
   const t = customerDictionary(locale);
+  const errors: Record<string, string> = {
+    validation: t.profileValidation,
+    enrollment:
+      locale === 'ar'
+        ? 'تسجيل العملاء غير متاح حاليًا. حاول لاحقًا.'
+        : 'Customer enrollment is currently unavailable. Try again later.',
+    session:
+      locale === 'ar' ? 'سجّل الدخول مجددًا لحفظ بياناتك.' : 'Sign in again to save your details.',
+    profile_forbidden: t.forbiddenBody,
+  };
   const [state, action, pending] = useActionState(customerProfile.bind(null, locale), initial);
   const [name, setName] = useState(profile.display_name ?? '');
   const [phone, setPhone] = useState(profile.phone ?? '');
@@ -136,9 +146,7 @@ export function CustomerProfileForm({
         <option value="en">English</option>
       </Select>
       {state.status === 'error' && (
-        <Alert tone="error">
-          {state.code === 'validation' ? t.profileValidation : t.profileSaveError}
-        </Alert>
+        <Alert tone="error">{errors[state.code ?? ''] ?? t.profileSaveError}</Alert>
       )}
       <Button disabled={pending}>{pending ? t.saving : t.saveProfile}</Button>
     </form>

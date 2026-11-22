@@ -1,14 +1,8 @@
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
-import {
-  LayoutDashboard,
-  ListOrdered,
-  Receipt,
-  Package,
-  ShoppingBag,
-  ShoppingCart,
-  UserRound,
-} from 'lucide-react';
+import { House, Truck, ShoppingBag, UserRound } from 'lucide-react';
+
+export type CustomerSection = 'home' | 'transport' | 'store' | 'account';
 
 /** Navigation only; destination loaders retain Customer/session authorization. */
 export function CustomerWorkspaceNav({
@@ -16,7 +10,7 @@ export function CustomerWorkspaceNav({
   current,
 }: {
   locale: Locale;
-  current?: 'account' | 'requests' | 'quotes';
+  current?: CustomerSection;
 }) {
   const ar = locale === 'ar';
   return (
@@ -24,20 +18,14 @@ export function CustomerWorkspaceNav({
       <ul>
         {(
           [
-            ['account', '', ar ? 'نظرة عامة' : 'Overview', LayoutDashboard],
-            ['requests', '/requests', ar ? 'طلبات النقل' : 'Transport requests', ListOrdered],
-            ['quotes', '/quotes', ar ? 'عروض السعر' : 'Quotes', Receipt],
-            ['store', '/store/orders', ar ? 'طلبات المتجر' : 'Store orders', Package],
-            ['profile', '#customer-profile', ar ? 'الملف الشخصي' : 'Profile', UserRound],
-            ['shop', '/store', ar ? 'تسوّق مجددًا' : 'Shop again', ShoppingBag],
-            ['cart', '/store/cart', ar ? 'السلة' : 'Cart', ShoppingCart],
+            ['home', '/account', ar ? 'الرئيسية' : 'Home', House],
+            ['transport', '/account/requests', ar ? 'النقل' : 'Transport', Truck],
+            ['store', '/store', ar ? 'المتجر' : 'Store', ShoppingBag],
+            ['account', '/account/profile', ar ? 'حسابي' : 'My account', UserRound],
           ] as const
         ).map(([key, path, label, Icon]) => (
           <li key={key}>
-            <Link
-              href={`/${locale}${path.startsWith('/store') ? path : '/account' + path}`}
-              aria-current={current === key ? 'page' : undefined}
-            >
+            <Link href={`/${locale}${path}`} aria-current={current === key ? 'page' : undefined}>
               <Icon aria-hidden="true" size={16} />
               {label}
             </Link>

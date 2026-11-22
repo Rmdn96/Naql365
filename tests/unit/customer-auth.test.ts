@@ -79,7 +79,10 @@ it('requires provider-verified identity before onboarding', async () => {
   f.set('name', 'Fixture');
   f.set('phone', '+966500000001');
   f.set('locale', 'ar');
-  expect(await customerProfile('ar', { status: 'idle' }, f)).toEqual({ status: 'error' });
+  expect(await customerProfile('ar', { status: 'idle' }, f)).toEqual({
+    status: 'error',
+    code: 'session',
+  });
   expect(mocks.rpc).not.toHaveBeenCalled();
 });
 it('constructs a locale-safe recovery callback', async () => {
@@ -155,4 +158,17 @@ it('logout refuses cross-origin and does not claim success after provider failur
   mocks.origin = 'https://staging.example';
   mocks.signOut.mockResolvedValue({ error: { message: 'Unavailable' } });
   await expect(customerLogout('en')).rejects.toThrow('Sign-out failed');
+});
+
+it('reports missing enrollment without exposing the provider response', async () => {
+  mocks.getUser.mockResolvedValue({ data: { user: { id: 'synthetic' } }, error: null });
+  mocks.rpc.mockResolvedValue({ error: { code: '55000', message: 'private' } });
+  const form = new FormData();
+  form.set('name', 'Fixture');
+  form.set('phone', '+201000000001');
+  form.set('locale', 'ar');
+  expect(await customerProfile('ar', { status: 'idle' }, form)).toEqual({
+    status: 'error',
+    code: 'enrollment',
+  });
 });

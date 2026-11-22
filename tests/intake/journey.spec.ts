@@ -15,9 +15,11 @@ test('customer persists a bilingual request through private image, review, submi
   await page.locator('#password').fill(identity.password);
   await page.getByRole('button', { name: t.login, exact: true }).click();
   await expect(page).toHaveURL(`${baseURL}/${locale}/account`);
+  await page.goto(`/${locale}/account/profile/edit`);
   await page.locator('#name').fill('Naql365 acceptance fixture');
   await page.locator('#phone').fill('+966500000001');
   await page.getByRole('button', { name: t.saveProfile, exact: true }).click();
+  await page.goto(`/${locale}/account/requests`);
   await expect(page.getByRole('button', { name: t.start, exact: true })).toBeVisible();
   expect(
     (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
