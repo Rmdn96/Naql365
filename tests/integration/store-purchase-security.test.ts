@@ -46,10 +46,11 @@ async function guestOrder(overrides: Record<string, unknown> = {}) {
 beforeAll(async () => {
   db = await foundationDatabase();
   await db.exec(
-    readFileSync('supabase/tests/store_purchase.test.sql', 'utf8').split('-- FIXTURE END.')[0]! +
-      "\nupdate private.store_checkout_contracts set regions=array['CAIRO','GIZA'];\ncommit;",
+    readFileSync('supabase/tests/store_purchase.test.sql', 'utf8')
+      .split('-- FIXTURE END.')[0]!
+      .replace("array['SYNTHETIC-REGION']", "array['CAIRO','GIZA']") + '\ncommit;',
   );
-});
+}, 30000);
 afterAll(async () => {
   await db?.close();
 });

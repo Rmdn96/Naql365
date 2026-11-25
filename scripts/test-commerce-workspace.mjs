@@ -247,6 +247,7 @@ try {
       users[i - 1].id,
     );
   fixture = fixture.replace("array['SYNTHETIC-REGION']", "array['CAIRO', 'GIZA']");
+  fixture = fixture.replace("case n when 1 then 'VODAFONE_CASH'", "case n when 1 then 'BANK'");
   sql(fixture + '\ncommit;');
   seeded = true;
   save();
@@ -335,6 +336,27 @@ try {
     ),
   );
   expect(stored).toEqual({ subtotal: 2000, fee: null, total: null, method: 'CASH' });
+  const intent = {
+    request_id: randomUUID(),
+    items: [{ listing_id: product.listingId, quantity: 2, unit_price: product.amountMinor / 100 }],
+    full_name: 'Synthetic Bank Customer',
+    phone: '01012345679',
+    governorate: 'GIZA',
+    area: 'Synthetic area',
+    address: 'Synthetic isolated address',
+    payment_method: 'BANK_TRANSFER',
+  };
+  const post = (data) =>
+    page.request.post(origin + '/api/store/guest-order', { headers: { Origin: origin }, data });
+  expect((await post({ ...intent, governorate: 'ALEXANDRIA' })).status()).toBe(400);
+  expect((await post({ ...intent, items: [{ ...intent.items[0], unit_price: 1 }] })).status()).toBe(
+    409,
+  );
+  const transfer = await post(intent);
+  expect(transfer.status()).toBe(201);
+  const transferReference = (await transfer.json()).reference;
+  expect((await (await post(intent)).json()).reference).toBe(transferReference);
+  expect(sql('select count(*) from private.store_orders')).toBe('2');
   await page.goto(origin + '/en/portal/store/orders');
   await expect(page).toHaveURL(/\/en\/(login|forbidden)/);
   guestEvidence = false;
@@ -349,6 +371,56 @@ try {
   await login(staff, users[1], 'en');
   await staff.goto(origin + '/en/portal/store/orders');
   await expect(staff.getByText(reference, { exact: false }).first()).toBeVisible();
+  for (const [orderRef, bank] of [
+    [reference, false],
+    [transferReference, true],
+  ]) {
+    await staff.goto(origin + '/en/portal/store/orders');
+    await staff.locator('a').filter({ hasText: orderRef }).first().click();
+    const action = staff.locator('#store-action');
+    const run = async (name, fields = {}) => {
+      await action.selectOption(name);
+      for (const [name, value] of Object.entries(fields))
+        await staff.locator('[name="' + name + '"]').fill(value);
+      const confirmed = staff.locator('.store-check input');
+      if (await confirmed.count()) await confirmed.check();
+      const request = staff.waitForResponse(
+        (r) =>
+          new URL(r.url()).pathname === '/api/store' &&
+          r.request().method() === 'POST' &&
+          r.request().postDataJSON()?.action === name,
+      );
+      await staff.getByRole('button', { name: 'Execute action', exact: true }).click();
+      expect((await request).status()).toBe(200);
+      await staff.reload();
+    };
+    await run('quote_delivery', { deliveryEgp: '3' });
+    await run('confirm_total', { evidenceReference: 'Synthetic call confirmation' });
+    if (bank) {
+      await expect(action.locator('option[value=send]')).toHaveCount(0);
+      await run('verify_bank', {
+        reference: 'SYNTHETIC-BANK-MVP',
+        evidenceReference: 'Synthetic bank credit',
+        receivedEgp: '23',
+      });
+    }
+    for (const name of ['send', 'prepare', 'dispatch', 'deliver']) await run(name);
+    if (!bank) {
+      await run('report_cash', {
+        amountMinor: '2300',
+        reason: 'Synthetic collected',
+        evidenceReference: 'Synthetic courier collection',
+      });
+      await run('confirm_cash', { evidenceReference: 'Synthetic finance confirmation' });
+    }
+    const details = await staff.request.get(
+      origin + '/api/store?kind=order&target=' + new URL(staff.url()).pathname.split('/').at(-1),
+    );
+    expect((await details.json()).payment.status).toBe('VERIFIED');
+  }
+  checks.push(
+    'Staff quote, client consent, bank verification before release and COD verification after delivery',
+  );
   await staffContext.close();
   await checkStaffRecovery(browser, users[1].email, local.API_URL, origin);
   checks.push(
@@ -383,7 +455,7 @@ try {
     },
   });
   expect([403, 409]).toContain(paused.status());
-  expect(sql('select count(*) from private.store_orders')).toBe('1');
+  expect(sql('select count(*) from private.store_orders')).toBe('2');
   checks.push('Paused scope prevents new guest order; historical order preserved');
   await customerContext.close();
 } catch (error) {

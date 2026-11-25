@@ -57,8 +57,8 @@ it('keeps SQL and HTTP customer projections free of internal sourcing/Finance da
   try {
     const fixture = readFileSync('supabase/tests/store_purchase.test.sql', 'utf8');
     await db.exec(
-      fixture.split('-- FIXTURE END.')[0] +
-        fixture.split('-- HISTORICAL ORDERS.')[1]!.split('-- HISTORICAL END.')[0] +
+      fixture.split('-- FIXTURE END.')[0]! +
+        fixture.split('-- HISTORICAL ORDERS.')[1]!.split('-- HISTORICAL END.')[0]! +
         '\ncommit;',
     );
     await actor(customer);

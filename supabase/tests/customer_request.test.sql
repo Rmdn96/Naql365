@@ -55,6 +55,9 @@ set local role authenticated;
 select public.intake_reject($q$select public.onboard_customer('Fixture','+966500000001','ar')$q$,'42501');
 reset role;
 select set_config('request.jwt.claim.sub','b0000000-0000-4000-8000-000000000001',true);
+-- This acceptance case requires an empty setting, including when a fixture
+-- runs beside an existing organization. The test transaction rolls back.
+delete from private.customer_enrollment;
 set local role authenticated;
 select public.intake_reject($q$select public.onboard_customer('Fixture A','+201000000001','ar')$q$,'55000');
 select public.intake_reject('select * from private.customer_enrollment','42501');
