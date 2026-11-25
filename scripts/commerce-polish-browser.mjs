@@ -140,7 +140,7 @@ export async function capturePolishStorefront(page, origin, output, capture, che
   );
 }
 
-const baselineCommit = '560a921f98bce804aae0ce04c67dab496c265f65';
+const baselineCommit = 'b668388448da2341e9e0b00cd6d7aa3f4be252bb';
 export async function comparePolishPerformance(browser, origin, output, env) {
   const baseline = mkdtempSync(join(tmpdir(), 'naql365-polish-baseline-'));
   const oldOrigin = 'http://127.0.0.1:3001';
@@ -194,14 +194,22 @@ export async function comparePolishPerformance(browser, origin, output, env) {
             });
             await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
             await page.addInitScript(() => {
-              const measurements = { lcp: 0, cls: 0 };
+              const measurements = { lcp: 0, cls: 0, footerShift: 0 };
               window.naqlMeasurements = measurements;
               new PerformanceObserver((list) => {
                 for (const entry of list.getEntries()) measurements.lcp = entry.startTime;
               }).observe({ type: 'largest-contentful-paint', buffered: true });
               new PerformanceObserver((list) => {
-                for (const entry of list.getEntries())
-                  if (!entry.hadRecentInput) measurements.cls += entry.value;
+                for (const entry of list.getEntries()) {
+                  if (entry.hadRecentInput) continue;
+                  measurements.cls += entry.value;
+                  if (
+                    entry.sources.some(
+                      ({ node }) => node instanceof Element && node.closest('.launch-footer'),
+                    )
+                  )
+                    measurements.footerShift += entry.value;
+                }
               }).observe({ type: 'layout-shift', buffered: true });
             });
             await page.goto(base + '/' + locale, { waitUntil: 'networkidle' });
@@ -234,6 +242,10 @@ export async function comparePolishPerformance(browser, origin, output, env) {
         }
       }
     }
+    const mobileShifts = samples
+      .filter(({ width, variant }) => width === 390 && variant === 'after')
+      .map(({ cls }) => cls)
+      .sort((a, b) => a - b);
     writeFileSync(
       join(output, 'polish-performance.json'),
       JSON.stringify(
@@ -248,6 +260,8 @@ export async function comparePolishPerformance(browser, origin, output, env) {
         2,
       ),
     );
+    expect(mobileShifts).toHaveLength(3);
+    expect(mobileShifts[1], 'Median cold mobile layout shift').toBeLessThanOrEqual(0.1);
   } finally {
     await stopBrowserServer(server, 3001);
     execFileSync('git', ['worktree', 'remove', '--force', baseline], { stdio: 'ignore' });

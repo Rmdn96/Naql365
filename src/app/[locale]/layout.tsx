@@ -1,3 +1,4 @@
+import { parseThemeMode } from '@/components/design-system/theme';
 import type { Metadata } from 'next';
 import { Alexandria, Inter } from 'next/font/google';
 import { notFound } from 'next/navigation';
@@ -54,7 +55,7 @@ export default async function LocaleLayout({
 }) {
   await headers(); // Per-request CSP nonces require dynamic rendering.
   const theme = (await cookies()).get('naql365_theme')?.value;
-  const themeMode = theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
+  const themeMode = parseThemeMode(theme);
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   return (

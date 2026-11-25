@@ -1,15 +1,15 @@
 :root {
-  --navy: #0b1f33;
-  --blue: #1677ff;
-  --cyan: #22c7e8;
-  --background: #f5f7fa;
+  --navy: #0f172a;
+  --blue: #2563eb;
+  --cyan: #0891b2;
+  --background: #f8fafc;
   --white: #ffffff;
   /* Accessible text/button variant of the brand blue. */
-  --action: #075bcb;
-  --link: #075bcb;
-  --focus: #075bcb;
-  --muted: #536579;
-  --border: #dce3ea;
+  --action: #1d4ed8;
+  --link: #1d4ed8;
+  --focus: #1d4ed8;
+  --muted: #64748b;
+  --border: #dbe3ec;
   --border-strong: #8a9bac;
   --error: #b42318;
   --success: #147344;
@@ -26,62 +26,80 @@
   --shadow-sm: 0 2px 4px #0b1f3305;
   --shadow-lg: 0 20px 60px #0b1f3326;
 
-  /* Semantic theme tokens. Explicit choices are applied to html[data-theme]. */
-  --theme-background: #f5f7fa;
-  --theme-surface: #ffffff;
-  --theme-surface-elevated: #ffffff;
-  --theme-surface-muted: #edf2f7;
-  --theme-text-primary: #0b1f33;
-  --theme-text-secondary: #536579;
-  --theme-border: #dce3ea;
-  --theme-brand: #1677ff;
-  --theme-brand-hover: #075bcb;
-  --theme-on-brand: #ffffff;
-  --theme-accent: #076b80;
-  --theme-success: #147344;
+  /* Shared action colors. Theme-specific link and status colors meet text contrast. */
+  --theme-brand: var(--blue);
+  --theme-brand-hover: var(--action);
+  --theme-on-brand: var(--white);
+  --theme-header-navy: var(--navy);
+  --theme-footer-text: #f1f5f9;
+  --theme-footer-muted: #cbd5e1;
+  --theme-footer-link: #93bbff;
+  --theme-whatsapp: #16a34a;
+  --theme-on-whatsapp: var(--navy);
+  --theme-background: var(--background);
+  --theme-surface: var(--white);
+  --theme-header: var(--white);
+  --theme-surface-elevated: var(--white);
+  --theme-surface-muted: #eef2f7;
+  --theme-text-primary: var(--navy);
+  --theme-text-secondary: var(--muted);
+  --theme-muted-ink: #52627a;
+  --theme-border: var(--border);
+  --theme-link: var(--action);
+  --theme-accent: #0e7490;
+  --theme-success: var(--success);
   --theme-warning: #854d0e;
-  --theme-destructive: #b42318;
-  --theme-focus: #075bcb;
-  --theme-shadow: 0 16px 40px #0b1f3318;
+  --theme-destructive: var(--error);
+  --theme-focus: var(--focus);
+  --theme-info: var(--link);
+  --theme-status-wash: 12%;
+  --theme-shadow: 0 16px 40px #0f172a18;
+  color-scheme: light;
 }
 
 html[data-theme='dark'],
 html[data-theme='system'] {
-  --theme-background: #0b1625;
-  --theme-surface: #142436;
-  --theme-surface-elevated: #1c3045;
-  --theme-surface-muted: #203449;
-  --theme-text-primary: #ecf2f8;
-  --theme-text-secondary: #b0c1d2;
-  --theme-border: #35495d;
-  --theme-brand: #6e9cff;
-  --theme-brand-hover: #8fb1ff;
-  --theme-on-brand: #0b1f33;
-  --theme-accent: #66d7e8;
+  --theme-background: #0b1120;
+  --theme-surface: #162032;
+  --theme-header: var(--navy);
+  --theme-surface-elevated: #1c293d;
+  --theme-surface-muted: #1b273a;
+  --theme-text-primary: var(--theme-footer-text);
+  --theme-text-secondary: #94a3b8;
+  --theme-muted-ink: #94a3b8;
+  --theme-border: #263449;
+  --theme-link: #93bbff;
+  --theme-accent: #67e8f9;
   --theme-success: #5fd39a;
   --theme-warning: #f3b562;
   --theme-destructive: #ff8d86;
-  --theme-focus: #66d7e8;
+  --theme-focus: #67e8f9;
+  --theme-info: #93bbff;
+  --theme-status-wash: 18%;
   --theme-shadow: 0 16px 40px #06122166;
+  color-scheme: dark;
 }
 
 @media (prefers-color-scheme: light) {
   html[data-theme='system'] {
-    --theme-background: #f5f7fa;
-    --theme-surface: #ffffff;
-    --theme-surface-elevated: #ffffff;
-    --theme-surface-muted: #edf2f7;
-    --theme-text-primary: #0b1f33;
-    --theme-text-secondary: #536579;
-    --theme-border: #dce3ea;
-    --theme-brand: #1677ff;
-    --theme-brand-hover: #075bcb;
-    --theme-on-brand: #ffffff;
-    --theme-accent: #076b80;
-    --theme-success: #147344;
+    --theme-background: var(--background);
+    --theme-surface: var(--white);
+    --theme-header: var(--white);
+    --theme-surface-elevated: var(--white);
+    --theme-surface-muted: #eef2f7;
+    --theme-text-primary: var(--navy);
+    --theme-text-secondary: var(--muted);
+    --theme-muted-ink: #52627a;
+    --theme-border: var(--border);
+    --theme-link: var(--action);
+    --theme-accent: #0e7490;
+    --theme-success: var(--success);
     --theme-warning: #854d0e;
-    --theme-destructive: #b42318;
-    --theme-focus: #075bcb;
-    --theme-shadow: 0 16px 40px #0b1f3318;
+    --theme-destructive: var(--error);
+    --theme-focus: var(--focus);
+    --theme-info: var(--link);
+    --theme-status-wash: 12%;
+    --theme-shadow: 0 16px 40px #0f172a18;
+    color-scheme: light;
   }
 }

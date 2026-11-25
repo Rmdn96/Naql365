@@ -1,3 +1,4 @@
+import { parseThemeMode } from '@/components/design-system/theme';
 import { notFound, redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { dictionary } from '@/i18n/dictionaries';
@@ -86,7 +87,7 @@ export default async function Layout({
     ],
   });
   const theme = (await cookies()).get('naql365_theme')?.value;
-  const themeMode = theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
+  const themeMode = parseThemeMode(theme);
   const display = await staffDisplayContext();
   return (
     <StaffShell

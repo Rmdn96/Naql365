@@ -1,6 +1,7 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
+import { ChevronDown, Monitor, Moon, Sun } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 import { useHydrated } from '@/components/ui/use-hydrated';
 
@@ -19,9 +20,12 @@ export function ThemeControl({ locale, initialMode }: { locale: Locale; initialM
       ? { label: 'المظهر', light: 'فاتح', dark: 'داكن', system: 'حسب النظام' }
       : { label: 'Theme', light: 'Light', dark: 'Dark', system: 'System' };
 
+  const Icon = mode === 'light' ? Sun : mode === 'dark' ? Moon : Monitor;
   return (
-    <label className="theme-control">
+    <label className="theme-control" title={labels.label + ' · ' + labels[mode]}>
       <span className="sr-only">{labels.label}</span>
+      <Icon size={18} aria-hidden="true" />
+      <ChevronDown size={12} aria-hidden="true" />
       <select
         aria-label={labels.label}
         disabled={!hydrated}

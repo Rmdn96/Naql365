@@ -106,7 +106,7 @@ it.each(['light', 'dark', 'system'] as const)(
     vi.stubGlobal('location', { protocol: 'https:' });
     const network = vi.fn();
     vi.stubGlobal('fetch', network);
-    expect(readTheme()).toBe('system');
+    expect(readTheme()).toBe('light');
     const unsubscribe = subscribeTheme(listener);
     chooseTheme(mode);
     expect(readTheme()).toBe(mode);
@@ -133,12 +133,13 @@ it('uses the same local preference without an invalid Secure cookie over loopbac
 it('uses the approved palette and accessible action color through scoped compatibility aliases', () => {
   const foundation = readFileSync('src/styles/foundation.css', 'utf8');
   const commerce = readFileSync('src/styles/lovable.css', 'utf8');
-  expect(foundation).toContain('--naql-color-brand: oklch(0.63 0.21 261)');
-  expect(foundation).toContain('--naql-color-brand: oklch(0.52 0.21 262)');
-  expect(foundation).toContain('--naql-color-action: oklch(0.52 0.21 262)');
-  expect(foundation).toContain("html[data-theme='light']");
-  expect(foundation).toContain("html[data-theme='system']");
-  expect(foundation).toContain('prefers-color-scheme: light');
+  const tokens = readFileSync('src/styles/tokens.css', 'utf8');
+  expect(foundation).toContain('--naql-color-brand: var(--theme-link)');
+  expect(foundation).toContain('--naql-color-action: var(--theme-brand)');
+  expect(tokens).toContain('--blue: #2563eb');
+  expect(tokens).toContain('--action: #1d4ed8');
+  expect(tokens).toContain("html[data-theme='system']");
+  expect(tokens).toContain('prefers-color-scheme: light');
   expect(commerce).toContain('--background: var(--naql-color-background)');
   expect(commerce).toContain('--primary: var(--naql-color-action)');
   expect(foundation).not.toMatch(/body\s*\{|button\s*\{|input\s*\{/);

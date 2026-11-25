@@ -6,14 +6,20 @@ for (const locale of ['ar', 'en'] as const) {
     page,
   }) => {
     test.setTimeout(120000);
+    await page.emulateMedia({ colorScheme: 'dark' });
     await page.goto(`/${locale}`);
-    await expect(page.locator('html')).toHaveAttribute('data-theme', 'system');
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(248, 250, 252)');
     for (const mode of ['light', 'dark', 'system'] as const) {
       await page.goto(`/${locale}`);
       await page.setViewportSize({ width: 1440, height: 900 });
       const theme = page
         .locator('.launch-header')
         .getByRole('combobox', { name: locale === 'ar' ? 'المظهر' : 'Theme', exact: true });
+      await expect(theme).toBeEnabled();
+      await theme.focus();
+      await expect(theme).toBeFocused();
+      await expect(theme.locator('..')).toHaveCSS('outline-style', 'solid');
       await theme.selectOption(mode);
       await expect(page.locator('html')).toHaveAttribute('data-theme', mode);
       await expect(theme).toHaveValue(mode);
@@ -52,9 +58,9 @@ for (const locale of ['ar', 'en'] as const) {
       }
     }
     await page.emulateMedia({ colorScheme: 'dark' });
-    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(11, 22, 37)');
+    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(11, 17, 32)');
     await page.emulateMedia({ colorScheme: 'light' });
-    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(245, 247, 250)');
+    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(248, 250, 252)');
   });
 
   test(`${locale} market changes retain same-origin security and survive navigation`, async ({

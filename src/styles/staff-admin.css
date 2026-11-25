@@ -20,7 +20,7 @@ html[data-theme] .staff-app.sx {
   --theme-destructive: var(--naql-color-error);
   --navy: var(--naql-color-text);
   --white: var(--naql-color-surface);
-  --staff-nav: oklch(0.18 0.03 259);
+  --staff-nav: var(--theme-header-navy);
   --staff-nav-ink: oklch(0.96 0.006 250);
   --staff-nav-muted: oklch(0.75 0.025 253);
   --staff-nav-active: oklch(0.29 0.055 258);
@@ -348,10 +348,4 @@ html[data-theme] .staff-app.sx.staff-app--collapsed {
 
 .staff-app.sx .st-admin-nav [aria-current='page'] {
   color: var(--naql-color-info);
-}
-/* The source topbar's 62px select is Market-only; canonical theme names need their full width. */
-.staff-app.sx .staff-topbar .theme-control select {
-  width: auto;
-  min-width: 100px;
-  max-width: 120px;
 }

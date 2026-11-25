@@ -73,20 +73,22 @@ export function Header({
 }
 export function Footer({ locale }: { locale: Locale }) {
   return (
-    <footer className="launch-footer container">
-      <BrandLink
-        href={`/${locale}`}
-        locale={locale}
-        label={dictionary(locale).brand}
-        size="mobile"
-      />
-      <nav aria-label={locale === 'ar' ? 'روابط التذييل' : 'Footer links'}>
-        <Link href={`/${locale}`}>{locale === 'ar' ? 'المتجر' : 'Shop'}</Link>
-        <Link href={`/${locale}/request`}>{locale === 'ar' ? 'النقل' : 'Transport'}</Link>
-        <TransportFooterLinks locale={locale} />
-        <ContactLinks locale={locale} footer />
-      </nav>
-      <small>{dictionary(locale).rights}</small>
+    <footer className="launch-footer">
+      <div className="launch-footer-inner">
+        <BrandLink
+          href={`/${locale}`}
+          locale={locale}
+          label={dictionary(locale).brand}
+          size="mobile"
+        />
+        <nav aria-label={locale === 'ar' ? 'روابط التذييل' : 'Footer links'}>
+          <Link href={`/${locale}`}>{locale === 'ar' ? 'المتجر' : 'Shop'}</Link>
+          <Link href={`/${locale}/request`}>{locale === 'ar' ? 'النقل' : 'Transport'}</Link>
+          <TransportFooterLinks locale={locale} />
+          <ContactLinks locale={locale} footer />
+        </nav>
+        <small>{dictionary(locale).rights}</small>
+      </div>
     </footer>
   );
 }

@@ -1,7 +1,11 @@
 .launch-header {
-  background: var(--theme-surface);
+  background: var(--theme-header);
   color: var(--theme-text-primary);
   border-block-end: 1px solid var(--theme-border);
+}
+/* Keep the footer below the fold while the locale route streams its content. */
+.launch-header ~ main .launch-loading {
+  min-block-size: 100svh;
 }
 .launch-header-inner {
   display: grid;
@@ -19,9 +23,8 @@
 .launch-header .naql-brand .brand-word {
   font-size: clamp(0.93rem, 3.5vw, 1.4rem);
 }
-.launch-header .naql-brand .brand-word em,
-.launch-footer .naql-brand .brand-word em {
-  color: var(--theme-brand-hover);
+.launch-header .naql-brand .brand-word em {
+  color: var(--theme-link);
 }
 .launch-header .commerce-search {
   min-width: 0;
@@ -36,11 +39,11 @@
   color: var(--theme-text-primary);
 }
 .launch-header .commerce-search input::placeholder {
-  color: var(--theme-text-secondary);
+  color: var(--theme-muted-ink);
 }
 .launch-header .commerce-search button,
 .launch-cart button.launch-primary {
-  background: var(--theme-brand-hover);
+  background: var(--theme-brand);
   color: var(--theme-on-brand);
   border-color: transparent;
 }
@@ -79,6 +82,11 @@
 .launch-footer a:hover {
   text-decoration: underline;
 }
+.launch-header .commerce-search button:hover,
+.launch-cart button.launch-primary:hover:enabled,
+.launch-store .cm-product-controls > button:hover:enabled {
+  background: var(--theme-brand-hover);
+}
 .launch-main-nav .commerce-cart {
   width: auto;
   color: var(--theme-accent);
@@ -86,19 +94,20 @@
 }
 .launch-main-nav .commerce-cart-badge {
   position: static;
-  background: var(--theme-brand-hover);
+  background: var(--theme-brand);
   color: var(--theme-on-brand);
 }
 .launch-store,
 .launch-product-detail,
 .launch-cart {
-  padding-block: clamp(0.65rem, 2vw, 1.5rem) 2rem;
+  padding-block: clamp(0.65rem, 2vw, 1.5rem) 1rem;
   display: grid;
   gap: clamp(0.8rem, 2vw, 1.4rem);
   min-width: 0;
 }
 .lovable.store-experience {
   min-height: 0;
+  padding-block-end: 0;
 }
 .launch-store :is(h1, h2, p),
 .launch-cart :is(h1, h2, p) {
@@ -109,7 +118,13 @@
   line-height: 1.25;
 }
 .launch-intro {
-  background: radial-gradient(ellipse at 100% 100%, #125579, transparent 68%), var(--navy);
+  background:
+    radial-gradient(
+      ellipse at 100% 100%,
+      color-mix(in srgb, var(--cyan) 48%, var(--navy)),
+      transparent 68%
+    ),
+    var(--navy);
   border-radius: var(--radius-lg);
   padding: clamp(0.85rem, 2.5vw, 1.8rem) clamp(0.9rem, 3vw, 2.2rem);
   color: var(--white);
@@ -121,7 +136,7 @@
   color: inherit;
 }
 .launch-store .launch-intro p {
-  color: #d0eaf4;
+  color: var(--theme-footer-text);
   margin-block-start: 0.4rem;
   font-size: clamp(0.8rem, 1.8vw, 1rem);
 }
@@ -137,7 +152,7 @@
 .launch-categories a[aria-current='page'] {
   font-weight: 700;
   color: var(--theme-on-brand);
-  background: var(--theme-brand-hover);
+  background: var(--theme-brand);
   border-color: transparent;
 }
 .launch-store .commerce-products {
@@ -166,7 +181,7 @@
 .launch-store .launch-product-placeholder {
   display: grid;
   place-items: center;
-  color: var(--theme-text-secondary);
+  color: var(--theme-muted-ink);
   background: var(--theme-surface-muted);
 }
 .launch-store .cm-product-copy {
@@ -199,7 +214,7 @@
   font-weight: 700;
   font-size: clamp(0.8rem, 1.6vw, 0.925rem);
   color: var(--theme-on-brand);
-  background: var(--theme-brand-hover);
+  background: var(--theme-brand);
 }
 .launch-service,
 .launch-contact,
@@ -219,7 +234,7 @@
 }
 .launch-store > .button,
 .launch-store .launch-service .button {
-  color: var(--theme-brand-hover);
+  color: var(--theme-link);
 }
 .launch-service > svg {
   color: var(--theme-accent);
@@ -241,22 +256,43 @@
   border: 1px solid var(--theme-border);
   border-radius: var(--radius);
 }
-.launch-contact .launch-whatsapp {
-  color: var(--theme-success);
+.launch-contact .launch-whatsapp,
+.launch-footer .launch-whatsapp {
+  background: var(--theme-whatsapp);
+  color: var(--theme-on-whatsapp);
+  font-weight: 700;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding-inline: 0.65rem;
+}
+.launch-whatsapp:hover {
+  text-decoration: underline;
 }
 .launch-footer {
+  background: var(--navy);
+  color: var(--theme-footer-text);
+}
+.launch-footer-inner {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem 1.25rem;
+  width: min(100% - 1.5rem, 78rem);
+  margin-inline: auto;
   padding-block: 0.85rem;
-  border-block-start: 1px solid var(--theme-border);
 }
-.launch-footer .launch-whatsapp {
-  color: var(--theme-success);
+.launch-footer .naql-brand,
+.launch-footer nav a {
+  color: var(--theme-footer-text);
+}
+.launch-footer .naql-brand :is(.brand-mark, em) {
+  color: var(--theme-footer-link);
+}
+.launch-footer :focus-visible {
+  outline-color: var(--theme-footer-link);
 }
 .launch-footer small {
-  color: var(--theme-text-secondary);
+  color: var(--theme-footer-muted);
   margin-inline-start: auto;
 }
 .launch-checkout-layout,
@@ -372,10 +408,6 @@
   }
   .launch-header-tools {
     font-size: 0.8rem;
-  }
-  .launch-header-tools select {
-    max-width: 5.2rem;
-    padding-inline: 0.2rem;
   }
   .launch-store .commerce-products {
     grid-template-columns: repeat(2, minmax(0, 1fr));

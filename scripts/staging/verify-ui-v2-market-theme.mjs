@@ -84,7 +84,7 @@ try {
     const page = await context.newPage();
     try {
       await page.goto(origin + '/' + locale);
-      await expect(page.locator('html')).toHaveAttribute('data-theme', 'system');
+      await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
       for (const country of ['EG', 'SA']) {
         if (
           markets.some(
@@ -230,9 +230,9 @@ try {
         }
       }
       await page.emulateMedia({ colorScheme: 'dark' });
-      await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(11, 22, 37)');
+      await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(11, 17, 32)');
       await page.emulateMedia({ colorScheme: 'light' });
-      await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(245, 247, 250)');
+      await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(248, 250, 252)');
     } catch (error) {
       const diagnostics = await page
         .evaluate(() => ({

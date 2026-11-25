@@ -4,5 +4,9 @@ import { dictionary } from '@/i18n/dictionaries';
 import { Skeleton } from '@/components/ui/presentation';
 export default function Loading() {
   const params = useParams();
-  return <Skeleton label={dictionary(params.locale === 'en' ? 'en' : 'ar').loading} />;
+  return (
+    <div className="launch-loading">
+      <Skeleton label={dictionary(params.locale === 'en' ? 'en' : 'ar').loading} />
+    </div>
+  );
 }

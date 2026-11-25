@@ -1,9 +1,7 @@
-'use client';
-
 export const themeModes = ['system', 'light', 'dark'] as const;
 export type ThemeMode = (typeof themeModes)[number];
 export const parseThemeMode = (value: unknown): ThemeMode =>
-  value === 'light' || value === 'dark' ? value : 'system';
+  value === 'system' || value === 'dark' ? value : 'light';
 
 export function subscribeTheme(listener: () => void) {
   window.addEventListener('naql365-theme-change', listener);
