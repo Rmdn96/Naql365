@@ -5,7 +5,8 @@
   --naql-color-surface: var(--theme-surface);
   --naql-color-secondary: var(--theme-surface-elevated);
   --naql-color-muted-surface: var(--theme-surface-muted);
-  --naql-color-muted-text: var(--theme-text-secondary);
+  /* This compatibility role also appears on muted surfaces. */
+  --naql-color-muted-text: var(--theme-muted-ink);
   --naql-color-accent-surface: color-mix(in srgb, var(--theme-brand) 12%, var(--theme-surface));
   --naql-color-border: var(--theme-border);
   --naql-color-brand: var(--theme-link);
