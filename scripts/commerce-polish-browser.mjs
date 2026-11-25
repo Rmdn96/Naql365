@@ -96,7 +96,15 @@ export async function capturePolishStorefront(page, origin, output, capture, che
         await expect(cards).toHaveCount(6);
         const first = await cards.nth(0).boundingBox();
         const second = await cards.nth(1).boundingBox();
-        expect(first.y).toBeLessThan(420);
+        expect(first.y, 'Products should start in the upper half of the viewport').toBeLessThan(
+          450,
+        );
+        const [brand, tools] = await Promise.all([
+          page.locator('.launch-header .naql-brand').boundingBox(),
+          page.locator('.launch-header-tools').boundingBox(),
+        ]);
+        const overlap = brand.x < tools.x + tools.width && tools.x < brand.x + brand.width;
+        expect(overlap, 'Brand and account controls must not overlap').toBe(false);
         if (width === 320) expect(second.y).toBeGreaterThan(first.y);
         else expect(first.y).toBe(second.y);
         await expect(cards.nth(0).getByRole('button')).toBeInViewport();

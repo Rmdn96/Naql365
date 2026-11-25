@@ -167,6 +167,7 @@ async function capture(page, locale, width, theme, state) {
     );
     throw Error('Store axe violations: ' + a.violations.map((x) => x.id).join(','));
   }
+  await page.evaluate(() => document.activeElement?.blur());
   const file = locale + '-' + width + '-' + theme + '-' + state + '.png';
   await page.screenshot({ path: output + '/' + file, fullPage: true });
   captures.push({
@@ -461,9 +462,12 @@ update private.store_product_market_listings
   seedPolishCatalog(sql);
   const visualContext = await browser.newContext();
   try {
-    await capturePolishStorefront(await visualContext.newPage(), origin, output, capture, checks);
+    const visualPage = await visualContext.newPage();
+    failurePage = visualPage;
+    await capturePolishStorefront(visualPage, origin, output, capture, checks);
+    failurePage = page;
   } finally {
-    await visualContext.close();
+    if (failurePage === page) await visualContext.close();
   }
   if (!externalServer && process.env.GITHUB_ACTIONS === 'true') {
     checkpoint = 'paired storefront performance';
@@ -515,13 +519,17 @@ update private.store_product_market_listings
         : 'HARNESS_FAILURE',
     screenshotSaved,
     assertion:
-      error instanceof Error && error.message.includes('toHaveURL')
-        ? 'route'
-        : error instanceof Error && error.message.includes('toHaveText')
-          ? 'text'
-          : error instanceof Error && error.message.includes('toBeVisible')
-            ? 'visibility'
-            : 'other',
+      error instanceof Error && error.message.includes('Products should start')
+        ? 'product-position'
+        : error instanceof Error && error.message.includes('Brand and account controls')
+          ? 'header-overlap'
+          : error instanceof Error && error.message.includes('toHaveURL')
+            ? 'route'
+            : error instanceof Error && error.message.includes('toHaveText')
+              ? 'text'
+              : error instanceof Error && error.message.includes('toBeVisible')
+                ? 'visibility'
+                : 'other',
     route: failurePage ? new URL(failurePage.url()).pathname : null,
     // Raw Playwright traces can retain headers, tokens and submitted form values.
     trace: 'structured-boundaries-only',

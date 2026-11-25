@@ -12,11 +12,11 @@
   padding-block-start: 0.6rem;
   column-gap: clamp(0.65rem, 2vw, 2rem);
 }
-.launch-header-inner .brand-mark {
+.launch-header .naql-brand .brand-mark {
   width: clamp(1.5rem, 7vw, 2.3rem);
   height: auto;
 }
-.launch-header-inner .brand-word {
+.launch-header .naql-brand .brand-word {
   font-size: clamp(0.93rem, 3.5vw, 1.4rem);
 }
 .launch-header .commerce-search {
@@ -107,7 +107,7 @@
   color: var(--white);
   border-inline-start: 4px solid var(--cyan);
 }
-.launch-intro h1 {
+.launch-store .launch-intro h1 {
   font-size: clamp(1.25rem, 4vw, 2.25rem);
   line-height: 1.2;
   color: inherit;
@@ -214,9 +214,9 @@
 .launch-service > div {
   flex: 1 1 13rem;
 }
-.launch-service h2,
-.launch-contact h2,
-.launch-order-summary h2 {
+.launch-store .launch-service h2,
+.launch-store .launch-contact h2,
+.launch-cart .launch-order-summary h2 {
   color: var(--theme-text-primary);
   font-size: 1.05rem;
 }
@@ -336,7 +336,10 @@
 }
 @media (max-width: 699px) {
   .launch-header-inner {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .launch-header-tools {
+    justify-content: flex-end;
   }
   .launch-header .commerce-search {
     grid-column: 1 / -1;
@@ -348,6 +351,9 @@
     gap: 0.2rem 0.35rem;
     font-size: clamp(0.75rem, 2.8vw, 0.9rem);
   }
+  .launch-main-nav > a {
+    font-size: inherit;
+  }
   .launch-main-nav .commerce-cart svg {
     width: 1rem;
   }
@@ -355,7 +361,7 @@
     font-size: 0.8rem;
   }
   .launch-header-tools select {
-    max-width: 5.8rem;
+    max-width: 5.2rem;
     padding-inline: 0.2rem;
   }
   .launch-store .commerce-products {
@@ -363,6 +369,19 @@
   }
 }
 @media (max-width: 359px) {
+  .launch-header .naql-brand {
+    gap: 0.25rem;
+  }
+  .launch-header-tools {
+    gap: 0.15rem 0.4rem;
+  }
+  .launch-header-tools .identity-link {
+    padding-inline: 0;
+  }
+  .launch-categories a {
+    font-size: 0.8rem;
+    padding-inline: 0.55rem;
+  }
   .launch-store .commerce-products {
     grid-template-columns: minmax(0, 1fr);
   }
