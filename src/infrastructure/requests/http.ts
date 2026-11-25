@@ -71,9 +71,12 @@ export async function readJson(request: Request): Promise<unknown> {
     throw new AppError('validation', 'Invalid JSON');
   }
 }
-export async function apiResult(run: () => Promise<unknown>) {
+export async function apiResult(run: () => Promise<unknown>, successStatus = 200) {
   try {
-    return NextResponse.json(await run(), { headers: { 'Cache-Control': 'private, no-store' } });
+    return NextResponse.json(await run(), {
+      status: successStatus,
+      headers: { 'Cache-Control': 'private, no-store' },
+    });
   } catch (error) {
     const code =
       error instanceof ZodError
@@ -87,6 +90,7 @@ export async function apiResult(run: () => Promise<unknown>) {
       forbidden: 403,
       not_found: 404,
       conflict: 409,
+      request_changed: 409,
       rate_limited: 429,
       network: 503,
       internal: 500,

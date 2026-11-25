@@ -4,6 +4,7 @@ export type ErrorCode =
   | 'forbidden'
   | 'not_found'
   | 'conflict'
+  | 'request_changed'
   | 'rate_limited'
   | 'network'
   | 'internal';

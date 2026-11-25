@@ -4149,6 +4149,10 @@ export type Database = {
         }
         Returns: Json
       }
+      store_guest_checkout_v1: {
+        Args: { p_payload: Json; p_request: string }
+        Returns: Json
+      }
       store_proof_path_v1: { Args: { p_proof: string }; Returns: Json }
       store_purchase_command_v1: {
         Args: {
