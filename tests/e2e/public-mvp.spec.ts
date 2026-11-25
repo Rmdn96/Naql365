@@ -38,24 +38,18 @@ test('telemetry rejects private properties and unavailable legal copy stays unpu
   expect((await request.get('/en/legal/terms')).status()).toBe(404);
 });
 for (const locale of ['ar', 'en'] as const) {
-  test(`${locale} public country switch retains approved initial WhatsApp contact and guest request without a login wall`, async ({
+  test(`${locale} Egypt-only storefront retains approved initial WhatsApp contact and guest request without a login wall`, async ({
     page,
   }) => {
     await page.goto('/' + locale);
     const contact = page.getByRole('link', {
-      name: locale === 'ar' ? 'تواصل واتساب' : 'Contact via WhatsApp',
+      name: locale === 'ar' ? 'واتساب' : 'WhatsApp',
       exact: true,
     });
-    const selector = page
-      .locator(
-        '.market-control, select[aria-label="Service country"], select[aria-label="بلد الخدمة"]',
-      )
-      .first();
     const message =
       locale === 'ar'
         ? 'مرحبًا، أتواصل معكم من موقع Naql365 وأحتاج مساعدة بخصوص خدمة نقل.'
         : 'Hello, I am contacting you from Naql365 and need help with a transport service.';
-    await expect(selector).toContainText(/EG|🇪🇬/);
     await expect(page.locator('option[value="SA"]')).toHaveCount(0);
     await expect(contact).toHaveAttribute(
       'href',
@@ -63,7 +57,7 @@ for (const locale of ['ar', 'en'] as const) {
     );
     await expect(contact).toHaveAttribute('rel', /noopener/);
     await page
-      .getByRole('link', { name: locale === 'ar' ? 'اطلب نقل' : 'Book Transport', exact: true })
+      .getByRole('link', { name: locale === 'ar' ? 'طلب نقل' : 'Request transport', exact: true })
       .filter({ visible: true })
       .first()
       .click();

@@ -11,9 +11,7 @@ for (const locale of ['ar', 'en'] as const) {
     expect(response?.status()).toBe(200);
     await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr');
     await expect(page.locator('option[value="SA"]')).toHaveCount(0);
-    await expect(
-      page.locator('select[aria-label="Service country"],select[aria-label="بلد الخدمة"]'),
-    ).toHaveValue('EG');
+    await expect(page.locator('#contact a[href^="https://wa.me/20"]')).toBeVisible();
     const rejected = await page.request.post('/api/public/market', {
       headers: { Origin: 'http://127.0.0.1:3000' },
       data: { country: 'SA' },

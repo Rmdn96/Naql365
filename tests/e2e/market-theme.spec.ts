@@ -11,33 +11,15 @@ for (const locale of ['ar', 'en'] as const) {
     for (const mode of ['light', 'dark', 'system'] as const) {
       await page.goto(`/${locale}`);
       await page.setViewportSize({ width: 1440, height: 900 });
-      const themeName = locale === 'ar' ? 'المظهر' : 'Appearance';
-      const modeName =
-        locale === 'ar'
-          ? { light: 'فاتح', dark: 'داكن', system: 'تلقائي' }[mode]
-          : { light: 'Light', dark: 'Dark', system: 'System' }[mode];
-      const theme = page.getByRole('group', { name: themeName, exact: true });
-      await theme.getByRole('button', { name: modeName, exact: true }).click();
+      const theme = page
+        .locator('.launch-header')
+        .getByRole('combobox', { name: locale === 'ar' ? 'المظهر' : 'Theme', exact: true });
+      await theme.selectOption(mode);
       await expect(page.locator('html')).toHaveAttribute('data-theme', mode);
-      await expect(theme.getByRole('button', { pressed: true })).toHaveCount(1);
-      await expect(theme.getByRole('button', { name: modeName, exact: true })).toHaveAttribute(
-        'aria-pressed',
-        'true',
-      );
+      await expect(theme).toHaveValue(mode);
       await page.setViewportSize({ width: 390, height: 900 });
-      await expect(theme.getByRole('button', { name: modeName, exact: true })).toBeVisible();
-      const menu = page.getByRole('button', {
-        name: locale === 'ar' ? 'القائمة' : 'Menu',
-        exact: true,
-      });
-      await menu.click();
-      await expect(page.getByRole('dialog')).toBeVisible();
-      await page.keyboard.press('Escape');
-      await expect(menu).toBeFocused();
-      await expect(theme.getByRole('button', { name: modeName, exact: true })).toHaveAttribute(
-        'aria-pressed',
-        'true',
-      );
+      await expect(theme).toBeVisible();
+      await expect(theme).toHaveValue(mode);
       await page.reload();
       await expect(page.locator('html')).toHaveAttribute('data-theme', mode);
       const initialHtml = await (await page.request.get(`/${locale}`)).text();
@@ -89,13 +71,7 @@ for (const locale of ['ar', 'en'] as const) {
     expect(setCookie).toMatch(/SameSite=strict/i);
     expect(setCookie).toMatch(/Path=\//i);
     await page.reload();
-    await expect(
-      page
-        .locator(
-          '.market-control, select[aria-label="Service country"], select[aria-label="بلد الخدمة"]',
-        )
-        .first(),
-    ).toContainText(/EG|🇪🇬/);
+    await expect(page.locator('#contact a[href^="https://wa.me/20"]')).toBeVisible();
     await page.goto(`/${locale === 'ar' ? 'en' : 'ar'}/login`);
     await expect(
       page
