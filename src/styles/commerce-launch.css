@@ -19,6 +19,10 @@
 .launch-header .naql-brand .brand-word {
   font-size: clamp(0.93rem, 3.5vw, 1.4rem);
 }
+.launch-header .naql-brand .brand-word em,
+.launch-footer .naql-brand .brand-word em {
+  color: var(--theme-brand-hover);
+}
 .launch-header .commerce-search {
   min-width: 0;
   width: 100%;
@@ -207,6 +211,10 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.75rem;
+}
+.launch-store > .button,
+.launch-store .launch-service .button {
+  color: var(--theme-brand-hover);
 }
 .launch-service > svg {
   color: var(--theme-accent);
