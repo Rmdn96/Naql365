@@ -88,6 +88,12 @@ export async function capturePolishStorefront(page, origin, output, capture, che
         await page.goto(origin + '/' + locale);
         await capture(page, locale, width, theme, 'polished-home');
         await expect(page.locator('.launch-main-nav > a')).toHaveCount(4);
+        await expect(page.locator('.launch-header a[href$="/login"]')).toHaveCount(0);
+        const contactBar = page.locator('.launch-quick-contact');
+        if (width < 700) {
+          await expect(contactBar.getByRole('link')).toHaveCount(2);
+          await expect(contactBar.getByRole('link').first()).toBeInViewport();
+        } else await expect(contactBar).toBeHidden();
         await expect(page.getByRole('searchbox')).toBeVisible();
         await expect(page.locator('.launch-main-nav .commerce-cart')).toBeInViewport();
         await expect(page.locator('.launch-contact a[href^="https://wa.me/"]')).toBeVisible();
@@ -132,7 +138,7 @@ export async function capturePolishStorefront(page, origin, output, capture, che
       await expect(page.locator('.launch-order-summary')).toBeVisible();
       await expect(
         page.locator('#guest-checkout select[name="payment_method"] option'),
-      ).toHaveCount(2);
+      ).toHaveCount(4);
     }
   }
   checks.push(
@@ -140,7 +146,7 @@ export async function capturePolishStorefront(page, origin, output, capture, che
   );
 }
 
-const baselineCommit = 'b668388448da2341e9e0b00cd6d7aa3f4be252bb';
+const baselineCommit = '37fb1debacce168afdbf5ad10a3f87f6a848926f';
 export async function comparePolishPerformance(browser, origin, output, env) {
   const baseline = mkdtempSync(join(tmpdir(), 'naql365-polish-baseline-'));
   const oldOrigin = 'http://127.0.0.1:3001';

@@ -108,8 +108,21 @@ export function SourceCommerce({
     body = (
       <div className="cm-container launch-store">
         <header className="launch-intro">
-          <h1>{ar ? 'متجر نقل 365' : 'Naql365 Store'}</h1>
-          <p>{delivery}</p>
+          <div className="launch-intro-copy">
+            <h1>{ar ? 'مستلزمات التغليف والنقل' : 'Packing and moving supplies'}</h1>
+            <p>{delivery}</p>
+            <a className="launch-intro-link" href="#store-products">
+              {ar ? 'تصفح المنتجات' : 'Browse products'}
+            </a>
+          </div>
+          <div className="launch-intro-image" aria-hidden="true">
+            <SourceImage
+              src="/brand/commerce-moving.jpg"
+              alt=""
+              fill
+              sizes="(max-width: 380px) 92px, (max-width: 699px) 128px, (max-width: 1100px) 32vw, 400px"
+            />
+          </div>
         </header>
         {categories.length > 0 && (
           <nav
@@ -140,6 +153,9 @@ export function SourceCommerce({
             <Link href={'/' + locale}>{ar ? 'مسح البحث' : 'Clear search'}</Link>
           </p>
         )}
+        <h2 id="store-products" className="launch-catalog-title">
+          {ar ? 'المنتجات' : 'Products'}
+        </h2>
         {available && products.length > 0 ? (
           <div className="cm-products commerce-products">
             {products.map((p) => {
@@ -167,7 +183,7 @@ export function SourceCommerce({
                   </Link>
                   <div className="cm-product-copy">
                     <Link href={href}>
-                      <h2>{p.name[locale]}</h2>
+                      <h3>{p.name[locale]}</h3>
                     </Link>
                     <strong>{storeMoney(p.retail, locale)}</strong>
                   </div>
@@ -205,6 +221,36 @@ export function SourceCommerce({
           <Link className="button" href={'/' + locale + '/request'}>
             {ar ? 'طلب نقل' : 'Request transport'}
           </Link>
+        </section>
+        <section className="launch-shopping-information" aria-labelledby="store-shopping-info">
+          <h2 id="store-shopping-info">{ar ? 'التوصيل والدفع' : 'Delivery and payment'}</h2>
+          <p>{delivery}</p>
+          <p>
+            {ar
+              ? 'الدفع عند الاستلام، أو التحويل البنكي، أو Vodafone Cash، أو InstaPay. نؤكد رسوم التوصيل والإجمالي معك قبل التحصيل.'
+              : 'Pay on delivery, by bank transfer, Vodafone Cash or InstaPay. We confirm the delivery fee and total with you before collecting payment.'}
+          </p>
+        </section>
+        <section className="launch-shopping-information" aria-labelledby="store-order-help">
+          <h2 id="store-order-help">{ar ? 'أسئلة عن الطلب' : 'Ordering questions'}</h2>
+          <details>
+            <summary>{ar ? 'هل أحتاج إلى حساب؟' : 'Do I need an account?'}</summary>
+            <p>
+              {ar
+                ? 'يمكنك الشراء وطلب النقل دون حساب.'
+                : 'You can shop or request transport without an account.'}
+            </p>
+          </details>
+          <details>
+            <summary>
+              {ar ? 'متى أعرف الإجمالي النهائي؟' : 'When will I know the final total?'}
+            </summary>
+            <p>
+              {ar
+                ? 'يراجع الفريق طلبك ويتواصل معك لتأكيد التوفر والتوصيل والإجمالي قبل التجهيز.'
+                : 'Our team reviews the order and confirms availability, delivery and the total with you before preparation.'}
+            </p>
+          </details>
         </section>
         <section id="contact" className="launch-contact">
           <h2>{ar ? 'تواصل معنا' : 'Contact us'}</h2>

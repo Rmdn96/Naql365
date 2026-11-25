@@ -253,7 +253,15 @@ try {
       users[i - 1].id,
     );
   fixture = fixture.replace("array['SYNTHETIC-REGION']", "array['CAIRO', 'GIZA']");
-  fixture = fixture.replace("case n when 1 then 'VODAFONE_CASH'", "case n when 1 then 'BANK'");
+  fixture = fixture.replace(
+    "case n when 1 then 'VODAFONE_CASH' else 'INSTAPAY' end",
+    "case n when 1 then 'BANK' when 2 then 'INSTAPAY' else 'VODAFONE_CASH' end",
+  );
+  fixture = fixture.replace('from generate_series(1,2) n;', 'from generate_series(1,3) n;');
+  fixture = fixture.replace(
+    "'99000000-0000-4000-8000-000000000003']::uuid[]",
+    "'99000000-0000-4000-8000-000000000003','99000000-0000-4000-8000-000000000004']::uuid[]",
+  );
   sql(
     fixture +
       `
@@ -370,7 +378,16 @@ update private.store_product_market_listings
   expect(transfer.status()).toBe(201);
   const transferReference = (await transfer.json()).reference;
   expect((await (await post(intent)).json()).reference).toBe(transferReference);
-  expect(sql('select count(*) from private.store_orders')).toBe('2');
+  const reviewedOrders = [
+    [reference, 'CASH'],
+    [transferReference, 'BANK_TRANSFER'],
+  ];
+  for (const method of ['VODAFONE_CASH', 'INSTAPAY']) {
+    const result = await post({ ...intent, payment_method: method, request_id: randomUUID() });
+    expect(result.status()).toBe(201);
+    reviewedOrders.push([(await result.json()).reference, method]);
+  }
+  expect(sql('select count(*) from private.store_orders')).toBe('4');
   await page.goto(origin + '/en/portal/store/orders');
   await expect(page).toHaveURL(/\/en\/(login|forbidden)/);
   guestEvidence = false;
@@ -385,10 +402,8 @@ update private.store_product_market_listings
   await login(staff, users[1], 'en');
   await staff.goto(origin + '/en/portal/store/orders');
   await expect(staff.getByText(reference, { exact: false }).first()).toBeVisible();
-  for (const [orderRef, bank] of [
-    [reference, false],
-    [transferReference, true],
-  ]) {
+  for (const [orderRef, method] of reviewedOrders) {
+    const transfer = method !== 'CASH';
     await staff.goto(origin + '/en/portal/store/orders');
     await staff.locator('a').filter({ hasText: orderRef }).first().click();
     const action = staff.locator('#store-action');
@@ -410,16 +425,16 @@ update private.store_product_market_listings
     };
     await run('quote_delivery', { deliveryEgp: '3' });
     await run('confirm_total', { evidenceReference: 'Synthetic call confirmation' });
-    if (bank) {
+    if (transfer) {
       await expect(action.locator('option[value=send]')).toHaveCount(0);
       await run('verify_bank', {
-        reference: 'SYNTHETIC-BANK-MVP',
+        reference: 'SYNTHETIC-' + method.replaceAll('_', '-') + '-MVP',
         evidenceReference: 'Synthetic bank credit',
         receivedEgp: '23',
       });
     }
     for (const name of ['send', 'prepare', 'dispatch', 'deliver']) await run(name);
-    if (!bank) {
+    if (!transfer) {
       await run('report_cash', {
         amountMinor: '2300',
         reason: 'Synthetic collected',
@@ -430,10 +445,10 @@ update private.store_product_market_listings
     const details = await staff.request.get(
       origin + '/api/store?kind=order&target=' + new URL(staff.url()).pathname.split('/').at(-1),
     );
-    expect((await details.json()).payment.status).toBe('VERIFIED');
+    expect((await details.json()).payment).toMatchObject({ method, status: 'VERIFIED' });
   }
   checks.push(
-    'Staff quote, client consent, bank verification before release and COD verification after delivery',
+    'Staff quote, client consent, three manual transfers verified before release and COD verified after delivery',
   );
   checkpoint = 'admin layout evidence';
   for (const [locale, width, theme] of [
@@ -497,9 +512,46 @@ update private.store_product_market_listings
     },
   });
   expect([403, 409]).toContain(paused.status());
-  expect(sql('select count(*) from private.store_orders')).toBe('2');
+  expect(sql('select count(*) from private.store_orders')).toBe('4');
   checks.push('Paused scope prevents new guest order; historical order preserved');
   await customerContext.close();
+  if (!externalServer) {
+    checkpoint = 'commercial administrator-only browser';
+    // Grant the extra role only to an existing synthetic staff fixture in the local stack.
+    sql(`insert into public.user_roles(organization_id,profile_id,role_id)
+      select '${ledger.organization}','${users[2].id}',id from public.roles where code='SUPER_ADMIN';`);
+    await stopBrowserServer(server, 3000);
+    server = undefined;
+    server = await startBrowserServer(
+      {
+        ...env,
+        NAQL365_TEST_ADMIN_ONLY: 'true',
+        NAQL365_ADMIN_RECOVERY_EMAIL: users[2].email,
+      },
+      3000,
+    );
+    const context = await browser.newContext();
+    try {
+      const page = await context.newPage();
+      for (const route of ['/en/register', '/ar/account', '/en/driver/login'])
+        expect((await page.goto(origin + route))?.status()).toBe(404);
+      await page.goto(origin + '/en/portal');
+      await expect(page).toHaveURL(origin + '/en/login');
+      await page.locator('[name=email]').fill(users[1].email);
+      await page.locator('[name=password]').fill(password);
+      await page.locator('.auth-form button[type=submit]').click();
+      await expect(page.locator('.auth-form [role=alert]')).toBeVisible();
+      await expect(page).toHaveURL(origin + '/en/login');
+      await login(page, users[2], 'en');
+      await expect(page).toHaveURL(origin + '/en/portal');
+      await checkStaffRecovery(browser, users[2].email, local.API_URL, origin);
+      checks.push(
+        'Commercial server blocks customer and driver routes, denies ordinary staff, and permits Super Admin login and PKCE recovery',
+      );
+    } finally {
+      await context.close();
+    }
+  }
 } catch (error) {
   diagnostics.snapshot();
   let screenshotSaved = false;
