@@ -5,6 +5,7 @@ import { customerDictionary } from '@/i18n/customer';
 import { customerPage } from '@/infrastructure/requests/page-access';
 import { StartRequest } from '@/components/requests/wizard';
 import { GuestStart } from '@/components/guest/access';
+import { commercialAdminOnly } from '@/infrastructure/config/deployment-env';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
@@ -20,9 +21,10 @@ export default async function Page({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const preselection = quickEntry.safeParse(await searchParams).data;
-  const signedIn = getPublicEnv()
-    ? (await (await createSupabaseServerClient()).auth.getUser()).data.user
-    : null;
+  const signedIn =
+    !commercialAdminOnly() && getPublicEnv()
+      ? (await (await createSupabaseServerClient()).auth.getUser()).data.user
+      : null;
   if (!signedIn)
     return (
       <GuestStart

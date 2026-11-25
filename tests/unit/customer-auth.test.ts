@@ -172,3 +172,53 @@ it('reports missing enrollment without exposing the provider response', async ()
     code: 'enrollment',
   });
 });
+
+it('rejects commercial registration and authenticates only active Super Admins', async () => {
+  vi.stubEnv('NAQL365_TEST_ADMIN_ONLY', 'true');
+  try {
+    const form = new FormData();
+    form.set('email', 'fixture@example.test');
+    form.set('password', 'synthetic');
+    expect(await customerAuth('ar', 'register', { status: 'idle' }, form)).toEqual({
+      status: 'error',
+    });
+    expect(mocks.signUp).not.toHaveBeenCalled();
+    mocks.signInWithPassword.mockResolvedValue({ error: null });
+    mocks.signOut.mockResolvedValue({ error: null });
+    mocks.rpc
+      .mockResolvedValueOnce({ data: false, error: null })
+      .mockResolvedValueOnce({ data: true, error: null });
+    expect(await customerAuth('ar', 'login', { status: 'idle' }, form)).toEqual({
+      status: 'error',
+      code: 'credentials',
+    });
+    expect(mocks.signOut).toHaveBeenCalledWith({ scope: 'local' });
+    expect(await customerAuth('ar', 'login', { status: 'idle' }, form)).toEqual({
+      status: 'signed_in',
+    });
+  } finally {
+    vi.unstubAllEnvs();
+  }
+});
+
+it('keeps commercial recovery neutral and sends only to the configured owner', async () => {
+  vi.stubEnv('NAQL365_TEST_ADMIN_ONLY', 'true');
+  vi.stubEnv('NAQL365_ADMIN_RECOVERY_EMAIL', 'owner@example.test');
+  try {
+    const form = new FormData();
+    form.set('email', 'fixture@example.test');
+    expect(await customerAuth('en', 'recover', { status: 'idle' }, form)).toEqual({
+      status: 'sent',
+    });
+    expect(mocks.resetPasswordForEmail).not.toHaveBeenCalled();
+    form.set('email', 'owner@example.test');
+    expect(await customerAuth('en', 'recover', { status: 'idle' }, form)).toEqual({
+      status: 'sent',
+    });
+    expect(mocks.resetPasswordForEmail).toHaveBeenCalledExactlyOnceWith('owner@example.test', {
+      redirectTo: 'https://staging.example/auth/callback?locale=en&next=/en/password',
+    });
+  } finally {
+    vi.unstubAllEnvs();
+  }
+});

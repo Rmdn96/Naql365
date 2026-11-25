@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { isLocale } from '@/i18n/config';
 import { assertSameOrigin } from '@/application/identity/smoke-auth';
+import { commercialAdminOnly } from '@/infrastructure/config/deployment-env';
 import { appUrl } from '@/infrastructure/config/server-env';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 export async function driverLogin(
@@ -11,7 +12,7 @@ export async function driverLogin(
   _previous: { error: boolean },
   form: FormData,
 ): Promise<{ error: boolean }> {
-  if (!isLocale(locale)) return { error: true };
+  if (!isLocale(locale) || commercialAdminOnly()) return { error: true };
   try {
     assertSameOrigin((await headers()).get('origin'), appUrl().origin);
     const credentials = z

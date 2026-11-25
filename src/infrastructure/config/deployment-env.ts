@@ -19,6 +19,10 @@ export function stagingAuthEnabled() {
   );
 }
 
+export function commercialAdminOnly() {
+  return deploymentEnvironment() === 'production' || process.env.NAQL365_TEST_ADMIN_ONLY === 'true';
+}
+
 export function preventIndexing() {
   return deploymentEnvironment() !== 'production';
 }

@@ -3806,6 +3806,8 @@ export type Database = {
         }
         Returns: Json
       }
+      commercial_admin_session: { Args: never; Returns: boolean }
+      commercial_api_session_gate: { Args: never; Returns: undefined }
       configure_bank_account: {
         Args: {
           p_details: Json

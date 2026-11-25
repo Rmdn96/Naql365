@@ -1,7 +1,7 @@
 'use client';
 import { PasswordField } from './password-field';
 import { customerExperience } from '@/i18n/customer-experience';
-import { useActionState, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Locale } from '@/i18n/config';
 import { customerDictionary } from '@/i18n/customer';
@@ -12,12 +12,17 @@ const initial: AuthState = { status: 'idle' };
 export function CustomerAuthForm({
   locale,
   mode,
+  adminOnly = false,
 }: {
   locale: Locale;
+  adminOnly?: boolean;
   mode: 'login' | 'register' | 'recover' | 'password';
 }) {
   const t = customerDictionary(locale);
   const [state, action, pending] = useActionState(customerAuth.bind(null, locale, mode), initial);
+  useEffect(() => {
+    if (state.status === 'signed_in') window.location.assign(`/${locale}/portal`);
+  }, [locale, state.status]);
   const [email, setEmail] = useState('');
   return (
     <>
@@ -72,7 +77,9 @@ export function CustomerAuthForm({
       </form>
       <nav className="customer-links" aria-label={t.account}>
         {mode !== 'login' && <Link href={`/${locale}/login`}>{t.login}</Link>}
-        {mode !== 'register' && <Link href={`/${locale}/register`}>{t.register}</Link>}
+        {!adminOnly && mode !== 'register' && (
+          <Link href={`/${locale}/register`}>{t.register}</Link>
+        )}
         {mode !== 'recover' && <Link href={`/${locale}/recover`}>{t.recover}</Link>}
       </nav>
       {mode === 'register' && (

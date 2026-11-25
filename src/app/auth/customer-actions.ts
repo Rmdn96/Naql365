@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { isLocale } from '@/i18n/config';
+import { commercialAdminOnly } from '@/infrastructure/config/deployment-env';
 import { appUrl } from '@/infrastructure/config/server-env';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { assertSameOrigin } from '@/application/identity/smoke-auth';
@@ -12,7 +13,11 @@ const credentials = z.strictObject({
   email: z.email().max(254),
   password: z.string().min(12).max(128),
 });
-export type AuthState = { status: 'idle' | 'sent' | 'error'; code?: string; fields?: string[] };
+export type AuthState = {
+  status: 'idle' | 'sent' | 'error' | 'signed_in';
+  code?: string;
+  fields?: string[];
+};
 export async function customerAuth(
   locale: string,
   mode: string,
@@ -21,11 +26,18 @@ export async function customerAuth(
 ): Promise<AuthState> {
   if (!isLocale(locale) || !['login', 'register', 'recover', 'password'].includes(mode))
     return { status: 'error' };
+  const adminOnly = commercialAdminOnly();
+  if (adminOnly && mode === 'register') return { status: 'error' };
   try {
     assertSameOrigin((await headers()).get('origin'), appUrl().origin);
     const client = await createSupabaseServerClient(true);
     if (mode === 'recover') {
       const email = z.email().max(254).parse(form.get('email'));
+      if (adminOnly) {
+        const ownerEmail = process.env.NAQL365_ADMIN_RECOVERY_EMAIL?.trim().toLowerCase();
+        if (!ownerEmail) console.warn('AUTH_RECOVERY_REQUEST_FAILED', 'admin_email_unconfigured');
+        if (email.toLowerCase() !== ownerEmail) return { status: 'sent' };
+      }
       const redirectTo = new URL(
         `/auth/callback?locale=${locale}&next=/${locale}/password`,
         appUrl(),
@@ -57,6 +69,10 @@ export async function customerAuth(
       const password = credentials.shape.password.parse(form.get('password'));
       const { data, error } = await client.auth.getUser();
       if (error || !data.user) return { status: 'error' };
+      if (adminOnly) {
+        const role = await client.rpc('commercial_admin_session');
+        if (role.error || role.data !== true) return { status: 'error' };
+      }
       const changed = await client.auth.updateUser({ password });
       if (changed.error) return { status: 'error' };
       const signedOut = await client.auth.signOut({ scope: 'global' });
@@ -93,6 +109,14 @@ export async function customerAuth(
                 ? 'confirmation'
                 : 'server',
         };
+      if (adminOnly) {
+        const role = await client.rpc('commercial_admin_session');
+        if (role.error || role.data !== true) {
+          await client.auth.signOut({ scope: 'local' });
+          return { status: 'error', code: role.error ? 'server' : 'credentials' };
+        }
+        return { status: 'signed_in' };
+      }
     }
   } catch (error) {
     return { status: 'error', code: error instanceof z.ZodError ? 'validation' : 'server' };
@@ -104,7 +128,7 @@ export async function customerProfile(
   _previous: AuthState,
   form: FormData,
 ): Promise<AuthState> {
-  if (!isLocale(locale)) return { status: 'error' };
+  if (!isLocale(locale) || commercialAdminOnly()) return { status: 'error' };
   try {
     assertSameOrigin((await headers()).get('origin'), appUrl().origin);
     const parsed = profileInput.safeParse({

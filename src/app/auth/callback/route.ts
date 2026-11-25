@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
+import { commercialAdminOnly } from '@/infrastructure/config/deployment-env';
 import { appUrl } from '@/infrastructure/config/server-env';
 
 export async function GET(request: NextRequest) {
@@ -19,12 +20,18 @@ export async function GET(request: NextRequest) {
     !!tokenHash &&
     tokenHash.length <= 2048;
   const pkce = !params.has('token_hash') && !!code && code.length <= 2048;
-  if ((invite || pkce) && getPublicEnv()) {
+  const adminOnly = commercialAdminOnly();
+  const passwordPath = `/${locale}/password`;
+  if (
+    (adminOnly ? pkce && params.get('next') === passwordPath : invite || pkce) &&
+    getPublicEnv()
+  ) {
     const client = await createSupabaseServerClient(true);
     const { error } = invite
       ? await client.auth.verifyOtp({ token_hash: tokenHash!, type: 'invite' })
       : await client.auth.exchangeCodeForSession(code!);
-    if (!error) {
+    const role = !error && adminOnly ? await client.rpc('commercial_admin_session') : null;
+    if (!error && (!adminOnly || role?.data === true)) {
       const response = NextResponse.redirect(
         new URL(
           invite || params.get('next') === `/${locale}/password`
@@ -37,6 +44,7 @@ export async function GET(request: NextRequest) {
       response.headers.set('Referrer-Policy', 'no-referrer');
       return response;
     }
+    if (adminOnly && !error) await client.auth.signOut({ scope: 'local' });
   }
   const response = NextResponse.redirect(
     new URL(`/${locale}/login?notice=confirmation-link`, origin),

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+import { commercialAdminOnly } from '@/infrastructure/config/deployment-env';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { isLocale } from '@/i18n/config';
 import { legalKind, legalContent } from '@/domain/legal/content';
@@ -8,6 +9,14 @@ export async function proxy(request: NextRequest) {
   if (request.nextUrl.pathname === '/') return NextResponse.redirect(new URL('/ar', request.url));
   const locale = request.nextUrl.pathname.split('/')[1] ?? '';
   if (!isLocale(locale)) return NextResponse.next();
+  const adminOnly = commercialAdminOnly();
+  const area = request.nextUrl.pathname.split('/')[2] ?? '';
+  if (adminOnly && ['register', 'account', 'driver'].includes(area)) {
+    return new NextResponse(null, {
+      status: 404,
+      headers: { 'Cache-Control': 'private, no-store' },
+    });
+  }
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   const env = getPublicEnv();
   const csp = [
@@ -41,7 +50,11 @@ export async function proxy(request: NextRequest) {
         },
       },
     });
-    await client.auth.getClaims();
+    const identity = await client.auth.getClaims();
+    if (adminOnly && identity.data?.claims.sub) {
+      const role = await client.rpc('commercial_admin_session');
+      if (role.data !== true) await client.auth.signOut({ scope: 'local' });
+    }
   }
   response.headers.set('Content-Security-Policy', csp);
   response.headers.set('Cache-Control', 'private, no-store');

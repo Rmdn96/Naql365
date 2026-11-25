@@ -1,4 +1,5 @@
 import 'server-only';
+import { commercialAdminOnly } from '@/infrastructure/config/deployment-env';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 
 /** Navigation only; destination pages still enforce their own authorization. */
@@ -15,6 +16,10 @@ async function resolveLoginDestination() {
   const client = await createSupabaseServerClient();
   const identity = await client.auth.getUser();
   if (identity.error || !identity.data.user) return 'unauthenticated';
+  if (commercialAdminOnly()) {
+    const role = await client.rpc('commercial_admin_session');
+    return role.error ? 'server' : role.data ? 'portal' : 'membership';
+  }
   const memberships = await client
     .from('organization_memberships')
     .select('organization_id,member_type,status')

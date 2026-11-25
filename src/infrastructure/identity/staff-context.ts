@@ -2,6 +2,7 @@ import 'server-only';
 import { cache } from 'react';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
+import { commercialAdminOnly } from '@/infrastructure/config/deployment-env';
 import { portalAccess } from './access';
 import { AppError } from '@/domain/shared/errors';
 // Request-scoped only. Ambiguous organizations never combine module grants.
@@ -10,6 +11,10 @@ export const staffContext = cache(async () => {
   const client = await createSupabaseServerClient();
   const identity = await client.auth.getUser();
   if (identity.error || !identity.data.user) return { status: 'unauthenticated' } as const;
+  if (commercialAdminOnly()) {
+    const role = await client.rpc('commercial_admin_session');
+    if (role.error || role.data !== true) return { status: 'forbidden' } as const;
+  }
   const memberships = await client
     .from('organization_memberships')
     .select('organization_id,member_type')
