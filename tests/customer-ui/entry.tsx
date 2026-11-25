@@ -42,7 +42,13 @@ let body: ReactNode;
 const params = Promise.resolve({ locale, id: f.detail.request.id });
 if (view === 'dashboard' || view === 'profile') {
   const { CustomerAccount } = await import('@/components/requests/account');
-  body = await resolveServer(await CustomerAccount({ locale, saved: false }));
+  body = await resolveServer(
+    await CustomerAccount({
+      locale,
+      saved: false,
+      view: view === 'profile' && query.get('phase') === 'after' ? 'edit' : 'home',
+    }),
+  );
 } else if (view === 'store-history' || view === 'store-detail') {
   const { default: Page } = await import('@/app/[locale]/store/[[...path]]/page');
   body = await resolveServer(
