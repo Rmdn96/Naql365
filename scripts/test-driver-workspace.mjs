@@ -2,7 +2,7 @@ import { localSupabase } from './local-supabase.mjs';
 import { startBrowserServer, stopBrowserServer } from './browser-server.mjs';
 import { execFileSync } from 'node:child_process';
 import { randomUUID, randomBytes } from 'node:crypto';
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -117,11 +117,16 @@ async function capture(label, locale) {
   save();
 }
 try {
+  const migrations = readdirSync('supabase/migrations')
+    .filter((file) => file.endsWith('.sql'))
+    .map((file) => file.split('_')[0])
+    .sort();
   if (
     !sql('show server_version;').startsWith('17.') ||
-    sql('select count(*) from supabase_migrations.schema_migrations;') !== '52'
+    sql('select version from supabase_migrations.schema_migrations order by version;') !==
+      migrations.join('\n')
   )
-    throw Error('LOCAL_SCHEMA_52_REQUIRED');
+    throw Error('LOCAL_SCHEMA_MIGRATIONS_REQUIRED');
   checkpoint = 'build';
   execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
     env,

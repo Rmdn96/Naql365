@@ -81,7 +81,6 @@ for (const key of Object.keys(env))
   if (key.startsWith('VERCEL') || /^SUPABASE_.*(TOKEN|PASSWORD|SERVICE|SECRET)/.test(key))
     delete env[key];
 const tables = [
-  'guest_rate_budgets',
   'store_supplier_reference_prices',
   'store_product_media',
   'store_purchase_events',
@@ -524,7 +523,7 @@ try {
       if (removed.error) throw Error('Local product-media cleanup failed');
     }
     sql(
-      `begin;truncate ${tables.map((t) => 'private.' + t).join(',')};delete from public.bank_accounts where organization_id='${organization}';delete from public.customers where organization_id in ('${organization}','91000000-0000-4000-8000-000000000002');delete from public.user_roles where profile_id in (${users.map((u) => "'" + u.id + "'").join(',')});delete from public.role_permissions where role_id='94000000-0000-4000-8000-000000000001';delete from public.roles where id='94000000-0000-4000-8000-000000000001';delete from public.organization_memberships where profile_id in (${users.map((u) => "'" + u.id + "'").join(',')});delete from public.markets where organization_id='${organization}';delete from public.audit_logs where organization_id in ('${organization}','91000000-0000-4000-8000-000000000002');delete from public.organizations where id in ('${organization}','91000000-0000-4000-8000-000000000002');drop function public.store_purchase_error(text,text,text);drop function public.store_purchase_assert(boolean,text);drop table public.store_purchase_test_results;commit;`,
+      `begin;truncate ${tables.map((t) => 'private.' + t).join(',')};delete from private.guest_rate_budgets where organization_id='${organization}';delete from public.bank_accounts where organization_id='${organization}';delete from public.customers where organization_id in ('${organization}','91000000-0000-4000-8000-000000000002');delete from public.user_roles where profile_id in (${users.map((u) => "'" + u.id + "'").join(',')});delete from public.role_permissions where role_id='94000000-0000-4000-8000-000000000001';delete from public.roles where id='94000000-0000-4000-8000-000000000001';delete from public.organization_memberships where profile_id in (${users.map((u) => "'" + u.id + "'").join(',')});delete from public.markets where organization_id='${organization}';delete from public.audit_logs where organization_id in ('${organization}','91000000-0000-4000-8000-000000000002');delete from public.organizations where id in ('${organization}','91000000-0000-4000-8000-000000000002');drop function public.store_purchase_error(text,text,text);drop function public.store_purchase_assert(boolean,text);drop table public.store_purchase_test_results;commit;`,
     );
   }
   for (const u of users) {

@@ -505,17 +505,17 @@ try {
   await expect(page.locator('.store-product img')).toHaveCount(1);
   await expect(page.locator('.store-product img')).toHaveAttribute('alt', 'Second synthetic view');
   await page.goto(origin + '/en/store/products/new-synthetic-product-31');
-  await expect(page.locator('.cm-product-detail img')).toHaveCount(2);
+  await expect(page.locator('.cm-gallery .cm-thumbs button')).toHaveCount(2);
   await expect
     .poll(() =>
       page
-        .locator('.cm-product-detail img')
+        .locator('.cm-gallery img')
         .evaluateAll((images) => images.every((image) => image.complete && image.naturalWidth > 0)),
     )
     .toBe(true);
   await capture(page, 'en', 1280, 'light', 'product-detail-images');
   await page.goto(origin + '/ar/store/products/new-synthetic-product-31');
-  await expect(page.locator('.cm-product-detail img').first()).toHaveAttribute(
+  await expect(page.locator('.cm-gallery img').first()).toHaveAttribute(
     'alt',
     'زاوية ثانية تجريبية',
   );

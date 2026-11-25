@@ -211,9 +211,9 @@ try {
         await nav.locator('a[href="' + root + '/settings"]').click();
         await expect(page).toHaveURL(origin + root + '/settings');
         const settings = page.locator('.staff-workspace-content');
-        for (const module of ['operations', 'finance', 'finance/banks', 'support']) {
-          const link = settings.locator('a[href="' + root + '/' + module + '"]');
-          await expect(link).toHaveCount(allowed.includes(module) ? 1 : 0);
+        for (const section of ['operations', 'finance', 'finance/banks', 'support']) {
+          const link = settings.locator('a[href="' + root + '/' + section + '"]');
+          await expect(link).toHaveCount(allowed.includes(section) ? 1 : 0);
         }
         await page.goto(origin + root);
         for (const width of [360, 390, 768, 1280, 1440]) {
