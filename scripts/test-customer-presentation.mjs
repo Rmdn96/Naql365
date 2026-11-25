@@ -237,7 +237,10 @@ try {
               : page.locator(phase === 'before' ? 'h1,h2' : 'h1').first();
             await expect(heading).toBeVisible();
             expect(errors).toEqual([]);
-            if (view === 'profile') await page.locator('.profile-settings summary').click();
+            if (view === 'profile') {
+              if (phase === 'before') await page.locator('.profile-settings summary').click();
+              await expect(page.locator('.profile-form')).toBeVisible();
+            }
             for (const width of view === 'dashboard'
               ? [360, 390, 768, 1280, 1440]
               : [theme === 'dark' ? 390 : 1440]) {
@@ -305,7 +308,7 @@ try {
             evidence.quoteStates.push({ locale, status, pass: true });
           }
           await page.goto(`${origin}/?phase=after&locale=${locale}&theme=light&view=profile`);
-          await page.locator('.profile-settings summary').click();
+          await expect(page.locator('.profile-form')).toBeVisible();
           await page.locator('input[name=phone]').fill('invalid-test');
           await page.locator('.profile-form button').click();
           await expect(page.locator('input[name=phone]')).toHaveAttribute('aria-invalid', 'true');

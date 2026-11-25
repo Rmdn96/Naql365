@@ -208,3 +208,10 @@
     max-width: 6rem;
   }
 }
+
+.launch-store .launch-product-placeholder {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 2.4;
+  background: var(--theme-surface-muted);
+}

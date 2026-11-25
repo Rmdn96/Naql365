@@ -9,7 +9,11 @@ export async function checkGuestStorefront({ page, origin, capture, product, che
       await page.setViewportSize({ width, height: 900 });
       await page.goto(origin + '/' + locale);
       await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr');
-      await expect(page.locator('.store-product').first()).toBeVisible();
+      const image = page.locator('.store-product img').first();
+      await expect(image).toBeVisible();
+      await expect
+        .poll(() => image.evaluate((img) => img.complete && img.naturalWidth > 0))
+        .toBe(true);
       await capture(page, locale, width, 'light', 'commerce-home');
     }
   }

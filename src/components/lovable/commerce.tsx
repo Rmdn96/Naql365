@@ -147,7 +147,13 @@ export function SourceCommerce({
               const href = destination('product', locale, p.slug);
               return (
                 <article className="cm-product store-product" key={p.id}>
-                  <Link href={href} className="cm-product-photo" aria-label={p.name[locale]}>
+                  <Link
+                    href={href}
+                    className={
+                      p.image ? 'cm-product-photo' : 'cm-product-photo launch-product-placeholder'
+                    }
+                    aria-label={p.name[locale]}
+                  >
                     {p.image ? (
                       <SourceImage
                         src={p.image}

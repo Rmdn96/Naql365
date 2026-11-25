@@ -247,7 +247,15 @@ try {
     );
   fixture = fixture.replace("array['SYNTHETIC-REGION']", "array['CAIRO', 'GIZA']");
   fixture = fixture.replace("case n when 1 then 'VODAFONE_CASH'", "case n when 1 then 'BANK'");
-  sql(fixture + '\ncommit;');
+  sql(
+    fixture +
+      `
+update private.store_product_market_listings
+    set approved_media='[{"src":"/store-assets/packing-carton-test-v1.png","altAr":"صندوق تغليف تجريبي","altEn":"Synthetic packing carton"}]',
+        revision=revision+1
+    where id='98000000-0000-4000-8000-000000000003';
+    commit;`,
+  );
   seeded = true;
   save();
   // Diagnose fixture authority before crossing the HTTP/application boundary.
