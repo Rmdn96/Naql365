@@ -198,17 +198,24 @@ try {
         await page.goto(origin + '/' + (locale === 'ar' ? 'en' : 'ar') + '/portal');
         await expect(page.locator('#staff-market')).toContainText('🇪🇬');
         await page.goto(origin + '/' + locale + '/portal');
-        for (const workspaceModule of [
-          'quotes',
-          'operations',
-          'finance',
-          'finance/banks',
-          'support',
-        ]) {
-          const entry = nav.locator(`a[href="/${locale}/portal/${workspaceModule}"]`);
-          if (allowed.includes(workspaceModule)) await expect(entry).toHaveCount(1);
-          else await expect(entry).toHaveCount(0);
+        const root = '/' + locale + '/portal';
+        const orderPath = allowed.includes('quotes')
+          ? 'quotes'
+          : allowed.includes('operations')
+            ? 'operations'
+            : null;
+        await expect(nav.locator('a')).toHaveCount(orderPath ? 3 : 2);
+        await expect(nav.locator('a[href="' + root + '"]')).toHaveCount(1);
+        if (orderPath)
+          await expect(nav.locator('a[href="' + root + '/' + orderPath + '"]')).toHaveCount(1);
+        await nav.locator('a[href="' + root + '/settings"]').click();
+        await expect(page).toHaveURL(origin + root + '/settings');
+        const settings = page.locator('.staff-workspace-content');
+        for (const module of ['operations', 'finance', 'finance/banks', 'support']) {
+          const link = settings.locator('a[href="' + root + '/' + module + '"]');
+          await expect(link).toHaveCount(allowed.includes(module) ? 1 : 0);
         }
+        await page.goto(origin + root);
         for (const width of [360, 390, 768, 1280, 1440]) {
           checkpoint = role + ' ' + locale + ' responsive ' + width;
           await page.setViewportSize({ width, height: 900 });
