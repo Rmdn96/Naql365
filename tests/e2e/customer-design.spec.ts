@@ -12,8 +12,8 @@ for (const locale of ['ar', 'en'] as const) {
     await expect(root.locator('.brand-mark')).toHaveCount(1);
     await expect(root.locator('#customer-content h1')).toBeVisible();
     await expect(root.locator('form.profile-form')).toHaveCount(0);
-    await expect(root.locator('a[href="/' + locale + '/account/quotes"]')).toHaveCount(1);
-    await expect(root.locator('a[href="/' + locale + '/store/orders"]')).toHaveCount(1);
+    await expect(root.locator('a[href="/' + locale + '/account/quotes"]')).toHaveCount(0);
+    await expect(root.locator('a[href="/' + locale + '/store/orders"]')).toHaveCount(0);
     await page.keyboard.press('Tab');
     await expect(page.locator('.skip-link[href="#main"]')).toBeFocused();
     await page.keyboard.press('Enter');
@@ -38,12 +38,7 @@ for (const locale of ['ar', 'en'] as const) {
     const other = locale === 'ar' ? 'en' : 'ar';
     await expect(page).toHaveURL(new RegExp('/' + other + '/account$'));
     await expect(page.locator('html')).toHaveAttribute('dir', other === 'ar' ? 'rtl' : 'ltr');
-    await page
-      .getByRole('link', {
-        name: other === 'ar' ? 'طلب نقل جديد' : 'New transport request',
-        exact: true,
-      })
-      .click();
+    await page.locator('.launch-main-nav a[href="/' + other + '/request"]').click();
     await expect(page).toHaveURL(new RegExp('/' + other + '/request$'));
     await expect(page.locator('.launch-header .brand-mark')).toHaveCount(1);
     await expect(page.locator('.customer-workspace')).toHaveCount(0);

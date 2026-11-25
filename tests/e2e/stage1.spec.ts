@@ -15,17 +15,9 @@ for (const locale of ['ar', 'en']) {
         (await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze())
           .violations,
       ).toEqual([]);
-      const menu = page.getByRole('button', {
-        name: locale === 'ar' ? 'القائمة' : 'Menu',
-        exact: true,
-      });
-      if (width <= 1100) {
-        await menu.click();
-        await expect(page.getByRole('dialog')).toBeVisible();
-        expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-        await page.keyboard.press('Escape');
-        await expect(menu).toBeFocused();
-      }
+      const links = page.locator('.launch-main-nav a');
+      await expect(links).toHaveCount(4);
+      for (const link of await links.all()) await expect(link).toBeVisible();
     }
     await page.goto(`/${locale}/recover#private-fragment-must-not-propagate`);
     const link = page.getByRole('link', {

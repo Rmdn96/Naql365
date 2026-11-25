@@ -3,8 +3,9 @@ import AxeBuilder from '@axe-core/playwright';
 for (const locale of ['ar', 'en']) {
   test('paused storefront, legacy links and cart · ' + locale, async ({ page }) => {
     await page.goto('/' + locale + '/store/categories?search=boxes');
-    expect(new URL(page.url()).pathname).toBe('/' + locale);
-    expect(new URL(page.url()).searchParams.get('search')).toBe('boxes');
+    await expect(page).toHaveURL(
+      (url) => url.pathname === '/' + locale && url.searchParams.get('search') === 'boxes',
+    );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       locale === 'ar' ? 'متجر نقل 365' : 'Naql365 Store',
     );

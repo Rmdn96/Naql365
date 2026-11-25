@@ -215,3 +215,14 @@
   aspect-ratio: 2.4;
   background: var(--theme-surface-muted);
 }
+
+.launch-main-nav a,
+.launch-footer nav a {
+  color: var(--theme-text-primary);
+}
+.launch-header-tools a,
+.launch-store a:not(.cm-product-photo),
+.launch-product-detail a,
+.launch-cart a {
+  color: var(--theme-accent);
+}
