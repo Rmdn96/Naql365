@@ -47,6 +47,7 @@ insert into private.store_checkout_contracts(id,organization_id,market_id,curren
 insert into public.bank_accounts(id,organization_id,market_id,currency,bank_name_ar,bank_name_en,beneficiary_ar,beneficiary_en,account_number,destination_type,is_primary,created_by)
  select ('99000000-0000-4000-8000-'||lpad((n+1)::text,12,'0'))::uuid,'91000000-0000-4000-8000-000000000001','95000000-0000-4000-8000-000000000001','EGP','اختبار','SYNTHETIC','اختبار','SYNTHETIC','TEST-ONLY-0000',case n when 1 then 'VODAFONE_CASH' else 'INSTAPAY' end,false,'92000000-0000-4000-8000-000000000002' from generate_series(1,2) n;
 -- FIXTURE END. Independent connection harness reuses only the above setup.
+-- HISTORICAL ORDERS.
 -- Three already-placed orders from before the guest checkout cutover. They remain
 -- readable, fulfillable, refundable and reconcilable under the new commands.
 do $$ declare n int; c private.store_checkout_contracts; cart uuid; oid uuid; method text; b public.bank_accounts; begin
@@ -68,6 +69,7 @@ do $$ declare n int; c private.store_checkout_contracts; cart uuid; oid uuid; me
     b.id,case when b.id is not null then jsonb_build_object('channel',method,'accountNumber',b.account_number) end,case when n=1 then 'CASH_DUE' else 'PENDING' end);
  end loop;
 end $$;
+-- HISTORICAL END.
 set local role authenticated;
 select set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000001',true);
 select public.store_purchase_assert(public.store_shop_v1('EG')->>'status'='AVAILABLE','approved catalog available');

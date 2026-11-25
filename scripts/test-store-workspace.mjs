@@ -543,7 +543,7 @@ try {
   );
   const id = sql(`begin;
     ${legacy}
-    set local "request.jwt.claim.sub" = '${users[0]}';
+    set local "request.jwt.claim.sub" = '${users[0].id}';
     select pg_temp.prelaunch_checkout('EG','cart',gen_random_uuid(),0,null,
       jsonb_build_object('items',jsonb_build_array(jsonb_build_object('listingId',id,'revision',revision,'quantity',1))))
       from private.store_product_market_listings where id='${newListing.id}' \\gset

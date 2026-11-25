@@ -9,12 +9,6 @@ const customer = '92000000-0000-4000-8000-000000000001';
 const staff = '92000000-0000-4000-8000-000000000002';
 const listing = '98000000-0000-4000-8000-000000000003';
 const contract = '99000000-0000-4000-8000-000000000001';
-const address = {
-  name: 'SYNTHETIC',
-  phone: 'SYNTHETIC',
-  region: 'SYNTHETIC-REGION',
-  line: 'Synthetic only',
-};
 async function actor(id: string) {
   await db.exec(
     `reset role;set role authenticated;select set_config('request.jwt.claim.sub','${id}',false)`,
@@ -34,22 +28,26 @@ async function command(
     )
   ).rows[0]!.r;
 }
-async function cart() {
-  await actor(customer);
-  const state = (
-    await db.query<{ r: { revision: number } }>(
-      "select public.store_purchase_read_v1('EG','cart') r",
-    )
-  ).rows[0]!.r;
-  return command('cart', state.revision, null, {
-    items: [{ listingId: listing, revision: 2, quantity: 1 }],
-  });
+async function guestOrder(overrides: Record<string, unknown> = {}) {
+  return db.query('select public.store_guest_checkout_v1($1,$2)', [
+    randomUUID(),
+    JSON.stringify({
+      full_name: 'Synthetic Guest',
+      phone: '01012345678',
+      governorate: 'CAIRO',
+      area: 'Synthetic area',
+      address: 'Synthetic street',
+      payment_method: 'CASH',
+      items: [{ listing_id: listing, quantity: 1, unit_price: 10 }],
+      ...overrides,
+    }),
+  ]);
 }
 beforeAll(async () => {
   db = await foundationDatabase();
   await db.exec(
     readFileSync('supabase/tests/store_purchase.test.sql', 'utf8').split('-- FIXTURE END.')[0]! +
-      '\ncommit;',
+      "\nupdate private.store_checkout_contracts set regions=array['CAIRO','GIZA'];\ncommit;",
   );
 });
 afterAll(async () => {
@@ -78,51 +76,25 @@ it('denies other tenant, Driver, unauthenticated identity, suspended membership 
   await expect(command('cart', 0, null, { items: [] })).rejects.toMatchObject({ code: '42501' });
   await db.exec('rollback');
 });
-it('rejects unapproved delivery, missing contract, stale contract and unsupported payment channel', async () => {
-  const c = await cart(),
-    revision = Number(c.revision);
-  for (const payload of [
-    {
-      contractId: contract,
-      contractRevision: 1,
-      address: { ...address, region: 'UNAPPROVED' },
-      method: 'CASH',
-    },
-    { contractId: randomUUID(), contractRevision: 1, address, method: 'CASH' },
-    { contractId: contract, contractRevision: 9, address, method: 'CASH' },
-    { contractId: contract, contractRevision: 1, address, method: 'BANK' },
-    {
-      contractId: contract,
-      contractRevision: 1,
-      address,
-      method: 'VODAFONE_CASH',
-      destinationId: '99000000-0000-4000-8000-000000000003',
-    },
-  ])
-    await expect(command('checkout', revision, null, payload)).rejects.toMatchObject({
-      code: 'PT409',
-    });
+it('rejects unsupported delivery and payment channels at guest intake', async () => {
+  await db.exec('reset role;set role anon');
+  await expect(guestOrder({ governorate: 'ALEXANDRIA' })).rejects.toMatchObject({ code: '22023' });
+  await expect(guestOrder({ payment_method: 'VODAFONE_CASH' })).rejects.toMatchObject({
+    code: '22023',
+  });
+  await expect(guestOrder({ payment_method: 'BANK_TRANSFER' })).rejects.toMatchObject({
+    code: 'PT409',
+  });
 });
-it('rejects stale listing, suspended product, revoked price, paused scope and revoked commercial authority at checkout', async () => {
-  const c = await cart();
-  const mutations = [
-    `update private.store_product_market_listings set revision=revision+1 where id='${listing}'`,
+it('rejects suspended products, revoked prices, paused scope and revoked contracts', async () => {
+  for (const update of [
     "update private.store_products set status='SUSPENDED',revision=revision+1",
     "update private.store_market_prices set status='REVOKED',revision=revision+1",
     "update private.store_policy_versions set scope_paused=true,revision=revision+1 where kind='STOREFRONT_SCOPE'",
-    `update private.store_checkout_contracts set status='REVOKED' where id='${contract}'`,
-  ];
-  for (const sql of mutations) {
-    await db.exec('reset role;begin;' + sql);
-    await actor(customer);
-    await expect(
-      command('checkout', Number(c.revision), null, {
-        contractId: contract,
-        contractRevision: 1,
-        address,
-        method: 'CASH',
-      }),
-    ).rejects.toMatchObject({ code: 'PT409' });
+    "update private.store_checkout_contracts set status='REVOKED' where id='" + contract + "'",
+  ]) {
+    await db.exec('reset role;begin;' + update + ';set local role anon');
+    await expect(guestOrder()).rejects.toMatchObject({ code: 'PT409' });
     await db.exec('rollback');
   }
 });

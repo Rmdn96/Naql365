@@ -9,6 +9,9 @@ vi.mock('@/infrastructure/identity/staff-context', () => ({
   staffAccess: m.access,
   staffModules: async () => ({ context: { status: 'authorized' }, finance: true }),
 }));
+vi.mock('@/infrastructure/store/access', () => ({
+  storeStaffModules: async () => ({ orders: false }),
+}));
 vi.mock('@/infrastructure/markets/public', () => ({
   selectedPublicCountry: async () => m.country,
 }));

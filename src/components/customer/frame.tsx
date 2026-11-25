@@ -8,7 +8,7 @@ import { CustomerWorkspaceNav } from '@/components/ui/customer-workspace';
 import { isCustomerPath } from './paths';
 
 /** Original CustomerPreview shell, with real links/preferences instead of lab view state. */
-export function CustomerFrame({ locale, children }: { locale: Locale; children: ReactNode }) {
+export function CustomerFrame({ locale, children }: { locale: Locale; children?: ReactNode }) {
   const path = usePathname();
   if (!isCustomerPath(path)) return children;
   const ar = locale === 'ar';

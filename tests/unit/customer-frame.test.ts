@@ -29,15 +29,7 @@ for (const locale of ['ar', 'en'] as const) {
   test(`${locale} Customer shell keeps the official brand, canonical links and independent domain histories`, () => {
     state.path = `/${locale}/account/quotes/test`;
     const html = renderToStaticMarkup(
-      createElement(
-        CustomerFrame,
-        {
-          locale,
-          country: 'EG',
-          themeMode: 'dark',
-        } as Parameters<typeof CustomerFrame>[0],
-        createElement('p', null, 'Authorized child'),
-      ),
+      createElement(CustomerFrame, { locale }, createElement('p', null, 'Authorized child')),
     );
     expect(html).toContain('data-design-family="customer"');
     expect(html.match(/class="brand-mark"/g)).toHaveLength(1);
@@ -48,37 +40,21 @@ for (const locale of ['ar', 'en'] as const) {
     expect(html).toContain('Authorized child');
     expect(html).not.toMatch(/\/portal|\/driver|role=SUPER_ADMIN|token=/);
     expect(renderToStaticMarkup(createElement(PublicChrome, null, 'shared'))).toBe('shared');
-    expect(
-      renderToStaticMarkup(createElement(TransportFrame, { children: 'retained' }, 'retained')),
-    ).toBe('retained');
+    expect(renderToStaticMarkup(createElement(TransportFrame, {}, 'retained'))).toBe('retained');
   });
 }
 test('Accepted Public/Auth/Store presentation passes through without another shell', () => {
   for (const path of ['/ar', '/en/login', '/ar/store/orders', '/en/guest']) {
     state.path = path;
-    expect(
-      renderToStaticMarkup(
-        createElement(
-          CustomerFrame,
-          {
-            locale: 'en',
-            country: 'EG',
-            themeMode: 'system',
-          } as Parameters<typeof CustomerFrame>[0],
-          'accepted',
-        ),
-      ),
-    ).toBe('accepted');
+    expect(renderToStaticMarkup(createElement(CustomerFrame, { locale: 'en' }, 'accepted'))).toBe(
+      'accepted',
+    );
   }
 });
 test('Tracking detail has no invented history route or misleading current Overview link', () => {
   state.path = '/en/account/orders/10000000-0000-4000-8000-000000000001';
   const html = renderToStaticMarkup(
-    createElement(
-      CustomerFrame,
-      { locale: 'en', country: 'EG', themeMode: 'light' } as Parameters<typeof CustomerFrame>[0],
-      'Authorized tracking',
-    ),
+    createElement(CustomerFrame, { locale: 'en' }, 'Authorized tracking'),
   );
   const current = html.match(/<a\b[^>]*aria-current="page"[^>]*>/)?.[0];
   expect(current).toContain('href="/en/account/requests"');
