@@ -7,6 +7,12 @@ import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { checkStaffRecovery } from './staff-recovery-browser.mjs';
 import { checkGuestStorefront } from './commerce-launch-browser.mjs';
+import {
+  capturePolishStorefront,
+  capturePolishView,
+  comparePolishPerformance,
+  seedPolishCatalog,
+} from './commerce-polish-browser.mjs';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { createCatalogEvidence } from './catalog-evidence.mjs';
@@ -183,7 +189,7 @@ try {
     await assertBrowserPortFree(3000);
     checkpoint = 'build';
     console.log('CHECKPOINT ' + checkpoint);
-    execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
+    execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build', '--webpack'], {
       env: { ...env, NAQL365_CATALOG_PHASE: 'build' },
       stdio: ['ignore', 'pipe', 'pipe'],
       timeout: 240000,
@@ -428,6 +434,19 @@ update private.store_product_market_listings
   checks.push(
     'Staff quote, client consent, bank verification before release and COD verification after delivery',
   );
+  checkpoint = 'admin layout evidence';
+  for (const [locale, width, theme] of [
+    ['ar', 390, 'light'],
+    ['en', 1440, 'dark'],
+  ]) {
+    await capturePolishView(staff, origin, output, {
+      route: '/' + locale + '/portal/store/orders',
+      width,
+      theme,
+      file: locale + '-' + width + '-' + theme + '-admin-orders',
+    });
+    await expect(staff.getByText(reference, { exact: false }).first()).toBeVisible();
+  }
   await staffContext.close();
   await checkStaffRecovery(browser, users[1].email, local.API_URL, origin);
   checks.push(
@@ -438,6 +457,18 @@ update private.store_product_market_listings
   );
   await page.goto(origin + '/en/request');
   await expect(page).toHaveURL(/\/en\/request/);
+  checkpoint = 'multi-product UI polish evidence';
+  seedPolishCatalog(sql);
+  const visualContext = await browser.newContext();
+  try {
+    await capturePolishStorefront(await visualContext.newPage(), origin, output, capture, checks);
+  } finally {
+    await visualContext.close();
+  }
+  if (!externalServer && process.env.GITHUB_ACTIONS === 'true') {
+    checkpoint = 'paired storefront performance';
+    await comparePolishPerformance(browser, origin, output, env);
+  }
   sql(
     "update private.store_policy_versions set scope_paused=true,revision=revision+1 where kind='STOREFRONT_SCOPE' and organization_id='" +
       ledger.organization +

@@ -50,10 +50,12 @@ export async function startBrowserServer(
   port,
   command = ['scripts/guarded-next.mjs', 'start', '--hostname', '127.0.0.1', '-p', String(port)],
   onCatalogTrace,
+  cwd,
 ) {
   await assertBrowserPortFree(port);
   const server = spawn(process.execPath, command, {
     env,
+    cwd,
     stdio: onCatalogTrace ? ['ignore', 'pipe', 'pipe'] : 'ignore',
     windowsHide: true,
     detached: process.platform !== 'win32',

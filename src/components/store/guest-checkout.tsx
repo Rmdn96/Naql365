@@ -132,63 +132,68 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
               <Link href={'/' + locale}>{ar ? 'تصفح المنتجات' : 'Browse products'}</Link>
             </p>
           ) : (
-            <>
-              <div className="launch-lines">
-                {lines.map((line) => (
-                  <article className="store-line" key={line.id}>
-                    <Link href={'/' + locale + '/store/products/' + encodeURIComponent(line.slug)}>
-                      {line.name[locale]}
-                    </Link>
-                    <span>{storeMoney(line.unitMinor, locale)}</span>
-                    <label>
-                      {ar ? 'الكمية' : 'Quantity'}{' '}
-                      <input
-                        type="number"
-                        min="1"
-                        max="99"
-                        value={line.quantity}
+            <div className="launch-checkout-layout">
+              <section className="launch-order-summary">
+                <h2>{ar ? 'المنتجات' : 'Products'}</h2>
+                <div className="launch-lines">
+                  {lines.map((line) => (
+                    <article className="store-line" key={line.id}>
+                      <Link
+                        href={'/' + locale + '/store/products/' + encodeURIComponent(line.slug)}
+                      >
+                        {line.name[locale]}
+                      </Link>
+                      <span>{storeMoney(line.unitMinor, locale)}</span>
+                      <label>
+                        {ar ? 'الكمية' : 'Quantity'}{' '}
+                        <input
+                          type="number"
+                          min="1"
+                          max="99"
+                          value={line.quantity}
+                          disabled={busy || !!pendingRequest}
+                          onChange={(event) => {
+                            const quantity = event.currentTarget.valueAsNumber;
+                            if (Number.isInteger(quantity) && quantity >= 1 && quantity <= 99)
+                              try {
+                                setBasketQuantity(line.id, quantity);
+                              } catch {
+                                failedStorage();
+                              }
+                          }}
+                        />
+                      </label>
+                      <button
+                        type="button"
                         disabled={busy || !!pendingRequest}
-                        onChange={(event) => {
-                          const quantity = event.currentTarget.valueAsNumber;
-                          if (Number.isInteger(quantity) && quantity >= 1 && quantity <= 99)
-                            try {
-                              setBasketQuantity(line.id, quantity);
-                            } catch {
-                              failedStorage();
-                            }
+                        onClick={() => {
+                          try {
+                            setBasketQuantity(line.id, 0);
+                          } catch {
+                            failedStorage();
+                          }
                         }}
-                      />
-                    </label>
-                    <button
-                      type="button"
-                      disabled={busy || !!pendingRequest}
-                      onClick={() => {
-                        try {
-                          setBasketQuantity(line.id, 0);
-                        } catch {
-                          failedStorage();
-                        }
-                      }}
-                    >
-                      {ar ? 'إزالة' : 'Remove'}
-                    </button>
-                  </article>
-                ))}
-              </div>
-              <p>
-                <strong>
-                  {ar ? 'إجمالي المنتجات' : 'Product subtotal'} ·{' '}
-                  {storeMoney(
-                    lines.reduce((n, l) => n + l.quantity * l.unitMinor, 0),
-                    locale,
-                  )}
-                </strong>
-              </p>
-              <p>
-                {ar
-                  ? 'التوصيل داخل القاهرة والجيزة. نؤكد رسوم التوصيل والإجمالي النهائي معك قبل تجهيز الطلب.'
-                  : 'Delivery in Cairo and Giza. We will confirm the delivery fee and final total with you before preparing the order.'}
-              </p>
+                      >
+                        {ar ? 'إزالة' : 'Remove'}
+                      </button>
+                    </article>
+                  ))}
+                </div>
+                <p className="launch-subtotal">
+                  <strong>
+                    {ar ? 'إجمالي المنتجات' : 'Product subtotal'} ·{' '}
+                    {storeMoney(
+                      lines.reduce((n, l) => n + l.quantity * l.unitMinor, 0),
+                      locale,
+                    )}
+                  </strong>
+                </p>
+                <p>
+                  {ar
+                    ? 'التوصيل داخل القاهرة والجيزة. نؤكد رسوم التوصيل والإجمالي النهائي معك قبل تجهيز الطلب أو التحويل البنكي.'
+                    : 'Delivery in Cairo and Giza. We will confirm the delivery fee and final total with you before preparing your order or requesting a bank transfer.'}
+                </p>
+              </section>
               {available ? (
                 <form id="guest-checkout" onSubmit={submit}>
                   <fieldset disabled={busy}>
@@ -276,7 +281,7 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
                   {ar ? 'الشراء متوقف حاليًا.' : 'Purchasing is currently unavailable.'}
                 </p>
               )}
-            </>
+            </div>
           )}
         </>
       )}

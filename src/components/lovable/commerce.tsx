@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState, type ReactNode } from 'react';
-import { Package, ShoppingCart, Truck, Phone, MessageCircle } from 'lucide-react';
+import { Package, ShoppingCart, Truck } from 'lucide-react';
 import { DesignFoundation } from '@/components/design-system/foundation';
 import { SourceImage } from './source-image';
 import { Button } from './button';
@@ -9,7 +9,7 @@ import { destination, type CatalogProduct } from './adapter';
 import { addToBasket } from '@/components/store/guest-basket';
 import { GuestCheckout } from '@/components/store/guest-checkout';
 import { storeMoney } from '@/i18n/store';
-import { marketContact, whatsappUrl } from '@/domain/markets/public-contact';
+import { ContactLinks } from '@/components/shell/contact-links';
 import type { Locale, Market } from './types';
 
 type Props = {
@@ -64,7 +64,6 @@ export function SourceCommerce({
   const delivery = ar
     ? 'التوصيل إلى القاهرة والجيزة. نؤكد التوفر ورسوم التوصيل والإجمالي قبل التجهيز.'
     : 'Delivery to Cairo and Giza. We confirm availability, delivery fees and the total before preparing your order.';
-  const contact = marketContact.EG;
   let body: ReactNode;
   if (children) body = children;
   else if (view === 'cart' || view === 'checkout')
@@ -108,7 +107,7 @@ export function SourceCommerce({
   else
     body = (
       <div className="cm-container launch-store">
-        <header>
+        <header className="launch-intro">
           <h1>{ar ? 'متجر نقل 365' : 'Naql365 Store'}</h1>
           <p>{delivery}</p>
         </header>
@@ -159,6 +158,7 @@ export function SourceCommerce({
                         src={p.image}
                         width={512}
                         height={512}
+                        sizes="(max-width: 359px) 92vw, (max-width: 699px) 47vw, (max-width: 999px) 31vw, (max-width: 1250px) 24vw, 290px"
                         alt={(ar ? p.media[0]?.altAr : p.media[0]?.altEn) || p.name[locale]}
                       />
                     ) : (
@@ -208,14 +208,7 @@ export function SourceCommerce({
         </section>
         <section id="contact" className="launch-contact">
           <h2>{ar ? 'تواصل معنا' : 'Contact us'}</h2>
-          <a href={'tel:+' + contact.destination}>
-            <Phone size={16} />
-            <bdi>{contact.display}</bdi>
-          </a>
-          <a href={whatsappUrl('EG', locale)} target="_blank" rel="noopener noreferrer">
-            <MessageCircle size={16} />
-            {ar ? 'واتساب' : 'WhatsApp'}
-          </a>
+          <ContactLinks locale={locale} />
         </section>
       </div>
     );

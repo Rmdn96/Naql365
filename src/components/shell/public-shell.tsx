@@ -10,6 +10,7 @@ import { BrandLink } from './brand-link';
 import { ThemeControl } from './theme-control';
 import { StoreSearch } from '@/components/store/search';
 import { CartLink } from '@/components/store/cart-link';
+import { ContactLinks } from './contact-links';
 
 export async function IdentityLink({ locale }: { locale: Locale }) {
   const destination = getPublicEnv() ? await loginDestination() : 'unauthenticated';
@@ -80,7 +81,10 @@ export function Footer({ locale }: { locale: Locale }) {
         size="mobile"
       />
       <nav aria-label={locale === 'ar' ? 'روابط التذييل' : 'Footer links'}>
+        <Link href={`/${locale}`}>{locale === 'ar' ? 'المتجر' : 'Shop'}</Link>
+        <Link href={`/${locale}/request`}>{locale === 'ar' ? 'النقل' : 'Transport'}</Link>
         <TransportFooterLinks locale={locale} />
+        <ContactLinks locale={locale} footer />
       </nav>
       <small>{dictionary(locale).rights}</small>
     </footer>
