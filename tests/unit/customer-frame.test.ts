@@ -43,25 +43,13 @@ for (const locale of ['ar', 'en'] as const) {
     expect(html.match(/class="brand-mark"/g)).toHaveLength(1);
     const current = html.match(/<a\b[^>]*aria-current="page"[^>]*>/)?.[0];
     expect(current).toContain(`href="/${locale}/account/requests"`);
-    for (const route of ['account/requests', 'store/cart', 'account/profile'])
+    for (const route of ['account/requests', 'account/profile'])
       expect(html).toContain(`href="/${locale}/${route}"`);
     expect(html).toContain('Authorized child');
     expect(html).not.toMatch(/\/portal|\/driver|role=SUPER_ADMIN|token=/);
-    expect(renderToStaticMarkup(createElement(PublicChrome, null, 'legacy'))).toBe('');
+    expect(renderToStaticMarkup(createElement(PublicChrome, null, 'shared'))).toBe('shared');
     expect(
-      renderToStaticMarkup(
-        createElement(
-          TransportFrame,
-          {
-            locale,
-            country: 'EG',
-            themeMode: 'dark',
-            identity: null,
-            footerLinks: null,
-          } as Parameters<typeof TransportFrame>[0],
-          'retained',
-        ),
-      ),
+      renderToStaticMarkup(createElement(TransportFrame, { children: 'retained' }, 'retained')),
     ).toBe('retained');
   });
 }

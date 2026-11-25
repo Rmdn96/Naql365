@@ -5,6 +5,8 @@ import { assertBrowserPortFree, startBrowserServer, stopBrowserServer } from './
 import { randomBytes, createHash, randomUUID } from 'node:crypto';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
+import { checkStaffRecovery } from './staff-recovery-browser.mjs';
+import { checkGuestStorefront } from './commerce-launch-browser.mjs';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { createCatalogEvidence } from './catalog-evidence.mjs';
@@ -12,7 +14,7 @@ const local = localSupabase();
 const externalServer = process.env.NAQL365_EXISTING_BROWSER_ORIGIN;
 if (externalServer && externalServer !== 'http://127.0.0.1:3000')
   throw Error('Existing server must be the approved loopback origin');
-const origin = externalServer || 'http://127.0.0.1:3017';
+const origin = externalServer || 'http://127.0.0.1:3000';
 if (externalServer) {
   const settings = readFileSync('.env.local', 'utf8');
   const value = (name) =>
@@ -79,6 +81,7 @@ for (const key of Object.keys(env))
   if (key.startsWith('VERCEL') || /^SUPABASE_.*(TOKEN|PASSWORD|SERVICE|SECRET)/.test(key))
     delete env[key];
 const tables = [
+  'guest_rate_budgets',
   'store_supplier_reference_prices',
   'store_product_media',
   'store_purchase_events',
@@ -144,7 +147,7 @@ async function capture(page, locale, width, theme, state) {
   await navigation.focus();
   await expect(navigation).toBeFocused();
   await page.keyboard.press('Tab');
-  const a = await new AxeBuilder({ page }).include('main').include('.cm-header').analyze();
+  const a = await new AxeBuilder({ page }).include('main').include('.launch-header').analyze();
   if (a.violations.length) {
     writeFileSync(
       output + '/axe-failure.json',
@@ -178,7 +181,7 @@ try {
   if (sql('select ' + tables.map((t) => `(select count(*) from private.${t})`).join('+')) !== '0')
     throw Error('Local Store baseline not empty; preserving existing records');
   if (!externalServer) {
-    await assertBrowserPortFree(3017);
+    await assertBrowserPortFree(3000);
     checkpoint = 'build';
     console.log('CHECKPOINT ' + checkpoint);
     execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build'], {
@@ -187,7 +190,7 @@ try {
       timeout: 240000,
       maxBuffer: 16 * 1024 * 1024,
     });
-    server = await startBrowserServer(env, 3017, undefined, diagnostics.receive);
+    server = await startBrowserServer(env, 3000, undefined, diagnostics.receive);
     checkpoint = 'server diagnostic acknowledgement';
     // Channel health is established before fixture assertions or product rendering.
     await expect
@@ -243,6 +246,7 @@ try {
       '92000000-0000-4000-8000-' + String(i).padStart(12, '0'),
       users[i - 1].id,
     );
+  fixture = fixture.replace("array['SYNTHETIC-REGION']", "array['CAIRO', 'GIZA']");
   sql(fixture + '\ncommit;');
   seeded = true;
   save();
@@ -295,7 +299,6 @@ try {
       .isVisible(),
     ssrProductCards:
       (await homepage.text()).match(/<article[^>]*class="[^"]*\bstore-product\b/g)?.length ?? 0,
-    market: await page.getByLabel('Service country', { exact: true }).inputValue(),
     productCards: await page.locator('.commerce-products .store-product').count(),
   };
   writeFileSync(output + '/homepage-boundary.json', JSON.stringify(rendered, null, 2));
@@ -320,222 +323,68 @@ try {
   // Local-only fault injection tests artifact preservation; never alters application behavior.
   if (process.env.NAQL365_COMMERCE_DIAGNOSTIC_FAILURE === '1')
     throw Error('SIMULATED_DIAGNOSTIC_FAILURE');
-  checkpoint = 'guest add to cart';
-  await page
-    .locator('.commerce-products')
-    .getByRole('button', { name: 'Add to cart', exact: true })
-    .click();
-  checkpoint = 'guest login navigation';
-  await expect(page).toHaveURL(origin + '/en/login');
-  if (sql('select count(*) from private.store_carts') !== '0') throw Error('Guest created cart');
-  checks.push('Guest homepage add redirects to canonical login; no phantom cart');
-  guestEvidence = false; // Never capture credentials, authenticated HTML or customer state.
+  checkpoint = 'guest order and responsive storefront';
+  const product = publicCatalog.data.items[0];
+  const reference = await checkGuestStorefront({ page, origin, capture, product, checks });
+  if (!/^S-[0-9a-f]{32}$/.test(reference)) throw Error('Invalid guest reference');
+  const stored = JSON.parse(
+    sql(
+      "select json_build_object('subtotal',subtotal_minor,'fee',delivery_minor,'total',total_minor,'method',guest_payment_method) from private.store_orders where reference='" +
+        reference +
+        "'",
+    ),
+  );
+  expect(stored).toEqual({ subtotal: 2000, fee: null, total: null, method: 'CASH' });
+  await page.goto(origin + '/en/portal/store/orders');
+  await expect(page).toHaveURL(/\/en\/(login|forbidden)/);
+  guestEvidence = false;
   await login(page, users[0], 'en');
-  checkpoint = 'customer dashboard';
-  await page.goto(origin + '/en/account');
-  const customerNav = page.locator('.customer-workspace-nav a');
-  await expect(customerNav).toHaveCount(4);
-  await page
-    .getByRole('navigation', { name: 'Customer workspace' })
-    .getByRole('link', { name: 'My account', exact: true })
-    .click();
-  await expect(page).toHaveURL(origin + '/en/account/profile');
-  await expect(page.locator('a[href="/en/store/orders"]')).toBeVisible();
-  const deniedCatalog = await page.request.post(origin + '/api/store/catalog', {
+  const denied = await page.request.post(origin + '/api/store/catalog', {
     headers: { Origin: origin },
     data: { family: 'draft', operation: 'create_product', mutationId: randomUUID(), payload: {} },
   });
-  if (deniedCatalog.status() !== 403) throw Error('Customer catalog administration was not denied');
+  expect(denied.status()).toBe(403);
   const staffContext = await browser.newContext();
-  const staffPage = await staffContext.newPage();
-  await login(staffPage, users[1], 'en');
-  await staffPage.goto(origin + '/en/portal/store/catalog?kind=products');
-  await expect(staffPage.locator('.st-admin-shell')).toBeVisible();
-  await expect(staffPage.locator('#catalog-search')).toBeVisible();
+  const staff = await staffContext.newPage();
+  await login(staff, users[1], 'en');
+  await staff.goto(origin + '/en/portal/store/orders');
+  await expect(staff.getByText(reference, { exact: false }).first()).toBeVisible();
   await staffContext.close();
-  await page.goto(origin + '/en');
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
-  const add = page
-    .locator('.commerce-products')
-    .getByRole('button', { name: 'Add to cart', exact: true });
-  await add.click();
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('1');
-  await expect(add).toBeEnabled();
-  await add.evaluate((el) => {
-    el.click();
-    el.click();
-  });
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('2');
-  await expect(add).toBeEnabled();
-  const actual = await (await page.request.get(origin + '/api/store?kind=cart')).json();
-  if (actual.items.length !== 1 || actual.items[0].quantity !== 2)
-    throw Error('Duplicate cart entry or lost quantity');
-  checks.push('Homepage real cart add and immediate unit badge; double click blocked');
-  await capture(page, 'en', 1280, 'light', 'commerce-home-cart');
-  checkpoint = 'cart quantity';
-  await page.goto(origin + '/en/store/cart');
-  await page.locator('.store-line .cm-quantity button').last().click();
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('3');
-  await page.reload();
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('3');
-  await expect(page.locator('.store-line .cm-quantity output')).toHaveText('3');
-  const formatEgp = new Intl.NumberFormat('en-EG', { style: 'currency', currency: 'EGP' });
-  const cartAmounts = page.locator('.cm-summary dl dd');
-  for (const [index, pounds] of [30, 2, 32].entries())
-    await expect(cartAmounts.nth(index)).toHaveText(formatEgp.format(pounds));
-  await page.goto(origin + '/en');
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('3');
-  checks.push('Quantity edit, refresh and navigation retain authoritative cart');
-  const other = await browser.newContext(),
-    otherPage = await other.newPage();
-  await login(otherPage, users[3], 'en');
-  const otherCart = await otherPage.request.get(origin + '/api/store?kind=cart');
-  if (!otherCart.ok() || (await otherCart.json()).items.length)
-    throw Error('Customer cart isolation failed');
-  await other.close();
-  await page.locator('#commerce-search').fill('Synthetic');
-  await page.locator('#commerce-search').press('Enter');
-  await expect(page).toHaveURL(/\/en\/store\?search=Synthetic$/);
-  await expect(page.locator('.store-product')).toHaveCount(1);
-  await expect(page.locator('#store-category')).toBeVisible();
-  if (/supplierEntitlement|unit_cost_minor|productDifferenceMinor/.test(await page.content()))
-    throw Error('Private cost in customer HTML');
-  checks.push('Search/categories use canonical public projection; private costs absent');
-  checkpoint = 'checkout navigation';
-  await page.goto(origin + '/en/store/cart');
-  await page.getByRole('link', { name: 'Checkout', exact: true }).click();
-  await page.waitForURL(origin + '/en/store/checkout');
-  await expect(page).toHaveURL(origin + '/en/store/checkout');
-  await expect(page.locator('#store-name')).toBeEditable();
-  for (const method of ['CASH', 'VODAFONE_CASH', 'INSTAPAY'])
-    await expect(page.locator('#store-method input[value="' + method + '"]').first()).toHaveCount(
-      1,
-    );
-  await page.locator('#store-name').fill('SYNTHETIC Customer');
-  await page.locator('#store-phone').fill('SYNTHETIC');
-  await page.locator('#store-region').selectOption('SYNTHETIC-REGION');
-  await page.locator('#store-address').fill('Synthetic address only');
-  await page.locator('#store-method input[value="CASH"]').check();
-  await page.locator('.store-check input').check();
-  checkpoint = 'checkout command';
-  const placed = page.waitForResponse(
-    (response) =>
-      response.url() === origin + '/api/store' &&
-      response.request().method() === 'POST' &&
-      response.request().postDataJSON()?.action === 'checkout',
-  );
-  await page.getByRole('button', { name: 'Place order', exact: true }).click();
-  const placedResponse = await placed;
-  if (placedResponse.status() !== 200) throw Error('Checkout command rejected');
-  await page.waitForURL(/\/en\/store\/orders\/[a-f0-9-]+$/);
-  await expect(page).toHaveURL(/\/en\/store\/orders\/[a-f0-9-]+$/);
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
-  const orderId = new URL(page.url()).pathname.split('/').at(-1);
-  expect(
-    sql(
-      "select subtotal_minor||':'||delivery_minor||':'||total_minor||':'||currency from private.store_orders where id='" +
-        orderId +
-        "'",
-    ),
-  ).toBe('3000:200:3200:EGP');
-  await expect(page.locator('.cm-order-detail')).toBeVisible();
-  await page.goto(origin + '/en/store/orders');
-  await expect(
-    page.locator('.cm-records a[href="/en/store/orders/' + orderId + '"]'),
-  ).toBeVisible();
-  await page.goto(origin + '/en/store/products/' + publicCatalog.data.items[0].slug);
-  await expect(page.locator('.cm-product-detail')).toBeVisible();
-  const snapshot = sql(
-    "select to_jsonb(i)::text from private.store_order_items i where order_id='" + orderId + "'",
-  );
-  await page.goto(origin + '/en/store/cart');
-  await expect(page.locator('.store-line')).toHaveCount(0);
-  await page.goto(origin + '/en');
-  await page
-    .locator('.commerce-products')
-    .getByRole('button', { name: 'Add to cart', exact: true })
-    .click();
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('1');
-  const nextCart = await (await page.request.get(origin + '/api/store?kind=cart')).json();
-  if (nextCart.checkedOutOrderId || nextCart.items.length !== 1 || nextCart.items[0].quantity !== 1)
-    throw Error('Consumed order items leaked into the new cart');
-  if (
-    snapshot !==
-    sql(
-      "select to_jsonb(i)::text from private.store_order_items i where order_id='" + orderId + "'",
-    )
-  )
-    throw Error('New cart altered the immutable order snapshot');
+  await checkStaffRecovery(browser, users[1].email, local.API_URL, origin);
   checks.push(
-    'Checkout consumes cart; new add starts at one; historical order snapshot unchanged; three payment choices retained',
+    'Isolated staff recovery message accepted in local inbox and PKCE callback opened password form',
   );
-  await page.goto(origin + '/en/store/cart');
-  await page.getByRole('button', { name: /^Remove / }).click();
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
-  await page.reload();
-  await expect(page.locator('.store-line')).toHaveCount(0);
-  checks.push('Removal persists; other Customer remains isolated');
-  for (const [locale, width, theme] of [
-    ['ar', 360, 'dark'],
-    ['en', 1280, 'light'],
-    ['ar', 390, 'system'],
-  ]) {
-    await page.goto(origin + '/' + locale);
-    await capture(page, locale, width, theme, 'commerce-home');
-    if (width < 768) {
-      await page
-        .getByRole('button', { name: locale === 'ar' ? 'القائمة' : 'Menu', exact: true })
-        .click();
-      await expect(
-        page.locator('[role=dialog] a[href="/' + locale + '/store"]').first(),
-      ).toBeVisible();
-      await expect(page.locator('[role=dialog]')).toBeVisible();
-      await page.keyboard.press('Escape');
-      await expect(page.locator('.cm-theme button').first()).toBeEnabled();
-    }
-    checkpoint = 'transport CTA ' + locale;
-    const request = page.locator('.commerce-hero a[href="/' + locale + '/request"]').first();
-    await request.click();
-    await expect(page).toHaveURL(origin + '/' + locale + '/request');
-  }
-  checks.push('AR/EN RTL/LTR themes, compact mobile menu and existing Transport request route');
-  checkpoint = 'paused Store';
-  console.log('CHECKPOINT ' + checkpoint);
+  checks.push(
+    'Correct unquoted order in database, staff queue visible, customer denied administration',
+  );
+  await page.goto(origin + '/en/request');
+  await expect(page).toHaveURL(/\/en\/request/);
   sql(
     "update private.store_policy_versions set scope_paused=true,revision=revision+1 where kind='STOREFRONT_SCOPE' and organization_id='" +
       ledger.organization +
       "'",
   );
   await page.goto(origin + '/en');
-  await expect(page.locator('.commerce-products .store-product')).toHaveCount(0);
-  await expect(page.locator('.store-notice')).toContainText('Purchasing is currently unavailable');
-  // Paused scope permits ownership-scoped cart reads, but product eligibility
-  // prevents additions/checkout. Assert the mutation barrier rather than hiding history.
-  const pausedCartResponse = await page.request.get(origin + '/api/store?kind=cart');
-  if (!pausedCartResponse.ok()) throw Error('Owned cart read failed');
-  const pausedCart = await pausedCartResponse.json();
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('0');
-  const denied = await page.request.post(origin + '/api/store', {
+  await expect(page.locator('.store-product')).toHaveCount(0);
+  await expect(page.getByText('Purchasing is currently unavailable.')).toBeVisible();
+  const paused = await page.request.post(origin + '/api/store/guest-order', {
     headers: { Origin: origin },
     data: {
-      action: 'cart',
-      mutationId: randomUUID(),
-      revision: pausedCart.revision,
-      payload: {
-        items: [
-          { listingId: actual.items[0].listingId, revision: actual.items[0].revision, quantity: 1 },
-        ],
-      },
+      request_id: randomUUID(),
+      items: [
+        { listing_id: product.listingId, quantity: 1, unit_price: product.amountMinor / 100 },
+      ],
+      full_name: 'Synthetic Guest',
+      phone: '01012345678',
+      governorate: 'GIZA',
+      area: 'Synthetic area',
+      address: 'Synthetic isolated address',
+      payment_method: 'CASH',
     },
   });
-  if (denied.status() !== 409) throw Error('Paused product mutation was not denied');
-  const afterDenied = await (await page.request.get(origin + '/api/store?kind=cart')).json();
-  if (afterDenied.revision !== pausedCart.revision || afterDenied.items.length)
-    throw Error('Paused product denial changed the cart');
-  await capture(page, 'en', 1280, 'dark', 'commerce-paused');
-  checks.push(
-    'Paused Store hides products; server denies product mutation without changing owned cart',
-  );
+  expect([403, 409]).toContain(paused.status());
+  expect(sql('select count(*) from private.store_orders')).toBe('1');
+  checks.push('Paused scope prevents new guest order; historical order preserved');
   await customerContext.close();
 } catch (error) {
   diagnostics.snapshot();
@@ -573,7 +422,7 @@ try {
 } finally {
   diagnostics.snapshot();
   await browser?.close();
-  if (!externalServer) await stopBrowserServer(server, 3017);
+  if (!externalServer) await stopBrowserServer(server, 3000);
   diagnostics.snapshot();
   if (seeded) {
     const organization = ledger.organization;

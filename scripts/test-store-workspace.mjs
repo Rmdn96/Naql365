@@ -8,7 +8,6 @@ import { createClient } from '@supabase/supabase-js';
 import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import sharp from 'sharp';
-import { captureLovableComparisons } from './lovable-visual-evidence.mjs';
 const local = localSupabase();
 const externalServer = process.env.NAQL365_EXISTING_BROWSER_ORIGIN;
 if (externalServer && externalServer !== 'http://127.0.0.1:3000')
@@ -506,66 +505,51 @@ try {
   await expect(page.locator('.store-product img')).toHaveCount(1);
   await expect(page.locator('.store-product img')).toHaveAttribute('alt', 'Second synthetic view');
   await page.goto(origin + '/en/store/products/new-synthetic-product-31');
-  await expect(page.locator('.cm-gallery .cm-thumbs button')).toHaveCount(2);
+  await expect(page.locator('.cm-product-detail img')).toHaveCount(2);
   await expect
     .poll(() =>
       page
-        .locator('.cm-gallery img')
+        .locator('.cm-product-detail img')
         .evaluateAll((images) => images.every((image) => image.complete && image.naturalWidth > 0)),
     )
     .toBe(true);
   await capture(page, 'en', 1280, 'light', 'product-detail-images');
   await page.goto(origin + '/ar/store/products/new-synthetic-product-31');
-  await expect(page.locator('.cm-gallery > img')).toHaveAttribute('alt', 'زاوية ثانية تجريبية');
+  await expect(page.locator('.cm-product-detail img').first()).toHaveAttribute(
+    'alt',
+    'زاوية ثانية تجريبية',
+  );
   await capture(page, 'ar', 390, 'dark', 'product-detail-images');
   await page.goto(origin + '/en/store');
   checks.push(
     'Catalog/detail images render in approved order; bilingual alt metadata and no broken images',
   );
   await capture(page, 'en', 1280, 'light', 'catalog');
-  checkpoint = 'cart';
-  console.log('CHECKPOINT ' + checkpoint);
-  await page.getByRole('button', { name: 'Add to cart', exact: true }).click();
-  await expect(page.locator('.commerce-cart-badge')).toHaveText('1');
-  await page.goto(origin + '/en/store/cart');
-  await expect(page.locator('.store-line')).toHaveCount(1);
-  await page.getByRole('link', { name: 'Checkout', exact: true }).click();
-  checkpoint = 'checkout navigation';
-  console.log('CHECKPOINT ' + checkpoint);
-  await page.waitForURL(origin + '/en/store/checkout');
-  await expect(page).toHaveURL(origin + '/en/store/checkout');
-  await expect(page.locator('#store-name')).toBeVisible();
-  await expect(page.locator('#store-name')).toBeEditable();
-  await capture(page, 'en', 390, 'dark', 'checkout');
-  await captureLovableComparisons({
-    phase: 'cart',
-    page,
-    finance,
-    output,
-    productSlug: 'new-synthetic-product-31',
-  });
-  await page.goto(origin + '/en/store/checkout');
-  await expect(page.locator('#store-name')).toBeEditable();
-  await page.locator('#store-name').fill('SYNTHETIC Customer');
-  await page.locator('#store-phone').fill('SYNTHETIC');
-  await page.locator('#store-region').selectOption('SYNTHETIC-REGION');
-  await page.locator('#store-address').fill('Synthetic address only');
-  await page.locator('#store-method input[value="VODAFONE_CASH"]').check();
-  await page.locator('#destination').selectOption('99000000-0000-4000-8000-000000000002');
-  await page.locator('.store-check input').check();
-  checkpoint = 'place order';
-  console.log('CHECKPOINT ' + checkpoint);
-  await page.getByRole('button', { name: 'Place order', exact: true }).click();
-  await expect(page).toHaveURL(/\/en\/store\/orders\/[a-f0-9-]+$/, { timeout: 20000 });
-  const id = new URL(page.url()).pathname.split('/').at(-1);
-  await captureLovableComparisons({
-    phase: 'order',
-    page,
-    finance,
-    output,
-    productSlug: 'new-synthetic-product-31',
-    orderId: id,
-  });
+  // Customers can still service a wallet order placed on the pre-launch release.
+  // Restore the original checkout constructor only inside this psql session's
+  // temporary schema. It disappears when the test fixture connection closes.
+  checkpoint = 'historical wallet order fixture';
+  const legacyMigration = readFileSync(
+    'supabase/migrations/20261019000100_store_purchase_fulfillment.sql',
+    'utf8',
+  );
+  const original = legacyMigration.match(
+    /create function public\.store_purchase_command_v1\([\s\S]*?\nend \$\$;/i,
+  )?.[0];
+  if (!original) throw Error('Pre-launch order fixture constructor unavailable');
+  const legacy = original.replace(
+    'public.store_purchase_command_v1(',
+    'pg_temp.prelaunch_checkout(',
+  );
+  const id = sql(`begin;
+    ${legacy}
+    set local "request.jwt.claim.sub" = '${users[0]}';
+    select pg_temp.prelaunch_checkout('EG','cart',gen_random_uuid(),0,null,
+      jsonb_build_object('items',jsonb_build_array(jsonb_build_object('listingId',id,'revision',revision,'quantity',1))))
+      from private.store_product_market_listings where id='${newListing.id}' \\gset
+    select pg_temp.prelaunch_checkout('EG','checkout',gen_random_uuid(),1,null,
+      '{"contractId":"99000000-0000-4000-8000-000000000001","contractRevision":1,"address":{"name":"SYNTHETIC","phone":"SYNTHETIC","region":"SYNTHETIC-REGION","line":"Synthetic only"},"method":"VODAFONE_CASH","destinationId":"99000000-0000-4000-8000-000000000002"}')->>'id';
+    commit;`);
   await page.goto(origin + '/en/store/orders/' + id);
   await expect(page.locator('.cm-order-detail')).toBeVisible();
   checkpoint = 'order snapshot preservation';
@@ -606,7 +590,7 @@ try {
   checks.push('New approved retail version leaves placed order snapshots byte-identical');
   await page.reload();
   await expect(page.getByText('Pending', { exact: true })).toBeVisible();
-  checks.push('registered Customer checkout and refresh');
+  checks.push('historical customer order survives refresh');
   checkpoint = 'proof upload';
   console.log('CHECKPOINT ' + checkpoint);
   await page.locator('#store-proof').setInputFiles({

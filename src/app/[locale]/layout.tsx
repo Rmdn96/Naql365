@@ -9,8 +9,7 @@ import { selectedPublicCountry } from '@/infrastructure/markets/public';
 import { TransportFrame } from '@/components/transport/frame';
 import { CustomerFrame } from '@/components/customer/frame';
 import { HistoryRefresh } from '@/components/shell/history-refresh';
-import { Header, Footer, IdentityLink } from '@/components/shell/public-shell';
-import { TransportFooterLinks } from '@/components/transport/footer-links';
+import { Header, Footer } from '@/components/shell/public-shell';
 import { appUrl } from '@/infrastructure/config/server-env';
 import { cookies, headers } from 'next/headers';
 import { preventIndexing } from '@/infrastructure/config/deployment-env';
@@ -24,6 +23,7 @@ import '../../styles/driver-v2.css';
 import '../../styles/commerce.css';
 import '../../styles/transport.css';
 import '../../styles/customer-workspace.css';
+import '../../styles/commerce-launch.css';
 const arabic = Alexandria({ subsets: ['arabic'], display: 'swap', variable: '--font-arabic' });
 const english = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-english' });
 
@@ -77,20 +77,8 @@ export default async function LocaleLayout({
           <Header locale={locale} themeMode={themeMode} />
         </PublicChrome>
         <main id="main" tabIndex={-1}>
-          <TransportFrame
-            locale={locale}
-            country={await selectedPublicCountry()}
-            themeMode={themeMode}
-            identity={<IdentityLink locale={locale} />}
-            footerLinks={<TransportFooterLinks locale={locale} />}
-          >
-            <CustomerFrame
-              locale={locale}
-              country={await selectedPublicCountry()}
-              themeMode={themeMode}
-            >
-              {children}
-            </CustomerFrame>
+          <TransportFrame>
+            <CustomerFrame locale={locale}>{children}</CustomerFrame>
           </TransportFrame>
         </main>
         <PublicChrome>

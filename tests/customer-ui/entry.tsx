@@ -73,28 +73,10 @@ if (view === 'dashboard' || view === 'profile') {
 if (query.get('phase') === 'after') {
   await import('@/styles/customer-workspace.css');
   const { CustomerFrame } = await import('@/components/customer/frame');
-  body = (
-    <CustomerFrame
-      locale={locale}
-      country="EG"
-      themeMode={(query.get('theme') || 'light') as 'light' | 'dark' | 'system'}
-    >
-      {body}
-    </CustomerFrame>
-  );
+  body = <CustomerFrame locale={locale}>{body}</CustomerFrame>;
 } else {
   const { TransportFrame } = await import('@/components/transport/frame');
-  body = (
-    <TransportFrame
-      locale={locale}
-      country="EG"
-      themeMode="light"
-      identity={<a href={`/${locale}/account`}>{locale === 'ar' ? 'حسابي' : 'My account'}</a>}
-      footerLinks={null}
-    >
-      {body}
-    </TransportFrame>
-  );
+  body = <TransportFrame>{body}</TransportFrame>;
 }
 createRoot(document.getElementById('root')!).render(<main>{body}</main>);
 document.documentElement.dataset.customerRender = 'ready';
