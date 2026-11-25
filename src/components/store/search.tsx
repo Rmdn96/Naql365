@@ -1,7 +1,7 @@
 export function StoreSearch({ locale }: { locale: 'ar' | 'en' }) {
-  const text = locale === 'ar' ? 'ابحث عن مستلزمات التغليف' : 'Search packing supplies';
+  const text = locale === 'ar' ? 'ابحث عن منتج' : 'Search products';
   return (
-    <form action={`/${locale}/store`} method="get" role="search" className="commerce-search">
+    <form action={`/${locale}`} method="get" role="search" className="commerce-search">
       <label className="sr-only" htmlFor="commerce-search">
         {text}
       </label>

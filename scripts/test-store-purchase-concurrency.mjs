@@ -117,9 +117,13 @@ try {
     .split('`);')[0]
     .replace(/create role (anon|authenticated|service_role) nologin;/g, '');
   await sql(bootstrap);
-  for (const file of readdirSync('supabase/migrations')
+  // Prepare historical orders on their original schema before exercising the
+  // actual upgrade and collection races on the current schema.
+  const migrations = readdirSync('supabase/migrations')
     .filter((f) => f.endsWith('.sql'))
-    .sort())
+    .sort();
+  const cutover = '20261125000100';
+  for (const file of migrations.filter((f) => f < cutover))
     await sql(readFileSync('supabase/migrations/' + file, 'utf8'));
   const fixture = readFileSync('supabase/tests/store_purchase.test.sql', 'utf8')
     .split('-- FIXTURE END.')[0]
@@ -146,7 +150,14 @@ try {
     'different mutation IDs cannot duplicate one cart revision',
   );
   const a = await transfer(),
-    b = await transfer();
+    b = await transfer(),
+    store = await transfer();
+  for (const file of migrations.filter((f) => f >= cutover))
+    await sql(readFileSync('supabase/migrations/' + file, 'utf8'));
+  await assert.rejects(
+    command('checkout', c.revision, null, payload('CASH')),
+    (e) => e.code === 'PT409',
+  );
   const evidence = {
     reference: 'SYNTHETIC-SHARED-RECEIPT',
     evidenceReference: 'SYNTHETIC-VERIFIED',
@@ -203,7 +214,6 @@ try {
     `set local role authenticated;set local request.jwt.claim.sub=${q(transportCustomer)};set local storage.operation='object.upload';insert into storage.objects(bucket_id,name,metadata) values('documents',${q(reserved.path)},'{"size":100,"mimetype":"image/png"}')`,
   );
   const submitted = await transport('submit', reserved.revision, { attemptId: reserved.attemptId });
-  const store = await transfer();
   await race(
     [
       command(

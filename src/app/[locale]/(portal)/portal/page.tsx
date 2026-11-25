@@ -3,6 +3,10 @@ import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
 import { staffModules } from '@/infrastructure/identity/staff-context';
+import { storeStaffModules } from '@/infrastructure/store/access';
+import { storeRead } from '@/infrastructure/store/service';
+import { storeOrderPage } from '@/domain/store/model';
+import { storeLabel } from '@/i18n/store';
 import { salesQueue } from '@/infrastructure/pricing/service';
 import { operationsWorkspace } from '@/infrastructure/operations/service';
 import { StaffFinanceUnavailable } from '@/components/payments/staff-market-unavailable';
@@ -18,9 +22,11 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   const ar = locale === 'ar',
     m = await staffModules();
   if (m.context.status !== 'authorized') return null;
-  const [sales, ops] = await Promise.all([
+  const store = await storeStaffModules();
+  const [sales, ops, shop] = await Promise.all([
     m.sales ? salesQueue() : null,
     m.operations ? operationsWorkspace() : null,
+    store.orders ? storeRead('admin').then((result) => storeOrderPage.parse(result)) : null,
   ]);
   const country = await selectedPublicCountry();
   const currency = 'EGP';
@@ -80,6 +86,21 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
         }
       />
       <div className="staff-dashboard-grid">
+        {shop &&
+          panel(
+            ar ? 'طلبات المتجر' : 'Store orders',
+            root + '/store/orders',
+            shop.items.map((o) => ({
+              label: o.reference,
+              href: root + '/store/orders/' + o.id,
+              status: storeLabel(
+                o.orderState === 'PLACED' ? 'AWAITING_CONFIRMATION' : o.fulfillmentState,
+                locale,
+                'staff',
+              ),
+            })),
+            20,
+          )}
         {sales &&
           panel(
             ar ? 'الطلبات والعروض' : 'Requests & Quotes',
@@ -141,7 +162,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
             </Link>
           </section>
         )}
-        {!m.sales && !m.operations && !m.finance && !m.support && (
+        {!m.sales && !m.operations && !m.finance && !m.support && !shop && (
           <EmptyState title={ar ? 'لا توجد وحدات متاحة' : 'No modules available'}>
             {ar
               ? 'تواصل مع مسؤول مؤسستك بشأن صلاحيات العمل.'

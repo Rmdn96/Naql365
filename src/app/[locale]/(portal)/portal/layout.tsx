@@ -50,67 +50,41 @@ export default async function Layout({
       </div>
     );
   const root = '/' + locale + '/portal';
-  const links: StaffLink[] = [{ href: root, label: ar ? 'لوحة العمل' : 'Dashboard', symbol: '◈' }];
-  if (m.sales)
-    links.push({
-      href: root + '/quotes',
-      label: ar ? 'الطلبات والتسعير والعروض' : 'Requests & Quotes',
+  const store = await storeStaffModules();
+  const orderLinks: StaffLink[] = [];
+  if (store.orders)
+    orderLinks.push({
+      href: root + '/store/orders',
+      label: ar ? 'طلبات المتجر' : 'Store orders',
       symbol: '▤',
     });
-  if (m.operations)
-    links.push(
-      {
-        href: root + '/operations',
-        label: ar ? 'العمليات والتخطيط' : 'Operations & Dispatch',
-        symbol: '⇄',
-      },
-      {
-        href: root + '/operations#work-orders',
-        label: ar ? 'الطلبات المقبولة' : 'Accepted Orders',
-        symbol: '▣',
-      },
-      { href: root + '/operations#work-jobs', label: ar ? 'مهام التنفيذ' : 'Jobs', symbol: '▦' },
-      { href: root + '/operations#dispatch-title', label: ar ? 'الرحلات' : 'Trips', symbol: '↗' },
-      {
-        href: root + '/operations#work-resources',
-        label: ar ? 'السائقون والمركبات' : 'Drivers & Vehicles',
-        symbol: '◇',
-      },
-    );
-  if (m.finance)
-    links.push({
-      href: root + '/finance',
-      label: ar ? 'المالية والمدفوعات' : 'Finance & Payments',
-      symbol: '▥',
+  if (m.sales || m.operations)
+    orderLinks.push({
+      href: root + (m.sales ? '/quotes' : '/operations'),
+      label: ar ? 'طلبات النقل' : 'Transport requests',
+      symbol: '⇄',
     });
-  if (m.banks)
+  const links: StaffLink[] = [{ href: root, label: ar ? 'الرئيسية' : 'Dashboard', symbol: '◈' }];
+  if (orderLinks[0])
     links.push({
-      href: root + '/finance/banks',
-      label: ar ? 'إعدادات التحصيل' : 'Payment configuration',
-      symbol: '⚙',
+      ...orderLinks[0],
+      label: ar ? 'الطلبات' : 'Orders',
+      prefixes: [root + '/store/orders', root + '/quotes', root + '/operations'],
     });
-  if (m.support)
-    links.push({
-      href: root + '/support',
-      label: ar ? 'دعم العملاء' : 'Customer Support',
-      symbol: '◎',
-    });
-  if ((await selectedPublicCountry()) === 'EG') {
-    const storeModules = [
-      ['orders', 'store.orders.read', ar ? 'طلبات المتجر' : 'Store orders'],
-      ['finance', 'store.payments.read', ar ? 'مدفوعات المتجر' : 'Store payments'],
-      [
-        'reconciliation',
-        'store.settlements.manage',
-        ar ? 'مطابقة المورد' : 'Supplier reconciliation',
-      ],
-      ['catalog', 'store.catalog.read', ar ? 'كتالوج المتجر' : 'Store catalog'],
-    ] as const;
-    const access = await storeStaffModules();
-    for (const storeModule of storeModules)
-      if (access[storeModule[0]])
-        links.push({ href: root + '/store/' + storeModule[0], label: storeModule[2], symbol: '▦' });
-  }
+  if (store.catalog)
+    links.push({ href: root + '/store/catalog', label: ar ? 'المنتجات' : 'Products', symbol: '▦' });
+  links.push({
+    href: root + '/settings',
+    label: ar ? 'الإعدادات' : 'Settings',
+    symbol: '⚙',
+    prefixes: [
+      root + '/settings',
+      root + '/finance',
+      root + '/support',
+      root + '/store/finance',
+      root + '/store/reconciliation',
+    ],
+  });
   const theme = (await cookies()).get('naql365_theme')?.value;
   const themeMode = theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system';
   const display = await staffDisplayContext();
@@ -122,6 +96,7 @@ export default async function Layout({
       marketName={ar ? display.market.name_ar : display.market.name_en}
       themeMode={themeMode}
       links={links}
+      orderLinks={orderLinks}
       logout={
         <form action={customerLogout.bind(null, locale)}>
           <Button variant="secondary">{ar ? 'تسجيل الخروج' : 'Sign out'}</Button>

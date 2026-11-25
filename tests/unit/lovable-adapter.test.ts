@@ -8,14 +8,14 @@ describe('Lovable canonical Store adapter', () => {
       destination('catalog', 'ar', '', 'packing & moving', 'boxes', 'cursor/1'),
       'http://localhost',
     );
-    expect(url.pathname).toBe('/ar/store');
+    expect(url.pathname).toBe('/ar');
     expect(Object.fromEntries(url.searchParams)).toEqual({
       search: 'packing & moving',
       category: 'boxes',
       after: 'cursor/1',
     });
     expect(destination('transport', 'en')).toBe('/en/request');
-    expect(destination('categories', 'ar')).toBe('/ar/store/categories');
+    expect(destination('categories', 'ar')).toBe('/ar');
     expect(destination('orders', 'ar')).toBe('/ar/store/orders');
   });
   it('projects approved customer content without leaking private extra fields', () => {

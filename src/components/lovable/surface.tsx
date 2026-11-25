@@ -22,7 +22,7 @@ export async function CommerceSurface({
   const [country, catalog, categories] = await Promise.all([
     selectedPublicCountry(),
     storeShop(view === 'product' ? { slug: productId } : query),
-    storeCategories(),
+    ['home', 'catalog', 'categories'].includes(view) ? storeCategories() : Promise.resolve([]),
   ]);
   catalogTrace({
     stage: 'render',

@@ -8,6 +8,9 @@ export const storeAction = z.enum([
   'discard_proof',
   'request_cancel',
   'request_return',
+  'quote_delivery',
+  'confirm_total',
+  'verify_bank',
   'accept',
   'send',
   'prepare',
@@ -44,6 +47,7 @@ export const storeReadKind = z.enum([
   'admin',
   'finance',
   'reconciliation',
+  'staff_directory',
 ]);
 const money = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 export const productContent = z.object({
@@ -124,7 +128,7 @@ export const storeOrderRow = z.object({
   fulfillmentState: z.string(),
   paymentStatus: z.string(),
   method: z.string(),
-  totalMinor: money,
+  totalMinor: money.nullable(),
   currency: z.literal('EGP'),
   createdAt: z.string(),
 });
@@ -139,11 +143,19 @@ export const storeOrder = z.object({
   orderState: z.string(),
   fulfillmentState: z.string(),
   createdAt: z.string(),
-  address: z.object({ name: z.string(), phone: z.string(), region: z.string(), line: z.string() }),
+  address: z.object({
+    name: z.string(),
+    phone: z.string(),
+    region: z.string(),
+    area: z.string().optional(),
+    notes: z.string().nullish(),
+    line: z.string(),
+  }),
+  guestCheckout: z.boolean().optional(),
   subtotalMinor: money,
-  deliveryMinor: money,
+  deliveryMinor: money.nullable(),
   taxMinor: money,
-  totalMinor: money,
+  totalMinor: money.nullable(),
   currency: z.literal('EGP'),
   termsAr: z.string(),
   termsEn: z.string(),
@@ -154,7 +166,7 @@ export const storeOrder = z.object({
   payment: z.object({
     method: z.string(),
     status: z.string(),
-    collector: z.string(),
+    collector: z.string().nullable(),
     destination: z
       .object({
         channel: z.string(),

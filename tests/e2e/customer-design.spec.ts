@@ -15,9 +15,9 @@ for (const locale of ['ar', 'en'] as const) {
     await expect(root.locator('a[href="/' + locale + '/account/quotes"]')).toHaveCount(1);
     await expect(root.locator('a[href="/' + locale + '/store/orders"]')).toHaveCount(1);
     await page.keyboard.press('Tab');
-    await expect(root.locator('.skip-link')).toBeFocused();
+    await expect(page.locator('.skip-link[href="#main"]')).toBeFocused();
     await page.keyboard.press('Enter');
-    await expect(root.locator('#customer-content')).toBeFocused();
+    await expect(page.locator('#main')).toBeFocused();
     for (const theme of ['light', 'dark', 'system']) {
       await page
         .getByRole('combobox', { name: locale === 'ar' ? 'المظهر' : 'Theme', exact: true })
@@ -34,7 +34,7 @@ for (const locale of ['ar', 'en'] as const) {
           .violations,
       ).toEqual([]);
     }
-    await root.locator('.language-link').click();
+    await page.locator('.launch-header .language-link').click();
     const other = locale === 'ar' ? 'en' : 'ar';
     await expect(page).toHaveURL(new RegExp('/' + other + '/account$'));
     await expect(page.locator('html')).toHaveAttribute('dir', other === 'ar' ? 'rtl' : 'ltr');
@@ -45,7 +45,7 @@ for (const locale of ['ar', 'en'] as const) {
       })
       .click();
     await expect(page).toHaveURL(new RegExp('/' + other + '/request$'));
-    await expect(page.locator('.transport-header .brand-mark')).toHaveCount(1);
+    await expect(page.locator('.launch-header .brand-mark')).toHaveCount(1);
     await expect(page.locator('.customer-workspace')).toHaveCount(0);
   });
 }

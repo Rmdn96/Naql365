@@ -5,19 +5,6 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
   usePathname: () => '/en',
 }));
-vi.mock('@/components/lovable/adapter', async (original) => ({
-  ...(await original<object>()),
-  useCommerce: () => ({
-    cart: null,
-    cartState: 'guest',
-    lines: [],
-    busy: '',
-    notice: '',
-    add: vi.fn(),
-    change: vi.fn(),
-    setNotice: vi.fn(),
-  }),
-}));
 import { SourceCommerce } from '@/components/lovable/commerce';
 import type { CatalogProduct } from '@/components/lovable/adapter';
 const product: CatalogProduct = {
@@ -71,7 +58,7 @@ it('retains non-purchasable empty state and guest cart access', () => {
   );
   expect(html).not.toContain('cm-product store-product');
   expect(html).toContain('Purchasing is currently unavailable');
-  expect(html).toContain('/en/store');
+  expect(html).toContain('/en/request');
 });
 it.each(['ar', 'en'] as const)(
   'keeps %s home, catalog and product presentation under Naql365 responsibility',
@@ -88,7 +75,7 @@ it.each(['ar', 'en'] as const)(
           available: true,
         }),
       );
-      expect(html).toContain('Naql365');
+      expect(html).toContain(locale === 'ar' && view !== 'product' ? 'نقل 365' : 'Naql365');
       expect(html).not.toMatch(/supplier|المورد/i);
       if (view === 'product')
         expect(html).toContain(

@@ -27,7 +27,7 @@ import { LocaleLink } from './locale-link';
 import { MarketSelector } from './market-selector';
 import { ThemeControl } from './theme-control';
 import type { PublicCountry } from '@/domain/markets/public-contact';
-export type StaffLink = { href: string; label: string; symbol: string };
+export type StaffLink = { href: string; label: string; symbol: string; prefixes?: string[] };
 export function StaffShell({
   locale,
   country,
@@ -35,6 +35,7 @@ export function StaffShell({
   marketName,
   themeMode,
   links,
+  orderLinks = [],
   logout,
   children,
 }: {
@@ -44,6 +45,7 @@ export function StaffShell({
   marketName?: string;
   themeMode: 'light' | 'dark' | 'system';
   links: StaffLink[];
+  orderLinks?: StaffLink[];
   logout: React.ReactNode;
   children: React.ReactNode;
 }) {
@@ -56,7 +58,9 @@ export function StaffShell({
     .filter(
       (l) =>
         !l.href.includes('#') &&
-        (path === l.href || (l.href !== '/' + locale + '/portal' && path.startsWith(l.href + '/'))),
+        (path === l.href ||
+          (l.href !== '/' + locale + '/portal' && path.startsWith(l.href + '/')) ||
+          l.prefixes?.some((prefix) => path === prefix || path.startsWith(prefix + '/'))),
     )
     .sort((a, b) => b.href.length - a.href.length)[0];
   const close = () => {
@@ -175,6 +179,19 @@ export function StaffShell({
               <span> / {active?.label ?? (ar ? 'تفاصيل' : 'Details')}</span>
             )}
           </nav>
+          {orderLinks.some((link) => link.href === active?.href) && (
+            <nav className="store-nav" aria-label={ar ? 'نوع الطلب' : 'Order type'}>
+              {orderLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={path.startsWith(link.href) ? 'page' : undefined}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          )}
           {children}
         </div>
       </div>

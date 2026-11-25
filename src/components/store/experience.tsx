@@ -329,9 +329,10 @@ async function renderStoreBody({
               <br />
               {order.address.phone}
               <br />
-              {order.address.region}
+              {[order.address.region, order.address.area].filter(Boolean).join(' · ')}
               <br />
               {order.address.line}
+              {order.address.notes && <p>{order.address.notes}</p>}
             </address>
             <p>{locale === 'ar' ? order.termsAr : order.termsEn}</p>
           </Card>
@@ -345,7 +346,7 @@ async function renderStoreBody({
             <p>{staff ? t.staffCash : t.cash}</p>
           ) : (
             <>
-              <p>{t.proofNote}</p>
+              {order.payment.method !== 'BANK_TRANSFER' && <p>{t.proofNote}</p>}
               {order.payment.destination && (
                 <dl>
                   <dt>{t.name}</dt>

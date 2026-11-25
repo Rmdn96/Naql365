@@ -1,0 +1,210 @@
+.launch-header {
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  border-bottom: 1px solid var(--theme-border);
+}
+.launch-header-inner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.25rem;
+  padding-block: 0.8rem;
+}
+.launch-header .commerce-search {
+  flex: 1 1 15rem;
+  max-width: 36rem;
+}
+.launch-header nav,
+.launch-header-tools,
+.launch-categories,
+.launch-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  flex-wrap: wrap;
+}
+.launch-header nav a,
+.launch-header-tools a,
+.launch-categories a,
+.launch-contact a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.launch-header-tools {
+  margin-inline-start: auto;
+}
+.launch-categories a {
+  padding: 0 0.9rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+}
+.launch-categories a[aria-current='page'] {
+  font-weight: bold;
+  border-color: currentColor;
+}
+.launch-store,
+.launch-product-detail,
+.launch-cart {
+  padding-block: 1.5rem 3rem;
+  display: grid;
+  gap: 1.3rem;
+  min-width: 0;
+}
+.launch-store h1,
+.launch-cart h1,
+.launch-store h2,
+.launch-store p {
+  margin: 0;
+}
+.launch-store .cm-product {
+  min-width: 0;
+}
+.launch-store .cm-product-copy h2 {
+  font-size: 1.1rem;
+}
+.launch-service,
+.launch-contact {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--theme-border);
+  padding-top: 1.5rem;
+}
+.launch-lines,
+.launch-cart form,
+.launch-cart fieldset {
+  display: grid;
+  gap: 0.9rem;
+  min-width: 0;
+}
+.launch-lines article {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+}
+.launch-cart fieldset {
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  padding: 1rem;
+  max-width: 42rem;
+}
+.launch-cart label {
+  display: grid;
+  gap: 0.25rem;
+}
+.launch-cart input,
+.launch-cart select,
+.launch-cart textarea,
+.launch-cart button {
+  font: inherit;
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  min-height: 44px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  max-width: 100%;
+}
+.launch-cart input[type='number'] {
+  width: 5rem;
+}
+.launch-cart button.launch-primary {
+  background: var(--theme-brand-hover);
+  color: var(--theme-on-brand);
+}
+.launch-notice {
+  position: sticky;
+  bottom: 0;
+  background: var(--theme-surface);
+  color: var(--theme-text-primary);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--theme-border);
+  text-align: center;
+}
+.launch-media img {
+  width: 100%;
+  height: auto;
+  max-width: 36rem;
+}
+@media (max-width: 700px) {
+  .launch-header-inner {
+    gap: 0.35rem 0.65rem;
+  }
+  .launch-header .commerce-search {
+    order: 2;
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .launch-header nav {
+    order: 3;
+    gap: 0.6rem;
+  }
+  .launch-header-tools {
+    gap: 0.5rem;
+  }
+  .launch-header-tools select {
+    max-width: 6.5rem;
+  }
+  .launch-store {
+    padding-block-start: 1rem;
+  }
+  .launch-store .commerce-products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(145px, 100%), 1fr));
+    gap: 0.65rem;
+  }
+}
+
+.launch-header-inner {
+  width: min(100% - 2rem, 78rem);
+  margin-inline: auto;
+}
+.launch-main-nav {
+  flex-basis: 100%;
+  border-top: 1px solid var(--theme-border);
+}
+.launch-main-nav .commerce-cart {
+  width: auto;
+}
+.launch-main-nav .commerce-cart-badge {
+  position: static;
+}
+.launch-footer,
+.launch-footer nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem 1.2rem;
+  flex-wrap: wrap;
+}
+.launch-footer {
+  justify-content: space-between;
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--theme-border);
+}
+.launch-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+@media (max-width: 420px) {
+  .launch-header-inner {
+    width: calc(100% - 1rem);
+  }
+  .launch-main-nav {
+    justify-content: space-between;
+    font-size: 0.82rem;
+  }
+  .launch-main-nav a {
+    gap: 0.15rem;
+  }
+  .launch-header-inner .brand-mark {
+    max-width: 6rem;
+  }
+}

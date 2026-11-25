@@ -47,6 +47,27 @@ insert into private.store_checkout_contracts(id,organization_id,market_id,curren
 insert into public.bank_accounts(id,organization_id,market_id,currency,bank_name_ar,bank_name_en,beneficiary_ar,beneficiary_en,account_number,destination_type,is_primary,created_by)
  select ('99000000-0000-4000-8000-'||lpad((n+1)::text,12,'0'))::uuid,'91000000-0000-4000-8000-000000000001','95000000-0000-4000-8000-000000000001','EGP','اختبار','SYNTHETIC','اختبار','SYNTHETIC','TEST-ONLY-0000',case n when 1 then 'VODAFONE_CASH' else 'INSTAPAY' end,false,'92000000-0000-4000-8000-000000000002' from generate_series(1,2) n;
 -- FIXTURE END. Independent connection harness reuses only the above setup.
+-- Three already-placed orders from before the guest checkout cutover. They remain
+-- readable, fulfillable, refundable and reconcilable under the new commands.
+do $$ declare n int; c private.store_checkout_contracts; cart uuid; oid uuid; method text; b public.bank_accounts; begin
+ select * into c from private.store_checkout_contracts where id='99000000-0000-4000-8000-000000000001';
+ insert into private.store_carts(organization_id,market_id,customer_id)
+  values(c.organization_id,c.market_id,'93000000-0000-4000-8000-000000000001') returning id into cart;
+ for n in 1..3 loop
+  oid=('99100000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid;
+  method=(array['CASH','VODAFONE_CASH','INSTAPAY'])[n];
+  select * into b from public.bank_accounts where destination_type=method and organization_id=c.organization_id limit 1;
+  insert into private.store_orders(id,organization_id,market_id,currency,customer_id,supplier_id,contract_id,cart_id,cart_revision,reference,address,contract_snapshot,
+   subtotal_minor,delivery_minor,tax_minor,total_minor,supplier_entitlement_minor)
+   values(oid,c.organization_id,c.market_id,'EGP','93000000-0000-4000-8000-000000000001',c.supplier_id,c.id,cart,n,'HISTORICAL-'||n,
+    '{"name":"Synthetic","phone":"Synthetic","region":"SYNTHETIC-REGION","line":"Synthetic"}',to_jsonb(c),2000,200,0,2200,1300);
+  insert into private.store_order_items(organization_id,order_id,listing_id,offer_id,price_id,quantity,unit_price_minor,unit_entitlement_minor,product_snapshot,commercial_snapshot)
+   select c.organization_id,oid,l.id,l.selected_offer_id,l.selected_price_id,2,1000,600,l.published_content,'{}' from private.store_product_market_listings l where l.id='98000000-0000-4000-8000-000000000003';
+  insert into private.store_payments(organization_id,market_id,order_id,currency,amount_minor,method,collector,destination_id,destination_snapshot,status)
+   values(c.organization_id,c.market_id,oid,'EGP',2200,method,case when n=1 then 'SUPPLIER' else 'NAQL365' end,
+    b.id,case when b.id is not null then jsonb_build_object('channel',method,'accountNumber',b.account_number) end,case when n=1 then 'CASH_DUE' else 'PENDING' end);
+ end loop;
+end $$;
 set local role authenticated;
 select set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000001',true);
 select public.store_purchase_assert(public.store_shop_v1('EG')->>'status'='AVAILABLE','approved catalog available');
@@ -57,16 +78,8 @@ select public.store_purchase_error('select * from private.store_purchase_receipt
 do $$ declare cart jsonb; r jsonb; again jsonb; id uuid; v bigint; proof uuid; action text; method text; n integer; payload jsonb; mutation uuid; details jsonb; operation uuid; begin
  for n in 1..3 loop
   method=(array['CASH','VODAFONE_CASH','INSTAPAY'])[n];
-  cart=public.store_purchase_read_v1('EG','cart');
-  cart=public.store_purchase_command_v1('EG','cart',gen_random_uuid(),(cart->>'revision')::bigint,null,'{"items":[{"listingId":"98000000-0000-4000-8000-000000000003","revision":2,"quantity":2}]}');
-  payload=jsonb_build_object('contractId','99000000-0000-4000-8000-000000000001','contractRevision',1,'address',jsonb_build_object('name','SYNTHETIC','phone','SYNTHETIC','region','SYNTHETIC-REGION','line','Synthetic only'),'method',method);
-  if n>1 then payload=payload||jsonb_build_object('destinationId',('99000000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid); end if;
-  mutation=gen_random_uuid();
-  r=public.store_purchase_command_v1('EG','checkout',mutation,(cart->>'revision')::bigint,null,payload);
-  again=public.store_purchase_command_v1('EG','checkout',mutation,(cart->>'revision')::bigint,null,payload);
-  perform public.store_purchase_assert(r=again,'durable checkout replay '||method);
-  perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''checkout'',%L,%s,null,%L::jsonb)',gen_random_uuid(),cart->>'revision',payload),'PT409','different mutation cannot duplicate checked-out cart');
-  id=(r->>'id')::uuid; v=(r->>'revision')::bigint;
+  perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''checkout'',%L,1,null,''{}'')',gen_random_uuid()),'PT409','legacy checkout closed for new requests');
+  id=('99100000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid; v=1;
   details=public.store_purchase_read_v1('EG','order',id);
   perform public.store_purchase_assert(details->>'totalMinor'='2200' and not details?'supplierEntitlementMinor' and details->'entries'='[]'::jsonb,'customer snapshot and commercial privacy '||method);
   perform set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000004',true);
@@ -116,6 +129,113 @@ select public.store_purchase_assert((select count(*)=3 from private.store_orders
 select public.store_purchase_assert((select count(*)=2 from private.manual_collection_receipts where domain='STORE'),'only transfers claim external receipts');
 select public.store_purchase_assert(not exists(select 1 from public.orders where organization_id='91000000-0000-4000-8000-000000000001'),'no Transport Orders created');
 select public.store_purchase_assert((select count(*)=3 from private.store_money_entries where kind='OBLIGATION_REVERSAL'),'approved returns reverse the original obligation without deleting history');
+-- Guest intake and replay use the same financial fixture; no customer session.
+insert into private.store_checkout_contracts
+ select (jsonb_populate_record(null::private.store_checkout_contracts,to_jsonb(c)||
+    jsonb_build_object('id',gen_random_uuid(),'version',c.version+1,'regions',array['CAIRO','الجيزة'],'tax_bps',1400))).*
+ from private.store_checkout_contracts c where c.version=1;
+grant insert,select on public.store_purchase_test_results to anon;
+set local role anon;
+select set_config('request.jwt.claim.sub','',true);
+do $guest$
+declare
+ payload jsonb := '{"full_name":"Synthetic Guest","phone":"01000000001","governorate":"CAIRO","area":"Synthetic","address":"Fixture address","payment_method":"CASH","items":[{"listing_id":"98000000-0000-4000-8000-000000000003","unit_price":10,"quantity":2}]}';
+ key uuid := gen_random_uuid(); response jsonb;
+begin
+ perform public.store_purchase_error('select * from private.store_orders','42501','anonymous orders protected');
+ perform public.store_purchase_error('select * from private.store_order_items','42501','anonymous lines protected');
+ perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,payload||'{"governorate":"ALEXANDRIA"}'),'22023','delivery restricted server side');
+ perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,payload||'{"payment_method":"VODAFONE_CASH"}'),'22023','wallet unavailable to guest');
+ perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,payload||'{"payment_method":"BANK_TRANSFER"}'),'PT409','transfer requires approved bank');
+ perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,jsonb_set(payload,'{items,0,unit_price}','1')),'PT409','price tampering refused');
+ perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,jsonb_set(payload,'{items,0,listing_id}',to_jsonb(gen_random_uuid()))),'PT409','unavailable listing refused');
+ perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,payload||'{"total":1}'),'22023','client total refused');
+ response := public.store_guest_checkout_v1(key,payload);
+ perform public.store_purchase_assert(response ? 'reference' and response - 'reference'='{}'::jsonb,'guest receives reference only');
+ perform public.store_purchase_assert(response=public.store_guest_checkout_v1(key,payload),'same request is replay safe');
+ perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,payload||'{"area":"changed"}'),'P4091','cannot replay changed request');
+end $guest$;
+reset role;
+select public.store_purchase_assert((select count(*)=1 and bool_and(delivery_minor is null and total_minor is null and subtotal_minor=2000 and tax_minor=280)
+ from private.store_orders where guest_request_id is not null),'one order, delivery and final amount pending');
+select public.store_purchase_assert(not exists(select 1 from private.store_payments p join private.store_orders o on o.id=p.order_id where o.guest_request_id is not null),'no charge created before confirmation');
+select public.store_purchase_assert((select count(*)=1 from public.customers where identity_kind='GUEST'),'guest intake creates no duplicate customer');
+
+-- The catalog and checkout use the same publication guard.
+update private.store_policy_versions set scope_paused=true, revision=revision+1 where kind='STOREFRONT_SCOPE';
+set local role anon;
+select public.store_purchase_error($q$select public.store_guest_checkout_v1(gen_random_uuid(),'{"full_name":"Synthetic Guest","phone":"01000000001","governorate":"CAIRO","area":"Test","address":"Fixture address","payment_method":"CASH","items":[{"listing_id":"98000000-0000-4000-8000-000000000003","unit_price":10,"quantity":1}]}')$q$,'PT409','paused storefront rejects guest orders');
+select public.store_purchase_error($q$insert into private.store_orders(id) values(gen_random_uuid())$q$,'42501','anonymous direct writes forbidden');
+reset role;
+update private.store_policy_versions set scope_paused=false, revision=revision+1 where kind='STOREFRONT_SCOPE';
+-- A bank transfer is accepted only against a real scoped BANK in the approved contract.
+insert into public.bank_accounts(id,organization_id,market_id,currency,bank_name_ar,bank_name_en,beneficiary_ar,beneficiary_en,account_number,destination_type,is_primary,created_by)
+ values('99100000-0000-4000-8000-000000000001','91000000-0000-4000-8000-000000000001','95000000-0000-4000-8000-000000000001','EGP','اختبار','Fixture','اختبار','Fixture','TEST-ONLY','BANK',false,'92000000-0000-4000-8000-000000000002');
+insert into private.store_checkout_contracts
+ select (jsonb_populate_record(null::private.store_checkout_contracts,to_jsonb(c)||
+   jsonb_build_object('id',gen_random_uuid(),'version',3,'destination_ids',array['99100000-0000-4000-8000-000000000001']))).*
+ from private.store_checkout_contracts c where c.version=2;
+set local role anon;
+do $bank$
+declare payload jsonb := '{"full_name":"Synthetic Guest","phone":"01000000001","governorate":"GIZA","area":"Synthetic","address":"Fixture address","payment_method":"BANK_TRANSFER","items":[{"listing_id":"98000000-0000-4000-8000-000000000003","unit_price":10,"quantity":1}]}';
+begin
+  for i in 1..4 loop perform public.store_guest_checkout_v1(gen_random_uuid(),payload); end loop;
+  perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',gen_random_uuid(),payload),'PT429','per phone budget applies to direct RPC');
+end $bank$;
+reset role;
+select public.store_purchase_assert((select count(*)=4 and bool_and(total_minor is null and delivery_minor is null)
+  from private.store_orders where guest_payment_method='BANK_TRANSFER'),'Giza transfer orders await quote and receipt');
+set local role authenticated;
+select set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000004',true);
+do $$ begin perform public.store_guest_checkout_v1(gen_random_uuid(),'{"full_name":"Account Customer","phone":"01000000002","governorate":"GIZA","area":"Test","address":"Fixture address","payment_method":"CASH","items":[{"listing_id":"98000000-0000-4000-8000-000000000003","unit_price":10,"quantity":1}]}'); end $$;
+reset role;
+select public.store_purchase_assert((select count(*)=1 from private.store_orders where guest_request_id is not null and customer_id='93000000-0000-4000-8000-000000000004'),'registered customer associated through session only');
+
+
+-- Select one anonymous checkout for each method from the intake scenarios.
+create temporary table guest_review_targets as
+ select distinct on (o.guest_payment_method) o.id,o.guest_payment_method method,(o.subtotal_minor+o.tax_minor+300) expected
+ from private.store_orders o join public.customers c on c.id=o.customer_id
+ where o.guest_request_id is not null and c.identity_kind='GUEST' order by o.guest_payment_method,o.id;
+grant select on guest_review_targets to authenticated;
+set local role authenticated;
+do $review$
+declare t record; v bigint; r jsonb; a text; fee jsonb='{"deliveryMinor":300}'; receipt text; mutation uuid; begin
+ for t in select * from guest_review_targets loop
+  perform set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000004',true);
+  perform public.store_purchase_error(format('select public.store_purchase_read_v1(''EG'',''order'',%L)',t.id),'42501','guest order private');
+  perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''quote_delivery'',%L,1,%L,%L)',gen_random_uuid(),t.id,fee),'42501','customer cannot quote delivery');
+  perform set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000002',true);
+  r=public.store_purchase_read_v1('EG','order',t.id);
+  perform public.store_purchase_assert(r->>'totalMinor' is null and r->'payment'->>'status'='AWAITING_CONFIRMATION','pending delivery price not zero');
+  v=(r->>'revision')::bigint;
+  perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''accept'',%L,%s,%L)',gen_random_uuid(),v,t.id),'PT409','legacy accept cannot bypass consent');
+  r=public.store_purchase_command_v1('EG','quote_delivery',gen_random_uuid(),v,t.id,fee); v=(r->>'revision')::bigint;
+  perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''confirm_total'',%L,%s,%L,%L)',gen_random_uuid(),v,t.id,'{"totalMinor":2500,"evidenceReference":"Synthetic confirmation"}'),'PT409','customer must confirm exact total');
+  r=public.store_purchase_command_v1('EG','confirm_total',gen_random_uuid(),v,t.id,jsonb_build_object('totalMinor',t.expected,'evidenceReference','Synthetic phone confirmation'));v=(r->>'revision')::bigint;
+  perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''quote_delivery'',%L,%s,%L,%L)',gen_random_uuid(),v,t.id,fee),'PT409','accepted order total locked');
+  if t.method='BANK_TRANSFER' then
+   perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''send'',%L,%s,%L)',gen_random_uuid(),v,t.id),'PT409','bank transfer cannot release before collection');
+   perform set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000004',true);
+   perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''verify_bank'',%L,%s,%L,%L)',gen_random_uuid(),v,t.id,jsonb_build_object('reference','SYNTHETIC-123456','amountMinor',t.expected,'evidenceReference','SYNTHETIC')),'42501','unauthorized receipt denied');
+   perform set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000002',true);
+   mutation=gen_random_uuid();
+   r=public.store_purchase_command_v1('EG','verify_bank',mutation,v,t.id,jsonb_build_object('reference','SYNTHETIC-123456','amountMinor',t.expected,'evidenceReference','SYNTHETIC'));
+   perform public.store_purchase_assert(r=public.store_purchase_command_v1('EG','verify_bank',mutation,v,t.id,jsonb_build_object('reference','SYNTHETIC-123456','amountMinor',t.expected,'evidenceReference','SYNTHETIC')),'verified receipt retry applied once');
+   v=(r->>'revision')::bigint;
+  end if;
+  foreach a in array array['send','prepare','dispatch','deliver'] loop
+   r=public.store_purchase_command_v1('EG',a,gen_random_uuid(),v,t.id);v=(r->>'revision')::bigint;
+  end loop;
+  if t.method='CASH' then
+   perform public.store_purchase_assert(public.store_purchase_read_v1('EG','order',t.id)->'payment'->>'status'='CASH_DUE','guest COD remains due after delivery');
+   r=public.store_purchase_command_v1('EG','report_cash',gen_random_uuid(),v,t.id,'{"amountMinor":2580,"reason":"Synthetic collected","evidenceReference":"Synthetic receipt"}');v=(r->>'revision')::bigint;
+   r=public.store_purchase_command_v1('EG','confirm_cash',gen_random_uuid(),v,t.id,'{"evidenceReference":"Synthetic independent confirmation"}');
+  end if;
+  perform public.store_purchase_assert(public.store_purchase_read_v1('EG','order',t.id)->'payment'->>'status'='VERIFIED','settled actual collection '||t.method);
+ end loop;
+end $review$;
+reset role;
 update private.store_policy_versions set status='REVOKED',revision=revision+1 where kind='STOREFRONT_SCOPE';
 set local role authenticated;
 select set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000001',true);

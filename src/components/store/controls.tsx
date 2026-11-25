@@ -475,7 +475,12 @@ export function OrderActions({
     if (order.fulfillmentState === 'DELIVERED') allowed.push('request_return');
   } else {
     if (order.permissions.orders) {
-      if (order.orderState === 'PLACED') allowed.push('accept');
+      if (order.orderState === 'PLACED') {
+        if (order.guestCheckout) {
+          allowed.push('quote_delivery');
+          if (order.totalMinor !== null) allowed.push('confirm_total');
+        } else allowed.push('accept');
+      }
       if (['AWAITING_RELEASE', 'EXCEPTION'].includes(order.fulfillmentState))
         allowed.push('cancel');
       if (order.fulfillmentState === 'DELIVERED') allowed.push('return');
@@ -510,6 +515,12 @@ export function OrderActions({
         allowed.push('report_cash');
     }
     if (order.permissions.verify) {
+      if (
+        order.payment.method === 'BANK_TRANSFER' &&
+        order.payment.status === 'PENDING' &&
+        order.orderState === 'ACCEPTED'
+      )
+        allowed.push('verify_bank');
       if (order.payment.status === 'UNDER_REVIEW') allowed.push('confirm_transfer', 'reject_proof');
       if (order.payment.status === 'CASH_DUE' && order.fulfillmentState === 'DELIVERED')
         allowed.push('confirm_cash');
@@ -538,6 +549,12 @@ export function OrderActions({
         ])
           if (d.get(name)) payload[name] = String(d.get(name));
         if (d.get('amountMinor')) payload.amountMinor = Number(d.get('amountMinor'));
+        if (selected === 'quote_delivery')
+          payload.deliveryMinor = Math.round(Number(d.get('deliveryEgp')) * 100);
+        if (selected === 'verify_bank')
+          payload.amountMinor = Math.round(Number(d.get('receivedEgp')) * 100);
+        if (selected === 'confirm_total' && order.totalMinor !== null)
+          payload.totalMinor = order.totalMinor;
         await command.run({
           action: selected as StoreCommand['action'],
           target: order.id,
@@ -573,6 +590,7 @@ export function OrderActions({
         <Input id="store-reason" name="reason" label={t.reason} maxLength={500} required />
       )}
       {(selected.includes('confirm') ||
+        selected === 'verify_bank' ||
         selected === 'reject_proof' ||
         selected === 'report_cash' ||
         (money && selected !== 'money_request')) && (
@@ -584,7 +602,7 @@ export function OrderActions({
           required
         />
       )}
-      {selected === 'confirm_transfer' && (
+      {(selected === 'confirm_transfer' || selected === 'verify_bank') && (
         <Input
           id="store-verified-reference"
           name="reference"
@@ -594,6 +612,33 @@ export function OrderActions({
           required
         />
       )}
+      {selected === 'quote_delivery' && (
+        <Input
+          id="delivery-fee"
+          name="deliveryEgp"
+          type="number"
+          min={0}
+          max={1000000}
+          step="0.01"
+          required
+          label={locale === 'ar' ? 'رسوم التوصيل بالجنيه المصري' : 'Delivery fee (EGP)'}
+        />
+      )}
+      {selected === 'verify_bank' && (
+        <Input
+          id="received"
+          name="receivedEgp"
+          type="number"
+          min={0.01}
+          step="0.01"
+          required
+          label={
+            locale === 'ar'
+              ? 'المبلغ المستلم فعليًا بالجنيه المصري'
+              : 'Amount actually received (EGP)'
+          }
+        />
+      )}
       {selected === 'report_cash' && (
         <Input
           id="store-cash-amount"
@@ -601,8 +646,8 @@ export function OrderActions({
           label={t.amount}
           type="number"
           min={1}
-          max={order.totalMinor}
-          defaultValue={order.totalMinor}
+          max={order.totalMinor ?? undefined}
+          defaultValue={order.totalMinor ?? undefined}
           required
         />
       )}
@@ -619,7 +664,7 @@ export function OrderActions({
             label={t.amount}
             type="number"
             min={1}
-            max={order.totalMinor}
+            max={order.totalMinor ?? undefined}
             required
           />
           <Input
@@ -653,7 +698,9 @@ export function OrderActions({
             ))}
         </Select>
       )}
-      {(selected.includes('confirm') || selected === 'money_verify') && (
+      {(selected.includes('confirm') ||
+        selected === 'verify_bank' ||
+        selected === 'money_verify') && (
         <label className="store-check">
           <input type="checkbox" required /> {t.verified} · {storeMoney(order.totalMinor, locale)}
         </label>

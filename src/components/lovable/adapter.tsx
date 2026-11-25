@@ -1,15 +1,7 @@
 'use client';
 import NextLink from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useRef, useState, type ComponentProps } from 'react';
-import type { StoreProduct, StoreCart } from '@/domain/store/model';
-import {
-  activeCartItems,
-  cartChanged,
-  readCart,
-  createCartWriter,
-  CartAccessError,
-} from '@/components/store/cart-client';
+import type { ComponentProps } from 'react';
+import type { StoreProduct } from '@/domain/store/model';
 import type { Locale, Market } from './types';
 export type CatalogProduct = {
   id: string;
@@ -48,11 +40,11 @@ export function destination(
   const root = '/' + locale;
   const paths: Record<string, string> = {
     home: '',
-    catalog: '/store',
-    categories: '/store/categories',
+    catalog: '',
+    categories: '',
     product: '/store/products/' + encodeURIComponent(product),
     cart: '/store/cart',
-    checkout: '/store/checkout',
+    checkout: '/store/cart',
     portal: '/account',
     orders: '/store/orders',
     requests: '/account/requests',
@@ -100,96 +92,3 @@ export function Link({
   return <NextLink {...props} href={href} />;
 }
 export { themeModes, parseThemeMode, type ThemeMode } from '@/components/design-system/theme';
-export function useCommerce(locale: Locale) {
-  const router = useRouter(),
-    pathname = usePathname(),
-    writer = useRef(createCartWriter()),
-    lock = useRef(false);
-  const [cart, setCart] = useState<StoreCart | null>(null),
-    [busy, setBusy] = useState(''),
-    [notice, setNotice] = useState(''),
-    [cartState, setCartState] = useState<'loading' | 'ready' | 'guest' | 'unavailable'>('loading');
-  useEffect(() => {
-    const controller = new AbortController();
-    const refresh = () => {
-      void readCart(controller.signal)
-        .then((next) => {
-          if (!controller.signal.aborted) {
-            setCart(next);
-            setCartState('ready');
-          }
-        })
-        .catch((error: unknown) => {
-          if (!controller.signal.aborted) {
-            setCart(null);
-            setCartState(
-              error instanceof CartAccessError && error.status === 401 ? 'guest' : 'unavailable',
-            );
-          }
-        });
-    };
-    refresh();
-    window.addEventListener(cartChanged, refresh);
-    window.addEventListener('focus', refresh);
-    return () => {
-      controller.abort();
-      window.removeEventListener(cartChanged, refresh);
-      window.removeEventListener('focus', refresh);
-    };
-  }, [pathname]);
-  async function mutate(id: string, quantity: number, product?: CatalogProduct) {
-    if (lock.current) return;
-    lock.current = true;
-    setBusy(id);
-    setNotice('');
-    try {
-      const updated = await writer.current((c) => {
-        let items = activeCartItems(c).map((i) => ({
-          listingId: i.listingId,
-          revision: i.savedRevision,
-          quantity: i.quantity,
-        }));
-        const old = items.find((i) => i.listingId === id);
-        if (product) {
-          if (old) {
-            old.quantity = Math.min(999, old.quantity + quantity);
-            old.revision = product.revision;
-          } else items.push({ listingId: id, revision: product.revision, quantity });
-        } else {
-          items = items
-            .map((i) => (i.listingId === id ? { ...i, quantity } : i))
-            .filter((i) => i.quantity > 0);
-        }
-        return { items };
-      });
-      setCart(updated);
-      setCartState('ready');
-      setNotice(locale === 'ar' ? 'تم تحديث السلة' : 'Cart updated');
-      router.refresh();
-    } catch (error) {
-      if (error instanceof CartAccessError && error.status === 401)
-        router.push('/' + locale + '/login');
-      else
-        setNotice(
-          locale === 'ar'
-            ? 'تعذر تأكيد التغيير. أعد المحاولة.'
-            : 'Change unconfirmed. Please retry.',
-        );
-    } finally {
-      lock.current = false;
-      setBusy('');
-    }
-  }
-  return {
-    cart,
-    cartState,
-    lines: cart
-      ? activeCartItems(cart).map((i) => ({ productId: i.listingId, quantity: i.quantity }))
-      : [],
-    busy,
-    notice,
-    setNotice,
-    add: (p: CatalogProduct, q: number) => void mutate(p.id, q, p),
-    change: (id: string, q: number) => void mutate(id, q),
-  };
-}

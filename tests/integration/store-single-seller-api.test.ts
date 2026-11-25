@@ -55,8 +55,10 @@ it('keeps SQL and HTTP customer projections free of internal sourcing/Finance da
     },
   }));
   try {
+    const fixture = readFileSync('supabase/tests/store_purchase.test.sql', 'utf8');
     await db.exec(
-      readFileSync('supabase/tests/store_purchase.test.sql', 'utf8').split('-- FIXTURE END.')[0]! +
+      fixture.split('-- FIXTURE END.')[0] +
+        fixture.split('-- HISTORICAL ORDERS.')[1]!.split('-- HISTORICAL END.')[0] +
         '\ncommit;',
     );
     await actor(customer);
@@ -64,20 +66,7 @@ it('keeps SQL and HTTP customer projections free of internal sourcing/Finance da
       (await db.query<{ r: { status: string } }>("select public.store_shop_v1('EG') r")).rows[0]!.r
         .status,
     ).toBe('AVAILABLE');
-    const cart = await command('cart', 0, null, {
-      items: [{ listingId: '98000000-0000-4000-8000-000000000003', revision: 2, quantity: 1 }],
-    });
-    const placed = await command('checkout', cart.revision, null, {
-      contractId: '99000000-0000-4000-8000-000000000001',
-      contractRevision: 1,
-      method: 'CASH',
-      address: {
-        name: 'Synthetic',
-        phone: 'Synthetic',
-        region: 'SYNTHETIC-REGION',
-        line: 'Synthetic only',
-      },
-    });
+    const placed = { id: '99100000-0000-4000-8000-000000000001', revision: 1 };
     await actor(staff);
     let revision = placed.revision;
     for (const action of ['accept', 'send', 'prepare', 'dispatch', 'deliver'])
@@ -85,7 +74,7 @@ it('keeps SQL and HTTP customer projections free of internal sourcing/Finance da
     revision = (
       await command('report_cash', revision, placed.id, {
         reason: 'Synthetic collection',
-        amountMinor: 1200,
+        amountMinor: 2200,
         evidenceReference: 'PRIVATE-COLLECTION-EVIDENCE',
       })
     ).revision;
@@ -102,7 +91,7 @@ it('keeps SQL and HTTP customer projections free of internal sourcing/Finance da
     const staffResponse = await read('order', placed.id);
     expect(staffResponse.status).toBe(200);
     const staffData = await staffResponse.json();
-    expect(staffData.supplierEntitlementMinor).toBe(700);
+    expect(staffData.supplierEntitlementMinor).toBe(1300);
     expect(staffData.entries.length).toBeGreaterThan(0);
     expect(staffData.moneyOperations[0].reference).toBe('PRIVATE-SETTLEMENT-REFERENCE');
     expect(staffData.permissions.settle).toBe(true);

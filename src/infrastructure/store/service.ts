@@ -104,22 +104,34 @@ export async function storeShop(
 export async function storeCategories() {
   if (!getPublicEnv()) return [];
   const c = await createSupabaseServerClient();
-  const r = await c.rpc('store_shop_v1', {
-    p_country: await selectedPublicCountry(),
-    p_kind: 'categories',
-  });
-  if (r.error) storeFailure(r.error.code);
-  return z
-    .object({
-      items: z
-        .object({
+  const country = await selectedPublicCountry();
+  const categoryPage = z.object({
+    items: z
+      .array(
+        z.object({
           slug: z.string(),
           content: z.object({ title_ar: z.string(), title_en: z.string() }),
-        })
-        .array()
-        .max(20),
-    })
-    .parse(r.data).items;
+        }),
+      )
+      .max(20),
+    nextCursor: z.string().nullable(),
+  });
+  const categories: z.infer<typeof categoryPage>['items'] = [];
+  let after: string | null = null;
+  do {
+    const response = await c.rpc('store_shop_v1', {
+      p_country: country,
+      p_kind: 'categories',
+      ...(after ? { p_after: after } : {}),
+    });
+    if (response.error) storeFailure(response.error.code);
+    const page = categoryPage.parse(response.data);
+    categories.push(...page.items);
+    if (page.nextCursor && page.nextCursor === after)
+      throw new AppError('internal', 'Invalid category cursor');
+    after = page.nextCursor;
+  } while (after);
+  return categories;
 }
 export async function storeRead(
   kind: z.infer<typeof storeReadKind>,

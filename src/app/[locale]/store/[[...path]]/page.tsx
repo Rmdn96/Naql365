@@ -1,5 +1,5 @@
 import { CommerceSurface } from '@/components/lovable/surface';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { StoreExperience } from '@/components/store/experience';
 export const dynamic = 'force-dynamic';
@@ -14,27 +14,20 @@ export default async function Page({
   const { locale, path } = await params;
   if (!isLocale(locale)) notFound();
   const q = await searchParams;
-  if (!path?.length || ['products', 'cart', 'categories'].includes(path[0]!))
-    return (
-      <CommerceSurface
-        locale={locale}
-        view={
-          path?.[0] === 'products'
-            ? 'product'
-            : path?.[0] === 'cart'
-              ? 'cart'
-              : path?.[0] === 'categories'
-                ? 'categories'
-                : 'catalog'
-        }
-        productId={path?.[1] ?? ''}
-        query={{
-          ...(typeof q.search === 'string' ? { search: q.search } : {}),
-          ...(typeof q.category === 'string' ? { category: q.category } : {}),
-          ...(typeof q.after === 'string' ? { after: q.after } : {}),
-        }}
-      />
-    );
+  if (!path?.length || path[0] === 'categories') {
+    const params = new URLSearchParams();
+    for (const field of ['search', 'category', 'after']) {
+      if (typeof q[field] === 'string') params.set(field, q[field]);
+    }
+    redirect('/' + locale + (params.size ? '?' + params.toString() : ''));
+  }
+  if (path[0] === 'checkout') redirect('/' + locale + '/store/cart');
+  if (path[0] === 'products') {
+    if (path.length !== 2 || !/^[a-z0-9][a-z0-9-]{0,99}$/.test(path[1] ?? '')) notFound();
+    return <CommerceSurface locale={locale} view="product" productId={path[1]!} />;
+  }
+  if (path[0] === 'cart' && path.length === 1)
+    return <CommerceSurface locale={locale} view="cart" />;
   return (
     <CommerceSurface locale={locale} view={path?.[0] ?? 'catalog'}>
       <StoreExperience

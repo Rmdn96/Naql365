@@ -51,7 +51,7 @@ export async function CatalogAdmin({
     products: ar ? 'المنتجات' : 'Products',
     categories: ar ? 'الفئات' : 'Categories',
     listings: ar ? 'النشر والصور' : 'Publication and images',
-    prices: ar ? 'C — سعر العميل' : 'C — Customer retail',
+    prices: ar ? 'الأسعار' : 'Prices',
     references: ar ? 'A — سعر المورد المرجعي' : 'A — Supplier reference',
     offers: ar ? 'B — استحقاق المورد' : 'B — Supplier entitlement',
     suppliers: ar ? 'الموردون' : 'Suppliers',
@@ -63,17 +63,25 @@ export async function CatalogAdmin({
       !(['references', 'offers', 'suppliers', 'agreements'].includes(x) && !r.sourcing) &&
       !(x === 'policies' && !r.policies),
   );
+  const advanced = ['references', 'offers', 'suppliers', 'agreements', 'policies'];
+  const tabLink = (x: typeof k) => (
+    <SourceButton key={x} variant="toolbar" asChild>
+      <Link aria-current={k === x ? 'page' : undefined} href={root + '?kind=' + x}>
+        {labels[x]}
+      </Link>
+    </SourceButton>
+  );
   return (
     <div className="lovable cx st store-experience" lang={locale} dir={ar ? 'rtl' : 'ltr'}>
       <div className="st-admin-shell">
         <nav className="st-admin-nav" aria-label={t.catalogAdmin}>
-          {tabs.map((x) => (
-            <SourceButton key={x} variant="toolbar" asChild>
-              <Link aria-current={k === x ? 'page' : undefined} href={root + '?kind=' + x}>
-                {labels[x]}
-              </Link>
-            </SourceButton>
-          ))}
+          {tabs.filter((x) => !advanced.includes(x)).map(tabLink)}
+          {tabs.some((x) => advanced.includes(x)) && (
+            <details open={advanced.includes(k)}>
+              <summary>{ar ? 'إعدادات التوريد والسياسات' : 'Sourcing and policies'}</summary>
+              {tabs.filter((x) => advanced.includes(x)).map(tabLink)}
+            </details>
+          )}
         </nav>
         <section className="st-main">
           <div className="st-pagehead">
@@ -85,11 +93,13 @@ export async function CatalogAdmin({
               <Link href={'/' + locale + '/store'}>{t.catalog}</Link>
             </SourceButton>
           </div>
-          <StaffNote>
-            {ar
-              ? 'الأسعار مستقلة: A مرجع المورد، B استحقاقه المتعاقد عليه، C سعر العميل. لا توجد زيادة تلقائية. الفرق الأولي بين C وB قبل تخصيص الرسوم والضرائب ليس ربحًا صافيًا.'
-              : 'Prices are independent: A supplier reference, B contractual entitlement, C customer retail. No automatic markup. The provisional C minus B difference before fee/tax allocations is not net profit.'}
-          </StaffNote>
+          {advanced.includes(k) && (
+            <StaffNote>
+              {ar
+                ? 'الأسعار مستقلة: A مرجع المورد، B استحقاقه المتعاقد عليه، C سعر العميل. لا توجد زيادة تلقائية. الفرق الأولي بين C وB قبل تخصيص الرسوم والضرائب ليس ربحًا صافيًا.'
+                : 'Prices are independent: A supplier reference, B contractual entitlement, C customer retail. No automatic markup. The provisional C minus B difference before fee/tax allocations is not net profit.'}
+            </StaffNote>
+          )}
           <form className="store-search" method="get">
             <input type="hidden" name="kind" value={k} />
             <Input

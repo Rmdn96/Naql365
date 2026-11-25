@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { publicDictionary } from '../../src/i18n/public';
 
 for (const locale of ['ar', 'en'] as const) {
   test(`${locale} Transport landing preserves real request and secure tracking routes`, async ({
@@ -50,31 +49,14 @@ for (const locale of ['ar', 'en'] as const) {
   }) => {
     await page.goto(`/${locale}/request`);
     await expect(page.locator('#guest-country')).toBeVisible();
-    await expect(page.locator('.transport-header .brand-mark')).toBeVisible();
+    await expect(page.locator('.launch-header .brand-mark')).toBeVisible();
     await expect(page.locator('.site-header')).toHaveCount(0);
     await expect(page.locator('#guest-country')).toHaveValue('EG');
     await page.keyboard.press('Tab');
-    await expect(
-      page.getByRole('link', {
-        name: locale === 'ar' ? 'انتقل إلى المحتوى' : 'Skip to content',
-        exact: true,
-      }),
-    ).toBeFocused();
+    await expect(page.locator('.skip-link[href="#main"]')).toBeFocused();
     await page.keyboard.press('Enter');
-    await expect(page.locator('#transport-content')).toBeFocused();
-    await expect(page.locator(`.transport-desktop-nav a[href="/${locale}/login"]`)).toHaveCount(1);
-    if (page.viewportSize()!.width < 1100) {
-      const menu = page.getByRole('button', {
-        name: locale === 'ar' ? 'القائمة' : 'Menu',
-        exact: true,
-      });
-      await menu.click();
-      await expect(page.getByRole('dialog')).toBeVisible();
-      await page.keyboard.press('Escape');
-      await expect(menu).toBeFocused();
-      await menu.click();
-    }
-    await page.getByRole('link', { name: publicDictionary(locale).signIn, exact: true }).click();
+    await expect(page.locator('#main')).toBeFocused();
+    await page.locator('.launch-header-tools a[href="/' + locale + '/login"]').click();
     await expect(page).toHaveURL(new RegExp(`/${locale}/login`));
     await expect(page.locator('.auth-v2')).toBeVisible();
     await expect(page.locator('.transport-header')).toHaveCount(0);

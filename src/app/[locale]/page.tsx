@@ -1,7 +1,6 @@
 import { homeStep } from '@/infrastructure/markets/home-trace';
 import { catalogTrace } from '@/infrastructure/store/catalog-trace';
 import { CommerceSurface } from '@/components/lovable/surface';
-import { selectedPublicCountry, publicCatalogue } from '@/infrastructure/markets/public';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
@@ -33,7 +32,13 @@ export async function generateMetadata({
     },
   };
 }
-export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+export default async function Home({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   catalogTrace({ stage: 'home-entry', outcome: 'started' });
   const locale = await homeStep('home-locale', async () => {
     const { locale } = await params;
@@ -41,11 +46,16 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     if (!isLocale(locale)) notFound();
     return locale;
   });
-  const [country] = await Promise.all([
-    homeStep('home-market', selectedPublicCountry),
-    homeStep('home-catalogue', publicCatalogue),
-  ]);
-  catalogTrace({ stage: 'home-market', country });
+  const raw = await searchParams;
+  const query = {
+    ...(typeof raw.search === 'string' ? { search: raw.search.slice(0, 120) } : {}),
+    ...(typeof raw.category === 'string' && /^[a-z0-9][a-z0-9-]{0,99}$/.test(raw.category)
+      ? { category: raw.category }
+      : {}),
+    ...(typeof raw.after === 'string' && /^[a-z0-9][a-z0-9-]{0,99}$/.test(raw.after)
+      ? { after: raw.after }
+      : {}),
+  };
   return homeStep('home-compose', async () => {
     const schema = {
       '@context': 'https://schema.org',
@@ -63,7 +73,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
         />
-        <CommerceSurface locale={locale} />
+        <CommerceSurface locale={locale} query={query} />
       </>
     );
   });

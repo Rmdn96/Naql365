@@ -138,6 +138,8 @@ const states: Record<string, [string, string]> = {
   CANCELLED: ['ملغى', 'Cancelled'],
   RETURNED: ['مرتجع', 'Returned'],
   PENDING: ['معلّق', 'Pending'],
+  AWAITING_CONFIRMATION: ['بانتظار تأكيد الإجمالي', 'Awaiting total confirmation'],
+  BANK_TRANSFER: ['تحويل بنكي يدوي', 'Manual bank transfer'],
   CASH_DUE: ['النقد مستحق', 'Cash due'],
   UNDER_REVIEW: ['قيد المراجعة', 'Under review'],
   REJECTED: ['مرفوض', 'Rejected'],
@@ -167,6 +169,9 @@ const actions: Record<string, [string, string]> = {
   reserve_proof: ['بدأ رفع الإثبات', 'Proof upload started'],
   submit_proof: ['أُرسل الإثبات للمراجعة', 'Proof submitted for review'],
   discard_proof: ['تُرك الرفع غير المكتمل', 'Incomplete upload abandoned'],
+  quote_delivery: ['تحديد رسوم التوصيل', 'Quote delivery fee'],
+  confirm_total: ['تسجيل موافقة العميل على الإجمالي', 'Record customer approval of final total'],
+  verify_bank: ['تسجيل تحويل وصل إلى البنك', 'Verify transfer received in bank'],
   accept: ['قبول الطلب', 'Accept order'],
   send: ['إرسال للمورد', 'Send to supplier'],
   prepare: ['بدء التجهيز', 'Start preparing'],
@@ -207,7 +212,8 @@ export function storeLabel(
     (audience === 'customer' ? customerLabels[code] : undefined) ?? states[code] ?? actions[code];
   return label?.[locale === 'ar' ? 0 : 1] ?? (locale === 'ar' ? 'تحديث مسجل' : 'Recorded update');
 }
-export function storeMoney(amount: number, locale: 'ar' | 'en') {
+export function storeMoney(amount: number | null, locale: 'ar' | 'en') {
+  if (amount === null) return locale === 'ar' ? 'بانتظار تسعير التوصيل' : 'Awaiting delivery quote';
   return new Intl.NumberFormat(locale === 'ar' ? 'ar-EG' : 'en-EG', {
     style: 'currency',
     currency: 'EGP',
