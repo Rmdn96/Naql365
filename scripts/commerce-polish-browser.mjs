@@ -150,14 +150,18 @@ export async function comparePolishPerformance(browser, origin, output, env) {
     stdio: 'ignore',
   });
   try {
+    console.log('POLISH_BENCHMARK baseline dependencies');
     execFileSync('npm', ['ci', '--no-audit'], { cwd: baseline, stdio: 'ignore', timeout: 180000 });
+    console.log('POLISH_BENCHMARK baseline build');
     execFileSync(process.execPath, ['scripts/guarded-next.mjs', 'build', '--webpack'], {
       cwd: baseline,
       env: oldEnv,
       stdio: 'ignore',
       timeout: 240000,
     });
+    console.log('POLISH_BENCHMARK baseline startup');
     server = await startBrowserServer(oldEnv, 3001, undefined, undefined, baseline);
+    console.log('POLISH_BENCHMARK paired browser samples');
     const samples = [];
     for (const [locale, width] of [
       ['ar', 390],
