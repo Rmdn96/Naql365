@@ -39,7 +39,7 @@ it.each([
   { governorate: 'ALEXANDRIA' },
   { customer_id: randomUUID() },
   { total: 1 },
-  { payment_method: 'INSTAPAY' },
+  { payment_method: 'CARD' },
 ])('rejects unapproved input before the RPC: %j', async (change) => {
   expect((await post({ ...valid, ...change })).status).toBe(400);
   expect(mocks.rpc).not.toHaveBeenCalled();
@@ -67,3 +67,15 @@ it.each([
   expect(response.status).toBe(status);
   expect(await response.json()).toEqual({ error });
 });
+
+it.each(['CASH', 'BANK_TRANSFER', 'VODAFONE_CASH', 'INSTAPAY'])(
+  'passes the validated payment method %s to checkout',
+  async (payment_method) => {
+    mocks.rpc.mockResolvedValue({ data: { reference: 'S-' + 'a'.repeat(32) }, error: null });
+    expect((await post({ ...valid, payment_method })).status).toBe(201);
+    expect(mocks.rpc).toHaveBeenCalledExactlyOnceWith('store_guest_checkout_v1', {
+      p_request: valid.request_id,
+      p_payload: expect.objectContaining({ payment_method }),
+    });
+  },
+);

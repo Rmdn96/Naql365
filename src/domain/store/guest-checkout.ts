@@ -34,6 +34,6 @@ export const guestCheckout = z.strictObject({
   governorate: z.enum(['CAIRO', 'GIZA']),
   area: text(1, 100),
   address: text(3, 500),
-  payment_method: z.enum(['CASH', 'BANK_TRANSFER']),
+  payment_method: z.enum(['CASH', 'BANK_TRANSFER', 'VODAFONE_CASH', 'INSTAPAY']),
   notes: text(1, 500).optional(),
 });

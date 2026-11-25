@@ -175,7 +175,7 @@ insert into public.bank_accounts(id,organization_id,market_id,currency,bank_name
  values('99100000-0000-4000-8000-000000000001','91000000-0000-4000-8000-000000000001','95000000-0000-4000-8000-000000000001','EGP','اختبار','Fixture','اختبار','Fixture','TEST-ONLY','BANK',false,'92000000-0000-4000-8000-000000000002');
 insert into private.store_checkout_contracts
  select (jsonb_populate_record(null::private.store_checkout_contracts,to_jsonb(c)||
-   jsonb_build_object('id',gen_random_uuid(),'version',3,'destination_ids',array['99100000-0000-4000-8000-000000000001']))).*
+   jsonb_build_object('id',gen_random_uuid(),'version',3,'destination_ids',array['99100000-0000-4000-8000-000000000001','99000000-0000-4000-8000-000000000002','99000000-0000-4000-8000-000000000003']))).*
  from private.store_checkout_contracts c where c.version=2;
 set local role anon;
 do $bank$
@@ -183,6 +183,8 @@ declare payload jsonb := '{"full_name":"Synthetic Guest","phone":"01000000001","
 begin
   for i in 1..4 loop perform public.store_guest_checkout_v1(gen_random_uuid(),payload); end loop;
   perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',gen_random_uuid(),payload),'PT429','per phone budget applies to direct RPC');
+  perform public.store_guest_checkout_v1(gen_random_uuid(),payload||'{"payment_method":"VODAFONE_CASH","phone":"01000000003"}');
+  perform public.store_guest_checkout_v1(gen_random_uuid(),payload||'{"payment_method":"INSTAPAY","phone":"01000000004"}');
 end $bank$;
 reset role;
 select public.store_purchase_assert((select count(*)=4 and bool_and(total_minor is null and delivery_minor is null)
@@ -216,8 +218,8 @@ declare t record; v bigint; r jsonb; a text; fee jsonb='{"deliveryMinor":300}'; 
   perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''confirm_total'',%L,%s,%L,%L)',gen_random_uuid(),v,t.id,'{"totalMinor":2500,"evidenceReference":"Synthetic confirmation"}'),'PT409','customer must confirm exact total');
   r=public.store_purchase_command_v1('EG','confirm_total',gen_random_uuid(),v,t.id,jsonb_build_object('totalMinor',t.expected,'evidenceReference','Synthetic phone confirmation'));v=(r->>'revision')::bigint;
   perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''quote_delivery'',%L,%s,%L,%L)',gen_random_uuid(),v,t.id,fee),'PT409','accepted order total locked');
-  if t.method='BANK_TRANSFER' then
-   perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''send'',%L,%s,%L)',gen_random_uuid(),v,t.id),'PT409','bank transfer cannot release before collection');
+  if t.method<>'CASH' then
+   perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''send'',%L,%s,%L)',gen_random_uuid(),v,t.id),'PT409','manual transfer cannot release before collection');
    perform set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000004',true);
    perform public.store_purchase_error(format('select public.store_purchase_command_v1(''EG'',''verify_bank'',%L,%s,%L,%L)',gen_random_uuid(),v,t.id,jsonb_build_object('reference','SYNTHETIC-123456','amountMinor',t.expected,'evidenceReference','SYNTHETIC')),'42501','unauthorized receipt denied');
    perform set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000002',true);
@@ -244,6 +246,10 @@ select set_config('request.jwt.claim.sub','92000000-0000-4000-8000-000000000001'
 select public.store_purchase_assert(jsonb_array_length(public.store_purchase_read_v1('EG','orders')->'items')=3,'Customer history survives storefront withdrawal');
 reset role;
 -- TAP evidence
+select public.store_purchase_assert((select count(*)=4 from guest_review_targets),'all four checkout methods covered');
+select public.store_purchase_assert((select count(distinct channel)=3 and bool_and(store_proof_id is null)
+ from private.manual_collection_receipts r join guest_review_targets t on t.id=(select p.order_id from private.store_payments p where p.id=r.store_payment_id)
+ where r.domain='STORE'),'all three manual channels recorded independently without uploaded evidence');
 select plan(count(*)::integer) from public.store_purchase_test_results;
 select pass(label) from public.store_purchase_test_results;
 select * from finish();

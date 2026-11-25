@@ -259,6 +259,8 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
                         <option value="BANK_TRANSFER">
                           {ar ? 'تحويل بنكي يدوي' : 'Manual bank transfer'}
                         </option>
+                        <option value="VODAFONE_CASH">Vodafone Cash</option>
+                        <option value="INSTAPAY">InstaPay</option>
                       </select>
                     </label>
                     <label>

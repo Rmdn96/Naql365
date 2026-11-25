@@ -171,7 +171,7 @@ const actions: Record<string, [string, string]> = {
   discard_proof: ['تُرك الرفع غير المكتمل', 'Incomplete upload abandoned'],
   quote_delivery: ['تحديد رسوم التوصيل', 'Quote delivery fee'],
   confirm_total: ['تسجيل موافقة العميل على الإجمالي', 'Record customer approval of final total'],
-  verify_bank: ['تسجيل تحويل وصل إلى البنك', 'Verify transfer received in bank'],
+  verify_bank: ['التحقق من استلام التحويل', 'Verify received transfer'],
   accept: ['قبول الطلب', 'Accept order'],
   send: ['إرسال للمورد', 'Send to supplier'],
   prepare: ['بدء التجهيز', 'Start preparing'],

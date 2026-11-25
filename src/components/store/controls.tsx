@@ -516,7 +516,7 @@ export function OrderActions({
     }
     if (order.permissions.verify) {
       if (
-        order.payment.method === 'BANK_TRANSFER' &&
+        ['BANK_TRANSFER', 'VODAFONE_CASH', 'INSTAPAY'].includes(order.payment.method ?? '') &&
         order.payment.status === 'PENDING' &&
         order.orderState === 'ACCEPTED'
       )
