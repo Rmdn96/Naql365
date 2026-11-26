@@ -75,7 +75,13 @@ it.each(['ar', 'en'] as const)(
           available: true,
         }),
       );
-      expect(html).toContain(locale === 'ar' && view !== 'product' ? 'نقل 365' : 'Naql365');
+      expect(html).toContain(
+        view === 'product'
+          ? 'Naql365'
+          : locale === 'ar'
+            ? 'مستلزمات التغليف والنقل'
+            : 'Packing and moving supplies',
+      );
       expect(html).not.toMatch(/supplier|المورد/i);
       if (view === 'product')
         expect(html).toContain(
