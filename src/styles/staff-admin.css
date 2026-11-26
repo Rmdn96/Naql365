@@ -53,6 +53,7 @@ html[data-theme] .staff-app.sx.staff-app--collapsed {
 }
 .staff-app.sx :is(.staff-sidebar, .staff-drawer) nav a[aria-current] {
   border: 0;
+  background: color-mix(in srgb, var(--staff-nav-brand) 19%, var(--staff-nav));
   box-shadow: inset 0 -2px var(--staff-nav-brand);
   padding-inline-start: 10px;
 }
@@ -77,6 +78,7 @@ html[data-theme] .staff-app.sx.staff-app--collapsed {
   min-height: 70px;
   padding: 8px 22px;
   gap: 12px;
+  border-block-end: 1px solid var(--theme-border);
   box-shadow: var(--shadow-sm);
 }
 .staff-app.sx .staff-topbar-actions {
@@ -157,7 +159,7 @@ html[data-theme] .staff-app.sx.staff-app--collapsed {
 .staff-app.sx :is(.table-scroll, .st-table-scroll) {
   max-width: 100%;
   overflow: auto;
-  border-radius: 4px;
+  border-radius: var(--radius);
 }
 .staff-app.sx table {
   width: 100%;
@@ -169,6 +171,9 @@ html[data-theme] .staff-app.sx.staff-app--collapsed {
   font-weight: 700;
   background: var(--naql-color-muted-surface);
   color: var(--naql-color-text);
+}
+.staff-app.sx tbody tr:hover {
+  background: var(--theme-surface-muted);
 }
 .staff-app.sx :is(td, th) {
   padding: 12px;
@@ -188,7 +193,7 @@ html[data-theme] .staff-app.sx.staff-app--collapsed {
 .staff-app.sx :is(input, select, textarea) {
   font-size: 12px;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: var(--radius);
   max-width: 100%;
 }
 .staff-app.sx .field label {
@@ -197,7 +202,7 @@ html[data-theme] .staff-app.sx.staff-app--collapsed {
 }
 .staff-app.sx :is(.badge, .status-badge) {
   font-size: 11px;
-  border-radius: 4px;
+  border-radius: 999px;
 }
 .staff-app.sx :is(.empty-state, .sx-state) {
   background: var(--muted);
