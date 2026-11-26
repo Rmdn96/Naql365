@@ -115,7 +115,7 @@ try {
   const bootstrap = helper
     .split('await db.exec(`')[1]
     .split('`);')[0]
-    .replace(/create role (anon|authenticated|service_role) nologin;/g, '');
+    .replace(/create role (anon|authenticated|service_role|supabase_auth_admin) nologin;/g, '');
   await sql(bootstrap);
   // Prepare historical orders on their original schema before exercising the
   // actual upgrade and collection races on the current schema.
