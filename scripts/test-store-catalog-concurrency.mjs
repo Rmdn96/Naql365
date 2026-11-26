@@ -11,6 +11,7 @@ const results = [];
 const storeTables = [
   'store_supplier_reference_prices',
   'store_product_media',
+  'store_quote_launch',
   'store_policy_versions',
   'store_suppliers',
   'store_supplier_agreements',

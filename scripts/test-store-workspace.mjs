@@ -103,6 +103,7 @@ const tables = [
   'store_categories',
   'store_supplier_agreements',
   'store_suppliers',
+  'store_quote_launch',
   'store_policy_versions',
 ];
 let server,
