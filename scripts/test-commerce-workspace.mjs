@@ -663,7 +663,8 @@ update private.store_product_market_listings
         'select ' +
           tables
             .map(
-              (t) => `(select count(*) from private.${t} where organization_id<>'${organization}')`,
+              (t) =>
+                `(select count(*) from private.${t}${t === 'store_quote_launch' ? ' join private.store_policy_versions on scope_id=store_policy_versions.id' : ''} where organization_id<>'${organization}')`,
             )
             .join('+'),
       ) !== '0'

@@ -505,7 +505,10 @@ try {
     const fixtureOnly = await sql(
       'select ' +
         storeTables
-          .map((t) => `not exists(select 1 from private.${t} where organization_id<>${q(org)})`)
+          .map(
+            (t) =>
+              `not exists(select 1 from private.${t}${t === 'store_quote_launch' ? ' join private.store_policy_versions on scope_id=store_policy_versions.id' : ''} where organization_id<>${q(org)})`,
+          )
           .join(' and '),
     );
     assert(fixtureOnly === 't', 'cleanup ownership guard');
