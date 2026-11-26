@@ -20,7 +20,7 @@ export async function generateMetadata({
   const t = dictionary(locale);
   const copy = quoteMode() ? seo.home[locale] : { title: t.brand, description: t.description };
   return {
-    ...(quoteMode() ? copy : {}),
+    ...(quoteMode() ? { title: { absolute: copy.title }, description: copy.description } : {}),
     alternates: {
       canonical: `/${locale}`,
       languages: { ar: '/ar', en: '/en', 'x-default': '/ar' },

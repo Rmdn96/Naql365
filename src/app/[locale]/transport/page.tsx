@@ -10,7 +10,8 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!quoteMode() || !isLocale(locale)) return {};
   return {
-    ...seo.transport[locale],
+    title: { absolute: seo.transport[locale].title },
+    description: seo.transport[locale].description,
     alternates: {
       canonical: '/' + locale + '/transport',
       languages: { ar: '/ar/transport', en: '/en/transport' },
