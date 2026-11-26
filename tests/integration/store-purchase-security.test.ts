@@ -80,7 +80,7 @@ it('denies other tenant, Driver, unauthenticated identity, suspended membership 
 it('rejects unsupported delivery and payment channels at guest intake', async () => {
   await db.exec('reset role;set role anon');
   await expect(guestOrder({ governorate: 'ALEXANDRIA' })).rejects.toMatchObject({ code: '22023' });
-  await expect(guestOrder({ payment_method: 'VODAFONE_CASH' })).rejects.toMatchObject({
+  await expect(guestOrder({ payment_method: 'CARD' })).rejects.toMatchObject({
     code: '22023',
   });
   await expect(guestOrder({ payment_method: 'BANK_TRANSFER' })).rejects.toMatchObject({
