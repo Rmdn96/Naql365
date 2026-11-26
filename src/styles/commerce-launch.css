@@ -129,8 +129,12 @@
   min-width: 0;
   overflow: hidden;
 }
+.launch-store {
+  row-gap: clamp(0.7rem, 1.5vw, 1rem);
+}
 .launch-intro-copy {
-  padding: clamp(0.8rem, 2.6vw, 2rem);
+  padding-block: clamp(0.75rem, 1.5vw, 1.35rem);
+  padding-inline: clamp(0.8rem, 2.6vw, 2rem);
   background: radial-gradient(
     ellipse at 0% 100%,
     color-mix(in srgb, var(--blue) 42%, var(--navy)),
