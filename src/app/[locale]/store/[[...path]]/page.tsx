@@ -1,9 +1,34 @@
+import type { Metadata } from 'next';
+import { quoteCatalog, quoteMode } from '@/infrastructure/store/quotes';
 import { CommerceSurface } from '@/components/lovable/surface';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { StoreExperience } from '@/components/store/experience';
 export const dynamic = 'force-dynamic';
-export const metadata = { robots: { index: false, follow: false } };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; path?: string[] }>;
+}): Promise<Metadata> {
+  const hidden = { robots: { index: false, follow: false } };
+  const { locale, path } = await params;
+  if (!quoteMode() || !isLocale(locale) || path?.[0] !== 'products' || path.length !== 2)
+    return hidden;
+  const catalog = await quoteCatalog();
+  const product = catalog.enabled && catalog.items.find((item) => item.slug === path[1]);
+  if (!product) return hidden;
+  const suffix = '/store/products/' + product.slug;
+  return {
+    title: product.content[('title_' + locale) as 'title_ar' | 'title_en'],
+    description:
+      product.content[('description_' + locale) as 'description_ar' | 'description_en'] ??
+      undefined,
+    alternates: {
+      canonical: '/' + locale + suffix,
+      languages: { ar: '/ar' + suffix, en: '/en' + suffix },
+    },
+  };
+}
 export default async function Page({
   params,
   searchParams,

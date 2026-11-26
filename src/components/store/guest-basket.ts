@@ -9,7 +9,9 @@ const basketLine = z.object({
   id: z.uuid(),
   slug: z.string().min(1).max(100),
   name: z.object({ ar: z.string(), en: z.string() }),
-  unitMinor: z.number().int().nonnegative(),
+  unitMinor: z.number().int().nonnegative().nullable(),
+  sku: z.string().optional(),
+  revision: z.number().int().positive().optional(),
   quantity: z.number().int().min(1).max(99),
 });
 const basket = z.object({
@@ -56,6 +58,7 @@ export function addToBasket(product: CatalogProduct, quantity = 1) {
     slug: product.slug,
     name: product.name,
     unitMinor: product.retail,
+    ...(product.sku ? { sku: product.sku, revision: product.revision } : {}),
     quantity: Math.min(99, (old?.quantity ?? 0) + quantity),
   };
   write({

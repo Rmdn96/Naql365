@@ -2,6 +2,8 @@ import '@/styles/lovable.css';
 import '@/styles/lovable-store.css';
 import { Button as SourceButton } from '@/components/lovable/button';
 import Link from 'next/link';
+import { quoteMode } from '@/infrastructure/store/quotes';
+import { QuotePublication } from './quote-admin-forms';
 import { StaffNote } from '@/components/staff/presentation';
 import { Badge, Card, EmptyState, Input } from '@/components/ui/primitives';
 import { catalogKind, storeCatalogAdmin } from '@/infrastructure/store/catalog';
@@ -268,6 +270,14 @@ export async function CatalogAdmin({
                     kind={k}
                     row={row}
                     categories={categories}
+                  />
+                )}
+                {quoteMode() && r.manage && k === 'products' && (
+                  <QuotePublication
+                    key={row.id + ':' + row.revision}
+                    locale={locale}
+                    id={row.id}
+                    revision={row.revision}
                   />
                 )}
                 {r.manage && k === 'prices' && row.state === 'DRAFT' && (

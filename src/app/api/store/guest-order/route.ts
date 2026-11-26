@@ -1,3 +1,4 @@
+import { quoteMode } from '@/infrastructure/store/quotes';
 import { z } from 'zod';
 import { AppError } from '@/domain/shared/errors';
 import { guestCheckout } from '@/domain/store/guest-checkout';
@@ -8,6 +9,7 @@ import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 export async function POST(request: Request) {
   return apiResult(async () => {
     checkOrigin(request);
+    if (quoteMode()) throw new AppError('forbidden', 'Fixed-price checkout unavailable');
     const { request_id, ...payload } = guestCheckout.parse(await readJson(request));
     const client = await createSupabaseServerClient();
     const { data, error } = await client.rpc('store_guest_checkout_v1', {

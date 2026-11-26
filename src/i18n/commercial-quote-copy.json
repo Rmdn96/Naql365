@@ -1,0 +1,192 @@
+{
+  "brand": {
+    "ar": "نقل 365",
+    "en": "Naql365"
+  },
+  "contact": {
+    "display": "01009402374",
+    "tel": "+201009402374",
+    "whatsapp": "https://wa.me/201009402374"
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "ar": {
+        "heading": "كل ما تحتاجه لنقل وتغليف أغراضك",
+        "body": "كراتين ومستلزمات تغليف وباقات متنوعة. اطلب عرض سعر للتوصيل إلى القاهرة والجيزة."
+      },
+      "en": {
+        "heading": "Everything you need for moving and packing",
+        "body": "Explore boxes, packing supplies and kits. Request a quote for delivery in Cairo and Giza."
+      }
+    },
+    {
+      "id": "categories",
+      "ar": {
+        "heading": "تسوق حسب احتياجاتك",
+        "body": "اختر مستلزمات التغليف المناسبة لأغراضك."
+      },
+      "en": {
+        "heading": "Shop by category",
+        "body": "Find packing supplies for your belongings."
+      }
+    },
+    {
+      "id": "bundles",
+      "ar": {
+        "heading": "باقات نقل وتغليف",
+        "body": "اختر الباقة المناسبة واطلب تأكيد مكوناتها وتوفرها."
+      },
+      "en": {
+        "heading": "Moving and packing kits",
+        "body": "Choose a kit and request confirmation of its contents and availability."
+      }
+    },
+    {
+      "id": "products",
+      "ar": {
+        "heading": "جميع المنتجات",
+        "body": "اختر المنتجات والكميات وأرسل طلب تسعير."
+      },
+      "en": {
+        "heading": "All products",
+        "body": "Choose products and quantities and request a quote."
+      }
+    },
+    {
+      "id": "transport",
+      "ar": {
+        "heading": "تحتاج إلى نقل الأثاث؟",
+        "body": "أرسل تفاصيل النقل للحصول على عرض سعر من فريقنا."
+      },
+      "en": {
+        "heading": "Need furniture transport?",
+        "body": "Send your moving details to request a quote from our team."
+      }
+    },
+    {
+      "id": "business",
+      "ar": {
+        "heading": "حلول التغليف للشركات والمكاتب",
+        "body": "تواصل معنا للاستفسار عن احتياجات التوريد والكميات الكبيرة."
+      },
+      "en": {
+        "heading": "Packing supplies for businesses",
+        "body": "Contact us to discuss bulk quantities and business supply needs."
+      }
+    },
+    {
+      "id": "contact",
+      "ar": {
+        "heading": "تواصل معنا",
+        "body": "اتصل بنا أو راسلنا عبر واتساب للاستفسار."
+      },
+      "en": {
+        "heading": "Contact us",
+        "body": "Call or message us on WhatsApp with your questions."
+      }
+    }
+  ],
+  "faq": [
+    {
+      "ar": {
+        "question": "هل أحتاج إلى حساب؟",
+        "answer": "لا، يمكنك إرسال طلب عرض سعر مباشرة."
+      },
+      "en": {
+        "question": "Do I need an account?",
+        "answer": "No. You can request a quote without an account."
+      }
+    },
+    {
+      "ar": {
+        "question": "كيف أعرف السعر؟",
+        "answer": "أضف المنتجات والكميات للسلة وأرسل الطلب، أو تواصل عبر واتساب."
+      },
+      "en": {
+        "question": "How do I get a price?",
+        "answer": "Add products and quantities to your cart and submit a request, or contact us on WhatsApp."
+      }
+    },
+    {
+      "ar": {
+        "question": "أين يتم توصيل المنتجات؟",
+        "answer": "القاهرة والجيزة فقط عند الإطلاق. تُؤكد رسوم التوصيل قبل تجهيز الطلب."
+      },
+      "en": {
+        "question": "Where do you deliver products?",
+        "answer": "Cairo and Giza only at launch. Delivery fees are confirmed before preparation."
+      }
+    },
+    {
+      "ar": {
+        "question": "ما طرق الدفع؟",
+        "answer": "الدفع عند الاستلام أو فودافون كاش أو إنستاباي أو التحويل البنكي، بعد تأكيد الإجمالي."
+      },
+      "en": {
+        "question": "What payment methods are available?",
+        "answer": "Cash on delivery, Vodafone Cash, InstaPay or bank transfer, after the total is confirmed."
+      }
+    },
+    {
+      "ar": {
+        "question": "هل إرسال الطلب يعني تأكيد الشراء؟",
+        "answer": "لا، نراجع التوفر والأسعار والتوصيل أولاً ثم نؤكد الإجمالي معك."
+      },
+      "en": {
+        "question": "Does submitting a request confirm a purchase?",
+        "answer": "No. We review availability, prices and delivery before confirming the total with you."
+      }
+    }
+  ],
+  "ui": {
+    "browse": {
+      "ar": "تصفح المنتجات",
+      "en": "Browse products"
+    },
+    "cart": {
+      "ar": "السلة",
+      "en": "Cart"
+    },
+    "add": {
+      "ar": "أضف إلى السلة",
+      "en": "Add to cart"
+    },
+    "quote": {
+      "ar": "اطلب عرض سعر",
+      "en": "Request a quote"
+    },
+    "submit": {
+      "ar": "إرسال طلب التسعير",
+      "en": "Submit quote request"
+    },
+    "price": {
+      "ar": "السعر عند الاستفسار",
+      "en": "Price on request"
+    },
+    "total": {
+      "ar": "يحدد بعد المراجعة",
+      "en": "Confirmed after review"
+    },
+    "success": {
+      "ar": "استلمنا طلب التسعير. سنتواصل معك لتأكيد التفاصيل.",
+      "en": "Your quote request has been received. We will contact you to confirm details."
+    },
+    "illustrative": {
+      "ar": "صورة توضيحية",
+      "en": "Illustrative image"
+    },
+    "call": {
+      "ar": "اتصل الآن",
+      "en": "Call now"
+    },
+    "transport": {
+      "ar": "طلب نقل",
+      "en": "Request transport"
+    },
+    "unavailable": {
+      "ar": "الطلبات غير متاحة حاليًا",
+      "en": "Requests are currently unavailable"
+    }
+  }
+}

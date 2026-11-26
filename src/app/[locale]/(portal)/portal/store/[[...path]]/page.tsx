@@ -1,3 +1,7 @@
+import Link from 'next/link';
+import { z } from 'zod';
+import { quoteMode } from '@/infrastructure/store/quotes';
+import { QuoteQueue } from '@/components/store/quote-queue';
 import { notFound, redirect } from 'next/navigation';
 import { isLocale } from '@/i18n/config';
 import { staffAccess } from '@/infrastructure/identity/staff-context';
@@ -61,12 +65,24 @@ export default async function Page({
         state={typeof q.state === 'string' ? q.state : ''}
       />
     );
+  const quoteLinks = quoteMode() && kind === 'orders' && path?.length === 1;
+  if (quoteLinks && q.kind === 'quotes') {
+    const before = z.iso.datetime({ offset: true }).safeParse(q.before);
+    return <QuoteQueue locale={locale} before={before.success ? before.data : undefined} />;
+  }
   return (
-    <StoreExperience
-      locale={locale}
-      path={path}
-      query={{ after: typeof q.after === 'string' ? q.after : undefined }}
-      staff
-    />
+    <>
+      {quoteLinks && (
+        <Link href="?kind=quotes">
+          {locale === 'ar' ? 'طلبات تسعير المنتجات' : 'Product quote requests'}
+        </Link>
+      )}
+      <StoreExperience
+        locale={locale}
+        path={path}
+        query={{ after: typeof q.after === 'string' ? q.after : undefined }}
+        staff
+      />
+    </>
   );
 }

@@ -1,3 +1,5 @@
+import seo from '@/i18n/commercial-quote-seo.json';
+import { quoteMode } from '@/infrastructure/store/quotes';
 import { homeStep } from '@/infrastructure/markets/home-trace';
 import { catalogTrace } from '@/infrastructure/store/catalog-trace';
 import { CommerceSurface } from '@/components/lovable/surface';
@@ -16,7 +18,9 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const t = dictionary(locale);
+  const copy = quoteMode() ? seo.home[locale] : { title: t.brand, description: t.description };
   return {
+    ...(quoteMode() ? copy : {}),
     alternates: {
       canonical: `/${locale}`,
       languages: { ar: '/ar', en: '/en', 'x-default': '/ar' },
@@ -24,8 +28,7 @@ export async function generateMetadata({
     openGraph: {
       type: 'website',
       siteName: 'Naql365',
-      title: t.brand,
-      description: t.description,
+      ...copy,
       url: `/${locale}`,
       locale: locale === 'ar' ? 'ar_EG' : 'en_US',
       alternateLocale: locale === 'ar' ? 'en_US' : 'ar_EG',

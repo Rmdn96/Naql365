@@ -9,6 +9,7 @@ import { destination, type CatalogProduct } from './adapter';
 import { addToBasket } from '@/components/store/guest-basket';
 import { GuestCheckout } from '@/components/store/guest-checkout';
 import { storeMoney } from '@/i18n/store';
+import { quoteCopy, quoteSection } from '@/i18n/commercial-quote';
 import { ContactLinks } from '@/components/shell/contact-links';
 import type { Locale, Market } from './types';
 
@@ -20,6 +21,7 @@ type Props = {
   products: CatalogProduct[];
   categories: { slug: string; title: string }[];
   available: boolean;
+  quote?: boolean;
   initialQuery?: string;
   initialCategory?: string;
   nextCursor?: string | null;
@@ -33,6 +35,7 @@ export function SourceCommerce({
   products,
   categories,
   available,
+  quote = false,
   initialQuery = '',
   initialCategory = 'all',
   nextCursor,
@@ -64,10 +67,12 @@ export function SourceCommerce({
   const delivery = ar
     ? 'التوصيل إلى القاهرة والجيزة. نؤكد التوفر ورسوم التوصيل والإجمالي قبل التجهيز.'
     : 'Delivery to Cairo and Giza. We confirm availability, delivery fees and the total before preparing your order.';
+  const price = (value: number | null) =>
+    value === null ? quoteCopy.ui.price[locale] : storeMoney(value, locale);
   let body: ReactNode;
   if (children) body = children;
   else if (view === 'cart' || view === 'checkout')
-    body = <GuestCheckout locale={locale} available={available} />;
+    body = <GuestCheckout locale={locale} available={available} quote={quote} />;
   else if (view === 'product')
     body = detail ? (
       <section className="cm-container launch-product-detail">
@@ -76,7 +81,8 @@ export function SourceCommerce({
           <ProductGallery key={detail.id} product={detail} locale={locale} />
           <div>
             <h1>{detail.name[locale]}</h1>
-            <strong>{storeMoney(detail.retail, locale)}</strong>
+            <strong>{price(detail.retail)}</strong>
+            {quote && detail.image && <p>{quoteCopy.ui.illustrative[locale]}</p>}
             <p>{detail.spec[locale]}</p>
             {detail.specifications.length > 0 && (
               <dl>
@@ -109,15 +115,27 @@ export function SourceCommerce({
       <div className="cm-container launch-store">
         <header className="launch-intro">
           <div className="launch-intro-copy">
-            <h1>{ar ? 'مستلزمات التغليف والنقل' : 'Packing and moving supplies'}</h1>
-            <p>{ar ? 'توصيل إلى القاهرة والجيزة' : 'Delivery in Cairo and Giza'}</p>
+            <h1>
+              {quote
+                ? quoteSection('hero')[locale].heading
+                : ar
+                  ? 'مستلزمات التغليف والنقل'
+                  : 'Packing and moving supplies'}
+            </h1>
+            <p>
+              {quote
+                ? quoteSection('hero')[locale].body
+                : ar
+                  ? 'توصيل إلى القاهرة والجيزة'
+                  : 'Delivery in Cairo and Giza'}
+            </p>
             <a className="launch-intro-link" href="#store-products">
               {ar ? 'تصفح المنتجات' : 'Browse products'}
             </a>
           </div>
           <div className="launch-intro-image" aria-hidden="true">
             <SourceImage
-              src="/brand/commerce-moving.jpg"
+              src={quote ? '/brand/quote-hero.webp' : '/brand/commerce-moving.jpg'}
               alt=""
               fill
               sizes="(max-width: 380px) 92px, (max-width: 699px) 128px, (max-width: 1100px) 32vw, 400px"
@@ -185,7 +203,8 @@ export function SourceCommerce({
                     <Link href={href}>
                       <h3>{p.name[locale]}</h3>
                     </Link>
-                    <strong>{storeMoney(p.retail, locale)}</strong>
+                    <strong>{price(p.retail)}</strong>
+                    {quote && p.image && <small>{quoteCopy.ui.illustrative[locale]}</small>}
                   </div>
                   <div className="cm-product-controls">{addButton(p)}</div>
                 </article>
@@ -195,9 +214,11 @@ export function SourceCommerce({
         ) : (
           <p role="status" className="cm-note">
             {!available
-              ? ar
-                ? 'الشراء متوقف حاليًا.'
-                : 'Purchasing is currently unavailable.'
+              ? quote
+                ? quoteCopy.ui.unavailable[locale]
+                : ar
+                  ? 'الشراء متوقف حاليًا.'
+                  : 'Purchasing is currently unavailable.'
               : ar
                 ? 'لا توجد منتجات مطابقة.'
                 : 'No matching products.'}
@@ -211,11 +232,19 @@ export function SourceCommerce({
         <section className="launch-service">
           <Truck aria-hidden="true" />
           <div>
-            <h2>{ar ? 'تحتاج إلى نقل؟' : 'Need transport?'}</h2>
+            <h2>
+              {quote
+                ? quoteSection('transport')[locale].heading
+                : ar
+                  ? 'تحتاج إلى نقل؟'
+                  : 'Need transport?'}
+            </h2>
             <p>
-              {ar
-                ? 'أرسل تفاصيل الطلب للحصول على عرض سعر من فريقنا.'
-                : 'Send your request for a quote from our team.'}
+              {quote
+                ? quoteSection('transport')[locale].body
+                : ar
+                  ? 'أرسل تفاصيل الطلب للحصول على عرض سعر من فريقنا.'
+                  : 'Send your request for a quote from our team.'}
             </p>
           </div>
           <Link className="button" href={'/' + locale + '/request'}>
@@ -231,29 +260,49 @@ export function SourceCommerce({
               : 'Pay on delivery, by bank transfer, Vodafone Cash or InstaPay. We confirm the delivery fee and total with you before collecting payment.'}
           </p>
         </section>
-        <section className="launch-shopping-information" aria-labelledby="store-order-help">
-          <h2 id="store-order-help">{ar ? 'أسئلة عن الطلب' : 'Ordering questions'}</h2>
-          <details>
-            <summary>{ar ? 'هل أحتاج إلى حساب؟' : 'Do I need an account?'}</summary>
-            <p>
-              {ar
-                ? 'يمكنك الشراء وطلب النقل دون حساب.'
-                : 'You can shop or request transport without an account.'}
-            </p>
-          </details>
-          <details>
-            <summary>
-              {ar ? 'متى أعرف الإجمالي النهائي؟' : 'When will I know the final total?'}
-            </summary>
-            <p>
-              {ar
-                ? 'يراجع الفريق طلبك ويتواصل معك لتأكيد التوفر والتوصيل والإجمالي قبل التجهيز.'
-                : 'Our team reviews the order and confirms availability, delivery and the total with you before preparation.'}
-            </p>
-          </details>
-        </section>
+        {quote ? (
+          <section className="launch-shopping-information" aria-labelledby="store-quote-help">
+            <h2 id="store-quote-help">{ar ? 'أسئلة عن التسعير' : 'Quote FAQs'}</h2>
+            {quoteCopy.faq.map((faq) => (
+              <details key={faq.en.question}>
+                <summary>{faq[locale].question}</summary>
+                <p>{faq[locale].answer}</p>
+              </details>
+            ))}
+          </section>
+        ) : (
+          <section className="launch-shopping-information" aria-labelledby="store-order-help">
+            <h2 id="store-order-help">{ar ? 'أسئلة عن الطلب' : 'Ordering questions'}</h2>
+            <details>
+              <summary>{ar ? 'هل أحتاج إلى حساب؟' : 'Do I need an account?'}</summary>
+              <p>
+                {ar
+                  ? 'يمكنك الشراء وطلب النقل دون حساب.'
+                  : 'You can shop or request transport without an account.'}
+              </p>
+            </details>
+            <details>
+              <summary>
+                {ar ? 'متى أعرف الإجمالي النهائي؟' : 'When will I know the final total?'}
+              </summary>
+              <p>
+                {ar
+                  ? 'يراجع الفريق طلبك ويتواصل معك لتأكيد التوفر والتوصيل والإجمالي قبل التجهيز.'
+                  : 'Our team reviews the order and confirms availability, delivery and the total with you before preparation.'}
+              </p>
+            </details>
+          </section>
+        )}
+        {quote && (
+          <section className="launch-shopping-information">
+            <h2>{quoteSection('business')[locale].heading}</h2>
+            <p>{quoteSection('business')[locale].body}</p>
+          </section>
+        )}
         <section id="contact" className="launch-contact">
-          <h2>{ar ? 'تواصل معنا' : 'Contact us'}</h2>
+          <h2>
+            {quote ? quoteSection('contact')[locale].heading : ar ? 'تواصل معنا' : 'Contact us'}
+          </h2>
           <ContactLinks locale={locale} />
         </section>
       </div>

@@ -87,6 +87,8 @@ for (const key of Object.keys(env))
   if (key.startsWith('VERCEL') || /^SUPABASE_.*(TOKEN|PASSWORD|SERVICE|SECRET)/.test(key))
     delete env[key];
 const tables = [
+  'store_quote_requests',
+  'store_quote_launch',
   'store_supplier_reference_prices',
   'store_product_media',
   'store_purchase_events',
@@ -526,6 +528,7 @@ update private.store_product_market_listings
       {
         ...env,
         NAQL365_TEST_ADMIN_ONLY: 'true',
+        NAQL365_STORE_QUOTE_MODE: 'true',
         NAQL365_ADMIN_RECOVERY_EMAIL: users[2].email,
       },
       3000,
@@ -545,6 +548,65 @@ update private.store_product_market_listings
       await login(page, users[2], 'en');
       await expect(page).toHaveURL(origin + '/en/portal');
       await checkStaffRecovery(browser, users[2].email, local.API_URL, origin);
+      checkpoint = 'isolated catalog quote';
+      sql(
+        "begin; insert into private.store_quote_launch(scope_id,enabled) select id,true from private.store_policy_versions where kind='STOREFRONT_SCOPE' and status='APPROVED'; update private.store_products set revision=revision+1,quote_approved_revision=revision+1 where sku='SYNTHETIC'; commit;",
+      );
+      const quoteContext = await browser.newContext();
+      try {
+        const guest = await quoteContext.newPage();
+        for (const [locale, width, theme] of [
+          ['ar', 320, 'light'],
+          ['ar', 390, 'dark'],
+          ['en', 768, 'light'],
+          ['en', 1440, 'dark'],
+        ]) {
+          await capturePolishView(guest, origin, output, {
+            route: '/' + locale,
+            width,
+            theme,
+            file: locale + '-' + width + '-' + theme + '-quote-catalog',
+          });
+          await expect(guest.locator('.store-product')).toHaveCount(1);
+        }
+        await guest.getByRole('button', { name: 'Add to cart', exact: true }).click();
+        await guest.locator('.commerce-cart').click();
+        await expect(guest.getByText('Price on request', { exact: true })).toBeVisible();
+        const quantity = guest.locator('input[type=number]');
+        await quantity.fill('3');
+        await quantity.blur();
+        await guest.reload();
+        await expect(quantity).toHaveValue('3');
+        const form = guest.locator('#guest-checkout');
+        await expect(form.locator('[name=payment_method]')).toHaveCount(0);
+        await form.locator('[name=full_name]').fill('Synthetic Quote Visitor');
+        await form.locator('[name=phone]').fill('01001001001');
+        await form.locator('[name=governorate]').selectOption('CAIRO');
+        await form.locator('[name=area]').fill('Synthetic area');
+        await form.locator('[name=address]').fill('Synthetic isolated address');
+        const pending = guest.waitForResponse(
+          (r) => new URL(r.url()).pathname === '/api/store/guest-quote',
+        );
+        await form.getByRole('button', { name: 'Submit quote request' }).click();
+        expect((await pending).status()).toBe(201);
+        const reference = await guest.locator('.guest-order-reference').innerText();
+        expect(reference).toMatch(/^Q-[a-f0-9]{32}$/);
+        await page.goto(origin + '/en/portal/store/orders?kind=quotes');
+        await expect(page.getByText(reference, { exact: true })).toBeVisible();
+        await page.locator('input[name="sku:SYNTHETIC"]').fill('12');
+        await page.locator('input[name="delivery"]').fill('3');
+        await page.getByRole('button', { name: 'Save offer version' }).click();
+        await page.locator('input[name="evidence"]').fill('Synthetic approval record');
+        await page.getByRole('button', { name: 'Record consent' }).click();
+        await expect(page.getByText('Customer consent recorded', { exact: true })).toBeVisible();
+        expect(sql('select count(*) from private.store_orders')).toBe('4');
+        checks.push(
+          'Quote catalog preview, persistent guest quantities, unpriced quote reference, protected pricing and consent',
+        );
+      } finally {
+        await quoteContext.close();
+      }
+
       checks.push(
         'Commercial server blocks customer and driver routes, denies ordinary staff, and permits Super Admin login and PKCE recovery',
       );

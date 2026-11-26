@@ -1,0 +1,22 @@
+{
+  "home": {
+    "ar": {
+      "title": "نقل 365 | كراتين نقل ومستلزمات تغليف في القاهرة والجيزة",
+      "description": "تصفح كراتين النقل ومستلزمات التغليف والبابلز والاسترتش والباقات. أرسل طلب عرض سعر دون حساب للتوصيل إلى القاهرة والجيزة."
+    },
+    "en": {
+      "title": "Naql365 | Moving Boxes & Packing Supplies in Cairo and Giza",
+      "description": "Browse moving boxes, bubble wrap, stretch film and packing kits. Request a quote without an account for delivery in Cairo and Giza."
+    }
+  },
+  "transport": {
+    "ar": {
+      "title": "طلب نقل الأثاث | نقل 365",
+      "description": "أرسل تفاصيل نقل الأثاث واطلب عرض سعر من نقل 365."
+    },
+    "en": {
+      "title": "Request Furniture Transport | Naql365",
+      "description": "Send your moving details and request a transport quote from Naql365."
+    }
+  }
+}

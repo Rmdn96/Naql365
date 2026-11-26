@@ -1,4 +1,22 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
+import seo from '@/i18n/commercial-quote-seo.json';
+import { quoteMode } from '@/infrastructure/store/quotes';
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  if (!quoteMode() || !isLocale(locale)) return {};
+  return {
+    ...seo.transport[locale],
+    alternates: {
+      canonical: '/' + locale + '/transport',
+      languages: { ar: '/ar/transport', en: '/en/transport' },
+    },
+  };
+}
 import { notFound } from 'next/navigation';
 import {
   FileCheck2,

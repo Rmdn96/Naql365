@@ -9,18 +9,30 @@ import {
   releaseGuestOrder,
 } from './guest-basket';
 import type { Locale } from '@/i18n/config';
+import { quoteCopy } from '@/i18n/commercial-quote';
 import { storeMoney } from '@/i18n/store';
 
-export function GuestCheckout({ locale, available }: { locale: Locale; available: boolean }) {
+export function GuestCheckout({
+  locale,
+  available,
+  quote = false,
+}: {
+  locale: Locale;
+  available: boolean;
+  quote?: boolean;
+}) {
   const ar = locale === 'ar';
   const { lines, pending: pendingRequest } = useGuestBasket();
+  const modeMatches = lines.every((line) =>
+    quote ? line.unitMinor === null && line.sku && line.revision : line.unitMinor !== null,
+  );
   const sending = useRef(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [reference, setReference] = useState('');
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (sending.current || !available) return;
+    if (sending.current || !available || !modeMatches) return;
     const form = new FormData(e.currentTarget);
     if (!String(form.get('notes') ?? '').trim()) form.delete('notes');
     const fields = Object.fromEntries(form);
@@ -29,17 +41,21 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
     setError('');
     try {
       const { requestId, lines: items } = beginGuestOrder();
-      const response = await fetch('/api/store/guest-order', {
+      const response = await fetch(quote ? '/api/store/guest-quote' : '/api/store/guest-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...fields,
           request_id: requestId,
-          items: items.map((line) => ({
-            listing_id: line.id,
-            quantity: line.quantity,
-            unit_price: line.unitMinor / 100,
-          })),
+          items: items.map((line) =>
+            quote
+              ? { sku: line.sku, quantity: line.quantity, revision: line.revision }
+              : {
+                  listing_id: line.id,
+                  quantity: line.quantity,
+                  unit_price: line.unitMinor === null ? undefined : line.unitMinor / 100,
+                },
+          ),
         }),
       });
       if (!response.ok) {
@@ -79,7 +95,7 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
         !result ||
         !('reference' in result) ||
         typeof result.reference !== 'string' ||
-        !/^S-[a-f0-9]{32}$/.test(result.reference)
+        !(quote ? /^Q-[a-f0-9]{32}$/ : /^S-[a-f0-9]{32}$/).test(result.reference)
       )
         throw new Error('order submission unconfirmed');
       setReference(result.reference);
@@ -99,12 +115,20 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
     setError(ar ? 'تعذر تحديث السلة على هذا الجهاز.' : 'This device could not save your basket.');
   return (
     <div className="cm-container launch-cart">
-      <h1>{ar ? 'السلة وإتمام الطلب' : 'Cart and checkout'}</h1>
+      <h1>
+        {quote ? quoteCopy.ui.quote[locale] : ar ? 'السلة وإتمام الطلب' : 'Cart and checkout'}
+      </h1>
       {reference ? (
         <section role="status">
-          <h2>{ar ? 'تم استلام طلبك' : 'Order received'}</h2>
+          <h2>{quote ? quoteCopy.ui.success[locale] : ar ? 'تم استلام طلبك' : 'Order received'}</h2>
           <p>
-            {ar ? 'رقم الطلب' : 'Order reference'}{' '}
+            {quote
+              ? ar
+                ? 'مرجع التسعير'
+                : 'Quote reference'
+              : ar
+                ? 'رقم الطلب'
+                : 'Order reference'}{' '}
             <strong dir="ltr" className="guest-order-reference">
               {reference}
             </strong>
@@ -143,7 +167,11 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
                       >
                         {line.name[locale]}
                       </Link>
-                      <span>{storeMoney(line.unitMinor, locale)}</span>
+                      <span>
+                        {line.unitMinor === null
+                          ? quoteCopy.ui.price[locale]
+                          : storeMoney(line.unitMinor, locale)}
+                      </span>
                       <label>
                         {ar ? 'الكمية' : 'Quantity'}{' '}
                         <input
@@ -179,22 +207,28 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
                     </article>
                   ))}
                 </div>
-                <p className="launch-subtotal">
-                  <strong>
-                    {ar ? 'إجمالي المنتجات' : 'Product subtotal'} ·{' '}
-                    {storeMoney(
-                      lines.reduce((n, l) => n + l.quantity * l.unitMinor, 0),
-                      locale,
-                    )}
-                  </strong>
-                </p>
+                {quote ? (
+                  <p>{quoteCopy.ui.total[locale]}</p>
+                ) : (
+                  modeMatches && (
+                    <p className="launch-subtotal">
+                      <strong>
+                        {ar ? 'إجمالي المنتجات' : 'Product subtotal'} ·{' '}
+                        {storeMoney(
+                          lines.reduce((n, l) => n + l.quantity * (l.unitMinor ?? 0), 0),
+                          locale,
+                        )}
+                      </strong>
+                    </p>
+                  )
+                )}
                 <p>
                   {ar
                     ? 'التوصيل داخل القاهرة والجيزة. نؤكد رسوم التوصيل والإجمالي النهائي معك قبل تجهيز الطلب أو طلب التحويل.'
                     : 'Delivery in Cairo and Giza. We will confirm the delivery fee and final total with you before preparing your order or requesting a transfer.'}
                 </p>
               </section>
-              {available ? (
+              {available && modeMatches ? (
                 <form id="guest-checkout" onSubmit={submit}>
                   <fieldset disabled={busy}>
                     <legend>{ar ? 'بيانات التوصيل' : 'Delivery details'}</legend>
@@ -250,19 +284,21 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
                         maxLength={500}
                       />
                     </label>
-                    <label>
-                      {ar ? 'طريقة الدفع' : 'Payment method'}
-                      <select name="payment_method" defaultValue="CASH">
-                        <option value="CASH">
-                          {ar ? 'الدفع عند الاستلام' : 'Cash on delivery'}
-                        </option>
-                        <option value="BANK_TRANSFER">
-                          {ar ? 'تحويل بنكي يدوي' : 'Manual bank transfer'}
-                        </option>
-                        <option value="VODAFONE_CASH">Vodafone Cash</option>
-                        <option value="INSTAPAY">InstaPay</option>
-                      </select>
-                    </label>
+                    {!quote && (
+                      <label>
+                        {ar ? 'طريقة الدفع' : 'Payment method'}
+                        <select name="payment_method" defaultValue="CASH">
+                          <option value="CASH">
+                            {ar ? 'الدفع عند الاستلام' : 'Cash on delivery'}
+                          </option>
+                          <option value="BANK_TRANSFER">
+                            {ar ? 'تحويل بنكي يدوي' : 'Manual bank transfer'}
+                          </option>
+                          <option value="VODAFONE_CASH">Vodafone Cash</option>
+                          <option value="INSTAPAY">InstaPay</option>
+                        </select>
+                      </label>
+                    )}
                     <label>
                       {ar ? 'ملاحظات (اختياري)' : 'Notes (optional)'}
                       <textarea name="notes" maxLength={500} />
@@ -272,15 +308,25 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
                         ? ar
                           ? 'جارٍ الإرسال…'
                           : 'Submitting…'
-                        : ar
-                          ? 'إرسال الطلب للمراجعة'
-                          : 'Submit order for review'}
+                        : quote
+                          ? quoteCopy.ui.submit[locale]
+                          : ar
+                            ? 'إرسال الطلب للمراجعة'
+                            : 'Submit order for review'}
                     </button>
                   </fieldset>
                 </form>
               ) : (
                 <p role="status">
-                  {ar ? 'الشراء متوقف حاليًا.' : 'Purchasing is currently unavailable.'}
+                  {!modeMatches
+                    ? ar
+                      ? 'أزل البنود من نمط الطلب السابق ثم أضفها من الكتالوج.'
+                      : 'Remove items from the previous ordering mode and re-add them from the catalog.'
+                    : quote
+                      ? quoteCopy.ui.unavailable[locale]
+                      : ar
+                        ? 'الشراء متوقف حاليًا.'
+                        : 'Purchasing is currently unavailable.'}
                 </p>
               )}
             </div>

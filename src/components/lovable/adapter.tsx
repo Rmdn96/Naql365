@@ -11,7 +11,8 @@ export type CatalogProduct = {
   name: Record<Locale, string>;
   spec: Record<Locale, string>;
   image: string;
-  retail: number;
+  retail: number | null;
+  sku?: string;
   media: StoreProduct['media'];
   specifications: NonNullable<StoreProduct['content']['specifications']>;
 };

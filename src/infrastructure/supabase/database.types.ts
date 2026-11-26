@@ -4045,6 +4045,7 @@ export type Database = {
         Args: { p_country: string; p_creation_token?: string }
         Returns: Json
       }
+      store_approve_quote_product: { Args: { p_approved: boolean; p_product: string; p_revision: number }; Returns: undefined }
       store_catalog_admin_v2: {
         Args: {
           p_after?: string
@@ -4177,6 +4178,9 @@ export type Database = {
         }
         Returns: Json
       }
+      store_quote_catalog: { Args: never; Returns: Json }
+      store_quote_queue: { Args: { p_before?: string }; Returns: Json }
+      store_review_quote: { Args: { p_confirmation?: string; p_id: string; p_offer?: Json; p_revision: number }; Returns: undefined }
       store_shop_v1: {
         Args: {
           p_after?: string
@@ -4211,6 +4215,7 @@ export type Database = {
         }
         Returns: Json
       }
+      store_submit_quote: { Args: { p_contact: Json; p_items: Json; p_request: string }; Returns: string }
       tracking_feed: {
         Args: {
           p_driver?: string
