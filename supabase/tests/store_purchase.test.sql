@@ -147,7 +147,7 @@ begin
  perform public.store_purchase_error('select * from private.store_orders','42501','anonymous orders protected');
  perform public.store_purchase_error('select * from private.store_order_items','42501','anonymous lines protected');
  perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,payload||'{"governorate":"ALEXANDRIA"}'),'22023','delivery restricted server side');
- perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,payload||'{"payment_method":"VODAFONE_CASH"}'),'22023','wallet unavailable to guest');
+ perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,payload||'{"payment_method":"CARD"}'),'22023','unapproved method unavailable to guest');
  perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,payload||'{"payment_method":"BANK_TRANSFER"}'),'PT409','transfer requires approved bank');
  perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,jsonb_set(payload,'{items,0,unit_price}','1')),'PT409','price tampering refused');
  perform public.store_purchase_error(format('select public.store_guest_checkout_v1(%L,%L)',key,jsonb_set(payload,'{items,0,listing_id}',to_jsonb(gen_random_uuid()))),'PT409','unavailable listing refused');

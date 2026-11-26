@@ -4,32 +4,22 @@ vi.mock('@/infrastructure/identity/login-destination', () => ({
   loginDestination: mocks.destination,
 }));
 vi.mock('@/infrastructure/config/public-env', () => ({ getPublicEnv: mocks.env }));
-import { IdentityLink } from '@/components/shell/public-shell';
+import { Header } from '@/components/shell/public-shell';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { createElement } from 'react';
+vi.mock('@/components/shell/locale-link', () => ({ LocaleLink: () => null }));
+vi.mock('@/components/shell/theme-control', () => ({ ThemeControl: () => null }));
+vi.mock('@/components/store/cart-link', () => ({ CartLink: () => null }));
 import Login from '@/app/[locale]/(public)/login/page';
 
 beforeEach(() => {
   vi.resetAllMocks();
   mocks.env.mockReturnValue({ configured: true });
 });
-it.each(['ar', 'en'] as const)(
-  'renders exactly the authorized role destination in %s',
-  async (locale) => {
-    for (const role of ['account', 'portal', 'driver']) {
-      mocks.destination.mockResolvedValue(role);
-      const link = await IdentityLink({ locale });
-      expect(link.props.href).toBe(`/${locale}/${role}`);
-      expect(link.props.children).not.toMatch(/Sign In|تسجيل الدخول/);
-    }
-    mocks.destination.mockResolvedValue('unauthenticated');
-    const link = await IdentityLink({ locale });
-    expect(link.props.href).toBe(`/${locale}/login`);
-    expect(link.props.children).toMatch(/Sign In|تسجيل الدخول/);
-  },
-);
-it('does not share a previous user role with the next render', async () => {
-  mocks.destination.mockResolvedValueOnce('portal').mockResolvedValueOnce('unauthenticated');
-  expect((await IdentityLink({ locale: 'ar' })).props.href).toBe('/ar/portal');
-  expect((await IdentityLink({ locale: 'ar' })).props.href).toBe('/ar/login');
+it.each(['ar', 'en'] as const)('public header has no identity controls in %s', (locale) => {
+  const html = renderToStaticMarkup(createElement(Header, { locale, themeMode: 'light' }));
+  expect(html).not.toMatch(/href="[^"]*\/(?:login|register|account|portal)"/);
+  expect(mocks.destination).not.toHaveBeenCalled();
 });
 it.each(['account', 'portal', 'driver', 'membership', 'provisioning', 'server'])(
   'authenticated login-page request resolves %s before returning a form',
