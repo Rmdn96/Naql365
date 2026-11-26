@@ -33,7 +33,9 @@ export function Header({
           <nav className="launch-main-nav" aria-label={ar ? 'التنقل الرئيسي' : 'Main navigation'}>
             <Link href={`/${locale}`}>{ar ? 'الرئيسية' : 'Home'}</Link>
             <CartLink locale={locale} />
-            <Link href={`/${locale}/request`}>{ar ? 'طلب نقل' : 'Request transport'}</Link>
+            <Link href={`/${locale}/request`} aria-label={ar ? 'طلب نقل' : 'Request transport'}>
+              {ar ? 'طلب نقل' : 'Transport'}
+            </Link>
             <Link href={`/${locale}#contact`}>{ar ? 'تواصل' : 'Contact'}</Link>
           </nav>
         </div>
