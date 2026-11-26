@@ -94,7 +94,7 @@ export function SourceCommerce({
                 : 'Availability confirmation by Naql365 required'}
             </p>
             {addButton(detail)}
-            <p>{ar ? 'توصيل إلى القاهرة والجيزة' : 'Delivery in Cairo and Giza'}</p>
+            <p>{delivery}</p>
           </div>
         </div>
       </section>
@@ -110,7 +110,7 @@ export function SourceCommerce({
         <header className="launch-intro">
           <div className="launch-intro-copy">
             <h1>{ar ? 'مستلزمات التغليف والنقل' : 'Packing and moving supplies'}</h1>
-            <p>{delivery}</p>
+            <p>{ar ? 'توصيل إلى القاهرة والجيزة' : 'Delivery in Cairo and Giza'}</p>
             <a className="launch-intro-link" href="#store-products">
               {ar ? 'تصفح المنتجات' : 'Browse products'}
             </a>
