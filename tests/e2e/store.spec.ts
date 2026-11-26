@@ -7,7 +7,7 @@ for (const locale of ['ar', 'en']) {
       (url) => url.pathname === '/' + locale && url.searchParams.get('search') === 'boxes',
     );
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      locale === 'ar' ? 'متجر نقل 365' : 'Naql365 Store',
+      locale === 'ar' ? 'مستلزمات التغليف والنقل' : 'Packing and moving supplies',
     );
     await expect(
       page.getByRole('status').filter({

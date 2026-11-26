@@ -44,7 +44,7 @@ for (const locale of ['ar', 'en'] as const) {
     }
   });
 
-  test(`${locale} request retains Guest controls, branding and independent Auth navigation`, async ({
+  test(`${locale} request retains Guest controls and branding with a private admin sign-in`, async ({
     page,
   }) => {
     await page.goto(`/${locale}/request`);
@@ -56,7 +56,8 @@ for (const locale of ['ar', 'en'] as const) {
     await expect(page.locator('.skip-link[href="#main"]')).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page.locator('#main')).toBeFocused();
-    await page.locator('.launch-header-tools a[href="/' + locale + '/login"]').click();
+    await expect(page.locator('.launch-header a[href$="/login"]')).toHaveCount(0);
+    await page.goto('/' + locale + '/login');
     await expect(page).toHaveURL(new RegExp(`/${locale}/login`));
     await expect(page.locator('.auth-v2')).toBeVisible();
     await expect(page.locator('.transport-header')).toHaveCount(0);

@@ -533,6 +533,9 @@
     min-block-size: 44px;
     font-weight: 700;
   }
+  .launch-quick-contact a[href^='tel:'] {
+    color: var(--theme-link);
+  }
   .launch-footer {
     padding-block-end: calc(55px + env(safe-area-inset-bottom, 0px));
   }

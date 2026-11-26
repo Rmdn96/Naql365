@@ -13,7 +13,7 @@ for (const locale of ['ar', 'en'] as const) {
         : 'We confirm availability, delivery fees and the total',
     );
     await expect(catalog).not.toContainText(
-      /IBAN|فودافون كاش|إنستاباي|Vodafone Cash|InstaPay|supplierEntitlementMinor|moneyOperations/i,
+      /IBAN|supplierEntitlementMinor|moneyOperations|accountNumber|destination_snapshot/i,
     );
     for (const width of [360, 390, 768, 1280, 1440]) {
       await page.setViewportSize({ width, height: 900 });

@@ -42,7 +42,7 @@ for (const locale of ['ar', 'en'] as const) {
     page,
   }) => {
     await page.goto('/' + locale);
-    const contact = page.getByRole('link', {
+    const contact = page.locator('#contact').getByRole('link', {
       name: locale === 'ar' ? 'واتساب' : 'WhatsApp',
       exact: true,
     });
