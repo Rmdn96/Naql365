@@ -21,6 +21,9 @@ export function CustomerAuthForm({
   const t = customerDictionary(locale);
   const [state, action, pending] = useActionState(customerAuth.bind(null, locale, mode), initial);
   useEffect(() => {
+    // Load the portal in a new document after the session cookie is committed.
+    // A redirect inside the action can attempt a failing proxy-side response fetch.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     if (state.status === 'signed_in') window.location.assign(`/${locale}/portal`);
   }, [locale, state.status]);
   const [email, setEmail] = useState('');
