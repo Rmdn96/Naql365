@@ -38,6 +38,10 @@ const mocks = {
   'next/link': `import{createElement}from'react';export default function Link({href,children,prefetch,replace,scroll,...props}){return createElement('a',{...props,href},children)}`,
   'next/image': `import{createElement}from'react';export default function Image({priority,preload,fill,...props}){return createElement('img',props)}`,
   'server-only': '',
+  '@/infrastructure/store/quotes':
+    'export const quoteMode=()=>false;export const quoteCatalog=async()=>({enabled:false,items:[]})',
+  '@/app/store-quote-actions':
+    'export const changeQuote=async()=>{throw Error();};export const approveQuoteProduct=async()=>{throw Error();};',
   '@/infrastructure/markets/public': `export const selectedPublicCountry=async()=>'EG';`,
   '@/infrastructure/identity/staff-context': `export const staffModules=async()=>({context:{status:'authorized'},sales:true,operations:false,finance:false,support:false});`,
   '@/infrastructure/pricing/service':

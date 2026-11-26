@@ -63,6 +63,10 @@ const mocks = {
   'next/link': `import{createElement}from'react';export default function Link({href,children,prefetch,replace,scroll,...props}){return createElement('a',{...props,href},children)}`,
   'next/image': `import{createElement}from'react';export default function Image({priority,preload,fill,...props}){return createElement('img',props)}`,
   'server-only': '',
+  '@/infrastructure/store/quotes':
+    'export const quoteMode=()=>false;export const quoteCatalog=async()=>({enabled:false,items:[]})',
+  '@/app/store-quote-actions':
+    'export const changeQuote=async()=>{throw Error();};export const approveQuoteProduct=async()=>{throw Error();};',
   '@/infrastructure/config/public-env': `export const getPublicEnv=()=>({configured:true});`,
   '@/infrastructure/supabase/server': `export const createSupabaseServerClient=async()=>({auth:{getUser:async()=>({data:{user:{id:'10000000-0000-4000-8000-000000000001'}},error:null})},from:()=>({select:()=>({eq:()=>({single:async()=>({data:{display_name:'TEST Customer',phone:'+201000000000',locale:'en'},error:null})})})}),rpc:async()=>({data:new URLSearchParams(location.search).get('state')==='onboarding'?'new':'active',error:null})});`,
   '@/infrastructure/requests/list': fixture + `export const customerRequests=async()=>f.requests;`,
