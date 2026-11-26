@@ -177,7 +177,7 @@
   padding-block-end: 0.65rem;
   color: var(--theme-text-secondary);
 }
-.launch-shopping-information h2 {
+.launch-store .launch-shopping-information h2 {
   font-size: 1.05rem;
 }
 .launch-store .launch-intro h1 {
@@ -465,6 +465,12 @@
   }
 }
 @media (max-width: 359px) {
+  .launch-main-nav .commerce-cart {
+    padding-inline: 0.4rem;
+  }
+  .launch-main-nav {
+    column-gap: 0.25rem;
+  }
   .launch-header .naql-brand {
     gap: 0.25rem;
   }

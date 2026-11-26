@@ -190,8 +190,8 @@ export function GuestCheckout({ locale, available }: { locale: Locale; available
                 </p>
                 <p>
                   {ar
-                    ? 'التوصيل داخل القاهرة والجيزة. نؤكد رسوم التوصيل والإجمالي النهائي معك قبل تجهيز الطلب أو التحويل البنكي.'
-                    : 'Delivery in Cairo and Giza. We will confirm the delivery fee and final total with you before preparing your order or requesting a bank transfer.'}
+                    ? 'التوصيل داخل القاهرة والجيزة. نؤكد رسوم التوصيل والإجمالي النهائي معك قبل تجهيز الطلب أو طلب التحويل.'
+                    : 'Delivery in Cairo and Giza. We will confirm the delivery fee and final total with you before preparing your order or requesting a transfer.'}
                 </p>
               </section>
               {available ? (

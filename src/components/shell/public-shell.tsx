@@ -34,7 +34,7 @@ export function Header({
             <Link href={`/${locale}`}>{ar ? 'الرئيسية' : 'Home'}</Link>
             <CartLink locale={locale} />
             <Link href={`/${locale}/request`}>{ar ? 'طلب نقل' : 'Request transport'}</Link>
-            <Link href={`/${locale}#contact`}>{ar ? 'تواصل معنا' : 'Contact us'}</Link>
+            <Link href={`/${locale}#contact`}>{ar ? 'تواصل' : 'Contact'}</Link>
           </nav>
         </div>
       </header>

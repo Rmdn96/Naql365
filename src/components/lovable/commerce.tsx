@@ -94,7 +94,7 @@ export function SourceCommerce({
                 : 'Availability confirmation by Naql365 required'}
             </p>
             {addButton(detail)}
-            <p>{delivery}</p>
+            <p>{ar ? 'توصيل إلى القاهرة والجيزة' : 'Delivery in Cairo and Giza'}</p>
           </div>
         </div>
       </section>

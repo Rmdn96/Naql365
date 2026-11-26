@@ -6,9 +6,11 @@ export async function foundationDatabase(migrationLimit = Number.POSITIVE_INFINI
     create role anon nologin;
     create role authenticated nologin;
     create role service_role nologin;
+    create role supabase_auth_admin nologin;
     create schema auth;
     create table auth.users(id uuid primary key, raw_user_meta_data jsonb default '{}'::jsonb, email text, email_confirmed_at timestamptz);
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
+    create function auth.role() returns text language sql stable as $$ select nullif(current_setting('request.jwt.claim.role',true),'') $$;
     grant usage on schema auth to authenticated,anon;
     grant execute on function auth.uid() to authenticated,anon;
     create schema storage;
