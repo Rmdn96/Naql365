@@ -98,19 +98,7 @@ export async function uploadProductImage(form: FormData) {
     },
   });
   if (reserve.error) storeFailure(reserve.error.code);
-  // Immutable object upload. A lost response is resolved by the finalization command's object check.
-  await client.storage
-    .from('store-product-media')
-    .upload(`${input.assetId}.webp`, bytes, { contentType: 'image/webp', upsert: false });
-  const stored = await client.storage.from('store-product-media').download(`${input.assetId}.webp`);
-  if (
-    stored.error ||
-    !stored.data ||
-    createHash('sha256')
-      .update(new Uint8Array(await stored.data.arrayBuffer()))
-      .digest('hex') !== createHash('sha256').update(bytes).digest('hex')
-  )
-    throw new AppError('conflict', 'Product image upload unconfirmed');
+  await uploadVerifiedStoreImage(client, input.assetId + '.webp', bytes);
   const final = await client.rpc('store_catalog_extension_v1', {
     ...args,
     p_action: 'finalize_media',
@@ -121,11 +109,36 @@ export async function uploadProductImage(form: FormData) {
   return final.data;
 }
 
-export async function productImage(id: string, width = 1600) {
+export async function uploadVerifiedStoreImage(
+  client: Awaited<ReturnType<typeof createSupabaseServerClient>>,
+  path: string,
+  bytes: Buffer,
+) {
+  // Verify the object even if a retry encounters an existing immutable upload.
+  const bucket = client.storage.from('store-product-media');
+  await bucket.upload(path, bytes, { contentType: 'image/webp', upsert: false });
+  const stored = await bucket.download(path);
+  if (
+    stored.error ||
+    !stored.data ||
+    createHash('sha256')
+      .update(new Uint8Array(await stored.data.arrayBuffer()))
+      .digest('hex') !== createHash('sha256').update(bytes).digest('hex')
+  )
+    throw new AppError('conflict', 'Product image upload unconfirmed');
+}
+
+export async function productImage(
+  id: string,
+  width = 1600,
+  kind: 'product' | 'category' = 'product',
+) {
   const key = z.uuid().parse(id).toLowerCase();
   const client = await createSupabaseServerClient();
   // Dedicated bucket and registry-backed RLS; never a caller-supplied bucket/path or a proof URL.
-  const image = await client.storage.from('store-product-media').download(`${key}.webp`);
+  const image = await client.storage
+    .from('store-product-media')
+    .download((kind === 'category' ? 'category/' : '') + key + '.webp');
   if (image.error || !image.data) throw new AppError('not_found', 'Image unavailable');
   return normalizeProductImage(new Uint8Array(await image.data.arrayBuffer()), 'image/webp', width);
 }

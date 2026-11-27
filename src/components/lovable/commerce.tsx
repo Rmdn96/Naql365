@@ -19,7 +19,7 @@ type Props = {
   view: string;
   productId?: string;
   products: CatalogProduct[];
-  categories: { slug: string; title: string }[];
+  categories: { slug: string; title: string; image?: string | undefined }[];
   available: boolean;
   quote?: boolean;
   initialQuery?: string;
@@ -145,7 +145,7 @@ export function SourceCommerce({
         {categories.length > 0 && (
           <nav
             id="store-category"
-            className="launch-categories"
+            className={quote ? 'launch-categories launch-category-images' : 'launch-categories'}
             aria-label={ar ? 'فئات المنتجات' : 'Product categories'}
           >
             <Link
@@ -160,6 +160,21 @@ export function SourceCommerce({
                 aria-current={c.slug === initialCategory ? 'page' : undefined}
                 href={storeHref(c.slug)}
               >
+                {quote && (
+                  <span className="launch-category-image" aria-hidden="true">
+                    {c.image ? (
+                      <SourceImage
+                        src={'/api/store/media/' + c.image + '?kind=category'}
+                        alt=""
+                        width={72}
+                        height={54}
+                        sizes="72px"
+                      />
+                    ) : (
+                      <Package size={23} />
+                    )}
+                  </span>
+                )}
                 {c.title}
               </Link>
             ))}

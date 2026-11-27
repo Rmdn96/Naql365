@@ -9,6 +9,14 @@ export function quoteMode() {
   return process.env.NAQL365_STORE_QUOTE_MODE === 'true';
 }
 
+export const quoteCategoryImages = cache(async () => {
+  const client = await createSupabaseServerClient();
+  const { data, error } = await client.rpc('store_quote_category_images');
+  if (error) return {};
+  const images = z.record(z.string(), z.uuid()).safeParse(data);
+  return images.success ? images.data : {};
+});
+
 export const quoteCatalog = cache(async () => {
   if (!getPublicEnv()) return { enabled: false, items: [] };
   const client = await createSupabaseServerClient();

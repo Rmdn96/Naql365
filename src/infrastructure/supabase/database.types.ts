@@ -4155,6 +4155,22 @@ export type Database = {
         }
         Returns: Json
       }
+      store_category_image_admin: {
+        Args: { p_categories: string[]; p_market: string; p_org: string }
+        Returns: Json
+      }
+      store_category_image_command: {
+        Args: {
+          p_action: string
+          p_asset: string
+          p_category: string
+          p_market: string
+          p_org: string
+          p_payload?: Json
+          p_revision: number
+        }
+        Returns: undefined
+      }
       store_guest_checkout_v1: {
         Args: { p_payload: Json; p_request: string }
         Returns: Json
@@ -4182,6 +4198,7 @@ export type Database = {
         Returns: Json
       }
       store_quote_catalog: { Args: never; Returns: Json }
+      store_quote_category_images: { Args: never; Returns: Json }
       store_quote_queue: { Args: { p_before?: string }; Returns: Json }
       store_review_quote: {
         Args: {

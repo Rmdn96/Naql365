@@ -16,3 +16,9 @@ Use the existing catalog product editor for descriptions and category assignment
 6. To roll back, close the quote launch gate first, restore the prior release configuration and keep quote requests, offer audit records, previous orders and payments intact. A replay of an existing valid nonce and identical submission can return its existing reference. New intake remains closed.
 
 SEO uses canonical and alternate URLs based on the application's configured origin. A gated product revision is required for inclusion in the quote sitemap. The quote pages emit no priced Offer, stock claims or ratings.
+
+## Category artwork
+
+The category editor uses the same private WebP bucket as listing images. Upload a reviewed source into the matching category's image panel with its rights reference. A new or replacement image stays private until explicitly approved. In quote mode an approved image is public only while the quote gate is open, the category is published, and it contains an approved quote product. Removing or replacing an image retires its existing URL without deleting the audit history.
+
+Match the eight source files in the Visual Assets V2 archive by category slug: `box → 06-Categories/BOX.webp`, `bbl → BBL.webp`, `str → STR.webp`, `tap → TAP.webp`, `rol → ROL.webp`, `bag → BAG.webp`, `twi → TWI.webp`, and `kit → KIT.webp`. The storefront follows this sequence, with products ordered by SKU inside each category and bundles last. The supplied artwork remains outside the public asset directory. Keep existing production copy when it differs from the original launch draft; review the small text corrections in the catalog file before applying them to existing rows.

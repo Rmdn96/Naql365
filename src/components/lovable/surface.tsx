@@ -1,4 +1,4 @@
-import { quoteCatalog, quoteMode } from '@/infrastructure/store/quotes';
+import { quoteCatalog, quoteCategoryImages, quoteMode } from '@/infrastructure/store/quotes';
 import { SourceCommerce } from './commerce';
 import { storeShop, storeCategories } from '@/infrastructure/store/service';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
@@ -7,6 +7,13 @@ import type { Locale } from './types';
 import type { ReactNode } from 'react';
 import '@/styles/lovable.css';
 import '@/styles/lovable-store.css';
+const categoryOrder = ['box', 'bbl', 'str', 'tap', 'rol', 'bag', 'twi', 'kit'];
+const rank = (slug: string) => {
+  const index = categoryOrder.indexOf(slug);
+  if (slug === 'kit') return categoryOrder.length;
+  return index < 0 ? categoryOrder.length - 1 : index;
+};
+
 export async function CommerceSurface({
   locale,
   view = 'home',
@@ -22,9 +29,15 @@ export async function CommerceSurface({
 }) {
   if (quoteMode() && !children) {
     const catalog = await quoteCatalog();
+    const images: Record<string, string> =
+      catalog.enabled && view !== 'product' ? await quoteCategoryImages() : {};
+    const items = catalog.items.toSorted(
+      (a, b) =>
+        rank(a.category) - rank(b.category) || a.sku.localeCompare(b.sku, 'en', { numeric: true }),
+    );
     const search = query.search?.trim().toLowerCase();
     const category = query.category;
-    const filtered = catalog.items.filter(
+    const filtered = items.filter(
       (p) =>
         (!category || category === p.category) &&
         (!search ||
@@ -49,9 +62,13 @@ export async function CommerceSurface({
       }));
     const categories = Array.from(
       new Map(
-        catalog.items.map((p) => [
+        items.map((p) => [
           p.category,
-          { slug: p.category, title: locale === 'ar' ? p.categoryAr : p.categoryEn },
+          {
+            slug: p.category,
+            title: locale === 'ar' ? p.categoryAr : p.categoryEn,
+            image: images[p.category],
+          },
         ]),
       ).values(),
     );

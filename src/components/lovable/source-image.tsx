@@ -17,7 +17,9 @@ export function SourceImage({
       {...(src.startsWith('/api/store/media/')
         ? {
             loader: ({ src, width }: { src: string; width: number }) =>
-              src + '?width=' + Math.max(64, Math.min(1600, width)),
+              src +
+              (src.includes('?') ? '&width=' : '?width=') +
+              Math.max(64, Math.min(1600, width)),
           }
         : {})}
     />

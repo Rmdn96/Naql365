@@ -546,3 +546,26 @@
     bottom: calc(55px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+.launch-category-images a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.launch-category-image {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 34px;
+  overflow: hidden;
+  border-radius: 0.4rem;
+  background: var(--theme-surface-muted);
+}
+
+.launch-category-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

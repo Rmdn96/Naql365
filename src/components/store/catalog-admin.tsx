@@ -6,7 +6,11 @@ import { quoteMode } from '@/infrastructure/store/quotes';
 import { QuotePublication } from './quote-admin-forms';
 import { StaffNote } from '@/components/staff/presentation';
 import { Badge, Card, EmptyState, Input } from '@/components/ui/primitives';
-import { catalogKind, storeCatalogAdmin } from '@/infrastructure/store/catalog';
+import {
+  catalogKind,
+  storeCatalogAdmin,
+  storeCategoryImages,
+} from '@/infrastructure/store/catalog';
 import { storeMoney, storeText } from '@/i18n/store';
 import { CatalogCreate, CatalogApprove } from './catalog-controls';
 import {
@@ -15,6 +19,7 @@ import {
   CatalogReference,
   CatalogMedia,
 } from './catalog-editor';
+import { CategoryImageEditor } from './category-image-editor';
 import '@/styles/store.css';
 export async function CatalogAdmin({
   locale,
@@ -34,6 +39,10 @@ export async function CatalogAdmin({
     t = storeText[locale],
     ar = locale === 'ar',
     root = '/' + locale + '/portal/store/catalog';
+  const categoryImages =
+    r.manage && k === 'categories' && r.page.items.length
+      ? await storeCategoryImages(r.page.items.map((row) => row.id))
+      : null;
   // Reuse the permission-scoped catalogue projection; never query private tables.
   const categories = [] as { id: string; title: string }[];
   if (r.manage && (k === 'products' || k === 'categories')) {
@@ -337,6 +346,16 @@ export async function CatalogAdmin({
                       parent={!!row.parentId}
                     />
                   )}
+                {categoryImages && (
+                  <CategoryImageEditor
+                    key={row.id + '-' + row.revision}
+                    locale={locale}
+                    categoryId={row.id}
+                    revision={row.revision}
+                    image={categoryImages[row.id]}
+                    canApprove={r.publish}
+                  />
+                )}
                 {r.manage && k === 'listings' && (
                   <CatalogMedia
                     key={row.id + '-' + row.revision}

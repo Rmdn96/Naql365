@@ -117,6 +117,19 @@ export async function storeCatalogAdmin(kind: unknown, after?: string, search = 
     policies: access[4]?.status === 'authorized',
   };
 }
+export async function storeCategoryImages(ids: string[]) {
+  const context = await staffMarket('store.catalog.read');
+  const c = await createSupabaseServerClient();
+  const result = await c.rpc('store_category_image_admin', {
+    p_org: context.organizationId,
+    p_market: context.market.id,
+    p_categories: ids,
+  });
+  if (result.error?.code === '42501' || result.error?.code === 'PGRST202') return null;
+  if (result.error) storeFailure(result.error.code);
+  return z.record(z.uuid(), z.object({ id: z.uuid(), approved: z.boolean() })).parse(result.data);
+}
+
 export async function storeCatalogExecute(input: unknown) {
   const p = z
     .strictObject({
