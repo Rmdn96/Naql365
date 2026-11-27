@@ -44,6 +44,7 @@ assert.deepEqual(
     '20261126000100_store_guest_manual_channels.sql',
     '20261126000200_commercial_admin_gate.sql',
     '20261127000100_store_quote_launch.sql',
+    '20261127000200_store_category_images.sql',
   ].sort(),
 );
 const source = readFileSync(folder + added, 'utf8');
@@ -59,7 +60,7 @@ const result = {
   baseline,
   originalMigrationCount: old.length,
   originalMigrationGitBlobsByteIdentical: true,
-  migrationCount: 57,
+  migrationCount: 58,
   added: folder + added,
   sha256: hash(source),
   financeAddition: {
