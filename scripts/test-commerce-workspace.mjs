@@ -91,6 +91,7 @@ const tables = [
   'store_quote_launch',
   'store_supplier_reference_prices',
   'store_product_media',
+  'store_category_media',
   'store_purchase_events',
   'store_purchase_receipts',
   'store_money_entries',
