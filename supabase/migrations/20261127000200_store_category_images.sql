@@ -13,6 +13,8 @@ create table private.store_category_media (
   foreign key (organization_id,market_id) references public.markets(organization_id,id)
 );
 alter table private.store_category_media enable row level security;
+create trigger zz_egypt_only_write before insert or update on private.store_category_media
+  for each row execute function private.egypt_only_write();
 revoke all on private.store_category_media from public,anon,authenticated,service_role;
 create unique index store_category_media_current on private.store_category_media(category_id) where status in ('DRAFT','APPROVED');
 
