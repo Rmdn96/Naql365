@@ -39,7 +39,7 @@ const mocks = {
   'next/image': `import{createElement}from'react';export default function Image({priority,preload,fill,...props}){return createElement('img',props)}`,
   'server-only': '',
   '@/infrastructure/store/quotes':
-    'export const quoteMode=()=>false;export const quoteCatalog=async()=>({enabled:false,items:[]})',
+    'export const quoteMode=()=>false;export const quoteCatalog=async()=>({enabled:false,items:[]});export const quoteCategoryImages=async()=>({})',
   '@/app/store-quote-actions':
     'export const changeQuote=async()=>{throw Error();};export const approveQuoteProduct=async()=>{throw Error();};',
   '@/infrastructure/markets/public': `export const selectedPublicCountry=async()=>'EG';`,
@@ -52,7 +52,7 @@ const mocks = {
   '@/infrastructure/store/service':
     fixture +
     `export const storeRead=async()=>f.storeOrders;export const storeShop=async()=>({status:'PAUSED',items:[],nextCursor:null});export const storeCategories=async()=>[];`,
-  '@/infrastructure/store/catalog': `import{z}from'zod';export const catalogKind=z.enum(['products','categories','listings','prices','references','offers','suppliers','agreements','policies']);export const storeCatalogAdmin=async()=>({manage:true,publish:false,sourcing:false,policies:false,page:{items:[{id:'10000000-0000-4000-8000-000000000001',sku:'TEST-BOX',revision:1,state:'DRAFT',content:{title_ar:'صندوق اختباري',title_en:'TEST box',description_ar:'مسودة اصطناعية',description_en:'Synthetic draft',specifications:[]}}],nextCursor:null}});`,
+  '@/infrastructure/store/catalog': `import{z}from'zod';export const catalogKind=z.enum(['products','categories','listings','prices','references','offers','suppliers','agreements','policies']);export const storeCategoryImages=async()=>null;export const storeCatalogAdmin=async()=>({manage:true,publish:false,sourcing:false,policies:false,page:{items:[{id:'10000000-0000-4000-8000-000000000001',sku:'TEST-BOX',revision:1,state:'DRAFT',content:{title_ar:'صندوق اختباري',title_en:'TEST box',description_ar:'مسودة اصطناعية',description_en:'Synthetic draft',specifications:[]}}],nextCursor:null}});`,
 };
 let browser,
   server,

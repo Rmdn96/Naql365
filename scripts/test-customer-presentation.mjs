@@ -64,7 +64,7 @@ const mocks = {
   'next/image': `import{createElement}from'react';export default function Image({priority,preload,fill,...props}){return createElement('img',props)}`,
   'server-only': '',
   '@/infrastructure/store/quotes':
-    'export const quoteMode=()=>false;export const quoteCatalog=async()=>({enabled:false,items:[]})',
+    'export const quoteMode=()=>false;export const quoteCatalog=async()=>({enabled:false,items:[]});export const quoteCategoryImages=async()=>({})',
   '@/app/store-quote-actions':
     'export const changeQuote=async()=>{throw Error();};export const approveQuoteProduct=async()=>{throw Error();};',
   '@/infrastructure/config/public-env': `export const getPublicEnv=()=>({configured:true});`,
