@@ -1,4 +1,5 @@
 import { quoteCatalog, quoteCategoryImages, quoteMode } from '@/infrastructure/store/quotes';
+import { catalogReview } from '@/infrastructure/store/catalog-review';
 import { SourceCommerce } from './commerce';
 import { storeShop, storeCategories } from '@/infrastructure/store/service';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
@@ -29,9 +30,13 @@ export async function CommerceSurface({
 }) {
   if (quoteMode() && !children) {
     const catalog = await quoteCatalog();
-    const images: Record<string, string> =
-      catalog.enabled && view !== 'product' ? await quoteCategoryImages() : {};
-    const items = catalog.items.toSorted(
+    const review =
+      !catalog.enabled && ['home', 'catalog', 'categories', 'product'].includes(view)
+        ? await catalogReview()
+        : null;
+    const images =
+      review?.images ?? (catalog.enabled && view !== 'product' ? await quoteCategoryImages() : {});
+    const items = (review?.items ?? catalog.items).toSorted(
       (a, b) =>
         rank(a.category) - rank(b.category) || a.sku.localeCompare(b.sku, 'en', { numeric: true }),
     );
@@ -45,21 +50,31 @@ export async function CommerceSurface({
             part.toLowerCase().includes(search),
           )),
     );
-    const products = filtered
-      .filter((p) => view !== 'product' || p.slug === productId)
-      .map((p) => ({
-        id: p.id,
-        sku: p.sku,
-        slug: p.slug,
-        revision: p.revision,
-        category: p.category,
-        name: { ar: p.content.title_ar, en: p.content.title_en },
-        spec: { ar: p.content.description_ar ?? '', en: p.content.description_en ?? '' },
-        image: p.media[0]?.src ?? '',
-        media: p.media,
-        specifications: p.content.specifications ?? [],
-        retail: p.price,
-      }));
+    const selected = view === 'product' ? items.find((p) => p.slug === productId) : undefined;
+    const visible =
+      view === 'product'
+        ? selected
+          ? [
+              selected,
+              ...items
+                .filter((p) => p.category === selected.category && p.id !== selected.id)
+                .slice(0, 3),
+            ]
+          : []
+        : filtered;
+    const products = visible.map((p) => ({
+      id: p.id,
+      sku: p.sku,
+      slug: p.slug,
+      revision: p.revision,
+      category: p.category,
+      name: { ar: p.content.title_ar, en: p.content.title_en },
+      spec: { ar: p.content.description_ar ?? '', en: p.content.description_en ?? '' },
+      image: p.media[0]?.src ?? '',
+      media: p.media,
+      specifications: p.content.specifications ?? [],
+      retail: p.price,
+    }));
     const categories = Array.from(
       new Map(
         items.map((p) => [
@@ -82,6 +97,7 @@ export async function CommerceSurface({
         products={products}
         categories={categories}
         available={catalog.enabled}
+        review={review !== null}
         initialQuery={query.search ?? ''}
         initialCategory={category ?? 'all'}
       />

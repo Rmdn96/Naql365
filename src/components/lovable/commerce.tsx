@@ -22,6 +22,7 @@ type Props = {
   categories: { slug: string; title: string; image?: string | undefined }[];
   available: boolean;
   quote?: boolean;
+  review?: boolean;
   initialQuery?: string;
   initialCategory?: string;
   nextCursor?: string | null;
@@ -36,6 +37,7 @@ export function SourceCommerce({
   categories,
   available,
   quote = false,
+  review = false,
   initialQuery = '',
   initialCategory = 'all',
   nextCursor,
@@ -68,7 +70,13 @@ export function SourceCommerce({
     ? 'التوصيل إلى القاهرة والجيزة. نؤكد التوفر ورسوم التوصيل والإجمالي قبل التجهيز.'
     : 'Delivery to Cairo and Giza. We confirm availability, delivery fees and the total before preparing your order.';
   const price = (value: number | null) =>
-    value === null ? quoteCopy.ui.price[locale] : storeMoney(value, locale);
+    value === null
+      ? review
+        ? ar
+          ? 'السعر قريبًا'
+          : 'Price coming soon'
+        : quoteCopy.ui.price[locale]
+      : storeMoney(value, locale);
   let body: ReactNode;
   if (children) body = children;
   else if (view === 'cart' || view === 'checkout')
@@ -99,10 +107,25 @@ export function SourceCommerce({
                 ? 'تأكيد التوفر من Naql365 مطلوب'
                 : 'Availability confirmation by Naql365 required'}
             </p>
-            {addButton(detail)}
+            <p>{categories.find((category) => category.slug === detail.category)?.title}</p>
+            {!review && addButton(detail)}
             <p>{delivery}</p>
           </div>
         </div>
+        {products.length > 1 && (
+          <section aria-label={ar ? 'منتجات ذات صلة' : 'Related products'}>
+            <h2>{ar ? 'منتجات ذات صلة' : 'Related products'}</h2>
+            <ul>
+              {products
+                .filter((p) => p.id !== detail.id)
+                .map((p) => (
+                  <li key={p.id}>
+                    <Link href={destination('product', locale, p.slug)}>{p.name[locale]}</Link>
+                  </li>
+                ))}
+            </ul>
+          </section>
+        )}
       </section>
     ) : (
       <div className="cm-container">
@@ -113,6 +136,13 @@ export function SourceCommerce({
   else
     body = (
       <div className="cm-container launch-store">
+        {review && (
+          <p role="status" className="cm-note">
+            {ar
+              ? 'معاينة خاصة للكتالوج. الطلبات والشراء مغلقان.'
+              : 'Private catalog preview. Ordering is closed.'}
+          </p>
+        )}
         <header className="launch-intro">
           <div className="launch-intro-copy">
             <h1>
@@ -189,7 +219,7 @@ export function SourceCommerce({
         <h2 id="store-products" className="launch-catalog-title">
           {ar ? 'المنتجات' : 'Products'}
         </h2>
-        {available && products.length > 0 ? (
+        {(available || review) && products.length > 0 ? (
           <div className="cm-products commerce-products">
             {products.map((p) => {
               const href = destination('product', locale, p.slug);
@@ -219,16 +249,17 @@ export function SourceCommerce({
                       <h3>{p.name[locale]}</h3>
                     </Link>
                     <strong>{price(p.retail)}</strong>
+                    {review && p.category === 'kit' && p.spec[locale] && <p>{p.spec[locale]}</p>}
                     {quote && p.image && <small>{quoteCopy.ui.illustrative[locale]}</small>}
                   </div>
-                  <div className="cm-product-controls">{addButton(p)}</div>
+                  {!review && <div className="cm-product-controls">{addButton(p)}</div>}
                 </article>
               );
             })}
           </div>
         ) : (
           <p role="status" className="cm-note">
-            {!available
+            {!available && !review
               ? quote
                 ? quoteCopy.ui.unavailable[locale]
                 : ar
