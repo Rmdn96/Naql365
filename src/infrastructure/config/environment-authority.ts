@@ -110,6 +110,17 @@ export function validateEnvironment(env: Inputs, manifest: Manifest): ArtifactId
   if (!/^sb_publishable_[A-Za-z0-9_-]{20,}$/.test(key)) fail('ENV_PUBLIC_KEY_INVALID');
   return identity;
 }
+export function isHostingerProduction(
+  deployment: Pick<ArtifactIdentity, 'environment' | 'origin'>,
+) {
+  return (
+    deployment.environment === 'production' &&
+    ['https://naql365.com', 'https://purple-skunk-677919.hostingersite.com'].includes(
+      deployment.origin,
+    )
+  );
+}
+
 export function verifyArtifact(build: ArtifactIdentity, runtime: ArtifactIdentity) {
   for (const field of [
     'environment',

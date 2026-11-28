@@ -2,7 +2,10 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { lstatSync, readFileSync, readdirSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
-import { verifyProductionSource } from '../src/infrastructure/config/environment-authority.ts';
+import {
+  isHostingerProduction,
+  verifyProductionSource,
+} from '../src/infrastructure/config/environment-authority.ts';
 
 function objectId(type, bytes) {
   return createHash('sha1').update(`${type} ${bytes.length}\0`).update(bytes).digest();
@@ -63,15 +66,15 @@ function restoreHostingerConfig(root) {
 export function verifyBuildSource(manifest, root, transported = false) {
   const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
   const head = git(['rev-parse', 'HEAD']);
+  const hostinger = isHostingerProduction({
+    environment: 'production',
+    origin: manifest.production?.origin,
+  });
   if (head.status === 0) {
     const prefix = git(['rev-parse', '--show-prefix']);
     if (prefix.status !== 0 || prefix.stdout.trim()) throw Error('ENV_SOURCE_ROOT_MISMATCH');
     verifyProductionSource(manifest, head.stdout.trim());
-    if (
-      transported &&
-      manifest.production?.origin === 'https://purple-skunk-677919.hostingersite.com'
-    )
-      restoreHostingerConfig(root);
+    if (transported && hostinger) restoreHostingerConfig(root);
     const changed = git([
       'diff',
       '--name-status',
@@ -98,11 +101,7 @@ export function verifyBuildSource(manifest, root, transported = false) {
     if (others.stdout.trim()) throw Error('ENV_SOURCE_UNTRACKED_FILES');
     return;
   }
-  if (
-    lstatSync(join(root, '.git'), { throwIfNoEntry: false }) ||
-    !transported ||
-    manifest.production?.origin !== 'https://purple-skunk-677919.hostingersite.com'
-  )
+  if (lstatSync(join(root, '.git'), { throwIfNoEntry: false }) || !transported || !hostinger)
     throw Error('ENV_SOURCE_HEAD_UNAVAILABLE');
   const proof = manifest.production.gitCommitObject;
   if (typeof proof !== 'string' || !proof.length) throw Error('ENV_SOURCE_PROOF_MISSING');

@@ -1,5 +1,8 @@
 import manifest from './config/deployment-manifest.json';
-import { validateEnvironment } from './src/infrastructure/config/environment-authority';
+import {
+  isHostingerProduction,
+  validateEnvironment,
+} from './src/infrastructure/config/environment-authority';
 import type { NextConfig } from 'next';
 import { preventIndexing } from './src/infrastructure/config/deployment-env';
 
@@ -8,8 +11,7 @@ const deployment = validateEnvironment(process.env, manifest);
 const noIndex = preventIndexing();
 
 const nextConfig: NextConfig = {
-  ...(deployment.environment === 'production' &&
-  deployment.origin === 'https://purple-skunk-677919.hostingersite.com'
+  ...(isHostingerProduction(deployment)
     ? { output: 'standalone' as const, experimental: { cpus: 2 } }
     : {}),
   poweredByHeader: false,
@@ -17,6 +19,16 @@ const nextConfig: NextConfig = {
     '/**': ['./.naql365-build-identity.json', './config/deployment-manifest.json'],
   },
   reactStrictMode: true,
+  async redirects() {
+    return deployment.origin === 'https://naql365.com'
+      ? ['www\\.naql365\\.com', 'purple-skunk-677919\\.hostingersite\\.com'].map((host) => ({
+          source: '/:path*',
+          has: [{ type: 'host' as const, value: host }],
+          destination: 'https://naql365.com/:path*',
+          permanent: true,
+        }))
+      : [];
+  },
   async headers() {
     return [
       {

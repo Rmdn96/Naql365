@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   attestBackend,
   digest,
+  isHostingerProduction,
   validateEnvironment,
   verifyArtifact,
   verifyProductionSource,
@@ -271,4 +272,14 @@ describe('independently approved deployment authority', () => {
       acceptanceTarget({ ...env, ACCEPTANCE_PROVIDER: 'VERCEL_STAGING' }, manifest),
     ).toThrow();
   });
+});
+
+it.each([
+  ['production', 'https://naql365.com', true],
+  ['production', 'https://purple-skunk-677919.hostingersite.com', true],
+  ['production', 'https://naql365-launch.vercel.app', false],
+  ['production', 'https://www.naql365.com', false],
+  ['staging', 'https://naql365.com', false],
+] as const)('selects the Hostinger build for %s at %s', (environment, origin, expected) => {
+  expect(isHostingerProduction({ environment, origin })).toBe(expected);
 });

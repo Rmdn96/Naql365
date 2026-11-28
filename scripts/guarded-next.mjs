@@ -7,6 +7,7 @@ import { spawnSync } from 'node:child_process';
 import { prepareReleaseManifest } from './prepare-release-manifest.mjs';
 import {
   validateEnvironment,
+  isHostingerProduction,
   verifyArtifact,
   attestBackend,
 } from '../src/infrastructure/config/environment-authority.ts';
@@ -27,12 +28,7 @@ try {
   if (command === 'build') writeFileSync('.naql365-build-identity.json', JSON.stringify(current));
   const args = process.argv.slice(3);
   // Hostinger build servers cannot run Turbopack for the pinned Next.js version.
-  if (
-    command === 'build' &&
-    current.environment === 'production' &&
-    current.origin === 'https://purple-skunk-677919.hostingersite.com' &&
-    !args.includes('--webpack')
-  )
+  if (command === 'build' && isHostingerProduction(current) && !args.includes('--webpack'))
     args.unshift('--webpack');
   const result = spawnSync(
     process.execPath,

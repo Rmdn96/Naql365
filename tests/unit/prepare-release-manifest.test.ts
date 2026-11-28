@@ -141,29 +141,31 @@ it('reports approved paths only and rejects changed tracked source before instal
   }
 });
 
-it.each(['exact', 'modified wrapper', 'modified backup'])(
-  'checks the Hostinger config and then verifies the Git tree (%s)',
-  (scenario) => {
-    const config = join(root, 'next.config.ts');
-    const backup = join(root, '6b0175fb40821.next.config.ts');
-    const wrapper =
-      'import type { NextConfig } from "next";\nimport baseConfig from "./6b0175fb40821.next.config";\n\nconst config: NextConfig = {\n  ...baseConfig,\n  output: "standalone",\n};\n\nexport default config;';
-    const log = vi.spyOn(console, 'error').mockImplementation(() => {});
-    try {
-      writeFileSync(config, scenario === 'modified wrapper' ? wrapper + '\n// extra' : wrapper);
-      writeFileSync(backup, scenario === 'modified backup' ? 'changed' : 'export default {};');
-      if (scenario === 'exact') {
-        prepareReleaseManifest(inputs(), root);
-        expect(readFileSync(config, 'utf8')).toBe('export default {};');
-        expect(() => readFileSync(backup)).toThrow();
-      } else {
-        expect(() => prepareReleaseManifest(inputs(), root)).toThrow('ENV_SOURCE_TRACKED_CHANGED');
-        expect(readFileSync(target(), 'utf8')).toBe(original);
-      }
-    } finally {
-      writeFileSync(config, 'export default {};');
-      rmSync(backup, { force: true });
-      log.mockRestore();
+it.each(
+  ['exact', 'modified wrapper', 'modified backup'].flatMap((scenario) =>
+    [env.APP_URL, 'https://naql365.com'].map((origin) => ({ scenario, origin })),
+  ),
+)('checks the Hostinger config and Git tree ($scenario, $origin)', ({ scenario, origin }) => {
+  const release = { ...inputs({ origin }), APP_URL: origin };
+  const config = join(root, 'next.config.ts');
+  const backup = join(root, '6b0175fb40821.next.config.ts');
+  const wrapper =
+    'import type { NextConfig } from "next";\nimport baseConfig from "./6b0175fb40821.next.config";\n\nconst config: NextConfig = {\n  ...baseConfig,\n  output: "standalone",\n};\n\nexport default config;';
+  const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+  try {
+    writeFileSync(config, scenario === 'modified wrapper' ? wrapper + '\n// extra' : wrapper);
+    writeFileSync(backup, scenario === 'modified backup' ? 'changed' : 'export default {};');
+    if (scenario === 'exact') {
+      prepareReleaseManifest(release, root);
+      expect(readFileSync(config, 'utf8')).toBe('export default {};');
+      expect(() => readFileSync(backup)).toThrow();
+    } else {
+      expect(() => prepareReleaseManifest(release, root)).toThrow('ENV_SOURCE_TRACKED_CHANGED');
+      expect(readFileSync(target(), 'utf8')).toBe(original);
     }
-  },
-);
+  } finally {
+    writeFileSync(config, 'export default {};');
+    rmSync(backup, { force: true });
+    log.mockRestore();
+  }
+});
