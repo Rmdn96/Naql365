@@ -656,3 +656,81 @@
 .kit-jump {
   margin-inline-start: 1rem;
 }
+.launch-store .launch-intro-image img {
+  object-fit: contain;
+}
+.launch-store .launch-intro-image {
+  background: #eef4fa;
+}
+.launch-store .launch-intro-link {
+  padding-inline: 0.85rem;
+  border: 1px solid #b9d4ff;
+  border-radius: 0.55rem;
+  text-decoration: none;
+  background: #fff;
+  color: #142f69;
+}
+.launch-store .kit-jump {
+  background: transparent;
+  color: #fff;
+  margin-inline-start: 0.4rem;
+}
+.launch-store .catalog-shelf {
+  margin-block: 0.4rem 0.8rem;
+}
+.launch-store .catalog-shelf .cm-product-photo {
+  aspect-ratio: 1.38;
+}
+#packing-kits .store-product {
+  border-block-start: 3px solid var(--theme-brand);
+}
+#packing-kits .kit-summary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.15rem;
+}
+#packing-kits .kit-summary li:first-child {
+  font-weight: 750;
+  color: var(--theme-text-primary);
+}
+.launch-category-images:focus-visible {
+  outline: 2px solid var(--theme-focus);
+  outline-offset: 2px;
+}
+body:has(.catalog-browsing-only) .launch-main-nav a[href$='/store/cart'] {
+  display: none;
+}
+@media (max-width: 767px) {
+  .launch-store .launch-intro {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+  .launch-store .launch-intro-image {
+    grid-row: 1;
+    aspect-ratio: 4.1;
+    min-height: 72px;
+  }
+  .launch-store .launch-intro-copy {
+    padding: 0.65rem 0.8rem;
+  }
+  .launch-store .launch-intro-copy p {
+    margin-block: 0.25rem;
+  }
+  .launch-store .launch-intro-link {
+    min-block-size: 44px;
+  }
+  .launch-store .launch-category-images {
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, #000 92%, transparent);
+    padding-inline-end: 1rem;
+  }
+  [dir='rtl'] .launch-store .launch-category-images {
+    mask-image: linear-gradient(to left, #000 92%, transparent);
+  }
+  .launch-store .launch-category-images::-webkit-scrollbar {
+    display: none;
+  }
+  .launch-store .launch-category-images a {
+    scroll-margin-inline: 1rem;
+  }
+}

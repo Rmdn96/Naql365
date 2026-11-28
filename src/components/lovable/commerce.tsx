@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Package, ShoppingCart, Truck } from 'lucide-react';
 import { DesignFoundation } from '@/components/design-system/foundation';
 import { SourceImage } from './source-image';
@@ -29,6 +29,18 @@ type Props = {
   children?: ReactNode;
 };
 
+function dimensionText(text: string) {
+  return text.split(/(\d+(?:\s*[×x]\s*\d+){1,2})/i).map((part, index) =>
+    index % 2 ? (
+      <bdi dir="ltr" key={index}>
+        {part}
+      </bdi>
+    ) : (
+      part
+    ),
+  );
+}
+
 export function SourceCommerce({
   initialLocale: locale,
   view,
@@ -43,6 +55,9 @@ export function SourceCommerce({
   nextCursor,
   children,
 }: Props) {
+  useEffect(() => {
+    performance.mark('store-hydrated');
+  }, []);
   const ar = locale === 'ar';
   const [notice, setNotice] = useState('');
   const storeHref = (category: string, after = '') =>
@@ -99,7 +114,7 @@ export function SourceCommerce({
         <div className="cm-product-detail">
           <ProductGallery key={detail.id} product={detail} locale={locale} />
           <div>
-            <h1>{detail.name[locale]}</h1>
+            <h1>{dimensionText(detail.name[locale])}</h1>
             <strong>{price(detail.retail)}</strong>
             {quote && detail.image && <p>{quoteCopy.ui.illustrative[locale]}</p>}
             {detail.category === 'kit' ? (
@@ -120,7 +135,7 @@ export function SourceCommerce({
                 {detail.specifications.map((spec, i) => (
                   <div key={i}>
                     <dt>{ar ? spec.label_ar : spec.label_en}</dt>
-                    <dd>{ar ? spec.value_ar : spec.value_en}</dd>
+                    <dd>{dimensionText(ar ? spec.value_ar : spec.value_en)}</dd>
                   </div>
                 ))}
               </dl>
@@ -201,13 +216,14 @@ export function SourceCommerce({
               alt=""
               preload
               fill
-              sizes="(max-width: 380px) 92px, (max-width: 699px) 128px, (max-width: 1100px) 32vw, 400px"
+              sizes="(max-width: 699px) 95vw, (max-width: 1100px) 40vw, 480px"
             />
           </div>
         </header>
         {categories.length > 0 && (
           <nav
             id="store-category"
+            tabIndex={0}
             className={quote ? 'launch-categories launch-category-images' : 'launch-categories'}
             aria-label={ar ? 'فئات المنتجات' : 'Product categories'}
           >
@@ -296,10 +312,23 @@ export function SourceCommerce({
                           </Link>
                           <div className="cm-product-copy">
                             <Link href={href}>
-                              <h3>{p.name[locale]}</h3>
+                              <h3>{dimensionText(p.name[locale])}</h3>
                             </Link>
                             {p.category !== 'kit' &&
                               p.specifications
+                                .filter(
+                                  (spec) =>
+                                    !p.name[locale]
+                                      .replace(/\s/g, '')
+                                      .includes(
+                                        (ar ? spec.value_ar : spec.value_en).replace(/\s/g, ''),
+                                      ) &&
+                                    !(
+                                      /dimension|الأبعاد/i.test(
+                                        spec.label_en + ' ' + spec.label_ar,
+                                      ) && /\d\s*[×x]/i.test(p.name[locale])
+                                    ),
+                                )
                                 .slice(0, 1)
                                 .map((spec) => (
                                   <small key={spec.label_en}>
@@ -446,7 +475,11 @@ export function SourceCommerce({
   return (
     <DesignFoundation
       family="public"
-      className="lovable cx cm store-experience"
+      className={
+        browsingOnly
+          ? 'lovable cx cm store-experience catalog-browsing-only'
+          : 'lovable cx cm store-experience'
+      }
       lang={locale}
       dir={ar ? 'rtl' : 'ltr'}
     >

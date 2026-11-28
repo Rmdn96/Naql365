@@ -12,7 +12,7 @@ vi.mock('@/infrastructure/supabase/server', () => ({
   createSupabaseServerClient: async () => ({ rpc }),
 }));
 vi.mock('@/infrastructure/store/catalog', () => ({
-  storeCatalogAdmin: admin,
+  storeCatalogPage: admin,
   storeCategoryImages: images,
 }));
 import { catalogReview } from '@/infrastructure/store/catalog-review';
@@ -43,34 +43,32 @@ describe('private catalog review', () => {
     rpc.mockResolvedValue({ data: true });
     const content = { title_ar: 'منتج', title_en: 'Product' };
     admin.mockImplementation(async (kind, cursor) => ({
-      page: {
-        nextCursor: kind === 'products' && !cursor ? productId : null,
-        items:
-          kind === 'products'
-            ? cursor
-              ? [
-                  {
-                    id: productId,
-                    sku: 'BOX-001',
-                    slug: 'box-001',
-                    state: 'ACTIVE',
-                    categoryId,
-                    revision: 2,
-                    content,
-                  },
-                ]
-              : []
-            : kind === 'categories'
-              ? [{ id: categoryId, slug: 'box', content }]
-              : [{ productId, state: 'DRAFT', media: [] }],
-      },
+      nextCursor: kind === 'products' && !cursor ? productId : null,
+      items:
+        kind === 'products'
+          ? cursor
+            ? [
+                {
+                  id: productId,
+                  sku: 'BOX-001',
+                  slug: 'box-001',
+                  state: 'ACTIVE',
+                  categoryId,
+                  revision: 2,
+                  content,
+                },
+              ]
+            : []
+          : kind === 'categories'
+            ? [{ id: categoryId, slug: 'box', content }]
+            : [{ productId, state: 'DRAFT', media: [] }],
     }));
     images.mockResolvedValue({ [categoryId]: { id: categoryImage, approved: false } });
     await expect(catalogReview()).resolves.toMatchObject({
       items: [{ id: productId, sku: 'BOX-001', price: null, category: 'box' }],
       images: { box: categoryImage },
     });
-    expect(admin).toHaveBeenCalledWith('products', productId);
+    expect(admin).toHaveBeenCalledWith('products', productId, '', '', 50);
     expect(rpc).toHaveBeenCalledWith('commercial_admin_session');
   });
 });
