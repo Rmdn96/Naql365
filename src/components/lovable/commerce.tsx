@@ -97,11 +97,13 @@ export function SourceCommerce({
     : 'Delivery to Cairo and Giza. We confirm availability, delivery fees and the total before preparing your order.';
   const price = (value: number | null) =>
     value === null
-      ? review
+      ? browsingOnly || review
         ? ar
           ? 'السعر قريبًا'
           : 'Price coming soon'
-        : quoteCopy.ui.price[locale]
+        : available && quote
+          ? quoteCopy.ui.quote[locale]
+          : quoteCopy.ui.price[locale]
       : storeMoney(value, locale);
   let body: ReactNode;
   if (children) body = children;
@@ -183,41 +185,37 @@ export function SourceCommerce({
         )}
         <header className="launch-intro">
           <div className="launch-intro-copy">
-            <h1>
-              {quote
-                ? quoteSection('hero')[locale].heading
-                : ar
-                  ? 'مستلزمات التغليف والنقل'
-                  : 'Packing and moving supplies'}
-            </h1>
+            <h1>{ar ? 'انقل أغراضك بسهولة وأمان' : 'Move your belongings with confidence'}</h1>
             <p>
-              {browsingOnly
-                ? ar
-                  ? 'تصفّح الكراتين ومواد التغليف وقارن بين باقات النقل.'
-                  : 'Browse boxes, explore packing supplies and compare moving kits.'
-                : quote
-                  ? quoteSection('hero')[locale].body
-                  : ar
-                    ? 'توصيل إلى القاهرة والجيزة'
-                    : 'Delivery in Cairo and Giza'}
+              {ar
+                ? 'كل ما تحتاجه للنقل والتغليف في مكان واحد'
+                : 'Everything you need to pack and move, all in one place.'}
             </p>
-            <a className="launch-intro-link" href="#store-products">
-              {ar ? 'تصفح المنتجات' : 'Browse products'}
-            </a>
-            {products.some((p) => p.category === 'kit') && (
-              <a className="launch-intro-link kit-jump" href="#packing-kits">
-                {ar ? 'قارن الباقات' : 'Compare kits'}
+            <div className="packing-actions">
+              <a className="launch-intro-link" href="#store-products">
+                {ar ? 'تسوق مستلزمات التغليف' : 'Shop packing supplies'}
               </a>
-            )}
+              <Link
+                className="launch-intro-link transport-link"
+                href={'/' + locale + (browsingOnly ? '/transport' : '/request')}
+              >
+                {ar ? 'اطلب خدمة نقل' : 'Request a move'}
+              </Link>
+            </div>
           </div>
-          <div className="launch-intro-image" aria-hidden="true">
+          <div className="launch-intro-image">
             <SourceImage
-              src={quote ? '/brand/quote-hero.webp' : '/brand/commerce-moving.jpg'}
-              alt=""
+              src="/brand/packing-studio.webp"
+              alt={
+                ar
+                  ? 'مشهد توضيحي لكراتين نقل ورولات تغليف وأشرطة لاصقة.'
+                  : 'Illustrative scene of moving boxes, packing rolls and tape.'
+              }
               preload
               fill
-              sizes="(max-width: 699px) 95vw, (max-width: 1100px) 40vw, 480px"
+              sizes="(max-width: 767px) 94vw, (max-width: 1300px) 49vw, 650px"
             />
+            <small className="packing-caption">{ar ? 'صورة توضيحية' : 'Illustration'}</small>
           </div>
         </header>
         {categories.length > 0 && (

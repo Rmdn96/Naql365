@@ -79,8 +79,8 @@ it.each(['ar', 'en'] as const)(
         view === 'product'
           ? 'Naql365'
           : locale === 'ar'
-            ? 'مستلزمات التغليف والنقل'
-            : 'Packing and moving supplies',
+            ? 'انقل أغراضك بسهولة وأمان'
+            : 'Move your belongings with confidence',
       );
       expect(html).not.toMatch(/supplier|المورد/i);
       if (view === 'product')
