@@ -53,9 +53,9 @@ it('imports the commercial kit as drafts and isolates the reviewed quote workflo
       )
     ).rows[0]!;
     const gate = await db.query(
-      "insert into private.store_quote_launch(scope_id) select id from private.store_policy_versions where kind='STOREFRONT_SCOPE' returning enabled",
+      "insert into private.store_quote_launch(scope_id) select id from private.store_policy_versions where kind='STOREFRONT_SCOPE' returning enabled, intake_enabled",
     );
-    expect(gate.rows[0]).toEqual({ enabled: false });
+    expect(gate.rows[0]).toEqual({ enabled: false, intake_enabled: false });
     const key = randomUUID();
     const contact = {
       full_name: 'Synthetic Guest',
@@ -65,10 +65,10 @@ it('imports the commercial kit as drafts and isolates the reviewed quote workflo
       address: 'Synthetic address',
     };
     const items = [{ sku: 'SYNTHETIC', quantity: 2, revision: Number(listing.revision) }];
-    const submit = async (patch = {}, line = items) =>
+    const submit = async (patch = {}, line = items, requestId = key) =>
       (
         await db.query<{ ref: string }>('select public.store_submit_quote($1,$2,$3) ref', [
-          key,
+          requestId,
           JSON.stringify({ ...contact, ...patch }),
           JSON.stringify(line),
         ])
@@ -76,18 +76,18 @@ it('imports the commercial kit as drafts and isolates the reviewed quote workflo
     await db.exec('set role anon');
     const projection = async () =>
       (
-        await db.query<{ v: { enabled: boolean; items: object[] } }>(
+        await db.query<{ v: { enabled: boolean; intake_enabled: boolean; items: object[] } }>(
           'select public.store_quote_catalog() v',
         )
       ).rows[0]!.v;
-    expect(await projection()).toEqual({ enabled: false, items: [] });
+    expect(await projection()).toEqual({ enabled: false, intake_enabled: false, items: [] });
     await expect(submit()).rejects.toMatchObject({ code: 'PT409' });
     await expect(db.query('select * from private.store_quote_requests')).rejects.toMatchObject({
       code: '42501',
     });
     await db.exec('reset role; update private.store_quote_launch set enabled=true');
     await db.exec('set role anon');
-    expect(await projection()).toEqual({ enabled: true, items: [] });
+    expect(await projection()).toEqual({ enabled: true, intake_enabled: false, items: [] });
     await expect(submit()).rejects.toMatchObject({ code: 'PT409' });
     await db.exec(
       "reset role; set role authenticated;select set_config('request.jwt.claim.sub','" +
@@ -117,13 +117,28 @@ it('imports the commercial kit as drafts and isolates the reviewed quote workflo
     ]);
     await expect(submit()).rejects.toMatchObject({ code: 'PT409' });
     items[0]!.revision += 1;
+    await expect(submit()).rejects.toMatchObject({ code: 'PT409' });
+    await expect(
+      db.exec('update private.store_quote_launch set intake_enabled=true'),
+    ).rejects.toMatchObject({ code: '42501' });
+    await db.exec('reset role');
+    expect(
+      (await db.query('select count(*)::int n from private.store_quote_requests')).rows,
+    ).toEqual([{ n: 0 }]);
+    await db.exec('update private.store_quote_launch set intake_enabled=true; set role anon');
+    expect((await projection()).intake_enabled).toBe(true);
     await expect(submit({ governorate: 'ALEXANDRIA' })).rejects.toMatchObject({ code: '22023' });
     await expect(submit({}, [{ ...items[0]!, quantity: 100 }])).rejects.toMatchObject({
       code: '22023',
     });
     const reference = await submit();
     expect(reference).toMatch(/^Q-[a-f0-9]{32}$/);
+    await db.exec(
+      'reset role; update private.store_quote_launch set intake_enabled=false; set role anon',
+    );
+    expect((await projection()).intake_enabled).toBe(false);
     expect(await submit()).toBe(reference);
+    await expect(submit({}, items, randomUUID())).rejects.toMatchObject({ code: 'PT409' });
     await expect(submit({ area: 'Changed' })).rejects.toMatchObject({ code: 'P4091' });
     await expect(db.query('select public.store_quote_queue()')).rejects.toMatchObject({
       code: '42501',

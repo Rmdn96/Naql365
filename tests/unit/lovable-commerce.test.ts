@@ -92,3 +92,35 @@ it.each(['ar', 'en'] as const)(
     }
   },
 );
+
+it.each(['ar', 'en'] as const)('displays approved products in %s with intake closed', (locale) => {
+  const render = (view: string) =>
+    renderToStaticMarkup(
+      createElement(SourceCommerce, {
+        initialLocale: locale,
+        initialMarket: 'EG',
+        view,
+        productId: product.slug,
+        products: [{ ...product, retail: null }],
+        categories: [],
+        quote: true,
+        available: false,
+        catalogVisible: true,
+      }),
+    );
+  for (const view of ['home', 'product']) {
+    const html = render(view);
+    expect(html).toContain(product.name[locale]);
+    expect(html).toContain(locale === 'ar' ? 'السعر عند الاستفسار' : 'Price on request');
+    expect(html).toContain(
+      locale === 'ar' ? 'استقبال طلبات عروض الأسعار مغلق' : 'Quote requests are currently closed',
+    );
+    expect(html).not.toContain(locale === 'ar' ? 'أضف إلى السلة' : 'Add to cart');
+  }
+  expect(render('home')).toContain('/' + locale + '/store/products/' + product.slug);
+  const cart = render('cart');
+  expect(cart).not.toContain('name="phone"');
+  expect(cart).toContain(
+    locale === 'ar' ? 'استقبال طلبات عروض الأسعار مغلق' : 'Quote requests are currently closed',
+  );
+});

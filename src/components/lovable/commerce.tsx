@@ -22,6 +22,7 @@ type Props = {
   categories: { slug: string; title: string; image?: string | undefined }[];
   available: boolean;
   quote?: boolean;
+  catalogVisible?: boolean;
   review?: boolean;
   initialQuery?: string;
   initialCategory?: string;
@@ -49,6 +50,7 @@ export function SourceCommerce({
   categories,
   available,
   quote = false,
+  catalogVisible = false,
   review = false,
   initialQuery = '',
   initialCategory = 'all',
@@ -81,6 +83,10 @@ export function SourceCommerce({
     </Button>
   );
   const browsingOnly = quote && !available;
+  const displayProducts = available || catalogVisible || review;
+  const closedMessage = ar
+    ? 'يمكنك تصفّح المنتجات. استقبال طلبات عروض الأسعار مغلق حاليًا.'
+    : 'You can browse the catalog. Quote requests are currently closed.';
   const groups = [
     products.filter((p) => p.category !== 'kit'),
     products.filter((p) => p.category === 'kit'),
@@ -97,7 +103,7 @@ export function SourceCommerce({
     : 'Delivery to Cairo and Giza. We confirm availability, delivery fees and the total before preparing your order.';
   const price = (value: number | null) =>
     value === null
-      ? browsingOnly || review
+      ? review || (browsingOnly && !catalogVisible)
         ? ar
           ? 'السعر قريبًا'
           : 'Price coming soon'
@@ -108,7 +114,15 @@ export function SourceCommerce({
   let body: ReactNode;
   if (children) body = children;
   else if (view === 'cart' || view === 'checkout')
-    body = <GuestCheckout locale={locale} available={available} quote={quote} />;
+    body = browsingOnly ? (
+      <section className="cm-container launch-cart">
+        <h1>{ar ? 'طلبات عروض الأسعار' : 'Quote requests'}</h1>
+        <p>{closedMessage}</p>
+        <Link href={'/' + locale}>{ar ? 'تصفح المنتجات' : 'Browse products'}</Link>
+      </section>
+    ) : (
+      <GuestCheckout locale={locale} available={available} quote={quote} />
+    );
   else if (view === 'product')
     body = detail ? (
       <section className="cm-container launch-product-detail">
@@ -148,7 +162,8 @@ export function SourceCommerce({
                 : 'Availability confirmation by Naql365 required'}
             </p>
             <p>{categories.find((category) => category.slug === detail.category)?.title}</p>
-            {!review && addButton(detail)}
+            {browsingOnly && catalogVisible && !review && <p role="status">{closedMessage}</p>}
+            {!review && !browsingOnly && addButton(detail)}
             <p>{delivery}</p>
           </div>
         </div>
@@ -264,7 +279,8 @@ export function SourceCommerce({
           </p>
         )}
         <div id="store-products" />
-        {(available || review) && products.length > 0 ? (
+        {browsingOnly && catalogVisible && !review && <p className="cm-note">{closedMessage}</p>}
+        {displayProducts && products.length > 0 ? (
           groups.map(
             (group, index) =>
               group.length > 0 && (
@@ -336,7 +352,7 @@ export function SourceCommerce({
                                   </small>
                                 ))}
                             <strong>{price(p.retail)}</strong>
-                            {review && p.category === 'kit' && (
+                            {(review || catalogVisible) && p.category === 'kit' && (
                               <ul className="kit-summary">
                                 {contents(p.spec[locale]).map((item) => (
                                   <li key={item}>{item}</li>
@@ -345,7 +361,7 @@ export function SourceCommerce({
                             )}
                             {quote && p.image && <small>{quoteCopy.ui.illustrative[locale]}</small>}
                           </div>
-                          {review && (
+                          {(review || catalogVisible) && (
                             <Link className="catalog-detail-link" href={href}>
                               {index
                                 ? ar
@@ -356,7 +372,9 @@ export function SourceCommerce({
                                   : 'View product'}
                             </Link>
                           )}
-                          {!review && <div className="cm-product-controls">{addButton(p)}</div>}
+                          {!review && !browsingOnly && (
+                            <div className="cm-product-controls">{addButton(p)}</div>
+                          )}
                         </article>
                       );
                     })}
@@ -366,7 +384,7 @@ export function SourceCommerce({
           )
         ) : (
           <p role="status" className="cm-note">
-            {!available && !review
+            {!displayProducts
               ? quote
                 ? quoteCopy.ui.unavailable[locale]
                 : ar

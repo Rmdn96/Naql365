@@ -551,7 +551,7 @@ update private.store_product_market_listings
       await checkStaffRecovery(browser, users[2].email, local.API_URL, origin);
       checkpoint = 'isolated catalog quote';
       sql(
-        "begin; insert into private.store_quote_launch(scope_id,enabled) select id,true from private.store_policy_versions where kind='STOREFRONT_SCOPE' and status='APPROVED'; update private.store_products set revision=revision+1,quote_approved_revision=revision+1 where sku='SYNTHETIC'; commit;",
+        "begin; insert into private.store_quote_launch(scope_id,enabled,intake_enabled) select id,true,true from private.store_policy_versions where kind='STOREFRONT_SCOPE' and status='APPROVED'; update private.store_products set revision=revision+1,quote_approved_revision=revision+1 where sku='SYNTHETIC'; commit;",
       );
       const quoteContext = await browser.newContext();
       try {

@@ -18,9 +18,15 @@ export const quoteCategoryImages = cache(async () => {
 });
 
 export const quoteCatalog = cache(async () => {
-  if (!getPublicEnv()) return { enabled: false, items: [] };
+  if (!getPublicEnv()) return { enabled: false, intake_enabled: false, items: [] };
   const client = await createSupabaseServerClient();
   const result = await client.rpc('store_quote_catalog');
-  if (result.error) return { enabled: false, items: [] };
-  return z.object({ enabled: z.boolean(), items: quoteProduct.array() }).parse(result.data);
+  if (result.error) return { enabled: false, intake_enabled: false, items: [] };
+  return z
+    .object({
+      enabled: z.boolean(),
+      intake_enabled: z.boolean().default(false),
+      items: quoteProduct.array(),
+    })
+    .parse(result.data);
 });

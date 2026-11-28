@@ -31,7 +31,7 @@ export async function CommerceSurface({
   if (quoteMode() && !children) {
     const catalog = await quoteCatalog();
     const review =
-      !catalog.enabled && ['home', 'catalog', 'categories', 'product'].includes(view)
+      !catalog.intake_enabled && ['home', 'catalog', 'categories', 'product'].includes(view)
         ? await catalogReview()
         : null;
     const images =
@@ -96,7 +96,8 @@ export async function CommerceSurface({
         productId={productId}
         products={products}
         categories={categories}
-        available={catalog.enabled}
+        catalogVisible={catalog.enabled}
+        available={catalog.enabled && catalog.intake_enabled}
         review={review !== null}
         initialQuery={query.search ?? ''}
         initialCategory={category ?? 'all'}
