@@ -1,4 +1,5 @@
 import 'server-only';
+import { cache } from 'react';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 import { marketCookie, resolveActiveCountry } from '@/domain/markets/public-contact';
@@ -7,7 +8,7 @@ import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { AppError } from '@/domain/shared/errors';
 
 /** A display preference selects an existing authorized Market; it never grants access. */
-export async function staffMarket(permission: string) {
+export const staffMarket = cache(async (permission: string) => {
   const access = await staffAccess(permission);
   if (access.status !== 'authorized')
     throw new AppError(
@@ -42,7 +43,7 @@ export async function staffMarket(permission: string) {
     .safeParse(result.data);
   if (!market.success) throw new AppError('forbidden', 'Market unavailable');
   return { organizationId, market: market.data };
-}
+});
 
 export async function staffDisplayContext() {
   const context = await staffMarket('portal.access');

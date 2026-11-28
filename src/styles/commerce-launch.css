@@ -569,3 +569,90 @@
   height: 100%;
   object-fit: cover;
 }
+
+.catalog-shelf {
+  margin-block: 1.3rem;
+}
+.catalog-shelf h2 {
+  font-size: clamp(1.1rem, 2.3vw, 1.65rem);
+  margin-block: 0 0.8rem;
+}
+.launch-store .catalog-shelf .store-product {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.launch-store .catalog-shelf .cm-product-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.6;
+  background: #eff5fa;
+}
+.launch-store .catalog-shelf .cm-product-photo img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+.launch-store .catalog-shelf .cm-product-copy {
+  padding: 0.7rem;
+  gap: 0.3rem;
+}
+.launch-store .catalog-shelf .cm-product-copy strong {
+  font-size: 0.86rem;
+  color: var(--theme-muted-ink);
+}
+.catalog-detail-link {
+  display: grid;
+  place-items: center;
+  margin: auto 0.65rem 0.65rem;
+  min-height: 44px;
+  border: 1px solid var(--theme-border);
+  border-radius: 0.65rem;
+  color: var(--theme-text-primary);
+  font-weight: 700;
+  background: var(--theme-surface-muted);
+}
+.catalog-detail-link:hover,
+.catalog-detail-link:focus-visible {
+  background: var(--theme-brand);
+  color: var(--theme-on-brand);
+}
+.kit-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  list-style: none;
+  padding: 0;
+  margin: 0.2rem 0;
+}
+.kit-summary li {
+  padding: 0.2rem 0.45rem;
+  border-radius: 0.4rem;
+  background: var(--theme-surface-muted);
+  font-size: 0.82rem;
+}
+@media (max-width: 767px) {
+  .launch-store .launch-category-images {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    justify-content: flex-start;
+    padding-block: 0.35rem;
+    scroll-snap-type: x proximity;
+  }
+  .launch-store .launch-category-images a {
+    flex: none;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+  .launch-store .launch-category-images .launch-category-image {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+.kit-jump {
+  margin-inline-start: 1rem;
+}

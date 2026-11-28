@@ -25,13 +25,13 @@ export const staffContext = cache(async () => {
     return { status: 'forbidden' } as const;
   return portalAccess('portal.access', memberships.data[0]!.organization_id);
 });
-export async function staffAccess(permission: string, organizationId?: string) {
+export const staffAccess = cache(async (permission: string, organizationId?: string) => {
   const context = await staffContext();
   if (context.status !== 'authorized') return context;
   if (organizationId && organizationId !== context.principal.organizationId)
     return { status: 'forbidden' } as const;
   return portalAccess(permission, context.principal.organizationId);
-}
+});
 export const staffModules = cache(async () => {
   const context = await staffContext();
   if (context.status !== 'authorized')

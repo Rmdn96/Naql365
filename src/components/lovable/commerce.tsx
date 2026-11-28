@@ -65,6 +65,17 @@ export function SourceCommerce({
       {ar ? 'أضف إلى السلة' : 'Add to cart'}
     </Button>
   );
+  const browsingOnly = quote && !available;
+  const groups = [
+    products.filter((p) => p.category !== 'kit'),
+    products.filter((p) => p.category === 'kit'),
+  ];
+  const contents = (text: string) =>
+    text
+      .split(/[;؛]/)[0]
+      ?.split(/[,،]/)
+      .map((item) => item.trim())
+      .filter(Boolean) ?? [];
   const detail = products.find((p) => p.slug === productId);
   const delivery = ar
     ? 'التوصيل إلى القاهرة والجيزة. نؤكد التوفر ورسوم التوصيل والإجمالي قبل التجهيز.'
@@ -91,7 +102,19 @@ export function SourceCommerce({
             <h1>{detail.name[locale]}</h1>
             <strong>{price(detail.retail)}</strong>
             {quote && detail.image && <p>{quoteCopy.ui.illustrative[locale]}</p>}
-            <p>{detail.spec[locale]}</p>
+            {detail.category === 'kit' ? (
+              <section>
+                <h2>{ar ? 'محتويات الباقة' : 'Kit contents'}</h2>
+                <ul>
+                  {contents(detail.spec[locale]).map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+                <p>{detail.spec[locale].split(/[;؛]/).slice(1).join(' ')}</p>
+              </section>
+            ) : (
+              <p>{detail.spec[locale]}</p>
+            )}
             {detail.specifications.length > 0 && (
               <dl>
                 {detail.specifications.map((spec, i) => (
@@ -153,20 +176,30 @@ export function SourceCommerce({
                   : 'Packing and moving supplies'}
             </h1>
             <p>
-              {quote
-                ? quoteSection('hero')[locale].body
-                : ar
-                  ? 'توصيل إلى القاهرة والجيزة'
-                  : 'Delivery in Cairo and Giza'}
+              {browsingOnly
+                ? ar
+                  ? 'تصفّح الكراتين ومواد التغليف وقارن بين باقات النقل.'
+                  : 'Browse boxes, explore packing supplies and compare moving kits.'
+                : quote
+                  ? quoteSection('hero')[locale].body
+                  : ar
+                    ? 'توصيل إلى القاهرة والجيزة'
+                    : 'Delivery in Cairo and Giza'}
             </p>
             <a className="launch-intro-link" href="#store-products">
               {ar ? 'تصفح المنتجات' : 'Browse products'}
             </a>
+            {products.some((p) => p.category === 'kit') && (
+              <a className="launch-intro-link kit-jump" href="#packing-kits">
+                {ar ? 'قارن الباقات' : 'Compare kits'}
+              </a>
+            )}
           </div>
           <div className="launch-intro-image" aria-hidden="true">
             <SourceImage
               src={quote ? '/brand/quote-hero.webp' : '/brand/commerce-moving.jpg'}
               alt=""
+              preload
               fill
               sizes="(max-width: 380px) 92px, (max-width: 699px) 128px, (max-width: 1100px) 32vw, 400px"
             />
@@ -216,47 +249,94 @@ export function SourceCommerce({
             <Link href={'/' + locale}>{ar ? 'مسح البحث' : 'Clear search'}</Link>
           </p>
         )}
-        <h2 id="store-products" className="launch-catalog-title">
-          {ar ? 'المنتجات' : 'Products'}
-        </h2>
+        <div id="store-products" />
         {(available || review) && products.length > 0 ? (
-          <div className="cm-products commerce-products">
-            {products.map((p) => {
-              const href = destination('product', locale, p.slug);
-              return (
-                <article className="cm-product store-product" key={p.id}>
-                  <Link
-                    href={href}
-                    className={
-                      p.image ? 'cm-product-photo' : 'cm-product-photo launch-product-placeholder'
-                    }
-                    aria-label={p.name[locale]}
-                  >
-                    {p.image ? (
-                      <SourceImage
-                        src={p.image}
-                        width={512}
-                        height={512}
-                        sizes="(max-width: 359px) 92vw, (max-width: 699px) 47vw, (max-width: 999px) 31vw, (max-width: 1250px) 24vw, 290px"
-                        alt={(ar ? p.media[0]?.altAr : p.media[0]?.altEn) || p.name[locale]}
-                      />
-                    ) : (
-                      <Package aria-hidden="true" />
-                    )}
-                  </Link>
-                  <div className="cm-product-copy">
-                    <Link href={href}>
-                      <h3>{p.name[locale]}</h3>
-                    </Link>
-                    <strong>{price(p.retail)}</strong>
-                    {review && p.category === 'kit' && p.spec[locale] && <p>{p.spec[locale]}</p>}
-                    {quote && p.image && <small>{quoteCopy.ui.illustrative[locale]}</small>}
+          groups.map(
+            (group, index) =>
+              group.length > 0 && (
+                <section
+                  className="catalog-shelf"
+                  id={index ? 'packing-kits' : 'packing-supplies'}
+                  key={index}
+                >
+                  <h2>
+                    {index
+                      ? ar
+                        ? 'باقات النقل والتغليف'
+                        : 'Moving and packing kits'
+                      : ar
+                        ? 'مستلزمات التعبئة والتغليف'
+                        : 'Packing supplies'}
+                  </h2>
+                  <div className="cm-products commerce-products">
+                    {group.map((p) => {
+                      const href = destination('product', locale, p.slug);
+                      return (
+                        <article className="cm-product store-product" key={p.id}>
+                          <Link
+                            href={href}
+                            className={
+                              p.image
+                                ? 'cm-product-photo'
+                                : 'cm-product-photo launch-product-placeholder'
+                            }
+                            aria-label={p.name[locale]}
+                          >
+                            {p.image ? (
+                              <SourceImage
+                                src={p.image}
+                                width={512}
+                                height={512}
+                                sizes="(max-width: 359px) 92vw, (max-width: 699px) 47vw, (max-width: 999px) 31vw, (max-width: 1250px) 24vw, 290px"
+                                alt={(ar ? p.media[0]?.altAr : p.media[0]?.altEn) || p.name[locale]}
+                              />
+                            ) : (
+                              <Package aria-hidden="true" />
+                            )}
+                          </Link>
+                          <div className="cm-product-copy">
+                            <Link href={href}>
+                              <h3>{p.name[locale]}</h3>
+                            </Link>
+                            {p.category !== 'kit' &&
+                              p.specifications
+                                .slice(0, 1)
+                                .map((spec) => (
+                                  <small key={spec.label_en}>
+                                    {ar
+                                      ? spec.label_ar + ' · ' + spec.value_ar
+                                      : spec.label_en + ' · ' + spec.value_en}
+                                  </small>
+                                ))}
+                            <strong>{price(p.retail)}</strong>
+                            {review && p.category === 'kit' && (
+                              <ul className="kit-summary">
+                                {contents(p.spec[locale]).map((item) => (
+                                  <li key={item}>{item}</li>
+                                ))}
+                              </ul>
+                            )}
+                            {quote && p.image && <small>{quoteCopy.ui.illustrative[locale]}</small>}
+                          </div>
+                          {review && (
+                            <Link className="catalog-detail-link" href={href}>
+                              {index
+                                ? ar
+                                  ? 'تفاصيل الباقة'
+                                  : 'View kit'
+                                : ar
+                                  ? 'تفاصيل المنتج'
+                                  : 'View product'}
+                            </Link>
+                          )}
+                          {!review && <div className="cm-product-controls">{addButton(p)}</div>}
+                        </article>
+                      );
+                    })}
                   </div>
-                  {!review && <div className="cm-product-controls">{addButton(p)}</div>}
-                </article>
-              );
-            })}
-          </div>
+                </section>
+              ),
+          )
         ) : (
           <p role="status" className="cm-note">
             {!available && !review
@@ -286,15 +366,25 @@ export function SourceCommerce({
                   : 'Need transport?'}
             </h2>
             <p>
-              {quote
-                ? quoteSection('transport')[locale].body
-                : ar
-                  ? 'أرسل تفاصيل الطلب للحصول على عرض سعر من فريقنا.'
-                  : 'Send your request for a quote from our team.'}
+              {browsingOnly
+                ? ar
+                  ? 'تعرّف على خدمات نقل الأغراض.'
+                  : 'Explore moving services.'
+                : quote
+                  ? quoteSection('transport')[locale].body
+                  : ar
+                    ? 'أرسل تفاصيل الطلب للحصول على عرض سعر من فريقنا.'
+                    : 'Send your request for a quote from our team.'}
             </p>
           </div>
-          <Link className="button" href={'/' + locale + '/request'}>
-            {ar ? 'طلب نقل' : 'Request transport'}
+          <Link className="button" href={'/' + locale + (browsingOnly ? '/transport' : '/request')}>
+            {browsingOnly
+              ? ar
+                ? 'خدمات النقل'
+                : 'Moving services'
+              : ar
+                ? 'طلب نقل'
+                : 'Request transport'}
           </Link>
         </section>
         <section className="launch-shopping-information" aria-labelledby="store-shopping-info">
@@ -306,7 +396,7 @@ export function SourceCommerce({
               : 'Pay on delivery, by bank transfer, Vodafone Cash or InstaPay. We confirm the delivery fee and total with you before collecting payment.'}
           </p>
         </section>
-        {quote ? (
+        {browsingOnly ? null : quote ? (
           <section className="launch-shopping-information" aria-labelledby="store-quote-help">
             <h2 id="store-quote-help">{ar ? 'أسئلة عن التسعير' : 'Quote FAQs'}</h2>
             {quoteCopy.faq.map((faq) => (
@@ -339,7 +429,7 @@ export function SourceCommerce({
             </details>
           </section>
         )}
-        {quote && (
+        {quote && !browsingOnly && (
           <section className="launch-shopping-information">
             <h2>{quoteSection('business')[locale].heading}</h2>
             <p>{quoteSection('business')[locale].body}</p>
