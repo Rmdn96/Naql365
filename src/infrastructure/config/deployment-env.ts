@@ -26,3 +26,10 @@ export function commercialAdminOnly() {
 export function preventIndexing() {
   return deploymentEnvironment() !== 'production';
 }
+
+export function transportIntakeEnabled() {
+  return (
+    deploymentEnvironment() !== 'production' ||
+    process.env.NAQL365_TRANSPORT_INTAKE_ENABLED === 'true'
+  );
+}

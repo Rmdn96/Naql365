@@ -5,7 +5,11 @@ import { customerDictionary } from '@/i18n/customer';
 import { customerPage } from '@/infrastructure/requests/page-access';
 import { StartRequest } from '@/components/requests/wizard';
 import { GuestStart } from '@/components/guest/access';
-import { commercialAdminOnly } from '@/infrastructure/config/deployment-env';
+import { marketContact } from '@/domain/markets/public-contact';
+import {
+  commercialAdminOnly,
+  transportIntakeEnabled,
+} from '@/infrastructure/config/deployment-env';
 import { getPublicEnv } from '@/infrastructure/config/public-env';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 import { selectedPublicCountry } from '@/infrastructure/markets/public';
@@ -20,6 +24,27 @@ export default async function Page({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  if (!transportIntakeEnabled()) {
+    const ar = locale === 'ar';
+    return (
+      <section className="container page narrow">
+        <h1>{ar ? 'استفسر عن خدمات النقل' : 'Ask about transport services'}</h1>
+        <p>
+          {ar
+            ? 'للمعلومات العامة، يكفي ذكر نوع الخدمة ومنطقتي الاستلام والتسليم في القاهرة أو الجيزة. لا حاجة إلى اسم أو عنوان تفصيلي أو مستندات.'
+            : 'For general information, tell us the service and the pickup and delivery areas in Cairo or Giza. No name, street address or documents are needed.'}
+        </p>
+        <a className="button button--primary" href={'tel:+' + marketContact.EG.destination}>
+          {ar ? 'اتصل بنا' : 'Call us'}
+        </a>
+        <p>
+          {ar
+            ? 'استقبال طلبات النقل والحجز والتحصيل متوقف حاليًا.'
+            : 'Transport requests, bookings and payments are currently closed.'}
+        </p>
+      </section>
+    );
+  }
   const preselection = quickEntry.safeParse(await searchParams).data;
   const signedIn =
     !commercialAdminOnly() && getPublicEnv()

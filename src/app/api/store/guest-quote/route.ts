@@ -2,14 +2,16 @@ import { z } from 'zod';
 import { AppError } from '@/domain/shared/errors';
 import { quoteRequest } from '@/domain/store/quote';
 import { apiResult, checkOrigin, readJson } from '@/infrastructure/requests/http';
-import { quoteMode } from '@/infrastructure/store/quotes';
+import { quoteCatalog, quoteMode } from '@/infrastructure/store/quotes';
 import { storeFailure } from '@/infrastructure/store/service';
 import { createSupabaseServerClient } from '@/infrastructure/supabase/server';
 
 export async function POST(request: Request) {
   return apiResult(async () => {
     checkOrigin(request);
-    if (!quoteMode()) throw new AppError('forbidden', 'Quote requests unavailable');
+    if (!quoteMode() || !(await quoteCatalog()).intake_enabled) {
+      throw new AppError('forbidden', 'Quote requests unavailable');
+    }
     const { request_id, items, ...contact } = quoteRequest.parse(await readJson(request));
     const client = await createSupabaseServerClient();
     const { data, error } = await client.rpc('store_submit_quote', {

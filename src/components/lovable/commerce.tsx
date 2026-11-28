@@ -10,6 +10,7 @@ import { addToBasket } from '@/components/store/guest-basket';
 import { GuestCheckout } from '@/components/store/guest-checkout';
 import { storeMoney } from '@/i18n/store';
 import { quoteCopy, quoteSection } from '@/i18n/commercial-quote';
+import { marketContact } from '@/domain/markets/public-contact';
 import { ContactLinks } from '@/components/shell/contact-links';
 import type { Locale, Market } from './types';
 
@@ -85,8 +86,8 @@ export function SourceCommerce({
   const browsingOnly = quote && !available;
   const displayProducts = available || catalogVisible || review;
   const closedMessage = ar
-    ? 'يمكنك تصفّح المنتجات. استقبال طلبات عروض الأسعار مغلق حاليًا.'
-    : 'You can browse the catalog. Quote requests are currently closed.';
+    ? 'التوريد عند الطلب. تُؤكد المواصفات والتوفر عند الطلب. استقبال طلبات عروض الأسعار مغلق حاليًا.'
+    : 'Items are sourced on request. Specifications and availability are confirmed on enquiry. Quote requests are currently closed.';
   const groups = [
     products.filter((p) => p.category !== 'kit'),
     products.filter((p) => p.category === 'kit'),
@@ -162,7 +163,27 @@ export function SourceCommerce({
                 : 'Availability confirmation by Naql365 required'}
             </p>
             <p>{categories.find((category) => category.slug === detail.category)?.title}</p>
-            {browsingOnly && catalogVisible && !review && <p role="status">{closedMessage}</p>}
+            {browsingOnly && catalogVisible && !review && (
+              <>
+                <p role="status">{closedMessage}</p>
+                {detail.category === 'kit' && (
+                  <p>
+                    {ar
+                      ? 'نؤكد المقاسات والمكونات النهائية في عرض السعر.'
+                      : 'Final sizes and kit components are confirmed in the quote.'}
+                  </p>
+                )}
+                <a href={'tel:+' + marketContact.EG.destination}>
+                  {ar ? 'استفسر عن المنتج هاتفيًا' : 'Call about this item'}
+                </a>
+                <p>
+                  {ar
+                    ? 'للاستفسار العام يكفي ذكر رمز الصنف.'
+                    : 'For general information, just quote the item code.'}{' '}
+                  <bdi>{detail.sku}</bdi>
+                </p>
+              </>
+            )}
             {!review && !browsingOnly && addButton(detail)}
             <p>{delivery}</p>
           </div>
@@ -484,6 +505,13 @@ export function SourceCommerce({
           <h2>
             {quote ? quoteSection('contact')[locale].heading : ar ? 'تواصل معنا' : 'Contact us'}
           </h2>
+          {browsingOnly && (
+            <p>
+              {ar
+                ? 'للمعلومات العامة وخدمة العملاء والشكاوى والخصوصية. يُرجى عدم إرسال عناوين أو مستندات أو بيانات دفع عبر واتساب.'
+                : 'For general information, customer support, complaints and privacy requests. Please keep addresses, documents and payment details out of WhatsApp messages.'}
+            </p>
+          )}
           <ContactLinks locale={locale} />
         </section>
       </div>

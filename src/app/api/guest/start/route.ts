@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { AppError } from '@/domain/shared/errors';
+import { transportIntakeEnabled } from '@/infrastructure/config/deployment-env';
 import { activeCountry } from '@/domain/markets/public-contact';
 import { guestSecret } from '@/domain/guest/capability';
 import { commandResult } from '@/domain/requests/intake';
@@ -12,6 +14,7 @@ import {
 export async function POST(request: Request) {
   return apiResult(async () => {
     checkOrigin(request);
+    if (!transportIntakeEnabled()) throw new AppError('forbidden', 'Transport intake closed');
     const input = z
       .object({ country: activeCountry, creationToken: guestSecret })
       .strict()
